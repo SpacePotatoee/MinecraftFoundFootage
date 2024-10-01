@@ -1,0 +1,40 @@
+{
+  "vertex": "veil:blit_screen",
+  "fragment": "spb-revamped:vhs/water",
+  "textures": {
+    "WaterTexture": "spb-revamped:textures/shaders/water_noise.png",
+    "CausticsTexture": "spb-revamped:textures/shaders/caustics2.png",
+    "NormalTexture": "spb-revamped:textures/shaders/water_normal.png",
+    "WaterFrameBuffer": {
+      "type": "framebuffer",
+      "name": "veil:transparent",
+      "sampler": 5
+    },
+    "WaterDepth": {
+      "type": "framebuffer",
+      "name": "veil:transparent_final:depth"
+    },
+    "HandDepth": {
+      "type": "framebuffer",
+      "name": "veil:first_person:depth"
+    },
+    "UnderWaterBuffer": {
+      "type": "framebuffer",
+      "name": "veil:opaque_light"
+    },
+    "MaterialSampler": {
+      "type": "framebuffer",
+      "name": "veil:transparent",
+      "sampler": 3
+    },
+    "ShadowSampler": {
+      "type": "framebuffer",
+      "name": "spb-revamped:shadowmap:depth"
+    }
+  }
+}
+
+
+
+
+

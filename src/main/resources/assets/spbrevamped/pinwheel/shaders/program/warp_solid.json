@@ -1,0 +1,7 @@
+{
+  "fragment": "spb-revamped:warp_solid",
+  "vertex": "spb-revamped:warp_solid",
+  "definitions": [
+    "WARP"
+  ]
+}

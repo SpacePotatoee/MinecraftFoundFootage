@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "spb-revamped:block/wall_block_2_texture"
+  }
+}

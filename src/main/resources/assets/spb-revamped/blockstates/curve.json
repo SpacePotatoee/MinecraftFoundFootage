@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spb-revamped:block/curve",
+      "y": 0
+    },
+    "facing=south": {
+      "model": "spb-revamped:block/curve",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "spb-revamped:block/curve",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "spb-revamped:block/curve",
+      "y": 270
+    }
+  }
+}

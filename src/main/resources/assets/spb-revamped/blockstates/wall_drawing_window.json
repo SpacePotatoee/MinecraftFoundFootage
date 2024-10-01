@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spb-revamped:block/wall_drawing_window"
+    },
+    "facing=south": {
+      "model": "spb-revamped:block/wall_drawing_window",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spb-revamped:block/wall_drawing_window",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "spb-revamped:block/wall_drawing_window",
+      "y": 90
+    }
+  }
+}

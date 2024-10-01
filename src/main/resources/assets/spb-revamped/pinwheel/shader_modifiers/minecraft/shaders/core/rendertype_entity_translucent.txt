@@ -1,0 +1,4 @@
+//#version 150
+//#priority 1000
+
+//#replace spbrevamped:warp_player

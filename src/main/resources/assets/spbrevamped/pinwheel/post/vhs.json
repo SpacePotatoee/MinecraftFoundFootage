@@ -1,0 +1,31 @@
+{
+    "stages": [
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs",
+            "in": "veil:first_person",
+            "out": "buffer"
+        },
+        {
+            "type": "veil:copy",
+            "in": "buffer",
+            "out": "veil:post"
+        }
+    ],
+    "textures": {
+        "MidSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:mid"
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+

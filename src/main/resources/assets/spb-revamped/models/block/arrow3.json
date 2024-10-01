@@ -1,0 +1,7 @@
+{
+	"parent": "spb-revamped:block/arrow1",
+	"textures": {
+		"0": "spb-revamped:block/arrow3",
+		"particle": "spb-revamped:block/arrow3"
+	}
+}

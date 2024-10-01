@@ -1,0 +1,18 @@
+{
+  "zoomin": {
+    "sounds": [
+      "spb-revamped:zoomin"
+    ]
+  },
+  "zoomout": {
+    "sounds": [
+      "spb-revamped:zoomout"
+    ]
+  },
+  "flashlight_click": {
+    "sounds": [
+      "spb-revamped:flashlight_click1",
+      "spb-revamped:flashlight_click2"
+    ]
+  }
+}

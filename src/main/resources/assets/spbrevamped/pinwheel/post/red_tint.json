@@ -1,0 +1,15 @@
+{
+    "stages": [
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:red_tint",
+            "in": "veil:first_person",
+            "out": "veil:post"
+        }
+    ]
+}
+
+
+
+
+

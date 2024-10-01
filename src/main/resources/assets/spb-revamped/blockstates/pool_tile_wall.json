@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,type=0": {
+      "model": "spb-revamped:block/pool_tile_wall"
+    },
+    "facing=south,type=0": {
+      "model": "spb-revamped:block/pool_tile_wall",
+      "y": 180
+    },
+    "facing=west,type=0": {
+      "model": "spb-revamped:block/pool_tile_wall",
+      "y": 270
+    },
+    "facing=east,type=0": {
+      "model": "spb-revamped:block/pool_tile_wall",
+      "y": 90
+    },
+    "facing=north,type=1": {
+      "model": "spb-revamped:block/pool_tile_wall_corner"
+    },
+    "facing=south,type=1": {
+      "model": "spb-revamped:block/pool_tile_wall_corner",
+      "y": 180
+    },
+    "facing=west,type=1": {
+      "model": "spb-revamped:block/pool_tile_wall_corner",
+      "y": 270
+    },
+    "facing=east,type=1": {
+      "model": "spb-revamped:block/pool_tile_wall_corner",
+      "y": 90
+    }
+  }
+}

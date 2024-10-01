@@ -1,0 +1,15 @@
+accessWidener v2 named
+accessible method net/minecraft/world/gen/chunk/ChunkNoiseSampler createMultiNoiseSampler (Lnet/minecraft/world/gen/noise/NoiseRouter;Ljava/util/List;)Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$MultiNoiseSampler;
+accessible method net/minecraft/world/gen/chunk/ChunkNoiseSampler getHorizontalCellBlockCount ()I
+accessible method net/minecraft/world/gen/chunk/ChunkNoiseSampler getVerticalCellBlockCount ()I
+accessible method net/minecraft/world/gen/chunk/ChunkNoiseSampler sampleBlockState ()Lnet/minecraft/block/BlockState;
+accessible class net/minecraft/world/gen/densityfunction/DensityFunctionTypes$Beardifier
+accessible method net/minecraft/util/math/noise/PerlinNoiseSampler sample (IIIDDDD)D
+accessible class net/minecraft/client/render/RenderLayer$MultiPhase
+accessible class net/minecraft/client/render/RenderPhase$ShaderProgram
+accessible method net/minecraft/client/render/GameRenderer getFov (Lnet/minecraft/client/render/Camera;FZ)D
+accessible method net/minecraft/client/render/WorldRenderer updateChunks (Lnet/minecraft/client/render/Camera;)V
+accessible field com/mojang/blaze3d/systems/RenderSystem modelViewMatrix Lorg/joml/Matrix4f;
+accessible field com/mojang/blaze3d/systems/RenderSystem projectionMatrix Lorg/joml/Matrix4f;
+accessible method net/minecraft/client/render/WorldRenderer applyFrustum (Lnet/minecraft/client/render/Frustum;)V
+accessible method net/minecraft/client/render/WorldRenderer setupTerrain (Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/Frustum;ZZ)V

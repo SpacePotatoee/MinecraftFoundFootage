@@ -1,0 +1,4 @@
+{
+  "vertex": "spb-revamped:shadowmap/block",
+  "fragment": "spb-revamped:shadowmap/rendertype_solid"
+}

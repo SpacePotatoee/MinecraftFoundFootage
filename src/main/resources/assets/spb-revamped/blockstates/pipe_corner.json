@@ -1,0 +1,53 @@
+{
+  "variants": {
+    "facing=north,type=0": {
+      "model": "spb-revamped:block/pipe_turn"
+    },
+    "facing=south,type=0": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 180
+    },
+    "facing=west,type=0": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 270
+    },
+    "facing=east,type=0": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 90
+    },
+    "facing=north,type=1": {
+      "model": "spb-revamped:block/pipe_turn_side"
+    },
+    "facing=south,type=1": {
+      "model": "spb-revamped:block/pipe_turn_side",
+      "y": 180
+    },
+    "facing=west,type=1": {
+      "model": "spb-revamped:block/pipe_turn_side",
+      "y": 270
+    },
+    "facing=east,type=1": {
+      "model": "spb-revamped:block/pipe_turn_side",
+      "y": 90
+    },
+    "facing=north,type=2": {
+      "model": "spb-revamped:block/pipe_turn",
+      "x": 180
+    },
+    "facing=south,type=2": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 180,
+      "x": 180
+    },
+    "facing=west,type=2": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 270,
+      "x": 180
+    },
+    "facing=east,type=2": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 90,
+      "x": 180
+    }
+  }
+}

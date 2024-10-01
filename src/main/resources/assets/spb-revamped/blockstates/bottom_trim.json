@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,sides=1": {
+      "model": "spb-revamped:block/wall_trim_1"
+    },
+    "facing=south,sides=1": {
+      "model": "spb-revamped:block/wall_trim_1",
+      "y": 180
+    },
+    "facing=west,sides=1": {
+      "model": "spb-revamped:block/wall_trim_1",
+      "y": 270
+    },
+    "facing=east,sides=1": {
+      "model": "spb-revamped:block/wall_trim_1",
+      "y": 90
+    },
+    "facing=north,sides=2": {
+      "model": "spb-revamped:block/wall_trim_corner"
+    },
+    "facing=south,sides=2": {
+      "model": "spb-revamped:block/wall_trim_corner",
+      "y": 180
+    },
+    "facing=west,sides=2": {
+      "model": "spb-revamped:block/wall_trim_corner",
+      "y": 270
+    },
+    "facing=east,sides=2": {
+      "model": "spb-revamped:block/wall_trim_corner",
+      "y": 90
+    },
+    "facing=north,sides=3": {
+      "model": "spb-revamped:block/wall_trim_sides"
+    },
+    "facing=south,sides=3": {
+      "model": "spb-revamped:block/wall_trim_sides",
+      "y": 180
+    },
+    "facing=west,sides=3": {
+      "model": "spb-revamped:block/wall_trim_sides",
+      "y": 270
+    },
+    "facing=east,sides=3": {
+      "model": "spb-revamped:block/wall_trim_sides",
+      "y": 90
+    },
+    "facing=north,sides=4": {
+      "model": "spb-revamped:block/wall_trim_3"
+    },
+    "facing=south,sides=4": {
+      "model": "spb-revamped:block/wall_trim_3",
+      "y": 180
+    },
+    "facing=west,sides=4": {
+      "model": "spb-revamped:block/wall_trim_3",
+      "y": 270
+    },
+    "facing=east,sides=4": {
+      "model": "spb-revamped:block/wall_trim_3",
+      "y": 90
+    }
+  }
+}

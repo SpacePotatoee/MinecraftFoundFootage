@@ -1,0 +1,4 @@
+{
+  "vertex": "spb-revamped:shadowmap/entity",
+  "fragment": "spb-revamped:shadowmap/rendertype_entity"
+}

@@ -1,0 +1,43 @@
+{
+	"schemaVersion": 1,
+	"id": "spb-revamped",
+	"version": "${version}",
+	"name": "SPB-Revamped",
+	"description": "Now this is epic",
+	"authors": [
+		"SpacePotato"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/spb-revamped/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["com.sp.SPBRevamped"],
+		"client": ["com.sp.SPBRevampedClient"],
+		"fabric-datagen": ["com.sp.SPBRevampedDataGenerator"],
+		"cardinal-components": ["com.sp.cca_stuff.InitializeComponents"],
+		"modmenu": ["com.sp.config_stuff.ModMenuMenu"]
+	},
+	"custom": {
+		"cardinal-components": [
+			"spb-revamped:player"
+		]
+	},
+	"mixins": [
+		"spb-revamped.mixins.json"
+	],
+	"accessWidener": "spb-revamped.accesswidener",
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*",
+		"fabric-key-binding-api-v1": "*"
+	},
+	"suggests": {
+		"mod-menu": "*"
+	}
+}

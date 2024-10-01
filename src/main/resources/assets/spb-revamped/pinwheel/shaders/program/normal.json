@@ -1,0 +1,16 @@
+{
+  "vertex": "veil:blit_screen",
+  "fragment": "spb-revamped:normal",
+  "textures": {
+    "OpaqueNormalSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque",
+      "sampler": 2
+    },
+    "TransparentNormalSampler": {
+      "type": "framebuffer",
+      "name": "veil:transparent",
+      "sampler": 2
+    }
+  }
+}

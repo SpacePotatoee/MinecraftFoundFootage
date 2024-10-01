@@ -1,0 +1,10 @@
+{
+  "vertex": "veil:blit_screen",
+  "fragment": "spb-revamped:shadows",
+  "textures": {
+    "HandDepth": {
+      "type": "framebuffer",
+      "name": "veil:first_person:depth"
+    }
+  }
+}

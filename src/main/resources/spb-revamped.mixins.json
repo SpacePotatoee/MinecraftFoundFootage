@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "package": "com.sp.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ChunkStatusMixin",
+    "StructureBlockEntityMixin",
+    "Veil.VeilDeferredRendererMixin",
+    "Veil.VeilFrameBuffersMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "CameraMixin",
+    "DisableHotbarMixin",
+    "GameRendererMixin",
+    "ItemEntityRendererMixin",
+    "WorldRendererAccessor",
+    "WorldRendererMixin",
+    "uniform.ShaderProgramMixin"
+  ]
+}

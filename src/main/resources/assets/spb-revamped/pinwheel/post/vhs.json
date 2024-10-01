@@ -1,0 +1,83 @@
+{
+    "stages": [
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/water",
+            "in": "veil:opaque_final",
+            "out": "spb-revamped:water_fb"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/mix",
+            "in": "veil:opaque_final",
+            "out": "spb-revamped:mid"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/highlights",
+            "in": "spb-revamped:mid",
+            "out": "spb-revamped:mixed"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/vhs",
+            "in": "veil:post",
+            "out": "spb-revamped:pre_motionblur"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/motion_blur",
+            "in": "spb-revamped:pre_motionblur",
+            "out": "veil:post"
+        }
+    ],
+    "textures": {
+        "MidSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:mid"
+        },
+        "WaterSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:water_fb"
+        },
+        "MixedSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:mixed"
+        },
+        "PreSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:pre_motionblur"
+        },
+        "FogSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:fog_buffer"
+        },
+        "DiffuseDepthSampler": {
+            "type": "framebuffer",
+            "name": "veil:post:depth"
+        },
+        "HandSampler": {
+            "type": "framebuffer",
+            "name": "minecraft:main"
+        },
+        "HandDepth": {
+            "type": "framebuffer",
+            "name": "veil:first_person:depth"
+        },
+        "NoiseTexture": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/super_noise.png"
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+

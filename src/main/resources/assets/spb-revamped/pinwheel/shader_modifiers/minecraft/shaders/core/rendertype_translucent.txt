@@ -1,0 +1,4 @@
+#version 150
+#priority 1
+
+#replace spbrevamped:minecraft_core/rendertype_translucent

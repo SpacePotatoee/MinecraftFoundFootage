@@ -1,0 +1,10 @@
+{
+  "type": "spb-revamped:level0_type",
+  "generator": {
+    "type": "spb-revamped:level0_chunk_generator",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "spb-revamped:base_backrooms_biome"
+    }
+  }
+}

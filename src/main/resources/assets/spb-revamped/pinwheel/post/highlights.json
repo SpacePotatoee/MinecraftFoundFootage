@@ -1,0 +1,20 @@
+{
+    "stages": [
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:highlights",
+            "in": "minecraft:main",
+            "out": "spb-revamped:mid"
+        }
+    ]
+}
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,7 @@
+{
+	"parent": "spb-revamped:block/wall_text_1",
+	"textures": {
+		"3": "spb-revamped:block/4text",
+		"particle": "spb-revamped:block/4text"
+	}
+}

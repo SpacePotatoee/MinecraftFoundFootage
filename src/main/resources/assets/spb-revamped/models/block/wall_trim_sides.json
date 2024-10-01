@@ -1,0 +1,71 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "wall_trim_sides",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "spb-revamped:block/wall_trim_texture",
+		"particle": "spb-revamped:block/wall_trim_texture"
+	},
+	"elements": [
+		{
+			"from": [-0.6, 0, 0],
+			"to": [16.6, 2, 0.6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [0, 3, 8.5, 4], "texture": "#0"},
+				"east": {"uv": [0.5, 5, 1, 6], "texture": "#0"},
+				"south": {"uv": [0, 2, 8.5, 3], "texture": "#0"},
+				"west": {"uv": [0, 5, 0.5, 6], "texture": "#0"},
+				"up": {"uv": [8.5, 4.5, 0, 4], "rotation": 180, "texture": "#0"},
+				"down": {"uv": [8.5, 4.5, 0, 5], "rotation": 180, "texture": "#0"}
+			}
+		},
+		{
+			"from": [-2, 0.03, 0],
+			"to": [18, 0.03, 2],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0.1, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 10, 0], "texture": "#0"},
+				"east": {"uv": [0, 0, 1, 0], "texture": "#0"},
+				"south": {"uv": [0, 0, 10, 0], "texture": "#0"},
+				"west": {"uv": [0, 0, 1, 0], "texture": "#0"},
+				"up": {"uv": [10, 1, 0, 0], "rotation": 180, "texture": "#0"},
+				"down": {"uv": [10, 1, 0, 2], "rotation": 180, "texture": "#0"}
+			}
+		},
+		{
+			"from": [-2, 0.03, 14],
+			"to": [18, 0.03, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0.1, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 10, 0], "texture": "#0"},
+				"east": {"uv": [0, 0, 1, 0], "texture": "#0"},
+				"south": {"uv": [0, 0, 10, 0], "texture": "#0"},
+				"west": {"uv": [0, 0, 1, 0], "texture": "#0"},
+				"up": {"uv": [10, 1, 0, 0], "texture": "#0"},
+				"down": {"uv": [10, 1, 0, 2], "texture": "#0"}
+			}
+		},
+		{
+			"from": [-0.6, 0, 15.4],
+			"to": [16.6, 2, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [0, 2, 8.5, 3], "texture": "#0"},
+				"east": {"uv": [0, 5, 0.5, 6], "texture": "#0"},
+				"south": {"uv": [0, 3, 8.5, 4], "texture": "#0"},
+				"west": {"uv": [0.5, 5, 1, 6], "texture": "#0"},
+				"up": {"uv": [8.5, 4.5, 0, 4], "texture": "#0"},
+				"down": {"uv": [8.5, 4.5, 0, 5], "texture": "#0"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "wall_trim_sides",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [0, 1, 2, 3]
+		}
+	]
+}

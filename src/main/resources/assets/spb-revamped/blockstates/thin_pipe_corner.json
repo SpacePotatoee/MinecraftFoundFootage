@@ -1,0 +1,38 @@
+{
+  "variants": {
+    "facing=north,type=0": {
+      "model": "spb-revamped:block/thin_pipe_corner"
+    },
+    "facing=south,type=0": {
+      "model": "spb-revamped:block/thin_pipe_corner",
+      "y": 180
+    },
+    "facing=west,type=0": {
+      "model": "spb-revamped:block/thin_pipe_corner",
+      "y": 270
+    },
+    "facing=east,type=0": {
+      "model": "spb-revamped:block/thin_pipe_corner",
+      "y": 90
+    },
+    "facing=north,type=1": {
+      "model": "spb-revamped:block/thin_pipe_turn",
+      "x": 180
+    },
+    "facing=south,type=1": {
+      "model": "spb-revamped:block/thin_pipe_turn",
+      "y": 180,
+      "x": 180
+    },
+    "facing=west,type=1": {
+      "model": "spb-revamped:block/thin_pipe_turn",
+      "y": 270,
+      "x": 180
+    },
+    "facing=east,type=1": {
+      "model": "spb-revamped:block/thin_pipe_turn",
+      "y": 90,
+      "x": 180
+    }
+  }
+}

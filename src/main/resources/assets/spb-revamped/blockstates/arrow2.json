@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spb-revamped:block/arrow2"
+    },
+    "facing=south": {
+      "model": "spb-revamped:block/arrow2",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spb-revamped:block/arrow2",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "spb-revamped:block/arrow2",
+      "y": 90
+    }
+  }
+}

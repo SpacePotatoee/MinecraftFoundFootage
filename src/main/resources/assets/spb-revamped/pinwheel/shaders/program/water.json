@@ -1,0 +1,16 @@
+{
+  "vertex": "spb-revamped:water",
+  "fragment": "spb-revamped:water",
+  "textures": {
+    "UnderWaterBuffer": {
+      "type": "framebuffer",
+      "name": "veil:opaque_light"
+    },
+    "WaterTexture": "spb-revamped:textures/shaders/water_noise.png",
+    "WaterFrameBuffer": {
+      "type": "framebuffer",
+      "name": "veil:transparent",
+      "sampler": 5
+    }
+  }
+}

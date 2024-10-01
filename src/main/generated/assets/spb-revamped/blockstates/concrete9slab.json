@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "spb-revamped:block/concrete9slab"
+    },
+    "type=double": {
+      "model": "spb-revamped:block/concrete9"
+    },
+    "type=top": {
+      "model": "spb-revamped:block/concrete9slab_top"
+    }
+  }
+}

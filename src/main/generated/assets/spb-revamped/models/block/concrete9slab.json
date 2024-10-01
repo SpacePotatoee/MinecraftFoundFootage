@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "spb-revamped:block/concrete9",
+    "side": "spb-revamped:block/concrete9",
+    "top": "spb-revamped:block/concrete9"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "bottom_wall=true": {
+      "model": "spb-revamped:block/wallpaper_bottom_block_2"
+    },
+    "bottom_wall=false": {
+      "model": "spb-revamped:block/wall_block_2"
+    }
+  }
+}
