@@ -168,14 +168,12 @@ void main(){
 		fragColor = mix(fragColor, FOG_COLOR, fog);
 	}
 
-	//fragColor -= vec4(vec3(random(uv169 + GameTime)), 1) * 0.06;
+	fragColor -= vec4(vec3(random(uv169 + GameTime)), 1) * 0.06;
 	fragColor += vec4(vec3(hash12n2(floor(texCoord*1000))), 1) * 0.06;
 	fragColor += blur;
 	if (handDepth != 1){
 		fragColor = texture(HandSampler, texCoord);
 	}
-//	else if()
-	//fragColor = texture(MidSampler, texCoord);
 }
 
 
