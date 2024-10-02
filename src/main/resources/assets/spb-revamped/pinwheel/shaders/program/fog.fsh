@@ -29,51 +29,52 @@ return mix(n1, n2, ratio);
 
 
 void main() {
-vec4 baseColor = texture(DiffuseSampler0, texCoord);
-float depth = texture(DiffuseDepthSampler, texCoord).r;
-vec3 positionVS = viewPosFromDepthSample(depth, texCoord);
-float worldDepth = length(positionVS);
+	vec4 baseColor = texture(DiffuseSampler0, texCoord);
+	float depth = texture(DiffuseDepthSampler, texCoord).r;
+	vec3 positionVS = viewPosFromDepthSample(depth, texCoord);
+	float worldDepth = length(positionVS);
 
-vec3 camPos = VeilCamera.CameraPosition;
+	vec3 camPos = VeilCamera.CameraPosition;
 
-//Initialize
-vec3 ro = camPos;
-vec3 rd = viewDirFromUv(texCoord);
-float travDist = 0.0;
-float hitDist = 0.0;
-vec4 col = vec4(0);
-bool inside = false;
-float fog = 0.0;
-vec3 p;
+	//Initialize
+	vec3 ro = camPos;
+	vec3 rd = viewDirFromUv(texCoord);
+	float travDist = 0.0;
+	float hitDist = 0.0;
+	vec4 col = vec4(0);
+	bool inside = false;
+	float fog = 0.0;
+	vec3 p;
 
-//Raymarching
-for(int i = 0; i < 250; i++){
-if(inside == false){
-if(worldDepth > 500){
-break;
-}
+	//Raymarching
+	for(int i = 0; i < 250; i++){
+		if(inside == false){
+			if(worldDepth > 500){
+				break;
+			}
 
-p = ro + rd * travDist;
-float d = map(p);
-travDist += d;
+			p = ro + rd * travDist;
+			float d = map(p);
+			travDist += d;
 
 
-if(d < 0.001){
-hitDist = travDist;
-inside = true;
-}
+			if(d < 0.001){
+				hitDist = travDist;
+				inside = true;
+			}
 
-}
-else{
-float noise = noise3D(p);
-fog += 0.001 * noise;
-p = ro + rd * travDist;
-travDist += 0.05;
-if(travDist > worldDepth || fog >= 1 || travDist > 50 || p.y < 0){
-break;
-}
-}
-}
+		}
+		else{
+			float noise = noise3D(p);
+			fog += 0.001 * noise;
+			p = ro + rd * travDist;
+			travDist += 0.05;
+
+			if(travDist > worldDepth || fog >= 1 || travDist > 50 || p.y < 0){
+				break;
+			}
+		}
+	}
 
 	fragColor = vec4(vec3(fog), 1.0);
 }
