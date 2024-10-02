@@ -12,7 +12,6 @@ import com.sp.player.CameraRoll;
 import com.sp.player.Keybinds;
 import com.sp.sounds.ModSounds;
 import com.sp.util.MatrixMath;
-import com.sp.util.uniformTest;
 import com.sp.world.biome.ModBiomes;
 import com.sp.world.levels.BackroomsLevels;
 import foundry.veil.api.client.render.VeilRenderSystem;
@@ -66,7 +65,8 @@ import static net.minecraft.util.math.MathHelper.sin;
 public class SPBRevampedClient implements ClientModInitializer {
     private static final Identifier VHS_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs");
     private static final Identifier MOTION_BLUR = new Identifier(SPBRevamped.MOD_ID, "vhs/motion_blur");
-    private static final Identifier WATER_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/water");
+    private static final Identifier LIGHT_SHAFTS_NAME = new Identifier(SPBRevamped.MOD_ID, "light_shafts");
+    private static final Identifier LIGHT_SHAFTS = new Identifier(SPBRevamped.MOD_ID, "light_shafts/light_shafts");
 
     public static HashMap<AbstractClientPlayerEntity, AreaLight> flashLightList = new HashMap<>();
     AreaLight flashLight;
@@ -189,30 +189,8 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }else{
                     lightRenderer.enableVanillaLight();
                 }
-
-//                if(playerClient.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY){
-//                    if(lightRenderer.isAmbientOcclusionEnabled()) {
-//                        lightRenderer.disableAmbientOcclusion();
-//                    }
-//                }
-//                else{
-//                    if(ConfigStuff.enableAmbientOcclusion) lightRenderer.enableAmbientOcclusion();
-//                    else lightRenderer.disableAmbientOcclusion();
-//                }
-
             }
 
-
-
-
-
-
-//            Iterator<AreaLight> areaLights = deferredRenderer.getLightRenderer().getLights(LightTypeRegistry.AREA.get()).iterator();
-//            while (areaLights.hasNext()) {
-//                AreaLight light = areaLights.next();
-//                light.markDirty();
-//                System.out.println(light);
-//            }
 
 
             if(stage == Stage.AFTER_SKY) {
@@ -344,14 +322,6 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                         }
                     }
-//
-//
-////                if (Pipeline3 != null) {
-////                    if (ConfigStuff.renderDepth) {
-////                        postProcessingManager.add(DEPTH);
-////                        postProcessingManager.add(SSAO);
-////                    }
-////                }
                 }
 
 
@@ -366,44 +336,6 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
                     }
                 }
-
-
-
-            //Camera on ground Check
-
-//            ClientWorld world = MinecraftClient.getInstance().world;
-//            PlayerEntity player = MinecraftClient.getInstance().player;
-//            Iterator<Entity> EntityList = world.getEntities().iterator();
-//
-//            while (EntityList.hasNext()){
-//                Entity entity = EntityList.next();
-//
-//                if(entity != null ){
-//
-//                    if(entity instanceof ItemEntity){
-//                        ItemStack itemStack = ((ItemEntity) entity).getStack();
-//
-//                        if (itemStack.getSubNbt("attachedPlayer") != null) {
-//                            UUID AttachedPlayerUUID = itemStack.getSubNbt("attachedPlayer").getUuid("attachedPlayer");
-//                            PlayerEntity AttachedPlayer = world.getPlayerByUuid(AttachedPlayerUUID);
-//
-//                            if(AttachedPlayer != null && AttachedPlayer == player){
-//                                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(AttachedPlayer);
-//                                Vec3d pos = entity.getPos();
-//                                float yaw = entity.getYaw();
-//
-//                                playerComponent.setCameraItemYaw(yaw);
-//                                playerComponent.setCameraItemPos(pos);
-//                                playerComponent.setCameraItem(true);
-//                                playerComponent.SetCameraDown(false);
-//                                playerComponent.setCameraInOtherInventory(false);
-//                                InitializeComponents.PLAYER.sync(AttachedPlayer);
-//                            }
-//                        }
-//
-//                    }
-//                }
-//            }
 
 
 
@@ -438,6 +370,26 @@ public class SPBRevampedClient implements ClientModInitializer {
                     float yawRotAmount = yaw - prevYaw2;
                     float pitchRotAmount = pitch - prevPitch2;
 
+                    if(LIGHT_SHAFTS_NAME.equals(name)){
+                        ShaderProgram shaderProgram = context.getShader(LIGHT_SHAFTS);
+                        if (shaderProgram != null) {
+                            if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                                if(this.camera != null) {
+                                    Matrix4f shadowModelView = new Matrix4f();
+                                    shadowModelView.identity();
+                                    shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(25.0f * sin(RenderSystem.getShaderGameTime() * 200) + 90.0f));
+                                    Vector4f lightPosition = new Vector4f(0.0f, 0.0f, 1.0f, 0.0f);
+                                    lightPosition.mul(shadowModelView.invert());
+
+                                    Vector3f shadowLightDirection = new Vector3f(lightPosition.x(), lightPosition.y(), lightPosition.z());
+                                    shaderProgram.setMatrix("viewMatrix", createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, true).peek().getPositionMatrix());
+                                    shaderProgram.setMatrix("orthographMatrix", createProjMat());
+                                    //shaderProgram.setVector("lightAngled", shadowLightDirection);
+                                }
+                            }
+                        }
+                    }
+
                     if (VHS_SHADER.equals(name)) {
                         ShaderProgram shaderProgram = context.getShader(MOTION_BLUR);
                         if (shaderProgram != null) {
@@ -454,26 +406,6 @@ public class SPBRevampedClient implements ClientModInitializer {
                                 shaderProgram.setInt("FogToggle", 0);
                             }
                         }
-
-                        shaderProgram = context.getShader(WATER_SHADER);
-                        if (shaderProgram != null && client.world != null) {
-                            if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                                if(this.camera != null) {
-                                    Matrix4f shadowModelView = new Matrix4f();
-                                    shadowModelView.identity();
-                                    shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(25.0f * sin(RenderSystem.getShaderGameTime() * 200) + 90.0f));
-                                    Vector4f lightPosition = new Vector4f(0.0f, 0.0f, 1.0f, 0.0f);
-                                    lightPosition.mul(shadowModelView.invert());
-
-                                    Vector3f shadowLightDirection = new Vector3f(lightPosition.x(), lightPosition.y(), lightPosition.z());
-
-                                    shaderProgram.setMatrix("viewMatrix", createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, true).peek().getPositionMatrix());
-                                    shaderProgram.setMatrix("orthographMatrix", createProjMat());
-                                    shaderProgram.setVector("lightAngled", shadowLightDirection);
-                                }
-                            }
-                        }
-
 
                     }
 
@@ -496,9 +428,6 @@ public class SPBRevampedClient implements ClientModInitializer {
                     definitions.remove("WARP");
                 }
             }
-
-
-
         }));
 
 

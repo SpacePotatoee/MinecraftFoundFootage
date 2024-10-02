@@ -1,0 +1,43 @@
+{
+    "stages": [
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:light_shafts/light_shafts",
+            "in": "minecraft:main",
+            "out": "veil:post"
+        }
+    ],
+    "textures": {
+        "DepthSampler": {
+            "type": "framebuffer",
+            "name": "veil:opaque_final:depth"
+        },
+        "TranslucentDepthSampler": {
+            "type": "framebuffer",
+            "name": "veil:transparent_final:depth"
+        },
+        "HandDepth": {
+            "type": "framebuffer",
+            "name": "veil:first_person:depth"
+        },
+        "ShadowSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:shadowmap:depth"
+        },
+        "NormalSampler": {
+            "type": "framebuffer",
+            "name": "veil:opaque",
+            "sampler": 2
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
