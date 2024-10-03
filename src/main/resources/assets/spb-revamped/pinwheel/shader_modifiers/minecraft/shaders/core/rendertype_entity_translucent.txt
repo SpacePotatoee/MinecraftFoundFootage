@@ -1,4 +1,4 @@
 //#version 150
 //#priority 1000
 
-//#replace spbrevamped:warp_player
+//#replace spbrevamped:minecraft_core/rendertype_entity
