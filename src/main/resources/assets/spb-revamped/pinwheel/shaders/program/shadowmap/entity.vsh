@@ -19,10 +19,23 @@ out vec4 vertexColor;
 out vec2 texCoord0;
 out vec4 overlayColor;
 
+vec3 distort(in vec3 shadowPosition) {
+    const float bias0 = 0.95;
+    const float bias1 = 1.0 - bias0;
+
+    float factorDistance = length(shadowPosition.xy);
+
+    float distortFactor = factorDistance * bias0 + bias1;
+
+    return shadowPosition * vec3(vec2(1.0 / distortFactor), 0.2);
+}
+
 void main() {
     gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
 
     vertexColor = Color;
     texCoord0 = UV0;
     overlayColor = texelFetch(Sampler1, UV1, 0);
+
+    gl_Position.xyz = distort(gl_Position.xyz);
 }

@@ -11,5 +11,11 @@ in vec2 texCoord0;
 in vec4 overlayColor;
 
 void main() {
-	fragColor = vec4(1,1,1,1);
+	vec4 color = texture(Sampler0, texCoord0);
+	if (color.a < 0.1) {
+		discard;
+	}
+	color *= vertexColor * ColorModulator;
+
+	fragColor = color;
 }
