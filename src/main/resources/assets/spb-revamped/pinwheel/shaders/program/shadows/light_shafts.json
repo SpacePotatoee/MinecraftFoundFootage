@@ -1,0 +1,27 @@
+{
+  "vertex": "veil:blit_screen",
+  "fragment": "spb-revamped:shadows/light_shafts",
+  "textures": {
+    "DepthSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque_final:depth"
+    },
+    "TranslucentDepthSampler": {
+      "type": "framebuffer",
+      "name": "veil:transparent_final:depth"
+    },
+    "HandDepth": {
+      "type": "framebuffer",
+      "name": "veil:first_person:depth"
+    },
+    "ShadowSampler": {
+      "type": "framebuffer",
+      "name": "spb-revamped:shadowmap:depth"
+    },
+    "NormalSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque",
+      "sampler": 2
+    }
+  }
+}

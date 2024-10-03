@@ -1,6 +1,6 @@
 {
   "vertex": "veil:blit_screen",
-  "fragment": "spb-revamped:shadows",
+  "fragment": "spb-revamped:shadows/shadows",
   "textures": {
     "HandDepth": {
       "type": "framebuffer",

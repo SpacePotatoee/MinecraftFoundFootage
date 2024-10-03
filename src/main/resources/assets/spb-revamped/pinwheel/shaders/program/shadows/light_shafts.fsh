@@ -72,10 +72,10 @@ void main() {
 
 
         if(shadowDepth < shadowSampler){
-            brightness += 0.005;
+            brightness += 0.002;
         }
 
-        if(brightness >= 1.5){
+        if(brightness >= 1.9){
             brightness = 1.5;
             break;
         }
