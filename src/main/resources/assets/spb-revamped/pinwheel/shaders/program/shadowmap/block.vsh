@@ -18,14 +18,14 @@ out vec2 texCoord0;
 out vec4 viewPos;
 
 vec3 distort(in vec3 shadowPosition) {
-const float bias0 = 0.95;
-const float bias1 = 1.0 - bias0;
+    const float bias0 = 0.95;
+    const float bias1 = 1.0 - bias0;
 
-float factorDistance = length(shadowPosition.xy);
+    float factorDistance = length(shadowPosition.xy);
 
-float distortFactor = factorDistance * bias0 + bias1;
+    float distortFactor = factorDistance * bias0 + bias1;
 
-return shadowPosition * vec3(vec2(1.0 / distortFactor), 0.2);
+    return shadowPosition * vec3(vec2(1.0 / distortFactor), 0.2);
 }
 
 void main() {
@@ -37,8 +37,6 @@ void main() {
     gl_Position = ProjMat * ModelViewMat * vec4(pos, 1.0);
     vertexColor = Color;
     texCoord0 = UV0;
-
-    float dist = length(gl_Position.xy);
 
     gl_Position.xyz = distort(gl_Position.xyz);
 }
