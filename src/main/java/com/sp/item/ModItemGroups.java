@@ -15,8 +15,6 @@ public class ModItemGroups {
             new Identifier(SPBRevamped.MOD_ID, "spbrevamped"),
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.spbrevamped"))
                     .icon(() -> new ItemStack(ModBlocks.WallBlock)).entries((displayContext, entries) -> {
-                        entries.add(ModBlocks.CAMERA);
-
                         entries.add(ModBlocks.WallBlock);
                         entries.add(ModBlocks.WallBlock2);
                         entries.add(ModBlocks.CeilingTile);

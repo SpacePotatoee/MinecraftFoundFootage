@@ -9,7 +9,6 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class ModBlockEntities {
-    public static BlockEntityType<CameraBlockEntity> CAMERA_BLOCK_ENTITY;
     public static BlockEntityType<FluorescentLightBlockEntity> FLUORESCENT_LIGHT_BLOCK_ENTITY;
     public static BlockEntityType<PoolroomsWindowBlockEntity> POOLROOMS_WINDOW_BLOCK_ENTITY;
     public static BlockEntityType<WindowBlockEntity> WINDOW_BLOCK_ENTITY;
@@ -17,10 +16,6 @@ public class ModBlockEntities {
 
 
     public static void registerAllBlockEntities(){
-        CAMERA_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
-                new Identifier(SPBRevamped.MOD_ID,"camera_block_entity"),
-                FabricBlockEntityTypeBuilder.create(CameraBlockEntity::new,
-                        ModBlocks.CAMERA).build());
 
         FLUORESCENT_LIGHT_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
                 new Identifier(SPBRevamped.MOD_ID,"fluorescent_light_block_entity"),

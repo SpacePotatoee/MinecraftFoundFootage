@@ -18,10 +18,6 @@ import net.minecraft.world.BlockView;
 public class ModBlocks {
 
     //////Level 1 Stuff//////
-    public static final Block CAMERA = registerBlock("camera",
-            new Camera(FabricBlockSettings.copyOf(Blocks.DIRT)));
-
-
     public static final Block WallBlock = registerBlock("wall_block",
             new WallBlock(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles()));
 
