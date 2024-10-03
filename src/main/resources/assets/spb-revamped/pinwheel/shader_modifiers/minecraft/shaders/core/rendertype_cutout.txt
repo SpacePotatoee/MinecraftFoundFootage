@@ -1,4 +1,0 @@
-#version 150
-#priority 1000
-
-#replace spbrevamped:minecraft_core/rendertype_solid
