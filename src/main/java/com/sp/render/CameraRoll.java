@@ -1,4 +1,4 @@
-package com.sp.player;
+package com.sp.render;
 
 import com.sp.ConfigStuff;
 import com.sp.cca_stuff.InitializeComponents;
@@ -73,55 +73,6 @@ public class CameraRoll {
             }
 
             playerComponent.setCameraRoll(spinRoll + strafeRightRoll + strafeLeftRoll);
-
-
-        }
-    }
-
-    public static void doCameraRollForOther(PlayerEntity player, PlayerEntity you){
-        if (player != null && you != null) {
-            PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-            PlayerComponent youComponent = InitializeComponents.PLAYER.get(you);
-            float yaw = player.getYaw();
-            float pitch = player.getPitch();
-
-
-
-            if (prevYaw2 != -1000 && prevPitch2 != -1000){
-                rotAmount2 = yaw - prevYaw2;
-
-                spinRoll2 += lerp(0.01f, rotAmount2/(2 * lookRollMultiplier2), 0.0f);
-                spinRoll2 = spinRoll2 *0.9f;
-                spinRoll2 = MathHelper.clamp(spinRoll2, -MaxLookRollAngle2, MaxLookRollAngle2);
-
-            }
-
-
-            prevYaw2 = yaw;
-            prevPitch2 = pitch;
-//
-//
-//            if (InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 65) && (Math.abs(player.getVelocity().x) > 0.05f || Math.abs(player.getVelocity().z) > 0.05f)){
-//                AtimePressed++;
-//                strafeLeftRoll += (float) lerp(0.001, AtimePressed, 0);
-//                strafeLeftRoll = MathHelper.clamp(-Math.abs(strafeLeftRoll), -5, 0);
-//            }else{
-//                strafeLeftRoll = strafeLeftRoll * 0.95f;
-//                strafeLeftRoll = MathHelper.clamp(strafeLeftRoll, -5, 0);
-//                AtimePressed = 0;
-//            }
-//
-//            if (InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 68) && (Math.abs(player.getVelocity().x) > 0.05f || Math.abs(player.getVelocity().z) > 0.05f)){
-//                DtimePressed++;
-//                strafeRightRoll -= (float) lerp(0.001, DtimePressed, 0);
-//                strafeRightRoll = MathHelper.clamp(Math.abs(strafeRightRoll), 0, 5);
-//            }else{
-//                strafeRightRoll = strafeRightRoll * 0.95f;
-//                strafeRightRoll = MathHelper.clamp(strafeRightRoll, 0, 5);
-//                DtimePressed = 0;
-//            }
-
-            youComponent.setOtherCameraRoll(spinRoll2);
 
 
         }

@@ -1,8 +1,7 @@
-package com.sp.player;
+package com.sp.render;
 
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.deferred.light.AreaLight;
-import foundry.veil.api.client.render.deferred.light.Light;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import org.joml.Quaternionf;

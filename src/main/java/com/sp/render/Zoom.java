@@ -1,6 +1,5 @@
-package com.sp.player;
+package com.sp.render;
 
-import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
 
 public class Zoom {
