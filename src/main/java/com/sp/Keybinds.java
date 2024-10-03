@@ -1,4 +1,4 @@
-package com.sp.player;
+package com.sp;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
