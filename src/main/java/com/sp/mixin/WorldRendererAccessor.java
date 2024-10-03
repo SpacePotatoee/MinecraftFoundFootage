@@ -1,10 +1,9 @@
 package com.sp.mixin;
 
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.Frustum;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,12 +19,18 @@ public interface WorldRendererAccessor {
     @Invoker("setupTerrain")
     void invokeSetupTerrain(Camera camera, Frustum frustum, boolean hasForcedFrustum, boolean spectator);
 
-    @Invoker("setupFrustum")
-    void invokeSetupFrustum(MatrixStack matrices, Vec3d pos, Matrix4f projectionMatrix);
+    @Invoker("renderEntity")
+    void invokeRenderEntity(Entity entity, double cameraX, double cameraY, double cameraZ, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers);
+
+    @Accessor("frustum")
+    Frustum getFrustum();
+
+    @Accessor("entityRenderDispatcher")
+    EntityRenderDispatcher getEntityRenderDispatcher();
 
     @Accessor("frustum")
     void setFrustum(Frustum frustum);
 
-    @Accessor("frustum")
-    Frustum getFrustum();
+    @Accessor("bufferBuilders")
+    BufferBuilderStorage getBufferBuilders();
 }

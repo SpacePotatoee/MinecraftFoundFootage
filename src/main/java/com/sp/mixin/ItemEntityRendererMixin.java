@@ -37,8 +37,6 @@ public class ItemEntityRendererMixin {
     private void makeFlat(ItemEntity itemEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci){
         float groundRotation = itemEntity.getYaw();
 
-
-
         matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
         matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(groundRotation + 180.0f));
     }

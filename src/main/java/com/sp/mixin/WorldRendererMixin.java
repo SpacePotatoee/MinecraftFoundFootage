@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
+import com.sp.render.ShadowMapRenderer;
 import com.sp.util.uniformTest;
 import com.sp.util.MatrixMath;
 import com.sp.world.levels.BackroomsLevels;
@@ -40,17 +41,6 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 
 @Mixin(WorldRenderer.class)
 public abstract class WorldRendererMixin {
-    //private boolean renderingShadows = false;
-
-    @Shadow @Final private MinecraftClient client;
-
-    @Shadow protected abstract void renderLayer(RenderLayer renderLayer, MatrixStack matrices, double cameraX, double cameraY, double cameraZ, Matrix4f positionMatrix);
-
-    @Shadow public abstract void setupFrustum(MatrixStack matrices, Vec3d pos, Matrix4f projectionMatrix);
-
-    @Shadow private Frustum frustum;
-
-    @Shadow private @Nullable ClientWorld world;
 
     @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true)
     public void renderSky(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback, CallbackInfo ci) {
@@ -73,39 +63,6 @@ public abstract class WorldRendererMixin {
             }
 
         }
-    }
-
-    @Inject(method = "renderLayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/GlUniform;set(F)V", ordinal = 3, shift = At.Shift.BY, by = 2))
-    public void uniformInject(RenderLayer renderLayer, MatrixStack matrices, double cameraX, double cameraY, double cameraZ, Matrix4f positionMatrix, CallbackInfo ci, @Local ShaderProgram shaderProgram){
-        if(shaderProgram instanceof uniformTest) {
-            if (((uniformTest) shaderProgram).getOrthoMatrix() != null) {
-                Matrix4f matrix4f = createProjMat();
-                ((uniformTest) shaderProgram).getOrthoMatrix().set(matrix4f);
-            }
-
-            if (((uniformTest) shaderProgram).getViewMatrix() != null) {
-                MatrixStack shadowModelView = SPBRevampedClient.createShadowModelView(cameraX, cameraY, cameraZ, true);
-
-                ((uniformTest) shaderProgram).getViewMatrix().set(shadowModelView.peek().getPositionMatrix());
-            }
-
-            if (((uniformTest) shaderProgram).getLightAngle() != null) {
-                Matrix4f shadowModelView = new Matrix4f();
-                shadowModelView.identity();
-                shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(25.0f * sin(RenderSystem.getShaderGameTime() * 200) + 90.0f));
-                Vector4f lightPosition = new Vector4f(0.0f, 0.0f, 1.0f, 0.0f);
-                lightPosition.mul(shadowModelView.invert());
-
-                Vector3f shadowLightDirection = new Vector3f(lightPosition.x(), lightPosition.y(), lightPosition.z());
-
-                ((uniformTest) shaderProgram).getLightAngle().set(shadowLightDirection);
-            }
-        }
-    }
-
-    @Unique
-    public Matrix4f createProjMat(){
-        return MatrixMath.orthographicMatrix(160, 0.05f, 256.0f);
     }
 
 

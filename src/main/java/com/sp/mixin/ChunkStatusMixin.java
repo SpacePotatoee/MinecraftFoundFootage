@@ -46,26 +46,5 @@ public abstract class ChunkStatusMixin {
             l1cg.generateMaze(chunkRegion, chunk, world.getStructureAccessor().forRegion(chunkRegion));
         }
 
-//        if (generator instanceof Level1ChunkGenerator limChunkGen) {
-//            ChunkRegion chunkRegion = new ChunkRegion(world, chunks, targetStatus, 4);
-//            cir
-//                    .setReturnValue(limChunkGen
-//                            .populateNoisE(chunkRegion, targetStatus, executor, world, generator, structureTemplateManager,
-//                                    lightingProvider, fullChunkConverter, chunks, chunk)
-//                            .thenApply(populatedChunk -> {
-//                                if (populatedChunk instanceof ProtoChunk protoChunk) {
-//                                    BelowZeroRetrogen belowZeroRetrogen = protoChunk.getBelowZeroRetrogen();
-//                                    if (belowZeroRetrogen != null) {
-//                                        BelowZeroRetrogen.replaceOldBedrock(protoChunk);
-//                                        if (belowZeroRetrogen.hasMissingBedrock()) {
-//                                            belowZeroRetrogen.fillColumnsWithAirIfMissingBedrock(protoChunk);
-//                                        }
-//                                    }
-//                                }
-//
-//                                return Either.left(populatedChunk);
-//                            }).toCompletableFuture());
-//        }
-
     }
 }
