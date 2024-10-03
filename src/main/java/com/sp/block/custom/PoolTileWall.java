@@ -14,6 +14,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 
+@SuppressWarnings("deprecation")
 public class PoolTileWall extends HorizontalFacingBlock {
     public static final IntProperty TYPE = IntProperty.of("type", 0, 1);
 

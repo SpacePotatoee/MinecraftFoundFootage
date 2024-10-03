@@ -17,6 +17,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class ThinPipe extends Block {
     public static final DirectionProperty FACING = Properties.FACING;
     public static final EnumProperty<WallMountLocation> FACE = Properties.WALL_MOUNT_LOCATION;
@@ -36,9 +37,9 @@ public class ThinPipe extends Block {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        switch ((WallMountLocation)state.get(FACE)) {
+        switch (state.get(FACE)) {
             case FLOOR:
-                switch (((Direction)state.get(FACING)).getAxis()) {
+                switch ((state.get(FACING)).getAxis()) {
                     case X:
                         return FLOOR_X_AXIS_SHAPE;
                     case Z:
@@ -46,7 +47,7 @@ public class ThinPipe extends Block {
                         return FLOOR_Z_AXIS_SHAPE;
                 }
             case WALL:
-                switch ((Direction)state.get(FACING)) {
+                switch (state.get(FACING)) {
                     case EAST:
                         return EAST_WALL_SHAPE;
                     case WEST:
@@ -59,7 +60,7 @@ public class ThinPipe extends Block {
                 }
             case CEILING:
             default:
-                switch (((Direction)state.get(FACING)).getAxis()) {
+                switch ((state.get(FACING)).getAxis()) {
                     case X:
                         return CEILING_X_AXIS_SHAPE;
                     case Z:

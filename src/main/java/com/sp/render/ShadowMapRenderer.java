@@ -6,7 +6,6 @@ import com.sp.SPBRevamped;
 import com.sp.mixin.WorldRendererAccessor;
 import com.sp.util.MatrixMath;
 import foundry.veil.api.client.render.VeilRenderSystem;
-import foundry.veil.api.client.render.VeilRenderer;
 import foundry.veil.api.client.render.framebuffer.AdvancedFbo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
@@ -15,7 +14,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
@@ -109,12 +107,13 @@ public class ShadowMapRenderer {
         return shadowModelView;
     }
 
+    //Global Light Rotation
     public static void rotateShadowModelView(Matrix4f shadowModelView){
-        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(45f));
-        shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(45f));
+//        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(45f));
+//        shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(45f));
 //        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(75f));
 //        shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(25f));
-        //shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(15.0f * sin(RenderSystem.getShaderGameTime() * 200) + 90.0f));
+        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(15.0f * sin(RenderSystem.getShaderGameTime() * 200) + 90.0f));
     }
 
     public static Matrix4f createProjMat(){

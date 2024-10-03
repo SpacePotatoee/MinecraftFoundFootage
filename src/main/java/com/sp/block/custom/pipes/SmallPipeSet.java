@@ -12,10 +12,10 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 
+@SuppressWarnings("deprecation")
 public class SmallPipeSet extends HorizontalFacingBlock {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final IntProperty TYPE = IntProperty.of("type", 0, 6);
@@ -31,18 +31,19 @@ public class SmallPipeSet extends HorizontalFacingBlock {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        switch ((Direction) state.get(FACING)) {
-            case UP :
-            case DOWN :
-            case SOUTH :
-            default :
-                return SHAPE_SOUTH;
-            case NORTH :
+        switch (state.get(FACING)) {
+            case NORTH -> {
                 return SHAPE_NORTH;
-            case WEST :
+            }
+            case WEST -> {
                 return SHAPE_WEST;
-            case EAST :
+            }
+            case EAST -> {
                 return SHAPE_EAST;
+            }
+            default -> {
+                return SHAPE_SOUTH;
+            }
         }
     }
 

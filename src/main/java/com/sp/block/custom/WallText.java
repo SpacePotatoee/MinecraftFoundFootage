@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 
+@SuppressWarnings("deprecation")
 public class WallText extends HorizontalFacingBlock {
     public WallText(Settings settings) {
         super(settings);

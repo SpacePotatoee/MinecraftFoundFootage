@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class WallBlock extends Block {
     public static final BooleanProperty BOTTOM = BooleanProperty.of("bottom_wall");;
 

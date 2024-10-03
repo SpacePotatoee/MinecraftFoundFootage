@@ -8,6 +8,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class WindowBlock extends BlockWithEntity {
     public WindowBlock(Settings settings) {
         super(settings);

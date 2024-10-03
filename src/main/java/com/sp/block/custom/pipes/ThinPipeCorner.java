@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 
+@SuppressWarnings("deprecation")
 public class ThinPipeCorner extends HorizontalFacingBlock {
     public static final DirectionProperty FACING = Properties.FACING;
     public static final IntProperty TYPE = IntProperty.of("type", 0, 1);

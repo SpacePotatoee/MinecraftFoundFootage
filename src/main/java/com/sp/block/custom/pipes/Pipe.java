@@ -1,20 +1,15 @@
 package com.sp.block.custom.pipes;
 
 import net.minecraft.block.*;
-import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
-import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class Pipe extends FacingBlock {
 
     private static final VoxelShape SHAPE_EAST = Block.createCuboidShape(0.0, 2.0, 2.0, 16.0, 16.0, 14.0);
@@ -29,18 +24,22 @@ public class Pipe extends FacingBlock {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        switch ((Direction) state.get(FACING)) {
-            case UP, DOWN:
+        switch (state.get(FACING)) {
+            case UP, DOWN -> {
                 return VERTICAL;
-            case SOUTH :
-            default :
-                return SHAPE_SOUTH;
-            case NORTH :
+            }
+            case NORTH -> {
                 return SHAPE_NORTH;
-            case WEST :
+            }
+            case WEST -> {
                 return SHAPE_WEST;
-            case EAST :
+            }
+            case EAST -> {
                 return SHAPE_EAST;
+            }
+            default -> {
+                return SHAPE_SOUTH;
+            }
         }
     }
 
