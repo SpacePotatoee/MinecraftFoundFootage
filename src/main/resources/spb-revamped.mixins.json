@@ -4,20 +4,19 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "ChunkStatusMixin",
-    "StructureBlockEntityMixin",
-    "Veil.VeilDeferredRendererMixin",
-    "Veil.VeilFrameBuffersMixin"
+    "StructureBlockEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
-    "CameraMixin",
     "DisableHotbarMixin",
+    "EntityRenderDispatcherMixin",
     "GameRendererMixin",
     "ItemEntityRendererMixin",
     "WorldRendererAccessor",
     "WorldRendererMixin",
-    "uniform.ShaderProgramMixin"
+    "uniform.ShaderProgramMixin",
+    "uniform.WorldRendererUniformMixin"
   ]
 }
