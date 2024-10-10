@@ -66,7 +66,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
             StructureTemplateManager structureTemplateManager = world.getServer().getStructureTemplateManager();
             Optional<StructureTemplate> optional;
 
-            int megaRooms = random.nextBetween(1, 5);
+            int megaRooms = random.nextBetween(1, 3);
 
             Identifier roomIdentifier;
             StructurePlacementData structurePlacementData = new StructurePlacementData();
@@ -76,10 +76,11 @@ public class Level0ChunkGenerator extends ChunkGenerator {
 
 
             if (((float) chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float) chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
+                world.setBlockState(mutable.set(x - 32, 28, z - 32), Blocks.GLOWSTONE.getDefaultState(), 16);
                 if (megaRooms == 1 ) {
                     if (!isNearMegaRooms(x, z, world)) {
 
-                        megaRooms = random.nextBetween(1, 4);
+                        megaRooms = random.nextBetween(1, 6);
                         roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level0/megaroom" + megaRooms);
                         structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
                         optional = structureTemplateManager.getTemplate(roomIdentifier);
@@ -88,34 +89,33 @@ public class Level0ChunkGenerator extends ChunkGenerator {
                             if(megaRooms == 1 || megaRooms == 2) {
                                 optional.get().place(
                                         world,
-                                        mutable.set(x - 32, 19, z - 32),
-                                        mutable.set(x - 32, 19, z - 32),
+                                        mutable.set(x - 32, 18, z - 32),
+                                        mutable.set(x - 32, 18, z - 32),
                                         structurePlacementData, random, 2);
                                 optional.get().place(
                                         world,
-                                        mutable.set(x, 19, z - 32),
-                                        mutable.set(x, 19, z - 32),
+                                        mutable.set(x, 18, z - 32),
+                                        mutable.set(x, 18, z - 32),
                                         structurePlacementData, random, 2);
                                 optional.get().place(
                                         world,
-                                        mutable.set(x - 32, 19, z),
-                                        mutable.set(x - 32, 19, z),
+                                        mutable.set(x - 32, 18, z),
+                                        mutable.set(x - 32, 18, z),
                                         structurePlacementData, random, 2);
                                 optional.get().place(
                                         world,
-                                        mutable.set(x, 19, z),
-                                        mutable.set(x, 19, z),
+                                        mutable.set(x, 18, z),
+                                        mutable.set(x, 18, z),
                                         structurePlacementData, random, 2);
                             }
                             else {
-                                Level0MazeGenerator level0MazeGenerator = new Level0MazeGenerator(16, 5, 5, x, z, "level0");
-                                level0MazeGenerator.setup(world);
                                 optional.get().place(
                                         world,
-                                        mutable.set(x, 19, z),
-                                        mutable.set(x, 19, z),
+                                        mutable.set(x - 16, 18, z - 16),
+                                        mutable.set(x - 16, 18, z - 16),
                                         structurePlacementData, random, 2);
-
+                                Level0MazeGenerator level0MazeGenerator = new Level0MazeGenerator(16, 5, 5, x, z, "level0");
+                                level0MazeGenerator.setup(world);
                             }
                         }
                     } else {
@@ -135,80 +135,22 @@ public class Level0ChunkGenerator extends ChunkGenerator {
             }
 
 
-            //Code for 8 x 8 Roof
-
-
-            for (int w = 0; w < 16; w++) {
-                for (int q = 0; q < 16; q++) {
-
-                    BlockState blockState = world.getBlockState(mutable.set(x + w, 48, z + q));
-                    if (blockState == ModBlocks.CeilingTile.getDefaultState()) {
-                        genRoof = false;
-                        break;
-                    }
-                    if (blockState == ModBlocks.FluorescentLight.getDefaultState()) {
-                        genRoof = false;
-                        break;
-                    }
-
-                }
-                if (!genRoof) {
-                    break;
-                }
-
-            }
-
-
-
-
-            if (genRoof){
-                for (int s = 0; s < 4; s++) {
+            ////Code for 8 x 8 Roof////
+            for(int i = 0; i < 2; i++) {
+                for(int j = 0; j < 2; j++) {
                     roomIdentifier = this.getRoof();
-                    optional = structureTemplateManager.getTemplate(roomIdentifier);
                     structurePlacementData = this.randRotation();
-
+                    optional = structureTemplateManager.getTemplate(roomIdentifier);
 
                     if (optional.isPresent()) {
-
-                        switch (s) {
-                            case 0: {
-                                //TOP RIGHT
-                                if (structurePlacementData.getRotation() == BlockRotation.CLOCKWISE_90) {
-                                    optional.get().place(world, mutable.set(x + 7, 25, z), mutable.set(x + 7, 25, z), structurePlacementData, random, 2);
-                                } else {
-                                    optional.get().place(world, mutable.set(x, 25, z), mutable.set(x, 25, z), structurePlacementData, random, 2);
-                                }
-                            }
-
-                            case 1: {
-                                //TOP LEFT
-                                if (structurePlacementData.getRotation() == BlockRotation.CLOCKWISE_90) {
-                                    optional.get().place(world, mutable.set(x - 1, 25, z), mutable.set(x - 1, 25, z), structurePlacementData, random, 2);
-                                } else {
-                                    optional.get().place(world, mutable.set(x - 8, 25, z), mutable.set(x - 8, 25, z), structurePlacementData, random, 2);
-                                }
-                            }
-
-                            case 2: {
-                                //BOTTOM RIGHT
-                                if (structurePlacementData.getRotation() == BlockRotation.CLOCKWISE_90) {
-                                    optional.get().place(world, mutable.set(x + 7, 25, z - 8), mutable.set(x + 7, 25, z - 8), structurePlacementData, random, 2);
-                                } else {
-                                    optional.get().place(world, mutable.set(x, 25, z - 8), mutable.set(x, 25, z - 8), structurePlacementData, random, 2);
-                                }
-                            }
-
-                            case 3: {
-                                //BOTTOM LEFT
-                                if (structurePlacementData.getRotation() == BlockRotation.CLOCKWISE_90) {
-                                    optional.get().place(world, mutable.set(x - 1, 25, z - 8), mutable.set(x - 1, 25, z - 8), structurePlacementData, random, 2);
-                                } else {
-                                    optional.get().place(world, mutable.set(x - 8, 25, z - 8), mutable.set(x - 8, 25, z - 8), structurePlacementData, random, 2);
-                                }
+                        if (world.getBlockState(mutable.set(x + 8 * i, 18, z + 8 * j)) != Blocks.CYAN_WOOL.getDefaultState()){
+                            if (structurePlacementData.getRotation() == BlockRotation.CLOCKWISE_90) {
+                                optional.get().place(world, new BlockPos((x + 7) + 8 * i, 25, (z) + 8 * j), mutable.set((x + 7) + 8 * i, 25, (z) + 8 * j), structurePlacementData, random, 16);
+                            } else {
+                                optional.get().place(world, new BlockPos((x) + 8 * i, 25, (z) + 8 * j), mutable.set((x) + 8 * i, 25, (z) + 8 * j), structurePlacementData, random, 16);
                             }
                         }
                     }
-
                 }
             }
 

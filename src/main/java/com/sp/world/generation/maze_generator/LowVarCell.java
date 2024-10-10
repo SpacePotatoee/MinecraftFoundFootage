@@ -52,19 +52,14 @@ public class LowVarCell {
 
     public void drawWalls(StructureWorldAccess world, String level){
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        MinecraftServer server = world.getServer();
-        StructureTemplateManager structureTemplateManager = server.getStructureTemplateManager();
+        StructureTemplateManager structureTemplateManager = world.getServer().getStructureTemplateManager();
         Optional<StructureTemplate> optional;
         StructurePlacementData structurePlacementData = new StructurePlacementData();
-
 
         Identifier roomId;
 
         Random random = Random.create();
         int roomNumber = random.nextBetween(1,8);
-
-
-
 
 
         if(!this.north && !this.west && !this.south && !this.east){
@@ -189,65 +184,7 @@ public class LowVarCell {
                             structurePlacementData, random, 2));
         }
 
-
-
     }
-
-    public void drawNorthWall(StructureWorldAccess world, int y, int x){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for (int i= 0; i < this.cellSize; i++) {
-            for (int j = 0; j < 4; j++) {
-                world.setBlockState(mutable.set(x + i, 21 + j, y + (this.cellSize - 1)), this.blockState, 2);
-            }
-        }
-    }
-
-    public void drawWestWall(StructureWorldAccess world, int y, int x){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for (int i= 0; i < this.cellSize; i++) {
-            for (int j = 0; j < 4; j++) {
-                world.setBlockState(mutable.set(x + (this.cellSize - 1), 21 + j, y + i), this.blockState, 2);
-            }
-        }
-    }
-
-    public void drawSouthWall(StructureWorldAccess world, int y, int x){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for (int i= 0; i < this.cellSize; i++) {
-            for (int j = 0; j < 4; j++) {
-                world.setBlockState(mutable.set(x + i, 21 + j, y), this.blockState, 2);
-            }
-        }
-    }
-
-    public void drawEastWall(StructureWorldAccess world, int y, int x){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for (int i= 0; i < this.cellSize; i++) {
-            for (int j = 0; j < 4; j++) {
-                world.setBlockState(mutable.set(x, 21 + j, y + i), this.blockState, 2);
-            }
-        }
-    }
-
-    public void drawCorners(StructureWorldAccess world){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for (int j = 0; j < 4; j++) {
-            world.setBlockState(mutable.set(this.x, 21 + j, this.y), this.blockState, 2);
-        }
-
-        for (int j = 0; j < 4; j++) {
-            world.setBlockState(mutable.set(this.x + (this.cellSize - 1), 21 + j, this.y + (this.cellSize - 1)), this.blockState, 2);
-        }
-
-        for (int j = 0; j < 4; j++) {
-            world.setBlockState(mutable.set(this.x + (this.cellSize - 1), 21 + j, this.y), this.blockState, 2);
-        }
-
-        for (int j = 0; j < 4; j++) {
-            world.setBlockState(mutable.set(this.x, 21 + j, this.y + (this.cellSize - 1)), this.blockState, 2);
-        }
-    }
-
 
     public int getGridPosX() {
         return this.gridPosX;
@@ -303,15 +240,6 @@ public class LowVarCell {
 
     public boolean isEast() {
         return this.east;
-    }
-
-    public void drawMarker(StructureWorldAccess world){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        world.setBlockState(mutable.set(this.getX() + 3, 24, this.getY() + 3), Blocks.PURPLE_WOOL.getDefaultState(), 2);
-    }
-    public void drawGold(StructureWorldAccess world){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        world.setBlockState(mutable.set(this.getX() + 3, 25, this.getY() + 3), Blocks.GOLD_BLOCK.getDefaultState(), 2);
     }
 
 

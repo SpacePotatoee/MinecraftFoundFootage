@@ -1,6 +1,8 @@
 package com.sp.world.generation.maze_generator;
 
 import com.sp.block.ModBlocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.StructureWorldAccess;
 
@@ -37,12 +39,13 @@ public class Level0MazeGenerator {
     }
 
     public void setup(StructureWorldAccess world){
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+
         for (int y = 0; y < this.rows; y++) {
             for (int x = 0; x < this.cols; x++) {
-                grid[x][y] = new LowVarCell(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
-
-                LowVarCell selectedCell = grid[x][y];
-                selectedCell.drawCorners(world);
+                if(world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 19, y + ((this.size - 1) * y) + this.originY)) == Blocks.AIR.getDefaultState()) {
+                    grid[x][y] = new LowVarCell(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
+                }
             }
         }
 
@@ -53,14 +56,14 @@ public class Level0MazeGenerator {
 
 
         while(!cellStack.isEmpty()) {
-            LowVarCell randNeighbor = this.checkNeighbors(grid, currentCell.getGridPosY(), currentCell.getGridPosX());
+            LowVarCell randNeighbor = this.checkNeighbors(grid, currentCell.getGridPosY(), currentCell.getGridPosX(), world);
 
             while (randNeighbor != null) {
                 randNeighbor.setVisited(true);
                 this.removeWalls(currentCell, randNeighbor);
                 this.currentCell = randNeighbor;
                 cellStack.push(currentCell);
-                randNeighbor = this.checkNeighbors(grid, currentCell.getGridPosY(), currentCell.getGridPosX());
+                randNeighbor = this.checkNeighbors(grid, currentCell.getGridPosY(), currentCell.getGridPosX(), world);
             }
             currentCell = cellStack.pop();
 
@@ -84,7 +87,9 @@ public class Level0MazeGenerator {
 
         for (LowVarCell[] cell : grid){
             for(LowVarCell cells: cell){
-                cells.drawWalls(world, this.levelDirectory);
+                if (cells != null) {
+                    cells.drawWalls(world, this.levelDirectory);
+                }
             }
         }
 
@@ -92,7 +97,8 @@ public class Level0MazeGenerator {
 
     }
 
-    public LowVarCell checkNeighbors(LowVarCell[][] grid, int y, int x){
+    public LowVarCell checkNeighbors(LowVarCell[][] grid, int y, int x, StructureWorldAccess world){
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
         LowVarCell North = null;
         LowVarCell West = null;
         LowVarCell South = null;
@@ -121,6 +127,19 @@ public class Level0MazeGenerator {
         }
         if (East != null && !East.isVisited()){
             neighbors.add(East);
+        }
+
+        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() + this.size)) == Blocks.LIME_WOOL.getDefaultState()){
+            currentCell.setNorth(false);
+        }
+        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() - this.size)) == Blocks.LIME_WOOL.getDefaultState()){
+            currentCell.setSouth(false);
+        }
+        if (world.getBlockState(mutable.set(currentCell.getX() + this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState()){
+            currentCell.setWest(false);
+        }
+        if (world.getBlockState(mutable.set(currentCell.getX() - this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState()){
+            currentCell.setEast(false);
         }
 
         if (!neighbors.isEmpty()){

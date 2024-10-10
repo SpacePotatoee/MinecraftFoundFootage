@@ -8,6 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.sp.SPBRevamped;
 import com.sp.world.generation.maze_generator.Level1MazeGenerator;
 import net.minecraft.SharedConstants;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.Registry;
@@ -108,6 +109,7 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
 
 
         if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0){
+            world.setBlockState(mutable.set(x - 32, 17, z - 32), Blocks.GLOWSTONE.getDefaultState(), 16);
             double noise1 = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
             if (server != null) {
 
@@ -164,81 +166,15 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
                     }
 
                 }
-
-
-
             }
         }
 
-        for (int j = 0; j < 16; j++){
-            for (int i = 0; i < 16; i++){
-                world.setBlockState(mutable.set(x + j, 25, z + i), Blocks.AIR.getDefaultState(), 16);
-            }
-        }
+//        for (int j = 0; j < 16; j++){
+//            for (int i = 0; i < 16; i++){
+//                world.setBlockState(mutable.set(x + j, 25, z + i), Blocks.AIR.getDefaultState(), 16);
+//            }
+//        }
 
-    }
-
-    public boolean isNearMegaRooms(int x, int z,StructureWorldAccess world){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        boolean near = false;
-
-        for(int i = -80; i <= 80; i += 80){
-            for(int j = -80; j <= 80; j += 80){
-                BlockState blockState = world.getBlockState(mutable.set(x + i, 19, z + j));
-                if (blockState == Blocks.RED_WOOL.getDefaultState()){
-                    near = true;
-                    break;
-                }
-            }
-        }
-
-        return near;
-    }
-
-    public void setNoiseRoof(StructureWorldAccess world,Random random, int x, int z){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for(int i = 0; i < 16; i++){
-            for(int j = 0; j < 16; j++){
-
-                double noise1 = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
-
-
-                if (noise1 < 0) {
-                    world.setBlockState(mutable.set(x + i, 30, z + j), Blocks.LIME_WOOL.getDefaultState(), 16);
-                }else {
-                    world.setBlockState(mutable.set(x + i, 30, z + j), Blocks.RED_WOOL.getDefaultState(), 16);
-                }
-            }
-        }
-    }
-
-
-
-
-
-    public Identifier getRoom(){
-        Random random = Random.create();
-        int roomNumber = random.nextBetween(1,9);
-        return new Identifier(SPBRevamped.MOD_ID, "level0/room" + roomNumber);
-    }
-
-    public Identifier getRoof(){
-        Random random = Random.create();
-        int roofNumber = random.nextBetween(1,2);
-        return new Identifier(SPBRevamped.MOD_ID, "level0/roof" + roofNumber);
-    }
-
-    public StructurePlacementData randRotation(){
-        StructurePlacementData structurePlacementData = new StructurePlacementData();
-        Random random = Random.create();
-        int rot = random.nextBetween(1,2);
-
-        if(rot == 1){
-            structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
-        }else{
-            structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.CLOCKWISE_90).setIgnoreEntities(true);
-        }
-        return structurePlacementData;
     }
 
     protected Codec<? extends ChunkGenerator> getCodec() {
