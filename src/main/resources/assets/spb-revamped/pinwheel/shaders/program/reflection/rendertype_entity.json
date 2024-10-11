@@ -1,0 +1,4 @@
+{
+  "vertex": "spb-revamped:reflection/entity",
+  "fragment": "spb-revamped:reflection/rendertype_entity"
+}

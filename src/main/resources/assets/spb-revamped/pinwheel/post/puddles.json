@@ -1,0 +1,46 @@
+{
+  "stages": [
+    {
+      "type": "veil:copy",
+      "in": "minecraft:main",
+      "out": "swap"
+    },
+    {
+      "type": "veil:blit",
+      "shader": "spb-revamped:puddles",
+      "in": "swap",
+      "out": "veil:post"
+    }
+  ],
+  "framebuffers": {
+    "swap": {
+      "depth": false,
+      "format": "RGBA8",
+      "autoClear": true,
+      "linear": true
+    }
+  },
+  "textures": {
+    "NoiseTexture": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/puddle_noise.png"
+    },
+    "RandomTexture": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/puddle_noise2.png"
+    },
+    "DepthSampler": {
+      "type": "framebuffer",
+      "name": "veil:transparent_final:depth"
+    },
+    "HandSampler": {
+      "type": "framebuffer",
+      "name": "veil:first_person:depth"
+    },
+    "NormalSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque",
+      "sampler": 2
+    }
+  }
+}
