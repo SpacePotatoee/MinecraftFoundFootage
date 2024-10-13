@@ -37,5 +37,5 @@ void main() {
     texCoord0 = UV0;
     overlayColor = texelFetch(Sampler1, UV1, 0);
 
-    gl_Position.xyz = distort(gl_Position.xyz);
+    //gl_Position.xyz = distort(gl_Position.xyz);
 }

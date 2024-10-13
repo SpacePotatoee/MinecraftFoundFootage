@@ -12,32 +12,6 @@
       "in": "spb-revamped:shadow_sampler",
       "out": "veil:post"
     }
-  ],
-  "textures": {
-    "DepthSampler": {
-      "type": "framebuffer",
-      "name": "veil:opaque_final:depth"
-    },
-    "TranslucentDepthSampler": {
-      "type": "framebuffer",
-      "name": "veil:transparent_final:depth"
-    },
-    "HandDepth": {
-      "type": "framebuffer",
-      "name": "veil:first_person:depth"
-    },
-    "ShadowSampler": {
-      "type": "framebuffer",
-      "name": "spb-revamped:shadowmap:depth"
-    },
-    "NormalSampler": {
-      "type": "framebuffer",
-      "name": "veil:opaque",
-      "sampler": 2
-    },
-    "NoiseTex": {
-      "type": "location",
-      "location": "spb-revamped:textures/shaders/rnoise.png"
-    }
-  }
+  ]
+
 }

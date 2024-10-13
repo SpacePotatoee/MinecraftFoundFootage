@@ -1,5 +1,6 @@
 {
-  "depth": true,
+  "depth": false,
   "format": "RGBA8",
-  "autoClear": true
+  "autoClear": true,
+  "linear": true
 }

@@ -1,0 +1,31 @@
+{
+  "vertex": "veil:blit_screen",
+  "fragment": "spb-revamped:vhs/puddles",
+  "textures": {
+    "NoiseTexture": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/puddle_noise.png"
+    },
+    "RandomTexture": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/puddle_noise2.png"
+    },
+    "DepthSampler": {
+      "type": "framebuffer",
+      "name": "veil:transparent_final:depth"
+    },
+    "HandSampler": {
+      "type": "framebuffer",
+      "name": "veil:first_person:depth"
+    },
+    "NormalSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque",
+      "sampler": 2
+    },
+    "ReflectionSampler": {
+      "type": "framebuffer",
+      "name": "spb-revamped:reflectionmap"
+    }
+  }
+}

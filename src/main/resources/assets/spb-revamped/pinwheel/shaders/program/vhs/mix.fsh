@@ -1,7 +1,10 @@
+#include veil:blend
+
 uniform sampler2D MidSampler;
 uniform sampler2D WaterSampler;
 uniform sampler2D DiffuseSampler0;
 uniform sampler2D HandDepth;
+uniform sampler2D PuddleSampler;
 
 in vec2 texCoord;
 out vec4 fragColor;
@@ -21,6 +24,7 @@ float brightness(vec4 color){
 void main() {
     vec4 Main = texture(DiffuseSampler0, texCoord);
     vec4 Water = texture(WaterSampler, texCoord);
+    vec4 puddles = texture(PuddleSampler, texCoord);
     float handDepth = texture(HandDepth, texCoord).r;
 
 
@@ -31,6 +35,7 @@ void main() {
         else{
             fragColor = Water;
         }
-        //fragColor = vec4(blendOverlay(Main, Water), 1);
+
+        fragColor = vec4(blend(fragColor, puddles), 1.0);
     }
 }

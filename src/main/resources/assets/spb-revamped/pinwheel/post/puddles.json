@@ -41,6 +41,10 @@
       "type": "framebuffer",
       "name": "veil:opaque",
       "sampler": 2
+    },
+    "ReflectionSampler": {
+      "type": "framebuffer",
+      "name": "spb-revamped:reflectionmap"
     }
   }
 }

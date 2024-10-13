@@ -1,4 +1,4 @@
-//#version 150
-//#priority 1000
+#version 150
+#priority 1000
 
-//#replace spbrevamped:minecraft_core/rendertype_solid
+#replace spbrevamped:minecraft_core/rendertype_solid

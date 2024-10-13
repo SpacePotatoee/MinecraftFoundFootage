@@ -1,5 +1,3 @@
-#include veil:camera
-
 uniform sampler2D Sampler0;
 uniform mat4 viewRix;
 uniform mat4 orthoMatrix;

@@ -2,14 +2,26 @@
     "stages": [
         {
             "type": "veil:blit",
-            "shader": "spb-revamped:vhs/water",
+            "shader": "spb-revamped:shadows/shadows",
             "in": "veil:opaque_final",
+            "out": "spb-revamped:shadow_sampler"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/water",
+            "in": "spb-revamped:shadow_sampler",
             "out": "spb-revamped:water_fb"
         },
         {
             "type": "veil:blit",
+            "shader": "spb-revamped:vhs/puddles",
+            "in": "spb-revamped:shadow_sampler",
+            "out": "spb-revamped:puddle_sampler"
+        },
+        {
+            "type": "veil:blit",
             "shader": "spb-revamped:vhs/mix",
-            "in": "veil:opaque_final",
+            "in": "spb-revamped:shadow_sampler",
             "out": "spb-revamped:mid"
         },
         {
@@ -21,7 +33,7 @@
         {
             "type": "veil:blit",
             "shader": "spb-revamped:vhs/vhs",
-            "in": "veil:post",
+            "in": "spb-revamped:shadow_sampler",
             "out": "spb-revamped:pre_motionblur"
         },
         {
@@ -63,6 +75,18 @@
         "HandDepth": {
             "type": "framebuffer",
             "name": "veil:first_person:depth"
+        },
+        "OpaqueSampler": {
+            "type": "framebuffer",
+            "name": "veil:opaque_final"
+        },
+        "TransparentSampler": {
+            "type": "framebuffer",
+            "name": "veil:transparent_final"
+        },
+        "PuddleSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:puddle_sampler"
         },
         "NoiseTexture": {
             "type": "location",

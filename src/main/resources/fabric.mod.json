@@ -23,7 +23,8 @@
 	},
 	"custom": {
 		"cardinal-components": [
-			"spb-revamped:player"
+			"spb-revamped:player",
+			"spb-revamped:events"
 		]
 	},
 	"mixins": [

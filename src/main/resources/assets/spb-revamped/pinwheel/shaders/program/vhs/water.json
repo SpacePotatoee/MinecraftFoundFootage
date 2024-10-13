@@ -3,7 +3,7 @@
   "fragment": "spb-revamped:vhs/water",
   "textures": {
     "WaterTexture": "spb-revamped:textures/shaders/water_noise.png",
-    "CausticsTexture": "spb-revamped:textures/shaders/caustics2.png",
+    "CausticsTexture": "spb-revamped:textures/shaders/caustics3.png",
     "NormalTexture": "spb-revamped:textures/shaders/water_normal.png",
     "WaterFrameBuffer": {
       "type": "framebuffer",
@@ -13,6 +13,10 @@
     "WaterDepth": {
       "type": "framebuffer",
       "name": "veil:transparent_final:depth"
+    },
+    "OpaqueDepth": {
+      "type": "framebuffer",
+      "name": "veil:opaque:depth"
     },
     "HandDepth": {
       "type": "framebuffer",
@@ -30,6 +34,16 @@
     "ShadowSampler": {
       "type": "framebuffer",
       "name": "spb-revamped:shadowmap:depth"
+    },
+    "NormalSampler": {
+      "type": "framebuffer",
+      "name": "veil:transparent",
+      "sampler": 2
+    },
+    "OpaqueNormalSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque",
+      "sampler": 2
     }
   }
 }
