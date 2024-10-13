@@ -3,20 +3,17 @@ package com.sp.block.renderer;
 import com.sp.SPBRevamped;
 import foundry.veil.api.client.render.VeilRenderBridge;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.util.Identifier;
 
 public class RenderLayers extends RenderLayer {
-    public static final RenderPhase.ShaderProgram LIGHT_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "fluorescent_light"));
+    public static final RenderPhase.ShaderProgram LIGHT_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/fluorescent_light"));
     public static final RenderPhase.ShaderProgram CONCRETE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "concrete_shader"));
-    public static final RenderPhase.ShaderProgram CURVE = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "red_tint"));
+    public static final RenderPhase.ShaderProgram WINDOW = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/window"));
 
 
     public static final RenderLayer FLUORESCENT_LIGHT_RL = RenderLayer.of(
-            "fluorescent_light",
+            "light/fluorescent_light",
             VertexFormats.POSITION,
             VertexFormat.DrawMode.QUADS,
             256,
@@ -28,15 +25,15 @@ public class RenderLayers extends RenderLayer {
 
     );
 
-    public static final RenderLayer RED_TINT = RenderLayer.of(
-            "red_tint",
+    public static final RenderLayer POOLROOMS_WINDOW = RenderLayer.of(
+            "light/window",
             VertexFormats.POSITION,
             VertexFormat.DrawMode.QUADS,
             256,
             false,
             false,
             RenderLayer.MultiPhaseParameters.builder()
-                    .program(CURVE)
+                    .program(WINDOW)
                     .build(false)
 
     );
@@ -45,13 +42,10 @@ public class RenderLayers extends RenderLayer {
             "concrete_shader",
             VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
             VertexFormat.DrawMode.QUADS,
-            131072,
+            256,
             false,
             false,
-            RenderLayer.MultiPhaseParameters.builder()
-                    .program(CONCRETE_SHADER)
-                    .build(false)
-
+            RenderLayer.MultiPhaseParameters.builder().lightmap(ENABLE_LIGHTMAP).program(CONCRETE_SHADER).texture(BLOCK_ATLAS_TEXTURE).build(true)
     );
 
     public static RenderLayer getConcreteNoise() {

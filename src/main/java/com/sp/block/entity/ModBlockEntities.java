@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 
 public class ModBlockEntities {
     public static BlockEntityType<FluorescentLightBlockEntity> FLUORESCENT_LIGHT_BLOCK_ENTITY;
-    public static BlockEntityType<PoolroomsWindowBlockEntity> POOLROOMS_WINDOW_BLOCK_ENTITY;
+    public static BlockEntityType<DrawingMarkerBlockEntity> DRAWING_MARKER_BLOCK_ENTITY;
     public static BlockEntityType<WindowBlockEntity> WINDOW_BLOCK_ENTITY;
     public static BlockEntityType<ThinFluorescentLightBlockEntity> THIN_FLUORESCENT_LIGHT_BLOCK_ENTITY;
 
@@ -22,10 +22,10 @@ public class ModBlockEntities {
                 FabricBlockEntityTypeBuilder.create(FluorescentLightBlockEntity::new,
                         ModBlocks.FluorescentLight).build());
 
-        POOLROOMS_WINDOW_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
+        DRAWING_MARKER_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
                 new Identifier(SPBRevamped.MOD_ID,"poolrooms_window_block_entity"),
-                FabricBlockEntityTypeBuilder.create(PoolroomsWindowBlockEntity::new,
-                        ModBlocks.PoolroomsWindow).build());
+                FabricBlockEntityTypeBuilder.create(DrawingMarkerBlockEntity::new,
+                        ModBlocks.drawingMarker).build());
 
         WINDOW_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
                 new Identifier(SPBRevamped.MOD_ID,"window_block_entity"),

@@ -35,37 +35,6 @@ public class ModBlocks {
     public static final Block FluorescentLight = registerBlock("fluorescent_light",
             new FluorescentLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).luminance(state -> 15).hardness(-1f).solid().noBlockBreakParticles()));
 
-    public static final Block ThinFluorescentLight = registerBlock("thin_fluorescent_light",
-            new ThinFluorescentLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).luminance(state -> 15).hardness(-1f).solid().noBlockBreakParticles()));
-
-
-    public static final Block WallText1 = registerBlock("wall_text_1",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
-
-    public static final Block WallText2 = registerBlock("wall_text_2",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
-
-    public static final Block WallText3 = registerBlock("wall_text_3",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
-
-    public static final Block WallText4 = registerBlock("wall_text_4",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
-
-    public static final Block WallText5 = registerBlock("wall_text_5",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
-
-    public static final Block WallText6 = registerBlock("wall_text_6",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
-
-    public static final Block WallText7 = registerBlock("wall_text_7",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
-
-    public static final Block WallText8 = registerBlock("wall_text_8",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
-
-    public static final Block WallText99 = registerBlock("wall_text_99",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
-
 
     public static final Block WallArrow1 = registerBlock("arrow1",
             new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
@@ -92,9 +61,22 @@ public class ModBlocks {
     public static final Block WallDrawingWindow = registerBlock("wall_drawing_window",
             new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
 
+    public static final Block drawingMarker = registerBlock("drawing_marker",
+            new DrawingMarker(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles()));
+
+
+    public static final Block Rug1 = registerBlock("rug1",
+            new Rug(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
+    public static final Block Rug2 = registerBlock("rug2",
+            new Rug(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
 
 
     //////Level 2 and 3 Stuff//////
+    public static final Block ThinFluorescentLight = registerBlock("thin_fluorescent_light",
+            new ThinFluorescentLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).luminance(state -> 15).hardness(-1f).solid().noBlockBreakParticles()));
+
     public static final Block BottomTrim = registerBlock("bottom_trim",
             new BottomTrim(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).collidable(false).nonOpaque().noBlockBreakParticles()));
 
@@ -154,6 +136,33 @@ public class ModBlocks {
             new SmallPipeSet(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
 
 
+    public static final Block WallText1 = registerBlock("wall_text_1",
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
+    public static final Block WallText2 = registerBlock("wall_text_2",
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
+    public static final Block WallText3 = registerBlock("wall_text_3",
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
+    public static final Block WallText4 = registerBlock("wall_text_4",
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
+    public static final Block WallText5 = registerBlock("wall_text_5",
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
+    public static final Block WallText6 = registerBlock("wall_text_6",
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
+    public static final Block WallText7 = registerBlock("wall_text_7",
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
+    public static final Block WallText8 = registerBlock("wall_text_8",
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
+    public static final Block WallText99 = registerBlock("wall_text_99",
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+
 
 
     //////Poolrooms Stuff//////
@@ -162,9 +171,6 @@ public class ModBlocks {
 
     public static final Block PoolTileWall = registerBlock("pool_tile_wall",
             new PoolTileWall(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles().lightLevel(0)));
-
-    public static final Block PoolroomsWindow = registerBlock("poolrooms_window",
-            new PoolroomsWindowBlock(FabricBlockSettings.copyOf(Blocks.GLASS).luminance(state -> 0).hardness(-1f).solid().noBlockBreakParticles()));
 
     public static final Block Window = registerBlock("window",
             new WindowBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).nonOpaque().noBlockBreakParticles()));

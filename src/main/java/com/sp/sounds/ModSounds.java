@@ -11,6 +11,9 @@ public class ModSounds {
     public static final SoundEvent ZOOM_IN_SOUND = registerSoundEvent("zoomin");
     public static final SoundEvent ZOOM_OUT_SOUND = registerSoundEvent("zoomout");
     public static final SoundEvent FLASHLIGHT_CLICK = registerSoundEvent("flashlight_click");
+    public static final SoundEvent FLUORESCENT_LIGHT_HUM = registerSoundEvent("fluorescent_light");
+    public static final SoundEvent FLUORESCENT_LIGHT_HUM2 = registerSoundEvent("fluorescent_light2");
+    public static final SoundEvent LIGHTS_OUT = registerSoundEvent("lights_out");
 
 
     private static SoundEvent registerSoundEvent(String name) {

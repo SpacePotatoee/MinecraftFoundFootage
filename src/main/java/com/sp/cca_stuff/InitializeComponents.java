@@ -6,12 +6,13 @@ import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
 import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy;
+import dev.onyxstudios.cca.api.v3.world.WorldComponentFactoryRegistry;
+import dev.onyxstudios.cca.api.v3.world.WorldComponentInitializer;
 import net.minecraft.util.Identifier;
 
-public class InitializeComponents implements EntityComponentInitializer {
+public class InitializeComponents implements EntityComponentInitializer, WorldComponentInitializer {
     public static final ComponentKey<PlayerComponent> PLAYER = ComponentRegistry.getOrCreate(Identifier.of(SPBRevamped.MOD_ID, "player"), PlayerComponent.class);
-//    public static final ComponentKey<CameraBlockComponent> CAMERA_BLOCK = ComponentRegistry.getOrCreate(Identifier.of(SPBRevamped.MOD_ID, "camera_block"), CameraBlockComponent.class);
-//    public static final ComponentKey<CameraItemComponent> CAMERA_ITEM = ComponentRegistry.getOrCreate(Identifier.of(SPBRevamped.MOD_ID, "camera_item"), CameraItemComponent.class);
+    public static final ComponentKey<WorldEvents> EVENTS = ComponentRegistry.getOrCreate(Identifier.of(SPBRevamped.MOD_ID, "events"), WorldEvents.class);
 
 
     @Override
@@ -19,13 +20,8 @@ public class InitializeComponents implements EntityComponentInitializer {
         registry.registerForPlayers(PLAYER, PlayerComponent::new, RespawnCopyStrategy.ALWAYS_COPY);
     }
 
-//    @Override
-//    public void registerBlockComponentFactories(BlockComponentFactoryRegistry registry) {
-//        registry.registerFor(CameraBlockEntity.class, CAMERA_BLOCK, CameraBlockComponent::new);
-//    }
-//
-//    @Override
-//    public void registerItemComponentFactories(ItemComponentFactoryRegistry registry) {
-//        registry.register(ModBlocks.CAMERA.asItem(), CAMERA_ITEM, CameraItemComponent::new);
-//    }
+    @Override
+    public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {
+        registry.register(EVENTS, WorldEvents::new);
+    }
 }

@@ -40,7 +40,7 @@ public class PoolroomsWindowBlockEntityRenderer implements BlockEntityRenderer<B
     }
 
     protected RenderLayer getLayer() {
-        return RenderLayers.FLUORESCENT_LIGHT_RL;
+        return RenderLayers.POOLROOMS_WINDOW;
     }
 
     @Override

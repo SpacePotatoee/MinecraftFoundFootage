@@ -1,6 +1,8 @@
 package com.sp.block.renderer;
 
 import com.sp.ConfigStuff;
+import com.sp.block.custom.FluorescentLightBlock;
+import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.block.entity.FluorescentLightBlockEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -19,6 +21,11 @@ public class FluorescentLightBlockEntityRenderer implements BlockEntityRenderer<
 
     @Override
     public void render(FluorescentLightBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        boolean blackout = entity.getCurrentState().get(FluorescentLightBlock.BLACKOUT);
+
+        //don't render if blackout is active
+        if(blackout) return;
+
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         this.renderCube(entity, matrix4f, vertexConsumers.getBuffer(this.getLayer()));
     }

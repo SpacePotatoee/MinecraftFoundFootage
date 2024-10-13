@@ -52,11 +52,13 @@ import static net.minecraft.util.math.MathHelper.lerp;
 
 
 public class SPBRevampedClient implements ClientModInitializer {
-    private static final Identifier VHS_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs");
+    private static final Identifier VHS_POST = new Identifier(SPBRevamped.MOD_ID, "vhs");
+    private static final Identifier FXAA = new Identifier(SPBRevamped.MOD_ID, "fxaa");
+    private static final Identifier VHS_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/vhs");
     private static final Identifier MOTION_BLUR = new Identifier(SPBRevamped.MOD_ID, "vhs/motion_blur");
-    private static final Identifier LIGHT_SHAFTS = new Identifier(SPBRevamped.MOD_ID, "shadows/light_shafts");
-    private static final Identifier SHADOWS_POST = new Identifier(SPBRevamped.MOD_ID, "shadows");
+    private static final Identifier WATER_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/water");
     private static final Identifier SHADOWS_SHADER = new Identifier(SPBRevamped.MOD_ID, "shadows/shadows");
+    private static final Identifier PUDDLES_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/puddles");
 
     public static HashMap<AbstractClientPlayerEntity, AreaLight> flashLightList = new HashMap<>();
     AreaLight flashLight;
@@ -87,15 +89,13 @@ public class SPBRevampedClient implements ClientModInitializer {
     static boolean renderingShadowMap;
 
     Camera camera;
-
-
-
-
-
+    private float partialTicks;
 
 
     @Override
     public void onInitializeClient() {
+
+
         InitializePackets.registerS2CPackets();
 
         Keybinds.inizializeKeyBinds();
@@ -120,16 +120,13 @@ public class SPBRevampedClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallSmall2, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallDrawingDoor, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallDrawingWindow, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Rug1, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Rug2, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTileSlope, RenderLayer.getCutout());
 
         BlockEntityRendererFactories.register(ModBlockEntities.FLUORESCENT_LIGHT_BLOCK_ENTITY, FluorescentLightBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(ModBlockEntities.WINDOW_BLOCK_ENTITY, PoolroomsWindowBlockEntityRenderer::new);
-        BlockEntityRendererFactories.register(ModBlockEntities.POOLROOMS_WINDOW_BLOCK_ENTITY, PoolroomsWindowBlockEntityRenderer::new);
-
-
-
-
-
+        BlockEntityRendererFactories.register(ModBlockEntities.THIN_FLUORESCENT_LIGHT_BLOCK_ENTITY, ThinFluorescentLightBlockEntityRenderer::new);
 
 
         VeilEventPlatform.INSTANCE.onVeilRenderTypeStageRender(((stage, levelRenderer, bufferSource, poseStack, projectionMatrix, renderTick, partialTicks, camera, frustum) -> {
@@ -137,6 +134,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             if(camera != null){
                 this.camera = camera;
             }
+            this.partialTicks = partialTicks;
 
             MinecraftClient client = MinecraftClient.getInstance();
             PlayerEntity playerClient = client.player;
@@ -170,6 +168,15 @@ public class SPBRevampedClient implements ClientModInitializer {
                             changed = false;
                         }
                     }
+
+                    if(client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                        if (stage == Stage.AFTER_SKY) {
+                            if (camera != null) {
+                                ShadowMapRenderer.renderShadowMap(camera, partialTicks);
+                            }
+                        }
+                    }
+
                 }
 
                 VeilRenderer renderer = VeilRenderSystem.renderer();
@@ -183,12 +190,6 @@ public class SPBRevampedClient implements ClientModInitializer {
             }
 
 
-
-            if(stage == Stage.AFTER_SKY) {
-                if (camera != null) {
-                    ShadowMapRenderer.renderShadowMap(camera, partialTicks);
-                }
-            }
 
 
 
@@ -245,6 +246,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     }
                 }
             }
+
 
             //Flashlight
 //            while (playerList.hasNext()) {
@@ -304,12 +306,12 @@ public class SPBRevampedClient implements ClientModInitializer {
 
             PostProcessingManager postProcessingManager = VeilRenderSystem.renderer().getPostProcessingManager();
                 if (stage == Stage.AFTER_LEVEL) {
-                    PostPipeline Pipeline = postProcessingManager.getPipeline(VHS_SHADER);
+                    PostPipeline Pipeline = postProcessingManager.getPipeline(VHS_POST);
                     if (Pipeline != null) {
                         if (ConfigStuff.enableVhsEffect && inBackrooms) {
-                            postProcessingManager.add(VHS_SHADER);
-                        } else if (postProcessingManager.isActive(VHS_SHADER)) {
-                            postProcessingManager.remove(VHS_SHADER);
+                            postProcessingManager.add(VHS_POST);
+                        } else if (postProcessingManager.isActive(VHS_POST)) {
+                            postProcessingManager.remove(VHS_POST);
 
                         }
                     }
@@ -347,23 +349,17 @@ public class SPBRevampedClient implements ClientModInitializer {
                     float yawRotAmount = yaw - prevYaw2;
                     float pitchRotAmount = pitch - prevPitch2;
 
-                    if(SHADOWS_POST.equals(name)){
-                        ShaderProgram shaderProgram = context.getShader(SHADOWS_SHADER);
+                    if(FXAA.equals(name)){
+                        ShaderProgram shaderProgram = context.getShader(FXAA);
                         if (shaderProgram != null) {
-                            if(this.camera != null) {
-                                setShadowUniforms(shaderProgram);
+                            if(!ShadowMapRenderer.isRenderingShadowMap()) {
+                                shaderProgram.setVector("invScreenSize", new Vector2f((float) 1 / client.getWindow().getWidth(), (float) 1 / client.getWindow().getHeight()));
                             }
-                        }
 
-                        shaderProgram = context.getShader(LIGHT_SHAFTS);
-                        if (shaderProgram != null) {
-                            if(this.camera != null) {
-                                setShadowUniforms(shaderProgram);
-                            }
                         }
                     }
 
-                    if (VHS_SHADER.equals(name)) {
+                    if (VHS_POST.equals(name)) {
                         ShaderProgram shaderProgram = context.getShader(MOTION_BLUR);
                         if (shaderProgram != null) {
                             shaderProgram.setVector("Velocity", MathHelper.cos((float) Math.toRadians(yawRotAmount + 90.0f)), MathHelper.sin((float) Math.toRadians(pitchRotAmount)));
@@ -371,13 +367,54 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                         shaderProgram = context.getShader(VHS_SHADER);
                         if (shaderProgram != null && client.world != null) {
-                            if (client.world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+                            if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
                                 shaderProgram.setInt("FogToggle", 1);
                             }
                             else
                             {
                                 shaderProgram.setInt("FogToggle", 0);
                             }
+                        }
+
+                        shaderProgram = context.getShader(SHADOWS_SHADER);
+                        if (shaderProgram != null) {
+                            if(this.camera != null) {
+                                setShadowUniforms(shaderProgram);
+                            }
+
+                            if(client.world != null) {
+                                if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                                    shaderProgram.setInt("ShadowToggle", 1);
+                                }
+                                else
+                                {
+                                    shaderProgram.setInt("ShadowToggle", 0);
+                                }
+                            }
+
+                        }
+
+                        shaderProgram = context.getShader(WATER_SHADER);
+                        if (shaderProgram != null) {
+                            if(this.camera != null) {
+                                setShadowUniforms(shaderProgram);
+                            }
+                        }
+
+                        shaderProgram = context.getShader(PUDDLES_SHADER);
+                        if (shaderProgram != null) {
+                            if(client.world != null) {
+                                if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+                                    shaderProgram.setInt("TogglePuddles", 1);
+                                }
+                                else
+                                {
+                                    shaderProgram.setInt("TogglePuddles", 0);
+                                }
+                            }
+
+                            shaderProgram.setMatrix("projMat", client.gameRenderer.getBasicProjectionMatrix(client.gameRenderer.getFov(camera, this.partialTicks, true)));
+
                         }
 
                     }
@@ -403,18 +440,18 @@ public class SPBRevampedClient implements ClientModInitializer {
             }
         }));
 
-
+        //For some reason veil lights aren't removed when you leave the game
+        ClientPlayConnectionEvents.JOIN.register(((handler,sender, client) -> {
+            VeilDeferredRenderer renderer = VeilRenderSystem.renderer().getDeferredRenderer();
+            renderer.reset();
+        }));
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
             PlayerEntity player = MinecraftClient.getInstance().player;
-
             if (player != null) {
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-
                 playerComponent.setFlashLightOn(false);
                 flashLightList.clear();
-
-
             }
         }));
 
@@ -447,9 +484,10 @@ public class SPBRevampedClient implements ClientModInitializer {
 
 
         ClientTickEvents.END_WORLD_TICK.register((client) ->{
-            PlayerEntity player = MinecraftClient.getInstance().player;
+            MinecraftClient client1 = MinecraftClient.getInstance();
+            PlayerEntity player = client1.player;
 
-            if(player != null){
+            if(player != null) {
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                 PacketByteBuf buffer = PacketByteBufs.create();
 

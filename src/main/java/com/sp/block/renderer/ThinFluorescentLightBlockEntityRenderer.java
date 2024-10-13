@@ -1,14 +1,18 @@
 package com.sp.block.renderer;
 
 import com.sp.ConfigStuff;
+import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
+import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
 
 import static net.minecraft.util.math.Direction.*;
@@ -21,6 +25,22 @@ public class ThinFluorescentLightBlockEntityRenderer implements BlockEntityRende
 
     @Override
     public void render(ThinFluorescentLightBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+
+        Direction facing = entity.getCurrentState().get(ThinFluorescentLightBlock.FACING);
+        WallMountLocation wall = entity.getCurrentState().get(ThinFluorescentLightBlock.FACE);
+
+        matrices.translate(0.5, 0.5, 0.5);
+        if(wall == WallMountLocation.CEILING) {
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(facing.getOpposite().asRotation()));
+        }
+        if(wall == WallMountLocation.WALL){
+            matrices.multiply(facing.getOpposite().getRotationQuaternion());
+        }
+        if(wall == WallMountLocation.FLOOR){
+            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(facing.asRotation()));
+        }
+        matrices.translate(-0.5, -0.5, -0.5);
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         this.renderCube(entity, matrix4f, vertexConsumers.getBuffer(this.getLayer()));
     }
@@ -31,7 +51,7 @@ public class ThinFluorescentLightBlockEntityRenderer implements BlockEntityRende
             renderFace(entity, matrix, buffer, 0.625f, 0.625f, 1.0f, 0.875f, 0.0f, 1.0f, 1.0f, 0.0f, Direction.EAST);
             renderFace(entity, matrix, buffer, 0.375f, 0.375f, 0.875f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, WEST);
             renderFace(entity, matrix, buffer, 0.375f, 0.625f, 0.875f, 0.875f, 0.0f, 0.0f, 1.0f, 1.0f, Direction.DOWN);
-            renderFace(entity, matrix, buffer, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, Direction.UP);
+            renderFace(entity, matrix, buffer, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, Direction.UP);
 
     }
 
