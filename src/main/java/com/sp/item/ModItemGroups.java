@@ -21,9 +21,9 @@ public class ModItemGroups {
                         entries.add(ModBlocks.CarpetBlock);
 
                         entries.add(ModBlocks.FluorescentLight);
-                        entries.add(ModBlocks.PoolroomsWindow);
                         entries.add(ModBlocks.Window);
                         entries.add(ModBlocks.ThinFluorescentLight);
+                        entries.add(ModBlocks.drawingMarker);
 
                         entries.add(ModBlocks.BottomTrim);
                         entries.add(ModBlocks.ConcreteBlock1);
@@ -64,6 +64,9 @@ public class ModItemGroups {
                         entries.add(ModBlocks.WallSmall2);
                         entries.add(ModBlocks.WallDrawingDoor);
                         entries.add(ModBlocks.WallDrawingWindow);
+
+                        entries.add(ModBlocks.Rug1);
+                        entries.add(ModBlocks.Rug2);
 
 
                         entries.add(ModBlocks.PoolTiles);

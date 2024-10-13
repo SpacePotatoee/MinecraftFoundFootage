@@ -2,7 +2,6 @@ package com.sp.mixin.uniform;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.sp.render.ShadowMapRenderer;
-import com.sp.util.MatrixMath;
 import com.sp.util.uniformTest;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.RenderLayer;
@@ -50,7 +49,7 @@ public class WorldRendererUniformMixin {
 
     @Unique
     public Matrix4f createProjMat(){
-        return MatrixMath.orthographicMatrix(160, 0.05f, 256.0f);
+        return ShadowMapRenderer.orthographicMatrix(160, 0.05f, 256.0f);
     }
 
 }

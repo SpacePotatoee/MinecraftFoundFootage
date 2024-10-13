@@ -1,18 +1,12 @@
 package com.sp.mixin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.ConfigStuff;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.render.ShadowMapRenderer;
-import com.sp.util.MatrixMath;
-import foundry.veil.api.client.render.VeilLevelPerspectiveRenderer;
 import foundry.veil.api.client.render.VeilRenderSystem;
-import foundry.veil.api.client.render.VeilRenderer;
-import foundry.veil.api.client.render.deferred.VeilDeferredRenderer;
-import foundry.veil.api.client.render.framebuffer.AdvancedFbo;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
@@ -20,8 +14,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
-import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,11 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = GameRenderer.class)
 public abstract class GameRendererMixin {
     @Unique
-    private static final Identifier shaderid = new Identifier("spbrevamped", "minecraft_core/rendertype_translucent");
-
-    @Unique
     private static final Identifier shadowSolid = new Identifier(SPBRevamped.MOD_ID, "shadowmap/rendertype_solid");
-
 
     @Unique
     private static final Identifier shadowEntity = new Identifier(SPBRevamped.MOD_ID, "shadowmap/rendertype_entity");
@@ -95,6 +83,7 @@ public abstract class GameRendererMixin {
                 return;
             }
             cir.setReturnValue(shader.toShaderInstance());
+            return;
         }
     }
 
@@ -112,6 +101,7 @@ public abstract class GameRendererMixin {
                 return;
             }
             cir.setReturnValue(shader.toShaderInstance());
+            return;
         }
     }
 
