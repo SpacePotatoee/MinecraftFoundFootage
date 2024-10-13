@@ -14,5 +14,20 @@
       "spb-revamped:flashlight_click1",
       "spb-revamped:flashlight_click2"
     ]
+  },
+  "fluorescent_light": {
+    "sounds": [
+      "spb-revamped:fluorescent_light_hum"
+    ]
+  },
+  "fluorescent_light2": {
+    "sounds": [
+      "spb-revamped:fluorescent_light_hum2"
+    ]
+  },
+  "lights_out": {
+    "sounds": [
+      "spb-revamped:lights_out"
+    ]
   }
 }

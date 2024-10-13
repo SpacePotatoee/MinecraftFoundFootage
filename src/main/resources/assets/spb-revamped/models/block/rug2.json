@@ -1,0 +1,22 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [64, 64],
+	"textures": {
+		"1": "spb-revamped:block/rug2",
+		"particle": "spb-revamped:block/rug2"
+	},
+	"elements": [
+		{
+			"from": [-16, 0.1, -16],
+			"to": [32, 0.1, 32],
+			"faces": {
+				"north": {"uv": [0, 0, 12, 0], "texture": "#1"},
+				"east": {"uv": [0, 0, 12, 0], "texture": "#1"},
+				"south": {"uv": [0, 0, 12, 0], "texture": "#1"},
+				"west": {"uv": [0, 0, 12, 0], "texture": "#1"},
+				"up": {"uv": [12, 12, 0, 0], "texture": "#1"},
+				"down": {"uv": [12, 0, 0, 12], "texture": "#1"}
+			}
+		}
+	]
+}

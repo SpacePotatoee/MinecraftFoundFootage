@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.VertexSorter;
 import com.sp.SPBRevamped;
 import com.sp.mixin.WorldRendererAccessor;
-import com.sp.util.MatrixMath;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.framebuffer.AdvancedFbo;
 import net.minecraft.client.MinecraftClient;
@@ -18,8 +17,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
-
-import static net.minecraft.util.math.MathHelper.sin;
 
 public class ShadowMapRenderer {
     private static boolean renderingShadowMap;
@@ -78,6 +75,10 @@ public class ShadowMapRenderer {
         }
     }
 
+    /**
+     The "do interval" bit was taken from the Iris Shadow Matrices class in order to keep the Shadows from flashing
+     <a href="https://github.com/IrisShaders/Iris/blob/3fc94e8f41535feebce0bcb4235eff4a809f5eea/common/src/main/java/net/irisshaders/iris/shadows/ShadowMatrices.java">HERE</a>
+     */
     public static MatrixStack createShadowModelView(double CameraX, double CameraY, double CameraZ, boolean doInterval){
         MatrixStack shadowModelView = new MatrixStack();
 
@@ -87,11 +88,6 @@ public class ShadowMapRenderer {
         shadowModelView.peek().getPositionMatrix().translate(0.0f, 0.0f, -100.0f);
         rotateShadowModelView(shadowModelView.peek().getPositionMatrix());
 
-
-        /**
-         This bit was taken from the Iris Shadow Matrices class in order to keep the Shadows from flashing
-         https://github.com/IrisShaders/Iris/blob/3fc94e8f41535feebce0bcb4235eff4a809f5eea/common/src/main/java/net/irisshaders/iris/shadows/ShadowMatrices.java
-         */
         if(doInterval) {
             float offsetX = (float) CameraX % 2.0f;
             float offsetY = (float) CameraY % 2.0f;
@@ -111,13 +107,29 @@ public class ShadowMapRenderer {
     public static void rotateShadowModelView(Matrix4f shadowModelView){
 //        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(45f));
 //        shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(45f));
-//        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(75f));
-//        shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(25f));
-        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(15.0f * sin(RenderSystem.getShaderGameTime() * 200) + 90.0f));
+        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(87f));
+        shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(4f));
+//        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(15.0f * sin(RenderSystem.getShaderGameTime() * 200) + 90.0f));
     }
 
     public static Matrix4f createProjMat(){
-        return MatrixMath.orthographicMatrix(160, 0.05f, 256.0f);
+        return orthographicMatrix(160, 0.05f, 256.0f);
+    }
+
+
+    /**
+     Also taken from Iris lol. Turns out their orthographic Matrix is better
+     <a href="https://github.com/IrisShaders/Iris/blob/3fc94e8f41535feebce0bcb4235eff4a809f5eea/common/src/main/java/net/irisshaders/iris/shadows/ShadowMatrices.java">HERE</a>
+     */
+    public static Matrix4f orthographicMatrix(float halfPlaneLength, float nearPlane, float farPlane) {
+        return new Matrix4f(
+                1.0f / halfPlaneLength, 0f, 0f, 0f,
+                0f, 1.0f / halfPlaneLength, 0f, 0f,
+                0f, 0f, 2.0f / (nearPlane - farPlane), 0f,
+                0f, 0f, -(farPlane + nearPlane) / (farPlane - nearPlane), 1f
+        );
+
+
     }
 
     public static boolean isRenderingShadowMap() {

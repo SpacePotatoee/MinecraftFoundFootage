@@ -30,11 +30,11 @@ public class ConfigStuff extends MidnightConfig {
     public static boolean enableVanillaLighting = false;
 
     @Entry(category = ADMIN)
-    public static boolean enableAmbientOcclusion = true;
-
-    @Entry(category = ADMIN)
     public static boolean forceBackrooms = false;
 
     @Entry(category = ADMIN)
     public static boolean enableWarp = false;
+
+    @Entry(category = ADMIN)
+    public static boolean disableHud = false;
 }

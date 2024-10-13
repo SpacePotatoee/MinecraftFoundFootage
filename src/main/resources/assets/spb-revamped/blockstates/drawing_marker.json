@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,type=false": {
+      "model": "spb-revamped:block/drawing_marker"
+    },
+    "facing=south,type=false": {
+      "model": "spb-revamped:block/drawing_marker",
+      "y": 180
+    },
+    "facing=west,type=false": {
+      "model": "spb-revamped:block/drawing_marker",
+      "y": 270
+    },
+    "facing=east,type=false": {
+      "model": "spb-revamped:block/drawing_marker",
+      "y": 90
+    },
+    "facing=north,type=true": {
+      "model": "spb-revamped:block/drawing_marker2"
+    },
+    "facing=south,type=true": {
+      "model": "spb-revamped:block/drawing_marker2",
+      "y": 180
+    },
+    "facing=west,type=true": {
+      "model": "spb-revamped:block/drawing_marker2",
+      "y": 270
+    },
+    "facing=east,type=true": {
+      "model": "spb-revamped:block/drawing_marker2",
+      "y": 90
+    }
+  }
+}
