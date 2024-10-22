@@ -73,7 +73,7 @@ public final class Level2ChunkGenerator extends ChunkGenerator {
 
 
         if (((float)chunk.getPos().x) == 0){
-            double noise1 = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
+            double noise1 = noiseSampler.sample((x) * 0.02, 0, (z) * 0.02);
             if (server != null) {
 
                 if (noise1 > 0.0) {

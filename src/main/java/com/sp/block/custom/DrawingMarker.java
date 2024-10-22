@@ -56,10 +56,10 @@ public class DrawingMarker extends BlockWithEntity {
         builder.add(FACING, TYPE);
     }
 
-    @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
-    }
+//    @Override
+//    public BlockRenderType getRenderType(BlockState state) {
+//        return BlockRenderType.INVISIBLE;
+//    }
 
     @Nullable
     @Override

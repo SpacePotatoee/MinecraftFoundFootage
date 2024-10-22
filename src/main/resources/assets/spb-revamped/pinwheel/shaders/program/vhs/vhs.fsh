@@ -57,7 +57,7 @@ float map(vec3 p){
 }
 
 float noise3D(vec3 p){
-	float z = p.z + GameTime *1000;
+	float z = p.z;
 	vec2 z1 = (floor(z) * OFFSET + p.xz)/5;
 	vec2 z2 = ((floor(z) + 1.0) * OFFSET + p.xz)/5;
 	float n1 = texture(NoiseTexture, z1).r;

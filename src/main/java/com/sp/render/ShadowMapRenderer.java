@@ -128,8 +128,6 @@ public class ShadowMapRenderer {
                 0f, 0f, 2.0f / (nearPlane - farPlane), 0f,
                 0f, 0f, -(farPlane + nearPlane) / (farPlane - nearPlane), 1f
         );
-
-
     }
 
     public static boolean isRenderingShadowMap() {

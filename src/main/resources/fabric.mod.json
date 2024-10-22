@@ -8,8 +8,7 @@
 		"SpacePotato"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"YouTube": "https://www.youtube.com/@SpacePotatoee"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/spb-revamped/icon.png",
@@ -25,7 +24,17 @@
 		"cardinal-components": [
 			"spb-revamped:player",
 			"spb-revamped:events"
-		]
+		],
+		"modmenu": {
+			"links": {
+				"My Youtube": "https://www.youtube.com/@SpacePotatoee",
+				"Join the Discord!": "https://discord.gg/z3sfGTdjEn"
+			},
+			"parent": {
+				"description": "A MAJOR overhaul to my first Backrooms Mod"
+			},
+			"update_checker": false
+		}
 	},
 	"mixins": [
 		"spb-revamped.mixins.json"

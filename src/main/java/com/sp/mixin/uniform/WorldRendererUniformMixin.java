@@ -1,8 +1,12 @@
 package com.sp.mixin.uniform;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.sp.ConfigStuff;
+import com.sp.SPBRevampedClient;
 import com.sp.render.ShadowMapRenderer;
 import com.sp.util.uniformTest;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.WorldRenderer;
@@ -27,11 +31,13 @@ public class WorldRendererUniformMixin {
                 ((uniformTest) shaderProgram).getOrthoMatrix().set(matrix4f);
             }
 
+
             if (((uniformTest) shaderProgram).getViewMatrix() != null) {
                 MatrixStack shadowModelView = ShadowMapRenderer.createShadowModelView(cameraX, cameraY, cameraZ, true);
 
                 ((uniformTest) shaderProgram).getViewMatrix().set(shadowModelView.peek().getPositionMatrix());
             }
+
 
             if (((uniformTest) shaderProgram).getLightAngle() != null) {
                 Matrix4f shadowModelView = new Matrix4f();
@@ -43,6 +49,15 @@ public class WorldRendererUniformMixin {
                 Vector3f shadowLightDirection = new Vector3f(lightPosition.x(), lightPosition.y(), lightPosition.z());
 
                 ((uniformTest) shaderProgram).getLightAngle().set(shadowLightDirection);
+            }
+
+
+            if (((uniformTest) shaderProgram).getWarpAngle() != null) {
+                MinecraftClient client = MinecraftClient.getInstance();
+
+                if(client.world != null) {
+                    ((uniformTest) shaderProgram).getWarpAngle().set(SPBRevampedClient.getWarpTimer(client.world));
+                }
             }
         }
     }

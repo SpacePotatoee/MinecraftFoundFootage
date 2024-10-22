@@ -1,8 +1,14 @@
 package com.sp.cca_stuff;
 
 import com.sp.world.events.AbstractEvent;
-import com.sp.world.events.EventVariableStorage;
 import com.sp.world.events.level0.Level0Blackout;
+import com.sp.world.events.level0.Level0Flicker;
+import com.sp.world.events.level0.Level0IntercomBasic;
+import com.sp.world.events.level0.Level0Music;
+import com.sp.world.events.level1.Level1Ambience;
+import com.sp.world.events.level1.Level1Blackout;
+import com.sp.world.events.level1.Level1Flicker;
+import com.sp.world.events.level2.Level2Warp;
 import com.sp.world.levels.BackroomsLevels;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
@@ -17,70 +23,91 @@ import java.util.function.Supplier;
 
 public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent {
     private World world;
-    private boolean level0Blackout = false;
+
+    //Level0
+    private boolean level0Blackout;
+    private boolean level0On;
+    private boolean level0Flicker;
+    private int intercomCount;
+
+    //Level1
+    private boolean level1Blackout;
+    private boolean level1Flicker;
+
+    //Level2
+    private boolean level2Flicker;
+    private boolean level2Blackout;
+    private boolean level2Warp;
+
     private boolean inLevel0;
     private boolean inLevel1;
     private boolean inLevel2;
     private boolean inPoolRooms;
 
+
     private boolean prevLevel0Blackout;
+    private boolean prevLevel0On;
+    private boolean prevLevel0Flicker;
+    private int prevIntercomCount;
+
+    private boolean prevLevel1Blackout;
+    private boolean prevLevel1Flicker;
+
+
+    private boolean prevLevel2Blackout;
+    private boolean prevLevel2Flicker;
+    private boolean prevLevel2Warp;
+
+
     private boolean prevInLevel0;
     private boolean prevInLevel1;
     private boolean prevInLevel2;
     private boolean prevInPoolRooms;
 
     private static List<Supplier<AbstractEvent>> level0EventList;
-    private List<AbstractEvent> level1EventList;
-    private List<AbstractEvent> level2EventList;
-    private List<AbstractEvent> poolroomsEventList;
+    private static List<Supplier<AbstractEvent>> level1EventList;
+    private static List<Supplier<AbstractEvent>> level2EventList;
+    private static List<Supplier<AbstractEvent>> poolroomsEventList;
     boolean registered;
     private AbstractEvent activeEvent;
     private boolean eventActive;
     private int ticks;
-    private int times = 0;
+
 
     public WorldEvents(World world){
         this.world = world;
         this.level0Blackout = false;
+        this.level1Blackout = false;
+        this.level2Blackout = false;
+        this.level0Flicker = false;
+        this.level1Flicker = false;
+        this.level2Flicker = false;
+        this.level0On = true;
+        this.level2Warp = false;
+        this.intercomCount = 0;
         this.inLevel0 = false;
         this.inLevel1 = false;
         this.inLevel2 = false;
         this.inPoolRooms = false;
-        registered = false;
-        eventActive = false;
-        ticks = 0;
+        this.registered = false;
+        this.eventActive = false;
+        this.ticks = 0;
     }
 
-    public boolean isInPoolRooms() {
-        return inPoolRooms;
+    public boolean isEventActive() {
+        return eventActive;
     }
 
-    public void setInPoolRooms(boolean inPoolRooms) {
-        this.inPoolRooms = inPoolRooms;
+    public void setEventActive(boolean eventActive) {
+        this.eventActive = eventActive;
     }
 
-    public boolean isInLevel2() {
-        return inLevel2;
+    public int getIntercomCount() {
+        return intercomCount;
     }
 
-    public void setInLevel2(boolean inLevel2) {
-        this.inLevel2 = inLevel2;
-    }
-
-    public boolean isInLevel1() {
-        return inLevel1;
-    }
-
-    public void setInLevel1(boolean inLevel1) {
-        this.inLevel1 = inLevel1;
-    }
-
-    public boolean isInLevel0() {
-        return inLevel0;
-    }
-
-    public void setInLevel0(boolean inLevel0) {
-        this.inLevel0 = inLevel0;
+    public void addIntercomCount() {
+        this.intercomCount = this.intercomCount + 1;
     }
 
     public boolean isLevel0Blackout() {
@@ -91,6 +118,62 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.level0Blackout = level0Blackout;
     }
 
+    public boolean isLevel1Blackout() {
+        return level1Blackout;
+    }
+
+    public void setLevel1Blackout(boolean level1Blackout) {
+        this.level1Blackout = level1Blackout;
+    }
+
+    public boolean isLevel2Blackout() {
+        return level2Blackout;
+    }
+
+    public void setLevel2Blackout(boolean level2Blackout) {
+        this.level2Blackout = level2Blackout;
+    }
+
+    public boolean isLevel0On() {
+        return level0On;
+    }
+
+    public void setLevel0On(boolean level0On) {
+        this.level0On = level0On;
+    }
+
+    public boolean isLevel0Flicker() {
+        return level0Flicker;
+    }
+
+    public void setLevel0Flicker(boolean level0Flicker) {
+        this.level0Flicker = level0Flicker;
+    }
+
+    public boolean isLevel1Flicker() {
+        return level1Flicker;
+    }
+
+    public void setLevel1Flicker(boolean level1Flicker) {
+        this.level1Flicker = level1Flicker;
+    }
+
+    public boolean isLevel2Flicker() {
+        return level2Flicker;
+    }
+
+    public void setLevel2Flicker(boolean level2Flicker) {
+        this.level2Flicker = level2Flicker;
+    }
+
+    public boolean isLevel2Warp() {
+        return level2Warp;
+    }
+
+    public void setLevel2Warp(boolean level2Warp) {
+        this.level2Warp = level2Warp;
+    }
+
     public void sync(){
         InitializeComponents.EVENTS.sync(this.world);
     }
@@ -98,6 +181,14 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     @Override
     public void readFromNbt(NbtCompound tag) {
         this.level0Blackout = tag.getBoolean("level0Blackout");
+        this.level1Blackout = tag.getBoolean("level1Blackout");
+        this.level2Blackout = tag.getBoolean("level2Blackout");
+        this.level0On = tag.getBoolean("level0On");
+        this.level0Flicker = tag.getBoolean("level0Flicker");
+        this.level1Flicker = tag.getBoolean("level1Flicker");
+        this.level2Flicker = tag.getBoolean("level2Flicker");
+        this.level2Warp = tag.getBoolean("level2Warp");
+        this.intercomCount = tag.getInt("intercomCount");
         this.inLevel0 = tag.getBoolean("inLevel0");
         this.inLevel1 = tag.getBoolean("inLevel1");
         this.inLevel2 = tag.getBoolean("inLevel2");
@@ -107,6 +198,14 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     @Override
     public void writeToNbt(NbtCompound tag) {
         tag.putBoolean("level0Blackout", this.level0Blackout);
+        tag.putBoolean("level1Blackout", this.level1Blackout);
+        tag.putBoolean("level2Blackout", this.level2Blackout);
+        tag.putBoolean("level0On", this.level0On);
+        tag.putBoolean("level0Flicker", this.level0Flicker);
+        tag.putBoolean("level1Flicker", this.level1Flicker);
+        tag.putBoolean("level2Flicker", this.level2Flicker);
+        tag.putBoolean("level2Warp", this.level2Warp);
+        tag.putInt("intercomCount", this.intercomCount);
         tag.putBoolean("inLevel0", this.inLevel0);
         tag.putBoolean("inLevel1", this.inLevel1);
         tag.putBoolean("inLevel2", this.inLevel2);
@@ -135,26 +234,35 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
                 if (!eventActive) {
                     if (client.player.isSneaking()) {
-                        if (!level0EventList.isEmpty()) {
+                        if (!level0EventList.isEmpty() && !level1EventList.isEmpty()) {
                             int currentDimension = getCurrentDimension();
 
                             switch (currentDimension) {
                                 case 1: {
-                                    times++;
                                     int index = random.nextBetween(0, level0EventList.size() - 1);
                                     activeEvent = level0EventList.get(index).get();
 
                                     activeEvent.init(this.world);
-                                    eventActive = true;
-                                    ticks = 0;                                 //Reset Ticks
+                                    setEventActive(true);
+                                    ticks = 0;
                                 }
                                 break;
                                 case 2: {
+                                    int index = random.nextBetween(0, level1EventList.size() - 1);
+                                    activeEvent = level1EventList.get(index).get();
 
+                                    activeEvent.init(this.world);
+                                    setEventActive(true);
+                                    ticks = 0;
                                 }
                                 break;
                                 case 3: {
+                                    int index = random.nextBetween(0, level2EventList.size() - 1);
+                                    activeEvent = level2EventList.get(index).get();
 
+                                    activeEvent.init(this.world);
+                                    setEventActive(true);
+                                    ticks = 0;
                                 }
                                 break;
                                 case 4: {
@@ -167,10 +275,12 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                         }
                     }
                 } else {
-                    activeEvent.ticks();
-                    if (activeEvent.duration() == ticks) {
+                    if (activeEvent.duration() <= ticks) {
                         activeEvent.reset(this.world);
-                        eventActive = false;
+                        if(activeEvent.isDone()) setEventActive(false);
+                    }
+                    else {
+                        activeEvent.ticks(ticks, this.world);
                     }
                 }
             }
@@ -180,7 +290,23 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
     private void registerEvents(){
         level0EventList = new ArrayList<>();
-        level0EventList.add(Level0Blackout::new);
+            level0EventList.add(Level0Blackout::new);
+            level0EventList.add(Level0Flicker::new);
+            level0EventList.add(Level0IntercomBasic::new);
+            level0EventList.add(Level0Music::new);
+
+
+        level1EventList = new ArrayList<>();
+            level1EventList.add(Level1Blackout::new);
+            level1EventList.add(Level1Flicker::new);
+            level1EventList.add(Level1Ambience::new);
+
+
+        level2EventList = new ArrayList<>();
+            level2EventList.add(Level2Warp::new);
+
+
+        poolroomsEventList = new ArrayList<>();
     }
 
     private void shouldSync() {
@@ -189,6 +315,39 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         if(this.prevLevel0Blackout != this.level0Blackout){
             sync = true;
         }
+
+        if(this.prevLevel1Blackout != this.level1Blackout){
+            sync = true;
+        }
+
+        if(this.prevLevel2Blackout != this.level2Blackout){
+            sync = true;
+        }
+
+        if(this.prevLevel0On != this.level0On){
+            sync = true;
+        }
+
+        if(this.prevLevel0Flicker != this.level0Flicker){
+            sync = true;
+        }
+
+        if(this.prevLevel1Flicker != this.level1Flicker){
+            sync = true;
+        }
+
+        if(this.prevLevel2Flicker != this.level2Flicker){
+            sync = true;
+        }
+
+        if(this.prevLevel2Warp != this.level2Warp){
+            sync = true;
+        }
+
+        if(this.prevIntercomCount != this.intercomCount){
+            sync = true;
+        }
+
 
         if(this.prevInLevel0 != this.inLevel0){
             sync = true;
@@ -214,6 +373,15 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
     private void getPrevSettings(){
         this.prevLevel0Blackout = this.level0Blackout;
+        this.prevLevel1Blackout = this.level1Blackout;
+        this.prevLevel2Blackout = this.level2Blackout;
+        this.prevLevel0On = this.level0On;
+        this.prevLevel0Flicker = this.level0Flicker;
+        this.prevLevel1Flicker = this.level1Flicker;
+        this.prevLevel2Flicker = this.level2Flicker;
+        this.prevLevel2Warp = this.level2Warp;
+        this.prevIntercomCount = this.intercomCount;
+
         this.prevInLevel0 = this.inLevel0;
         this.prevInLevel1 = this.inLevel1;
         this.prevInLevel2 = this.inLevel2;

@@ -4,16 +4,17 @@ import com.sp.SPBRevamped;
 import foundry.veil.api.client.render.VeilRenderBridge;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.util.Identifier;
 
 public class RenderLayers extends RenderLayer {
-    public static final RenderPhase.ShaderProgram LIGHT_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/fluorescent_light"));
-    public static final RenderPhase.ShaderProgram CONCRETE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "concrete_shader"));
-    public static final RenderPhase.ShaderProgram WINDOW = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/window"));
+    private static final RenderPhase.ShaderProgram LIGHT_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/fluorescent_light"));
+    private static final RenderPhase.ShaderProgram CONCRETE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "concrete_shader"));
+    private static final RenderPhase.ShaderProgram WINDOW = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/window"));
 
 
-    public static final RenderLayer FLUORESCENT_LIGHT_RL = RenderLayer.of(
-            "light/fluorescent_light",
+    public static final RenderLayer FLUORESCENT_LIGHT = RenderLayer.of(
+            "fluorescent_light",
             VertexFormats.POSITION,
             VertexFormat.DrawMode.QUADS,
             256,
@@ -22,11 +23,10 @@ public class RenderLayers extends RenderLayer {
             RenderLayer.MultiPhaseParameters.builder()
                     .program(LIGHT_SHADER)
                     .build(false)
-
     );
 
     public static final RenderLayer POOLROOMS_WINDOW = RenderLayer.of(
-            "light/window",
+            "window",
             VertexFormats.POSITION,
             VertexFormat.DrawMode.QUADS,
             256,
@@ -35,7 +35,6 @@ public class RenderLayers extends RenderLayer {
             RenderLayer.MultiPhaseParameters.builder()
                     .program(WINDOW)
                     .build(false)
-
     );
 
     public static final RenderLayer CONCRETE_NOISE = RenderLayer.of(

@@ -1,4 +1,5 @@
 #include veil:camera
+#include veil:deferred_utils
 #include veil:fog
 #include veil:light
 
@@ -14,7 +15,7 @@ uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;
 uniform vec3 ChunkOffset;
 uniform mat3 NormalMat;
-uniform float GameTime;
+uniform float warpAngle;
 
 out vec4 vertexColor;
 out vec2 texCoord0;
@@ -23,19 +24,22 @@ out vec4 lightmapColor;
 out vec3 normal;
 
 void main() {
-vec3 cameraPos = VeilCamera.CameraPosition;
+    vec3 cameraPos = VeilCamera.CameraPosition;
     vec3 pos = Position + ChunkOffset;
-	float dist = pos.z;
+    float dist = pos.z;
+    pos = playerSpaceToWorldSpace(pos);
+
 
     #ifdef WARP
-    dist *= 0.02 * sin(GameTime * 200);
+    dist *= 0.02 * sin(warpAngle * 200);
     #else
     dist *= 0;
     #endif
-    //pos += cameraPos;
+    pos -= vec3(0.5, 21, 0);
 	pos = vec3((pos.x*cos(dist)) - (pos.y * sin(dist)),(pos.y  * cos(dist)) + (pos.x * sin(dist)),pos.z);
-    //pos -= cameraPos;
-    
+    pos += vec3(0.5, 21, 0);
+
+    pos = pos - cameraPos;
     gl_Position = ProjMat * ModelViewMat * vec4(pos, 1.0);
 
     vertexColor = Color;

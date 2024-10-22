@@ -2,6 +2,14 @@
   "vertex": "veil:blit_screen",
   "fragment": "spb-revamped:shadows/shadows",
   "textures": {
+    "CloudNoise1": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/puddle_noise.png"
+    },
+    "CloudNoise2": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/clouds2.png"
+    },
     "DepthSampler": {
       "type": "framebuffer",
       "name": "veil:opaque_final:depth"
@@ -27,6 +35,21 @@
       "type": "framebuffer",
       "name": "veil:transparent",
       "sampler": 0
+    },
+    "OpaqueCompatSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque",
+      "sampler": 0
+    },
+    "TransparentMatSampler": {
+      "type": "framebuffer",
+      "name": "veil:transparent",
+      "sampler": 3
+    },
+    "OpaqueMatSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque",
+      "sampler": 3
     },
     "NoiseTex": {
       "type": "location",

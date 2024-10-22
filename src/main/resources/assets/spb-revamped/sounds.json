@@ -29,5 +29,109 @@
     "sounds": [
       "spb-revamped:lights_out"
     ]
+  },
+  "ambience": {
+    "sounds": [
+      "spb-revamped:ambience"
+    ]
+  },
+  "light_blink": {
+    "sounds": [
+      "spb-revamped:light_blink/light_blink1",
+      "spb-revamped:light_blink/light_blink2",
+      "spb-revamped:light_blink/light_blink3",
+      "spb-revamped:light_blink/light_blink4",
+      "spb-revamped:light_blink/light_blink5",
+      "spb-revamped:light_blink/light_blink6",
+      "spb-revamped:light_blink/light_blink7",
+      "spb-revamped:light_blink/light_blink8",
+      "spb-revamped:light_blink/light_blink8",
+      "spb-revamped:light_blink/light_blink8"
+    ]
+  },
+  "intercom_basic1": {
+    "sounds": [
+      "spb-revamped:level0/intercom_basic1"
+    ]
+  },
+  "intercom_basic2": {
+    "sounds": [
+      "spb-revamped:level0/intercom_basic2"
+    ]
+  },
+  "intercom_friend": {
+    "sounds": [
+      "spb-revamped:level0/intercom_friend"
+    ]
+  },
+  "intercom_reversed": {
+    "sounds": [
+      "spb-revamped:level0/intercom_reversed"
+    ]
+  },
+  "creepy_music1": {
+    "sounds": [
+      "spb-revamped:level0/creepy_music1"
+    ]
+  },
+  "creepy_music2": {
+    "sounds": [
+      "spb-revamped:level0/creepy_music2"
+    ]
+  },
+  "far_crowd": {
+    "sounds": [
+      "spb-revamped:level0/far_crowd"
+    ]
+  },
+  "level1_ambience1": {
+    "sounds": [
+      "spb-revamped:level1/level1_ambience1"
+    ]
+  },
+  "level1_ambience2": {
+    "sounds": [
+      "spb-revamped:level1/level1_ambience2"
+    ]
+  },
+  "level1_ambience3": {
+    "sounds": [
+      "spb-revamped:level1/level1_ambience3"
+    ]
+  },
+  "level1_ambience4": {
+    "sounds": [
+      "spb-revamped:level1/level1_ambience4"
+    ]
+  },
+  "water_pipe": {
+    "sounds": [
+      "spb-revamped:level2/water_pipe"
+    ]
+  },
+  "gas_pipe": {
+    "sounds": [
+      "spb-revamped:level2/gas_pipe"
+    ]
+  },
+  "creaking1": {
+    "sounds": [
+      "spb-revamped:level2/creaking1"
+    ]
+  },
+  "creaking2": {
+    "sounds": [
+      "spb-revamped:level2/creaking2"
+    ]
+  },
+  "level2_warp_creaking": {
+    "sounds": [
+      "spb-revamped:level2/level2_warp_creaking"
+    ]
+  },
+  "level2_warp_creaking_loop": {
+    "sounds": [
+      "spb-revamped:level2/level2_warp_creaking_loop"
+    ]
   }
 }

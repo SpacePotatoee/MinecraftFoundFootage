@@ -1,9 +1,17 @@
 package com.sp.block.renderer;
 
 import com.sp.ConfigStuff;
+import com.sp.SPBRevamped;
+import com.sp.SPBRevampedClient;
+import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
+import com.sp.util.uniformTest;
+import foundry.veil.Veil;
+import foundry.veil.api.client.render.VeilRenderSystem;
+import foundry.veil.api.client.render.shader.program.ShaderProgram;
 import net.minecraft.block.enums.WallMountLocation;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -11,6 +19,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.EnumProperty;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
@@ -18,6 +27,9 @@ import org.joml.Matrix4f;
 import static net.minecraft.util.math.Direction.*;
 
 public class ThinFluorescentLightBlockEntityRenderer implements BlockEntityRenderer<ThinFluorescentLightBlockEntity> {
+    private static final Identifier SHADER = new Identifier(SPBRevamped.MOD_ID, "light/fluorescent_light");
+
+
     public ThinFluorescentLightBlockEntityRenderer(BlockEntityRendererFactory.Context context){
 
     }
@@ -25,6 +37,21 @@ public class ThinFluorescentLightBlockEntityRenderer implements BlockEntityRende
 
     @Override
     public void render(ThinFluorescentLightBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        boolean blackout = entity.getCurrentState().get(ThinFluorescentLightBlock.BLACKOUT);
+        boolean on = entity.getCurrentState().get(ThinFluorescentLightBlock.ON);
+
+        ShaderProgram shader = VeilRenderSystem.setShader(SHADER);
+        if(shader == null){
+            return;
+        }
+
+        if(client.world != null) {
+            shader.setFloat("warAngle", SPBRevampedClient.getWarpTimer(client.world));
+        }
+
+        //don't render if blackout is active
+        if(blackout || !on) return;
 
         Direction facing = entity.getCurrentState().get(ThinFluorescentLightBlock.FACING);
         WallMountLocation wall = entity.getCurrentState().get(ThinFluorescentLightBlock.FACE);
@@ -42,7 +69,10 @@ public class ThinFluorescentLightBlockEntityRenderer implements BlockEntityRende
         }
         matrices.translate(-0.5, -0.5, -0.5);
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
+
+        shader.bind();
         this.renderCube(entity, matrix4f, vertexConsumers.getBuffer(this.getLayer()));
+        ShaderProgram.unbind();
     }
 
     private void renderCube(ThinFluorescentLightBlockEntity entity, Matrix4f matrix, VertexConsumer buffer) {
@@ -63,11 +93,11 @@ public class ThinFluorescentLightBlockEntityRenderer implements BlockEntityRende
     }
 
     protected RenderLayer getLayer() {
-        return RenderLayers.FLUORESCENT_LIGHT_RL;
+        return RenderLayers.FLUORESCENT_LIGHT;
     }
 
     @Override
     public int getRenderDistance() {
-        return (int) ConfigStuff.lightRenderDistance + 10;
+        return (int) ConfigStuff.lightRenderDistance;
     }
 }

@@ -17,6 +17,7 @@
     "WorldRendererAccessor",
     "WorldRendererMixin",
     "uniform.ShaderProgramMixin",
+    "uniform.VertexBufferUniformMixin",
     "uniform.WorldRendererUniformMixin"
   ]
 }

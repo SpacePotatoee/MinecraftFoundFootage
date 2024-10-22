@@ -4,13 +4,10 @@ import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
 import com.sp.sounds.ModSounds;
 import com.sp.world.events.AbstractEvent;
-import com.sp.world.events.EventVariableStorage;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class Level0Blackout implements AbstractEvent {
+    boolean done = false;
 
     @Override
     public void init(World world) {
@@ -25,5 +22,11 @@ public class Level0Blackout implements AbstractEvent {
     public void reset(World world) {
         WorldEvents events = InitializeComponents.EVENTS.get(world);
         events.setLevel0Blackout(false);
+        done = true;
+    }
+
+    @Override
+    public boolean isDone() {
+        return done;
     }
 }

@@ -9,6 +9,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
@@ -23,6 +24,10 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
 public class ThinFluorescentLightBlock extends BlockWithEntity {
+    public static final BooleanProperty ON = BooleanProperty.of("on");
+    public static final BooleanProperty COPY = BooleanProperty.of("copy");
+    public static final BooleanProperty BLACKOUT = BooleanProperty.of("blackout");
+
     public static final DirectionProperty FACING = Properties.FACING;
     public static final EnumProperty<WallMountLocation> FACE = Properties.WALL_MOUNT_LOCATION;
 
@@ -37,6 +42,7 @@ public class ThinFluorescentLightBlock extends BlockWithEntity {
 
     public ThinFluorescentLightBlock(Settings settings) {
         super(settings);
+        this.setDefaultState(this.getDefaultState().with(BLACKOUT, false).with(ON, true).with(COPY, false));
     }
 
     @Nullable
@@ -47,9 +53,12 @@ public class ThinFluorescentLightBlock extends BlockWithEntity {
             if (direction.getAxis() == Direction.Axis.Y) {
                 blockState = this.getDefaultState()
                         .with(FACE, direction == Direction.UP ? WallMountLocation.CEILING : WallMountLocation.FLOOR)
-                        .with(FACING, ctx.getHorizontalPlayerFacing());
+                        .with(FACING, ctx.getHorizontalPlayerFacing())
+                        .with(ON, true)
+                        .with(BLACKOUT, false)
+                        .with(COPY, false);
             } else {
-                blockState = this.getDefaultState().with(FACE, WallMountLocation.WALL).with(FACING, direction.getOpposite());
+                blockState = this.getDefaultState().with(FACE, WallMountLocation.WALL).with(FACING, direction.getOpposite()).with(ON, true).with(BLACKOUT, false).with(COPY, false);
             }
 
             if (blockState.canPlaceAt(ctx.getWorld(), ctx.getBlockPos())) {
@@ -107,7 +116,7 @@ public class ThinFluorescentLightBlock extends BlockWithEntity {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FACE);
+        builder.add(FACING, FACE, ON, COPY, BLACKOUT);
     }
 
     @Nullable
@@ -118,7 +127,12 @@ public class ThinFluorescentLightBlock extends BlockWithEntity {
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.INVISIBLE;
+        if(state.get(BLACKOUT) || !state.get(ON)){
+            return BlockRenderType.MODEL;
+        }
+        else {
+            return BlockRenderType.INVISIBLE;
+        }
     }
 
     @Nullable

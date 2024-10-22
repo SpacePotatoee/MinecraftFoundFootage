@@ -29,6 +29,11 @@ public abstract class ShaderProgramMixin implements uniformTest {
         return lightAngle;
     }
 
+    @Override
+    public GlUniform getWarpAngle() {
+        return warpAngle;
+    }
+
     @Unique
     public GlUniform orthoMatrix;
 
@@ -38,6 +43,9 @@ public abstract class ShaderProgramMixin implements uniformTest {
     @Unique
     public GlUniform lightAngle;
 
+    @Unique
+    public GlUniform warpAngle;
+
     @Shadow
     abstract GlUniform getUniform(String name);
 
@@ -46,5 +54,6 @@ public abstract class ShaderProgramMixin implements uniformTest {
         this.orthoMatrix = this.getUniform("orthoMatrix");
         this.viewMatrix = this.getUniform("viewRix");
         this.lightAngle = this.getUniform("lightAngle");
+        this.warpAngle = this.getUniform("warpAngle");
     }
 }

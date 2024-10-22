@@ -1,6 +1,7 @@
 #include veil:deferred_utils
 #include veil:camera
 #include spb-revamped:shadows
+#include spb-revamped:sky
 
 #define SHADOW_SAMPLES 3
 
@@ -15,13 +16,20 @@ uniform sampler2D TranslucentDepthSampler;
 uniform sampler2D ShadowSampler;
 uniform sampler2D NoiseTex;
 uniform sampler2D TransparentCompatSampler;
+uniform sampler2D OpaqueCompatSampler;
+uniform usampler2D TransparentMatSampler;
+uniform usampler2D OpaqueMatSampler;
+uniform sampler2D CloudNoise1;
+uniform sampler2D CloudNoise2;
+
 uniform mat4 viewMatrix;
 uniform mat4 orthographMatrix;
 uniform vec3 lightAngle;
 uniform int ShadowToggle;
+uniform float GameTime;
 
-//const vec3 LIGHT_COLOR = vec3(0.9411, 0.8156, 0.5803);
-const vec3 LIGHT_COLOR = vec3(1);
+const vec3 LIGHT_COLOR = vec3(0.9411, 0.8156, 0.5803);
+//const vec3 LIGHT_COLOR = vec3(1);
 
 out vec4 fragColor;
 in vec2 texCoord;
@@ -36,6 +44,10 @@ mat2 randRotMat(vec2 coord){
 
 void main() {
     vec4 compat = texture(TransparentCompatSampler, texCoord);
+    vec4 compat2 = texture(OpaqueCompatSampler, texCoord);
+    uint Mat = texture(TransparentMatSampler, texCoord).r;
+    uint Mat2 = texture(OpaqueMatSampler, texCoord).r;
+
     vec4 color = texture(DiffuseSampler0, texCoord);
     float depth = texture(DepthSampler, texCoord).r;
     float handDepth = texture(HandDepth, texCoord).r;
@@ -102,7 +114,7 @@ void main() {
 
 
             if (shadowDepth < shadowSampler){
-                brightness += 0.0001;
+                brightness += 0.001;
             }
 
             if (brightness >= 1.5){
@@ -119,8 +131,13 @@ void main() {
         color.rgb = pow(color.rgb, vec3(1 / 2.2));
     }
 
-    if(compat.a > 0){
-        color = compat;
+    if(compat.a > 0 || compat2.a > 0){
+        if(Mat == 15 || Mat2 == 15){
+            color.rgb = getSky(texCoord, GameTime, CloudNoise1, CloudNoise2);
+        }
+        else{
+            color = compat + compat2;
+        }
     }
     fragColor = color;
 }

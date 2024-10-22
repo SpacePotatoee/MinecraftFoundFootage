@@ -1,14 +1,18 @@
 package com.sp;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.block.ModBlocks;
 import com.sp.block.entity.ModBlockEntities;
 import com.sp.block.renderer.*;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
+import com.sp.cca_stuff.WorldEvents;
 import com.sp.networking.InitializePackets;
 import com.sp.render.CameraRoll;
 import com.sp.render.ShadowMapRenderer;
 import com.sp.sounds.ModSounds;
+import com.sp.util.TickTimer;
+import com.sp.util.uniformTest;
 import com.sp.world.biome.ModBiomes;
 import com.sp.world.levels.BackroomsLevels;
 import foundry.veil.api.client.render.VeilRenderSystem;
@@ -43,11 +47,13 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.joml.*;
 
 import java.lang.Math;
 import java.util.*;
 
+import static java.lang.Math.sin;
 import static net.minecraft.util.math.MathHelper.lerp;
 
 
@@ -84,13 +90,12 @@ public class SPBRevampedClient implements ClientModInitializer {
     static boolean playedZoomIn = false;
     static boolean playedZoomOut = true;
     static boolean inBackrooms = false;
-
     boolean changed = false;
-    static boolean renderingShadowMap;
-
     Camera camera;
     private float partialTicks;
 
+    public static TickTimer tickTimer = new TickTimer();
+    public static TickTimer SunsetTimer = new TickTimer();
 
     @Override
     public void onInitializeClient() {
@@ -343,7 +348,8 @@ public class SPBRevampedClient implements ClientModInitializer {
             ShaderPreDefinitions definitions = renderer.getShaderDefinitions();
 
             if(inBackrooms) {
-                if (player != null) {
+                if (player != null && client.world != null) {
+                    WorldEvents events = InitializeComponents.EVENTS.get(client.world);
                     float yaw = player.getYaw();
                     float pitch = player.getPitch();
                     float yawRotAmount = yaw - prevYaw2;
@@ -366,7 +372,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
 
                         shaderProgram = context.getShader(VHS_SHADER);
-                        if (shaderProgram != null && client.world != null) {
+                        if (shaderProgram != null) {
                             if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
                                 shaderProgram.setInt("FogToggle", 1);
                             }
@@ -382,14 +388,12 @@ public class SPBRevampedClient implements ClientModInitializer {
                                 setShadowUniforms(shaderProgram);
                             }
 
-                            if(client.world != null) {
-                                if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                                    shaderProgram.setInt("ShadowToggle", 1);
-                                }
-                                else
-                                {
-                                    shaderProgram.setInt("ShadowToggle", 0);
-                                }
+                            if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                                shaderProgram.setInt("ShadowToggle", 1);
+                            }
+                            else
+                            {
+                                shaderProgram.setInt("ShadowToggle", 0);
                             }
 
                         }
@@ -403,14 +407,12 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                         shaderProgram = context.getShader(PUDDLES_SHADER);
                         if (shaderProgram != null) {
-                            if(client.world != null) {
-                                if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                                    shaderProgram.setInt("TogglePuddles", 1);
-                                }
-                                else
-                                {
-                                    shaderProgram.setInt("TogglePuddles", 0);
-                                }
+                            if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+                                shaderProgram.setInt("TogglePuddles", 1);
+                            }
+                            else
+                            {
+                                shaderProgram.setInt("TogglePuddles", 0);
                             }
 
                             shaderProgram.setMatrix("projMat", client.gameRenderer.getBasicProjectionMatrix(client.gameRenderer.getFov(camera, this.partialTicks, true)));
@@ -419,7 +421,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                     }
 
-                    if (ConfigStuff.enableWarp) {
+                    if (events.isLevel2Warp()) {
                         if(definitions.getDefinition("WARP") == null) {
                             definitions.define("WARP");
                         }
@@ -456,47 +458,66 @@ public class SPBRevampedClient implements ClientModInitializer {
         }));
 
 
-        ClientTickEvents.END_CLIENT_TICK.register((client -> {
-            PlayerEntity player = MinecraftClient.getInstance().player;
-
-            if(player != null) {
-                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                if(Keybinds.toggleFlashlight.wasPressed()){
-                    //client.getSoundManager().play(PositionedSoundInstance.master(ModSounds.FLASHLIGHT_CLICK, 1.0F));
-                    player.playSound(ModSounds.FLASHLIGHT_CLICK, 1, 1);
-                    if (player.getWorld().getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                        if (on) {
-                            playerComponent.setFlashLightOn(false);
-                            on = false;
-                        } else {
-                            playerComponent.setFlashLightOn(true);
-                            on = true;
-                        }
-                    }
-                    else{
-                        playerComponent.setFlashLightOn(false);
-                        player.sendMessage(Text.literal("Your flashlight got wet. ").append(Text.literal("It no longer works").formatted(Formatting.RED)), true);
-                    }
-                }
-
-            }
-        }));
+//        ClientTickEvents.END_CLIENT_TICK.register((client -> {
+//            PlayerEntity player = MinecraftClient.getInstance().player;
+//
+//            if(player != null) {
+//
+//                //Toggle Flashlight
+//                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+//                if(Keybinds.toggleFlashlight.wasPressed()){
+//                    player.playSound(ModSounds.FLASHLIGHT_CLICK, 1, 1);
+//                    if (player.getWorld().getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
+//                        if (on) {
+//                            playerComponent.setFlashLightOn(false);
+//                            on = false;
+//                        } else {
+//                            playerComponent.setFlashLightOn(true);
+//                            on = true;
+//                        }
+//                    }
+//                    else{
+//                        playerComponent.setFlashLightOn(false);
+//                        player.sendMessage(Text.literal("Your flashlight got wet. ").append(Text.literal("It no longer works").formatted(Formatting.RED)), true);
+//                    }
+//                }
+//
+//                //Play Ambient Loop
+//            }
+//        }));
 
 
         ClientTickEvents.END_WORLD_TICK.register((client) ->{
             MinecraftClient client1 = MinecraftClient.getInstance();
             PlayerEntity player = client1.player;
 
-            if(player != null) {
-                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                PacketByteBuf buffer = PacketByteBufs.create();
+//            if(player != null) {
+//                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+//                PacketByteBuf buffer = PacketByteBufs.create();
+//
+//                if (!sent) {
+//                    buffer.writeBoolean(playerComponent.isFlashLightOn());
+//                    ClientPlayNetworking.send(InitializePackets.FL_SYNC, buffer);
+//                    sent = true;
+//                }
+//            }
 
-                if (!sent) {
-                    buffer.writeBoolean(playerComponent.isFlashLightOn());
-                    ClientPlayNetworking.send(InitializePackets.FL_SYNC, buffer);
-                    sent = true;
+            Vector<TickTimer> tickTimers = TickTimer.getAllInstances();
+            if(!tickTimers.isEmpty()){
+                for(TickTimer timer : tickTimers){
+                    timer.addCurrentTick();
                 }
             }
+
+//            if(client1.world != null){
+//                WorldEvents events = InitializeComponents.EVENTS.get(client1.world);
+//
+//                if(events.isLevel2Warp()){
+//                    tickTimer++;
+//                }else {
+//                    tickTimer = 0;
+//                }
+//            }
 
         });
 
@@ -560,6 +581,70 @@ public class SPBRevampedClient implements ClientModInitializer {
         shaderProgram.setMatrix("viewMatrix", ShadowMapRenderer.createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, true).peek().getPositionMatrix());
         shaderProgram.setMatrix("orthographMatrix", ShadowMapRenderer.createProjMat());
         shaderProgram.setVector("lightAngled", shadowLightDirection);
+    }
+
+    public static float getWarpTimer(World world){
+        WorldEvents events = InitializeComponents.EVENTS.get(world);
+
+        if (events.isLevel2Warp()) {
+            tickTimer.setOnOrOff(true);
+            float x = tickTimer.getCurrentTick();
+            float w = 0.03141592f;
+            float result = mod((x * w) * 0.002f, w);
+            if (result == 0) {
+                tickTimer.resetToZero();
+            }
+            return result;
+
+        } else {
+            tickTimer.setOnOrOff(false);
+            return 0;
+        }
+    }
+
+    public static float getSunsetTimer(World world){
+        WorldEvents events = InitializeComponents.EVENTS.get(world);
+        double seconds = 8.0;
+        int maxTicks = (int) (seconds * 20);
+
+        if(events.isSunsetTransition() && events.isNoon()){
+            SunsetTimer.setOnOrOff(true);
+
+            if(SunsetTimer.getCurrentTick() >= maxTicks){
+                SunsetTimer.setOnOrOff(false);
+                events.setNoon(false);
+                return 1.0f;
+            }
+            else{
+                return (float) SunsetTimer.getCurrentTick() / maxTicks;
+            }
+        }
+        else if(events.isSunsetTransition() && !events.isNoon()){
+            SunsetTimer.setOnOrOff(true);
+
+            if(SunsetTimer.getCurrentTick() >= maxTicks){
+                SunsetTimer.setOnOrOff(false);
+                events.setNoon(true);
+                return 0.0f;
+            }
+            else{
+                return 1.0f - ((float) SunsetTimer.getCurrentTick() / maxTicks);
+            }
+        }
+        else{
+            if(events.isNoon()){
+                return 0;
+            }
+            else {
+                return 1;
+            }
+            SunsetTimer.setOnOrOff(false);
+            SunsetTimer.resetToZero();
+        }
+    }
+
+    public static float mod(float x, float y){
+        return x - y * (float) Math.floor((double) x/y);
     }
 
     public static boolean isInBackrooms() {

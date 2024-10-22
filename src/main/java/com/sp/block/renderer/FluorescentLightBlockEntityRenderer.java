@@ -22,9 +22,10 @@ public class FluorescentLightBlockEntityRenderer implements BlockEntityRenderer<
     @Override
     public void render(FluorescentLightBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         boolean blackout = entity.getCurrentState().get(FluorescentLightBlock.BLACKOUT);
+        boolean on = entity.getCurrentState().get(FluorescentLightBlock.ON);
 
         //don't render if blackout is active
-        if(blackout) return;
+        if(blackout || !on) return;
 
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         this.renderCube(entity, matrix4f, vertexConsumers.getBuffer(this.getLayer()));
@@ -47,11 +48,11 @@ public class FluorescentLightBlockEntityRenderer implements BlockEntityRenderer<
     }
 
     protected RenderLayer getLayer() {
-        return RenderLayers.FLUORESCENT_LIGHT_RL;
+        return RenderLayers.FLUORESCENT_LIGHT;
     }
 
     @Override
     public int getRenderDistance() {
-        return (int) ConfigStuff.lightRenderDistance + 10;
+        return (int) ConfigStuff.lightRenderDistance;
     }
 }

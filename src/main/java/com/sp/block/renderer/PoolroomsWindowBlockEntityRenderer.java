@@ -45,6 +45,6 @@ public class PoolroomsWindowBlockEntityRenderer implements BlockEntityRenderer<B
 
     @Override
     public int getRenderDistance() {
-        return (int) ConfigStuff.lightRenderDistance + 10;
+        return (int) ConfigStuff.lightRenderDistance;
     }
 }

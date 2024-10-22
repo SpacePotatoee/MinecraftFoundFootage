@@ -38,5 +38,5 @@ void main() {
     vertexColor = Color;
     texCoord0 = UV0;
 
-    //gl_Position.xyz = distort(gl_Position.xyz);
+    gl_Position.xyz = distort(gl_Position.xyz);
 }
