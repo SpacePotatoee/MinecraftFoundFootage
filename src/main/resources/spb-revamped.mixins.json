@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "ChunkStatusMixin",
+    "EntityMixin",
+    "PathAccessor",
     "StructureBlockEntityMixin"
   ],
   "injectors": {
@@ -16,6 +18,11 @@
     "ItemEntityRendererMixin",
     "WorldRendererAccessor",
     "WorldRendererMixin",
+    "cutscene.ClientPlayerEntityMixin",
+    "cutscene.MinecraftClientMixin",
+    "cutscene.SoundSystemMixin",
+    "disableloadingscreen.DownloadingTerrainScreenMixin",
+    "disableloadingscreen.MinecraftClientMixin",
     "uniform.ShaderProgramMixin",
     "uniform.VertexBufferUniformMixin",
     "uniform.WorldRendererUniformMixin"

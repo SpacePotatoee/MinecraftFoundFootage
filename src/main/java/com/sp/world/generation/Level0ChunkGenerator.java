@@ -3,9 +3,7 @@ package com.sp.world.generation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.sp.SPBRevamped;
-import com.sp.block.ModBlocks;
 import com.sp.world.generation.maze_generator.Level0MazeGenerator;
-import com.sp.world.generation.maze_generator.Level1MazeGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
@@ -16,7 +14,6 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
@@ -56,7 +53,6 @@ public class Level0ChunkGenerator extends ChunkGenerator {
     public void generateMaze(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
-        boolean genRoof = true;
         Random random = Random.create();
 
         BlockPos.Mutable mutable = new BlockPos.Mutable();
@@ -72,10 +68,35 @@ public class Level0ChunkGenerator extends ChunkGenerator {
             StructurePlacementData structurePlacementData = new StructurePlacementData();
 
 
+            //Spawn Point
+            if((float) chunk.getPos().x == 0 && (float) chunk.getPos().z  == 0){
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level0/megaroom1");
+                structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
+                optional = structureTemplateManager.getTemplate(roomIdentifier);
 
-
-
-            if (((float) chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float) chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
+                if (optional.isPresent()) {
+                    optional.get().place(
+                            world,
+                            mutable.set(x - 32, 18, z - 32),
+                            mutable.set(x - 32, 18, z - 32),
+                            structurePlacementData, random, 2);
+                    optional.get().place(
+                            world,
+                            mutable.set(x, 18, z - 32),
+                            mutable.set(x, 18, z - 32),
+                            structurePlacementData, random, 2);
+                    optional.get().place(
+                            world,
+                            mutable.set(x - 32, 18, z),
+                            mutable.set(x - 32, 18, z),
+                            structurePlacementData, random, 2);
+                    optional.get().place(
+                            world,
+                            mutable.set(x, 18, z),
+                            mutable.set(x, 18, z),
+                            structurePlacementData, random, 2);
+                }
+            } else if (((float) chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float) chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
                 world.setBlockState(mutable.set(x - 32, 28, z - 32), Blocks.GLOWSTONE.getDefaultState(), 16);
                 if (megaRooms == 1 ) {
                     if (!isNearMegaRooms(x, z, world)) {

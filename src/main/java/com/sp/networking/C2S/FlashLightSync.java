@@ -19,7 +19,7 @@ public class FlashLightSync {
         server.execute(()->{
             PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
             playerComponent.setFlashLightOn(flashLightOn);
-            playerComponent.sync();
+//            playerComponent.sync();
 //            PacketByteBuf buffer = PacketByteBufs.create();
 //            buffer.writeBoolean(flashLightOn);
 //            ServerPlayNetworking.send(player, InitializePackets.FL_SYNCC, buffer);

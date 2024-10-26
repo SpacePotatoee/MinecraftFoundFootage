@@ -44,19 +44,19 @@ public interface AbstractEvent {
 
     default void playDistantSound(World world, SoundEvent soundEvent){
         Random random = Random.create();
-        int rand1 = random.nextBetween(1, 2);
+        int rand = random.nextBetween(1, 2);
         int randXOffset;
         int randZOffset;
 
-        if(rand1 == 1){
+        if(rand == 1){
             randXOffset = random.nextBetween(-300, -200);
         } else {
             randXOffset = random.nextBetween(200, 300);
         }
 
-        rand1 = random.nextBetween(3, 4);
+        rand = random.nextBetween(3, 4);
 
-        if(rand1 == 3){
+        if(rand == 3){
             randZOffset = random.nextBetween(-300, -200);
         } else {
             randZOffset = random.nextBetween(200, 300);
@@ -68,11 +68,18 @@ public interface AbstractEvent {
         }
     }
 
-    default void playCreakingSound(World world, SoundEvent soundEvent){
+    default void playLevel2Sound(World world, SoundEvent soundEvent){
+        Random random = Random.create();
+        int rand = random.nextBetween(1, 2);
+
         for(PlayerEntity player : world.getPlayers()){
             BlockPos playerPos = player.getBlockPos();
-            player.getWorld().playSound(null, new BlockPos(playerPos.getX(), playerPos.getY(), playerPos.getZ() + 2000), soundEvent, SoundCategory.AMBIENT, 1000.0F, 1.0F);
-            player.getWorld().playSound(null, new BlockPos(playerPos.getX(), playerPos.getY(), playerPos.getZ() - 2000), soundEvent, SoundCategory.AMBIENT, 1000.0F, 1.0F);
+
+            if(rand == 1) {
+                player.getWorld().playSound(null, new BlockPos(playerPos.getX(), playerPos.getY(), playerPos.getZ() + 200), soundEvent, SoundCategory.AMBIENT, 1000.0F, 1.0F);
+            } else {
+                player.getWorld().playSound(null, new BlockPos(playerPos.getX(), playerPos.getY(), playerPos.getZ() - 200), soundEvent, SoundCategory.AMBIENT, 1000.0F, 1.0F);
+            }
         }
     }
 
