@@ -15,10 +15,10 @@ public class ConfigStuff extends MidnightConfig {
     public static boolean enableCameraRoll = true;
 
     @Entry(category = CAMERA, isSlider = true, min = 0, max = 10)
-    public static float lookRollMultiplier = 4.0f;
+    public static float lookRollMultiplier = 7.0f;
 
     @Entry(category = CAMERA, isSlider = true, min = 0, max = 10)
-    public static float MaxLookRollAngle = 5.0f;
+    public static float strafeRollMultiplier = 5.0f;
 
     @Entry(category = CAMERA)
     public static boolean disableHud = false;

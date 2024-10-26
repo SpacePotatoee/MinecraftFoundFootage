@@ -1,80 +1,33 @@
 package com.sp.render;
 
 import com.sp.ConfigStuff;
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.PlayerComponent;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
+import com.sp.util.MathStuff;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
-
-import static net.minecraft.util.math.MathHelper.lerp;
+import net.minecraft.util.math.Vec2f;
 
 public class CameraRoll {
-    static float prevYaw = -1000;
-    static float prevPitch = -1000;
+    static float prevYaw;
     static float rotAmount;
     static float spinRoll;
 
-    static float prevYaw2 = -1000;
-    static float prevPitch2 = -1000;
-    static float rotAmount2;
-    static float spinRoll2;
-    static float lookRollMultiplier2 = 4.0f;
-    static float MaxLookRollAngle2 = 10.0f;
+    static float strafeRoll;
 
-    static float strafeLeftRoll;
-    static float strafeRightRoll;
-    static int AtimePressed;
-    static int DtimePressed;
-
-    public static void doCameraRoll(PlayerEntity player){
+    public static float doCameraRoll(PlayerEntity player, float tickDelta){
         if (player != null) {
-            PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-            float yaw = player.getYaw();
-            float pitch = player.getPitch();
+            float yaw = player.getYaw(tickDelta);
 
+            //Yaw roll
+            rotAmount += yaw - prevYaw;
+            rotAmount *= tickDelta;
+            spinRoll = MathStuff.Lerp(spinRoll, (rotAmount * 0.1f) * ConfigStuff.lookRollMultiplier, 0.8f, tickDelta);
+            rotAmount = MathStuff.Lerp(rotAmount, 0, 0.5f, tickDelta);
 
-
-            if (prevYaw != -1000 && prevPitch != -1000){
-                rotAmount = yaw - prevYaw;
-
-                spinRoll += lerp(0.1f, rotAmount/(2 * ConfigStuff.lookRollMultiplier), 0.0f);
-                spinRoll = spinRoll * 0.8f;
-                spinRoll = MathHelper.clamp(spinRoll, -ConfigStuff.MaxLookRollAngle, ConfigStuff.MaxLookRollAngle);
-
-            }
-
+            //Strafe Roll
+            Vec2f velocity2D = MathStuff.get2DRelativeRotation(player.getVelocity(), 360.0f - player.getYaw());
+            strafeRoll = MathStuff.Lerp(strafeRoll, (-velocity2D.x * 5) * ConfigStuff.strafeRollMultiplier, 0.8f, tickDelta);
 
             prevYaw = yaw;
-            prevPitch = pitch;
-
-
-            if (InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 65) && (Math.abs(player.getVelocity().x) > 0.05f || Math.abs(player.getVelocity().z) > 0.05f)){
-                AtimePressed++;
-                strafeLeftRoll -= (float) lerp(0.9, AtimePressed, 0);
-                strafeLeftRoll = strafeLeftRoll * 0.9f;
-                strafeLeftRoll = MathHelper.clamp(-Math.abs(strafeLeftRoll), -3, 0);
-            }else{
-                strafeLeftRoll = strafeLeftRoll * 0.9f;
-                strafeLeftRoll = MathHelper.clamp(-Math.abs(strafeLeftRoll), -3, 0);
-                AtimePressed = 0;
-            }
-
-            if (InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 68) && (Math.abs(player.getVelocity().x) > 0.05f || Math.abs(player.getVelocity().z) > 0.05f)){
-                DtimePressed++;
-                strafeRightRoll += (float) lerp(0.9, DtimePressed, 0);
-                strafeRightRoll = strafeRightRoll * 0.9f;
-                strafeRightRoll = MathHelper.clamp(Math.abs(strafeRightRoll), 0, 3);
-            }else{
-                strafeRightRoll = strafeRightRoll * 0.9f;
-                strafeRightRoll = MathHelper.clamp(Math.abs(strafeRightRoll), 0, 3);
-                DtimePressed = 0;
-            }
-
-            playerComponent.setCameraRoll(spinRoll + strafeRightRoll + strafeLeftRoll);
-
-
         }
+        return spinRoll + strafeRoll;
     }
 }
