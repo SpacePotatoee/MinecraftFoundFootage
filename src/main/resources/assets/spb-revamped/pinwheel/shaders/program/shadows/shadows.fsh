@@ -1,5 +1,7 @@
 #include veil:deferred_utils
 #include veil:camera
+#include veil:blend
+#include veil:material
 #include spb-revamped:shadows
 #include spb-revamped:sky
 
@@ -15,6 +17,7 @@ uniform sampler2D DepthSampler;
 uniform sampler2D TranslucentDepthSampler;
 uniform sampler2D ShadowSampler;
 uniform sampler2D NoiseTex;
+uniform sampler2D TransparentSampler;
 uniform sampler2D TransparentCompatSampler;
 uniform sampler2D OpaqueCompatSampler;
 uniform usampler2D TransparentMatSampler;
@@ -27,8 +30,9 @@ uniform mat4 orthographMatrix;
 uniform vec3 lightAngle;
 uniform int ShadowToggle;
 uniform float GameTime;
+uniform float sunsetTimer;
 
-const vec3 LIGHT_COLOR = vec3(0.9411, 0.8156, 0.5803);
+//const vec3 LIGHT_COLOR = vec3(0.9411, 0.8156, 0.5803);
 //const vec3 LIGHT_COLOR = vec3(1);
 
 out vec4 fragColor;
@@ -45,10 +49,17 @@ mat2 randRotMat(vec2 coord){
 void main() {
     vec4 compat = texture(TransparentCompatSampler, texCoord);
     vec4 compat2 = texture(OpaqueCompatSampler, texCoord);
+
+    vec4 transparentColor = texture(TransparentSampler, texCoord);
     uint Mat = texture(TransparentMatSampler, texCoord).r;
     uint Mat2 = texture(OpaqueMatSampler, texCoord).r;
 
     vec4 color = texture(DiffuseSampler0, texCoord);
+
+    if(!isBlock(Mat)){
+        color.rgb = blend(color, transparentColor);
+    }
+
     float depth = texture(DepthSampler, texCoord).r;
     float handDepth = texture(HandDepth, texCoord).r;
     vec4 normal = texture(NormalSampler, texCoord);
@@ -57,14 +68,17 @@ void main() {
     vec3 playerSpace = viewToPlayerSpace(viewPos);
     float worldDepth = length(viewPos);
 
-
+    vec3 LIGHT_COLOR = vec3(1);
     if(ShadowToggle == 1){
+        LIGHT_COLOR = mix(vec3(1), vec3(0.9411, 0.8156, 0.5803), smoothstep(0.0, 1.0, sunsetTimer));
         color.rgb = pow(color.rgb, vec3(2.2));
+        vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
+        lightangle.y = -lightangle.y;
 
-        float lightDir = dot(normalize(lightAngle), viewToWorldSpaceDirection(normal.rgb));
+        float lightDir = dot(normalize(lightangle), viewToWorldSpaceDirection(normal.rgb));
 
         if (handDepth >= 1.0){
-            if (lightDir >= - 0.001){
+            if (lightDir > 0.0){
                 vec3 shadowScreenSpace = getShadow(playerSpace, normal, viewPos, viewMatrix, orthographMatrix);
 
                 float shadowDepth = shadowScreenSpace.z;
@@ -86,7 +100,7 @@ void main() {
                 color.rgb *= (clamp(shadowSum, 1.0 - SHADOW_STRENGTH, 1.0)) * LIGHT_COLOR;
             }
             else{
-                color.rgb *= 1.0 - SHADOW_STRENGTH;
+                color.rgb = (color.rgb * (1.0 - SHADOW_STRENGTH)) * LIGHT_COLOR;
             }
         }
 
@@ -129,11 +143,12 @@ void main() {
         }
 
         color.rgb = pow(color.rgb, vec3(1 / 2.2));
+//        fragColor = vec4(vec3(lightDir), 1.0);
     }
 
     if(compat.a > 0 || compat2.a > 0){
         if(Mat == 15 || Mat2 == 15){
-            color.rgb = getSky(texCoord, GameTime, CloudNoise1, CloudNoise2);
+            color.rgb = getSky(texCoord, sunsetTimer, GameTime, CloudNoise1, CloudNoise2);
         }
         else{
             color = compat + compat2;

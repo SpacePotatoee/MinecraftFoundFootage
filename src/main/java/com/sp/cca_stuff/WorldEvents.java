@@ -8,8 +8,11 @@ import com.sp.world.events.level0.Level0Music;
 import com.sp.world.events.level1.Level1Ambience;
 import com.sp.world.events.level1.Level1Blackout;
 import com.sp.world.events.level1.Level1Flicker;
+import com.sp.world.events.level2.Level2Ambience;
 import com.sp.world.events.level2.Level2Warp;
-import com.sp.world.levels.BackroomsLevels;
+import com.sp.world.events.poolrooms.PoolroomsAmbience;
+import com.sp.world.BackroomsLevels;
+import com.sp.world.events.poolrooms.PoolroomsSunset;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import net.minecraft.client.MinecraftClient;
@@ -39,11 +42,14 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     private boolean level2Blackout;
     private boolean level2Warp;
 
+    //Poolrooms
+    private boolean sunsetTransition;
+    private boolean noon;
+
     private boolean inLevel0;
     private boolean inLevel1;
     private boolean inLevel2;
     private boolean inPoolRooms;
-
 
     private boolean prevLevel0Blackout;
     private boolean prevLevel0On;
@@ -53,11 +59,12 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     private boolean prevLevel1Blackout;
     private boolean prevLevel1Flicker;
 
-
     private boolean prevLevel2Blackout;
     private boolean prevLevel2Flicker;
     private boolean prevLevel2Warp;
 
+    private boolean prevSunsetTransition;
+    private boolean prevNoon;
 
     private boolean prevInLevel0;
     private boolean prevInLevel1;
@@ -85,6 +92,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.level0On = true;
         this.level2Warp = false;
         this.intercomCount = 0;
+        this.sunsetTransition = false;
+        this.noon = true;
         this.inLevel0 = false;
         this.inLevel1 = false;
         this.inLevel2 = false;
@@ -174,6 +183,22 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.level2Warp = level2Warp;
     }
 
+    public boolean isSunsetTransition() {
+        return sunsetTransition;
+    }
+
+    public void setSunsetTransition(boolean sunsetTransition) {
+        this.sunsetTransition = sunsetTransition;
+    }
+
+    public boolean isNoon() {
+        return noon;
+    }
+
+    public void setNoon(boolean noon) {
+        this.noon = noon;
+    }
+
     public void sync(){
         InitializeComponents.EVENTS.sync(this.world);
     }
@@ -188,6 +213,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.level1Flicker = tag.getBoolean("level1Flicker");
         this.level2Flicker = tag.getBoolean("level2Flicker");
         this.level2Warp = tag.getBoolean("level2Warp");
+        this.sunsetTransition = tag.getBoolean("sunsetTransition");
+        this.noon = tag.getBoolean("noon");
         this.intercomCount = tag.getInt("intercomCount");
         this.inLevel0 = tag.getBoolean("inLevel0");
         this.inLevel1 = tag.getBoolean("inLevel1");
@@ -205,6 +232,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         tag.putBoolean("level1Flicker", this.level1Flicker);
         tag.putBoolean("level2Flicker", this.level2Flicker);
         tag.putBoolean("level2Warp", this.level2Warp);
+        tag.putBoolean("sunsetTransition", this.sunsetTransition);
+        tag.putBoolean("noon", this.noon);
         tag.putInt("intercomCount", this.intercomCount);
         tag.putBoolean("inLevel0", this.inLevel0);
         tag.putBoolean("inLevel1", this.inLevel1);
@@ -234,7 +263,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
                 if (!eventActive) {
                     if (client.player.isSneaking()) {
-                        if (!level0EventList.isEmpty() && !level1EventList.isEmpty()) {
+                        if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty()) {
                             int currentDimension = getCurrentDimension();
 
                             switch (currentDimension) {
@@ -266,7 +295,12 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                 }
                                 break;
                                 case 4: {
+                                    int index = random.nextBetween(0, poolroomsEventList.size() - 1);
+                                    activeEvent = poolroomsEventList.get(index).get();
 
+                                    activeEvent.init(this.world);
+                                    setEventActive(true);
+                                    ticks = 0;
                                 }
                                 break;
                                 default:
@@ -303,10 +337,13 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
 
         level2EventList = new ArrayList<>();
+            level2EventList.add(Level2Ambience::new);
             level2EventList.add(Level2Warp::new);
 
 
         poolroomsEventList = new ArrayList<>();
+            poolroomsEventList.add(PoolroomsAmbience::new);
+            poolroomsEventList.add(PoolroomsSunset::new);
     }
 
     private void shouldSync() {
@@ -341,6 +378,14 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         }
 
         if(this.prevLevel2Warp != this.level2Warp){
+            sync = true;
+        }
+
+        if(this.prevSunsetTransition != this.sunsetTransition){
+            sync = true;
+        }
+
+        if(this.prevNoon != this.noon){
             sync = true;
         }
 
@@ -380,6 +425,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.prevLevel1Flicker = this.level1Flicker;
         this.prevLevel2Flicker = this.level2Flicker;
         this.prevLevel2Warp = this.level2Warp;
+        this.prevSunsetTransition = this.sunsetTransition;
+        this.prevNoon = this.noon;
         this.prevIntercomCount = this.intercomCount;
 
         this.prevInLevel0 = this.inLevel0;

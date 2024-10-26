@@ -4,7 +4,7 @@
 const vec3 SkyColor = vec3(0.42,0.85,1.1);
 const vec3 SkyColor2 = vec3(1.0, 0.8, 0.2);
 
-vec3 getSky(vec2 texCoord, float GameTime, sampler2D CloudNoise1, sampler2D CloudNoise2){
+vec3 getSky(vec2 texCoord, float sunsetTimer, float GameTime, sampler2D CloudNoise1, sampler2D CloudNoise2){
     vec3 color = vec3(0);
     vec3 rd = viewDirFromUv(texCoord);
 
@@ -21,9 +21,9 @@ vec3 getSky(vec2 texCoord, float GameTime, sampler2D CloudNoise1, sampler2D Clou
     clouds.rgb = vec3(1.0);
     clouds.rgb *= 1.0 - clamp((clouds.a - 0.5) * 0.1, 0, 0.25);
 
-    vec3 sunset = vec3(mix(SkyColor2, vec3(0.9921, 0.3686, 0.3254) - 0.1,clamp(rd.z + rd.y * smoothstep(0.0, 1.0, 0.5*sin(GameTime * 600) + 0.5) * 3, 0, 1)));
+    vec3 sunset = vec3(mix(SkyColor2, vec3(0.9921, 0.3686, 0.3254) - 0.1,clamp(rd.z + rd.y * (3 * smoothstep(0.0, 1.0, sunsetTimer)), 0, 1)));
     vec3 day = vec3(SkyColor - rd.y*0.4);
-    color = mix(day, sunset, smoothstep(0.0, 1.0, 0.5*sin(GameTime * 600) + 0.5));
+    color = mix(day, sunset, smoothstep(0.0, 1.0, sunsetTimer));
     //        fragColor = mix(day, sunset, 1);
     color = mix(color.rgb, clouds.rgb, min(clouds.a, 1.0) / max(1.0, cloudFog * 0.25));
 

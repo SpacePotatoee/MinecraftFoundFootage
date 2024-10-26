@@ -3,9 +3,11 @@ package com.sp.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.VertexSorter;
 import com.sp.SPBRevamped;
+import com.sp.SPBRevampedClient;
 import com.sp.mixin.WorldRendererAccessor;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.framebuffer.AdvancedFbo;
+import foundry.veil.api.client.util.Easings;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
@@ -16,17 +18,18 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.joml.Matrix4f;
 
 public class ShadowMapRenderer {
     private static boolean renderingShadowMap;
 
 
-    public static void renderShadowMap(Camera camera, float tickDelta){
+    public static void renderShadowMap(Camera camera, float tickDelta, World world){
         MinecraftClient client = MinecraftClient.getInstance();
         WorldRendererAccessor accessor = (WorldRendererAccessor) client.worldRenderer;
         Vec3d cameraPos = camera.getPos();
-        MatrixStack shadowModelView = createShadowModelView(cameraPos.x, cameraPos.y, cameraPos.z, true);
+        MatrixStack shadowModelView = createShadowModelView(cameraPos.x, cameraPos.y, cameraPos.z, world, true);
         Matrix4f shadowProjMat = createProjMat();
         Matrix4f backupProjMat = RenderSystem.getProjectionMatrix();
 
@@ -79,14 +82,14 @@ public class ShadowMapRenderer {
      The "do interval" bit was taken from the Iris Shadow Matrices class in order to keep the Shadows from flashing
      <a href="https://github.com/IrisShaders/Iris/blob/3fc94e8f41535feebce0bcb4235eff4a809f5eea/common/src/main/java/net/irisshaders/iris/shadows/ShadowMatrices.java">HERE</a>
      */
-    public static MatrixStack createShadowModelView(double CameraX, double CameraY, double CameraZ, boolean doInterval){
+    public static MatrixStack createShadowModelView(double CameraX, double CameraY, double CameraZ, World world, boolean doInterval){
         MatrixStack shadowModelView = new MatrixStack();
 
         shadowModelView.peek().getNormalMatrix().identity();
         shadowModelView.peek().getPositionMatrix().identity();
 
         shadowModelView.peek().getPositionMatrix().translate(0.0f, 0.0f, -100.0f);
-        rotateShadowModelView(shadowModelView.peek().getPositionMatrix());
+        rotateShadowModelView(shadowModelView.peek().getPositionMatrix(), world);
 
         if(doInterval) {
             float offsetX = (float) CameraX % 2.0f;
@@ -104,10 +107,12 @@ public class ShadowMapRenderer {
     }
 
     //Global Light Rotation
-    public static void rotateShadowModelView(Matrix4f shadowModelView){
+    public static void rotateShadowModelView(Matrix4f shadowModelView, World world){
+        float MaxAngle = 120.0f;
+        float MinAngle = 85.0f;
 //        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(45f));
 //        shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(45f));
-        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(87f));
+        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(Easings.Easing.easeInOutQuad.ease(SPBRevampedClient.getSunsetTimer(world)) * (MaxAngle - MinAngle) + MinAngle));
         shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(4f));
 //        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(15.0f * sin(RenderSystem.getShaderGameTime() * 200) + 90.0f));
     }

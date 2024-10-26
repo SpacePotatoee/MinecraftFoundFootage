@@ -124,6 +124,11 @@
       "spb-revamped:level2/creaking2"
     ]
   },
+  "level2_ambience": {
+    "sounds": [
+      "spb-revamped:level2/level2_ambience"
+    ]
+  },
   "level2_warp_creaking": {
     "sounds": [
       "spb-revamped:level2/level2_warp_creaking"
@@ -132,6 +137,58 @@
   "level2_warp_creaking_loop": {
     "sounds": [
       "spb-revamped:level2/level2_warp_creaking_loop"
+    ]
+  },
+  "sunset_transition": {
+    "sounds": [
+      "spb-revamped:poolrooms/sunset_transition"
+    ]
+  },
+  "sunset_transition_end": {
+    "sounds": [
+      "spb-revamped:poolrooms/sunset_transition_end"
+    ]
+  },
+  "swim": {
+    "sounds": [
+      "spb-revamped:swim/swim1",
+      "spb-revamped:swim/swim2",
+      "spb-revamped:swim/swim3",
+      "spb-revamped:swim/swim4",
+      "spb-revamped:swim/swim5",
+      "spb-revamped:swim/swim6",
+      "spb-revamped:swim/swim7"
+    ]
+  },
+
+  "poolrooms_ambience_noon": {
+    "sounds": [
+      "spb-revamped:poolrooms/poolrooms_ambience_noon"
+    ]
+  },
+  "poolrooms_ambience_sunset": {
+    "sounds": [
+      "spb-revamped:poolrooms/poolrooms_ambience_sunset"
+    ]
+  },
+  "poolrooms_splash1": {
+    "sounds": [
+      "spb-revamped:poolrooms/splash1"
+    ]
+  },
+  "poolrooms_splash2": {
+    "sounds": [
+      "spb-revamped:poolrooms/splash2"
+    ]
+  },
+  "poolrooms_drip1": {
+    "sounds": [
+      "spb-revamped:poolrooms/drip1"
+    ]
+  },
+  "poolrooms_drip2": {
+    "sounds": [
+      "spb-revamped:poolrooms/drip2"
     ]
   }
 }

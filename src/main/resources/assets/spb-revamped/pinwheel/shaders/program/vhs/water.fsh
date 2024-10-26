@@ -6,7 +6,7 @@
 
 #define REFRACTION_MULTIPLIER 0.02
 
-#define REFLECTIVITY 0.4
+#define REFLECTIVITY 0.6
 
 uniform sampler2D DiffuseSampler0;
 uniform sampler2D WaterFrameBuffer;
@@ -161,16 +161,17 @@ void main() {
 
 
         if(shadow >= 1.0){
-            normal = texture(NormalTexture, worldPos.xz * 0.1 + vec2(GameTime * 50)) - 0.5;
-            normal2 = texture(NormalTexture, worldPos.xz * 0.1 - vec2(0,GameTime * 50)) - 0.5;
-            normal2 += texture(NormalTexture, worldPos.xz * 0.1 - vec2(-GameTime * 103.235456,GameTime * 50)) - 0.5;
-            normal = (normal + normal2);
-            normal = vec4(normal.r, normal.b, normal.g, normal.a);
+            normal = texture(NormalTexture, worldPos.xz * 0.1 + vec2(GameTime * 50));
+            normal2 = texture(NormalTexture, worldPos.xz * 0.1 - vec2(0,GameTime * 50));
+            normal2 += texture(NormalTexture, worldPos.xz * 0.1 - vec2(-GameTime * 103.235456,GameTime * 50));
+            normal = (normal + normal2) / 3;
+            normal = vec4(normal.r, normal.b, normal.g, normal.a) * 2.0 - 1.0;
 
+            vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
+            lightangle.y = -lightangle.y;
 
-            vec3 viewDir = (VeilCamera.IViewMat * vec4(0,0,1,0)).xyz;
-            //viewDir.y = -viewDir.y;
-//            vec3 viewDir = viewPos * 0.1;
+            vec3 view = -VeilCamera.IViewMat[2].xyz;
+//            view.z = -view.z;
 
             vec3 reflectedLight = reflect(normalize(lightAngled), normalize(normal.rgb));
             float specular = dot(-reflectedLight, min(viewPos, -3.0));
@@ -178,9 +179,9 @@ void main() {
             specular *= 1;
 
             if(specular > 0.0){
-                fragColor += specular;
+            fragColor += specular;
             }
-
+//            fragColor = vec4(reflectedLight, 1.0);
         }
 
         float opaqueDepth = texture(OpaqueDepth, texCoord).r;

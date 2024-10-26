@@ -19,6 +19,7 @@ vec3 getShadow(vec3 playerSpace, vec4 normal, vec3 viewPos, mat4 viewMatrix, mat
     vec3 shadowNdcPos = homogenousPos.xyz / homogenousPos.w;
     vec3 distortedNdcSpace = distort(shadowNdcPos);
     vec3 shadowScreenSpace = distortedNdcSpace * 0.5 + 0.5;
+shadowScreenSpace.z = shadowScreenSpace.z - 0.0001;
 
     return shadowScreenSpace;
 }

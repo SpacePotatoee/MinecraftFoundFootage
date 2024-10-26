@@ -29,8 +29,8 @@ void main() {
 
     if (window.a > 0 && handDepth >= 1){
 
-        vec3 color = getSky(texCoord, GameTime, CloudNoise1, CloudNoise2);
-        fragColor = vec4(color, 1.0);
+//        vec3 color = getSky(texCoord, GameTime, CloudNoise1, CloudNoise2);
+//        fragColor = vec4(color, 1.0);
 
 //        vec3 rd = viewDirFromUv(texCoord);
 //

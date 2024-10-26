@@ -19,6 +19,7 @@ uniform vec2 Velocity;
 uniform float Test;
 uniform float GameTime;
 uniform int FogToggle;
+uniform int blackScreen;
 
 #define FOG_COLOR vec4(0.8, 0.8, 0.8, 1.0)
 
@@ -79,112 +80,115 @@ float brightness(vec4 color){
 }
 
 void main() {
-	float handDepth = texture(HandDepth, texCoord).r;
-	vec2 uv169 = texCoord * 3;
-	float dist2 = texCoord.x - 0.5f;
-	vec4 baseColor = texture(DiffuseSampler0, texCoord);
-	vec4 water = texture(WaterSampler, texCoord);
-	vec4 transparentSampler = texture(TransparentSampler, texCoord);
-	float depth = texture(DiffuseDepthSampler, texCoord).r;
-	vec3 positionVS = viewPosFromDepthSample(depth, texCoord);
-	float worldDepth = length(positionVS);
+	if(blackScreen == 0){
+		float handDepth = texture(HandDepth, texCoord).r;
+		vec2 uv169 = texCoord * 3;
+		float dist2 = texCoord.x - 0.5f;
+		vec4 baseColor = texture(DiffuseSampler0, texCoord);
+		vec4 water = texture(WaterSampler, texCoord);
+		vec4 transparentSampler = texture(TransparentSampler, texCoord);
+		float depth = texture(DiffuseDepthSampler, texCoord).r;
+		vec3 positionVS = viewPosFromDepthSample(depth, texCoord);
+		float worldDepth = length(positionVS);
 
-	vec3 camPos = VeilCamera.CameraPosition;
+		vec3 camPos = VeilCamera.CameraPosition;
 
 
-	vec4 ChromAbb = vec4(1);
-	ChromAbb.r = texture(DiffuseSampler0, vec2(texCoord.x + dist2 * 0.01f, texCoord.y)).r;
-	ChromAbb.g = texture(DiffuseSampler0, vec2(texCoord.x - dist2 * 0.012f, texCoord.y)).g;
-	ChromAbb.b = texture(DiffuseSampler0, vec2(texCoord.x - dist2 * 0.01f, texCoord.y)).b;
+		vec4 ChromAbb = vec4(1);
+		ChromAbb.r = texture(DiffuseSampler0, vec2(texCoord.x + dist2 * 0.01f, texCoord.y)).r;
+		ChromAbb.g = texture(DiffuseSampler0, vec2(texCoord.x - dist2 * 0.012f, texCoord.y)).g;
+		ChromAbb.b = texture(DiffuseSampler0, vec2(texCoord.x - dist2 * 0.01f, texCoord.y)).b;
 
-	vec4 blur = vec4(0);
-	if (brightness(transparentSampler) <= 0.0) {
-		const float kernalSize = 21;
-		const float halfSize = 10;
-		const float coeff = 1 / (kernalSize * kernalSize);
-		const vec2 dx = vec2(0.0005, 0.0);
-		const vec2 dy = vec2(0.0, 0.0005);
+		vec4 blur = vec4(0);
+		if (brightness(transparentSampler) <= 0.0) {
+			const float kernalSize = 21;
+			const float halfSize = 10;
+			const float coeff = 1 / (kernalSize * kernalSize);
+			const vec2 dx = vec2(0.0005, 0.0);
+			const vec2 dy = vec2(0.0, 0.0005);
 
-		for (float x = -halfSize; x <= halfSize; x++) {
-			for (float y = -halfSize; y <= halfSize; y++) {
-				blur += (coeff * 1) * texture(MixedSampler, texCoord + x * dx + y * dy);
-			}
-		}
-	}
-	else {
-		const float kernalSize = 7;
-		const float halfSize = 3;
-		const float coeff = 1 / (kernalSize * kernalSize);
-		const vec2 dx = vec2(0.001, 0.0);
-		const vec2 dy = vec2(0.0, 0.001);
-
-		for (float x = -halfSize; x <= halfSize; x++) {
-			for (float y = -halfSize; y <= halfSize; y++) {
-				blur += (coeff * 0.5) * texture(MixedSampler, texCoord + x * dx + y * dy);
-			}
-		}
-	}
-
-	//Initialize
-	vec3 ro = camPos;
-	vec3 rd = viewDirFromUv(texCoord);
-	float travDist = 0.0;
-	float hitDist = 0.0;
-	vec4 col = vec4(0);
-	bool inside = false;
-	float fog = 0.0;
-	vec3 p;
-
-	if (FogToggle == 1) {
-		//Raymarching
-		for (int i = 0; i < 250; i++) {
-			if (inside == false) {
-				if (worldDepth > 500) {
-					break;
+			for (float x = - halfSize; x <= halfSize; x++) {
+				for (float y = - halfSize; y <= halfSize; y++) {
+					blur += (coeff * 1) * texture(MixedSampler, texCoord + x * dx + y * dy);
 				}
-
-				p = ro + rd * travDist;
-				float d = map(p);
-				travDist += d;
-
-
-				if (d < 0.001) {
-					hitDist = travDist;
-					inside = true;
-				}
-
 			}
-			else {
-				float noise = noise3D(p);
-				fog += 0.001 * noise;
-				p = ro + rd * travDist;
-				travDist += 0.05;
-				if (travDist > worldDepth || fog >= 1 || travDist > 50 || p.y < 0) {
-					break;
+		} else {
+			const float kernalSize = 7;
+			const float halfSize = 3;
+			const float coeff = 1 / (kernalSize * kernalSize);
+			const vec2 dx = vec2(0.001, 0.0);
+			const vec2 dy = vec2(0.0, 0.001);
+
+			for (float x = - halfSize; x <= halfSize; x++) {
+				for (float y = - halfSize; y <= halfSize; y++) {
+					blur += (coeff * 0.5) * texture(MixedSampler, texCoord + x * dx + y * dy);
 				}
 			}
 		}
-	}
 
-	fragColor = fxaa(texCoord, DiffuseSampler0);
+		//Initialize
+		vec3 ro = camPos;
+		vec3 rd = viewDirFromUv(texCoord);
+		float travDist = 0.0;
+		float hitDist = 0.0;
+		vec4 col = vec4(0);
+		bool inside = false;
+		float fog = 0.0;
+		vec3 p;
 
-	vec4 puddles = texture(PuddleSampler, texCoord);
-	fragColor = vec4(blend(fragColor, puddles), 1.0);
+		if (FogToggle == 1) {
+			//Raymarching
+			for (int i = 0; i < 250; i++) {
+				if (inside == false) {
+					if (worldDepth > 500) {
+						break;
+					}
 
-	if (brightness(water) != 0) {
-		fragColor = texture(WaterSampler, texCoord);
-	}
+					p = ro + rd * travDist;
+					float d = map(p);
+					travDist += d;
 
-	if (FogToggle == 1) {
-		fragColor = mix(fragColor, FOG_COLOR, fog);
-	}
 
-	fragColor -= vec4(vec3(random(uv169 + GameTime)), 1) * 0.06;
-	fragColor += vec4(vec3(hash12n2(floor(texCoord * 1000))), 1) * 0.06;
-	fragColor += blur;
-	fragColor = pow(fragColor, vec4(1.3));
-	if (handDepth != 1) {
-		fragColor = texture(HandSampler, texCoord);
+					if (d < 0.001) {
+						hitDist = travDist;
+						inside = true;
+					}
+
+				}
+				else {
+					float noise = noise3D(p);
+					fog += 0.001 * noise;
+					p = ro + rd * travDist;
+					travDist += 0.05;
+					if (travDist > worldDepth || fog >= 1 || travDist > 50 || p.y < 0) {
+						break;
+					}
+				}
+			}
+		}
+
+		fragColor = fxaa(texCoord, DiffuseSampler0);
+
+		vec4 puddles = texture(PuddleSampler, texCoord);
+		fragColor = vec4(blend(fragColor, puddles), 1.0);
+
+		if (brightness(water) != 0) {
+			fragColor = texture(WaterSampler, texCoord);
+		}
+
+		if (FogToggle == 1) {
+			fragColor = mix(fragColor, FOG_COLOR, fog);
+		}
+
+		fragColor -= vec4(vec3(random(uv169 + GameTime)), 1) * 0.06;
+		fragColor += vec4(vec3(hash12n2(floor(texCoord * 1000))), 1) * 0.06;
+		fragColor += blur;
+		fragColor = pow(fragColor, vec4(1.3));
+		if (handDepth != 1) {
+			fragColor = texture(HandSampler, texCoord);
+		}
+	}else{
+		fragColor = vec4(0.0,0.0,0.0,1.0);
 	}
 
 }
