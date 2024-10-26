@@ -1,6 +1,6 @@
 package com.sp.world.generation.maze_generator;
 
-import com.sp.block.ModBlocks;
+import com.sp.init.ModBlocks;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;

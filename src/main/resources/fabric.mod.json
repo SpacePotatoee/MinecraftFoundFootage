@@ -18,7 +18,9 @@
 		"client": ["com.sp.SPBRevampedClient"],
 		"fabric-datagen": ["com.sp.SPBRevampedDataGenerator"],
 		"cardinal-components": ["com.sp.cca_stuff.InitializeComponents"],
-		"modmenu": ["com.sp.config_stuff.ModMenuMenu"]
+		"modmenu": [
+			"com.sp.init.ModMenuMenu"
+		]
 	},
 	"custom": {
 		"cardinal-components": [

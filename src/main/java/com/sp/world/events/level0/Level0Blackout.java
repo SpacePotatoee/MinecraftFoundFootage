@@ -2,7 +2,7 @@ package com.sp.world.events.level0;
 
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
-import com.sp.sounds.ModSounds;
+import com.sp.init.ModSounds;
 import com.sp.world.events.AbstractEvent;
 import net.minecraft.world.World;
 

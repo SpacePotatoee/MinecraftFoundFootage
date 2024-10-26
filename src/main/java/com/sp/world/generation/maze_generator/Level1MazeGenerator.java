@@ -1,7 +1,7 @@
 package com.sp.world.generation.maze_generator;
 
 import com.sp.SPBRevamped;
-import com.sp.block.ModBlocks;
+import com.sp.init.ModBlocks;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;

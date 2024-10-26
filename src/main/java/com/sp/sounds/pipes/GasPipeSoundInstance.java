@@ -1,7 +1,7 @@
-package com.sp.sounds.instances.pipes;
+package com.sp.sounds.pipes;
 
-import com.sp.sounds.ModSounds;
-import com.sp.world.levels.BackroomsLevels;
+import com.sp.init.ModSounds;
+import com.sp.world.BackroomsLevels;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,18 +9,18 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 
-public class WaterPipeSoundInstance extends MovingSoundInstance {
+public class GasPipeSoundInstance extends MovingSoundInstance {
     private final PlayerEntity player;
 
-    public WaterPipeSoundInstance(PlayerEntity player) {
-        super(ModSounds.WATER_PIPE, SoundCategory.AMBIENT, SoundInstance.createRandom());
+    public GasPipeSoundInstance(PlayerEntity player) {
+        super(ModSounds.GAS_PIPE, SoundCategory.AMBIENT, SoundInstance.createRandom());
         this.x = 1.5;
-        this.y = 20.5;
+        this.y = 22.5;
         this.z = player.getZ();
         this.player = player;
         this.repeat = true;
         this.repeatDelay = 0;
-        this.volume = 0.3F;
+        this.volume = 0.1F;
     }
 
     @Override

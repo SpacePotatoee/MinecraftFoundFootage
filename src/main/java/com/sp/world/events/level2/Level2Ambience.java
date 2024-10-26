@@ -1,6 +1,6 @@
 package com.sp.world.events.level2;
 
-import com.sp.sounds.ModSounds;
+import com.sp.init.ModSounds;
 import com.sp.world.events.AbstractEvent;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.random.Random;
@@ -8,24 +8,25 @@ import net.minecraft.world.World;
 
 public class Level2Ambience implements AbstractEvent {
     boolean done = false;
+    int duration = 200;
 
     @Override
     public void init(World world) {
         Random random = Random.create();
-        int rand = random.nextBetween(1, 4);
+        int rand = random.nextBetween(1, 3);
         SoundEvent soundEvent;
         switch(rand){
-            case 1: soundEvent = ModSounds.LEVEL1_AMBIENCE1;
+            case 1: soundEvent = ModSounds.CREAKING1;
             break;
-            case 2: soundEvent = ModSounds.LEVEL1_AMBIENCE2;
+            case 2: soundEvent = ModSounds.CREAKING2;
             break;
-            case 3: soundEvent = ModSounds.LEVEL1_AMBIENCE3;
-            break;
-            default: soundEvent = ModSounds.LEVEL1_AMBIENCE4;
+            default: {
+                soundEvent = ModSounds.LEVEL2_AMBIENCE;
+                duration = 720;
+            }
             break;
         }
-
-        playDistantSound(world, soundEvent);
+        playLevel2Sound(world, soundEvent);
     }
 
     @Override
@@ -40,6 +41,6 @@ public class Level2Ambience implements AbstractEvent {
 
     @Override
     public int duration() {
-        return 1200;
+        return duration;
     }
 }

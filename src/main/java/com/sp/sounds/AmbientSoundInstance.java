@@ -1,7 +1,7 @@
-package com.sp.sounds.instances;
+package com.sp.sounds;
 
-import com.sp.sounds.ModSounds;
-import com.sp.world.levels.BackroomsLevels;
+import com.sp.init.ModSounds;
+import com.sp.world.BackroomsLevels;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.player.PlayerEntity;

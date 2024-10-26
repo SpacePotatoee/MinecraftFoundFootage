@@ -1,13 +1,11 @@
-package com.sp.sounds.instances;
+package com.sp.sounds;
 
-import com.sp.block.ModBlocks;
+import com.sp.init.ModBlocks;
 import com.sp.block.custom.FluorescentLightBlock;
-import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.block.entity.FluorescentLightBlockEntity;
-import com.sp.block.entity.ThinFluorescentLightBlockEntity;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
-import com.sp.sounds.ModSounds;
+import com.sp.init.ModSounds;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;

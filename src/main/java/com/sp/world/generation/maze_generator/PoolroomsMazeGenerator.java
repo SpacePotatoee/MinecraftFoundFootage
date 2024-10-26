@@ -1,7 +1,7 @@
 package com.sp.world.generation.maze_generator;
 
 import com.sp.SPBRevamped;
-import com.sp.block.ModBlocks;
+import com.sp.init.ModBlocks;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;
@@ -13,7 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.StructureWorldAccess;
 
-import java.io.File;
 import java.util.*;
 
 import static com.sp.block.custom.WallBlock.BOTTOM;
@@ -52,7 +51,7 @@ public class PoolroomsMazeGenerator {
         StructureTemplateManager structureTemplateManager = world.getServer().getStructureTemplateManager();
         Identifier roomIdentifier = null;
         int w = random.nextBetween(1, 6);
-        int p = random.nextBetween(1, 2);
+        int p = random.nextBetween(1, 3);
 
         if(w == 1) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x16_" + p);
         else if (w == 2) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x24_" + p);
@@ -86,7 +85,7 @@ public class PoolroomsMazeGenerator {
             String currentMegaRoom = megaRoomList.get(ind);
             int xx = Integer.parseInt(currentMegaRoom.substring(0, 2));
             int yy = Integer.parseInt(currentMegaRoom.substring(3, 5));
-            p = random.nextBetween(1, 2);
+            p = random.nextBetween(1, 3);
             if (yy < xx){
                 structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.COUNTERCLOCKWISE_90).setIgnoreEntities(true);
                 roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + yy + "x" + xx + "_" + p);

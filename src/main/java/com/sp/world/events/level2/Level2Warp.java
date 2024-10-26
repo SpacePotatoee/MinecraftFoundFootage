@@ -3,7 +3,7 @@ package com.sp.world.events.level2;
 import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
-import com.sp.sounds.ModSounds;
+import com.sp.init.ModSounds;
 import com.sp.world.events.AbstractEvent;
 import net.minecraft.world.World;
 
@@ -20,7 +20,6 @@ public class Level2Warp implements AbstractEvent {
     @Override
     public void reset(World world) {
         WorldEvents events = InitializeComponents.EVENTS.get(world);
-        System.out.println("RESET");
         if(SPBRevampedClient.tickTimer.getCurrentTick() == 0){
             events.setLevel2Warp(false);
             done = true;
