@@ -1,20 +1,14 @@
 package com.sp.block.entity;
 
-import com.sp.ConfigStuff;
-import com.sp.block.ModBlocks;
+import com.sp.init.ModBlockEntities;
+import com.sp.init.ModBlocks;
 import com.sp.block.custom.DrawingMarker;
 import com.sp.block.custom.WallText;
-import com.sp.world.levels.BackroomsLevels;
-import foundry.veil.api.client.render.VeilRenderSystem;
-import foundry.veil.api.client.render.deferred.light.PointLight;
-import net.minecraft.block.Block;
+import com.sp.world.BackroomsLevels;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 

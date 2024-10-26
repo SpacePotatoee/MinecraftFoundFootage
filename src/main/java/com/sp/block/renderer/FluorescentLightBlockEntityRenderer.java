@@ -2,8 +2,8 @@ package com.sp.block.renderer;
 
 import com.sp.ConfigStuff;
 import com.sp.block.custom.FluorescentLightBlock;
-import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.block.entity.FluorescentLightBlockEntity;
+import com.sp.init.RenderLayers;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;

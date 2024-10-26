@@ -1,6 +1,7 @@
 package com.sp.block.renderer;
 
 import com.sp.ConfigStuff;
+import com.sp.init.RenderLayers;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;

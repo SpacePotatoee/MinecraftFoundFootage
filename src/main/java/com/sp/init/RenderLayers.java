@@ -1,10 +1,8 @@
-package com.sp.block.renderer;
+package com.sp.init;
 
 import com.sp.SPBRevamped;
 import foundry.veil.api.client.render.VeilRenderBridge;
-import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.util.Identifier;
 
 public class RenderLayers extends RenderLayer {

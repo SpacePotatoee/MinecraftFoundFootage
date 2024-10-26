@@ -1,7 +1,7 @@
 package com.sp.item;
 
 import com.sp.SPBRevamped;
-import com.sp.block.ModBlocks;
+import com.sp.init.ModBlocks;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;

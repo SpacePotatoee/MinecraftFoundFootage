@@ -1,7 +1,7 @@
 package com.sp.block.custom;
 
 import com.sp.block.entity.FluorescentLightBlockEntity;
-import com.sp.block.entity.ModBlockEntities;
+import com.sp.init.ModBlockEntities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;

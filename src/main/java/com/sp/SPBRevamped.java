@@ -1,10 +1,10 @@
 package com.sp;
 
-import com.sp.block.entity.ModBlockEntities;
+import com.sp.init.ModBlockEntities;
 import com.sp.item.ModItemGroups;
-import com.sp.item.ModItems;
+import com.sp.init.ModItems;
 import com.sp.networking.InitializePackets;
-import com.sp.sounds.ModSounds;
+import com.sp.init.ModSounds;
 import com.sp.world.generation.Level0ChunkGenerator;
 import com.sp.world.generation.Level1ChunkGenerator;
 import com.sp.world.generation.Level2ChunkGenerator;

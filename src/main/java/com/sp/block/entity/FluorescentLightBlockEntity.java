@@ -1,13 +1,14 @@
 package com.sp.block.entity;
 
 import com.sp.ConfigStuff;
-import com.sp.block.ModBlocks;
+import com.sp.init.ModBlockEntities;
+import com.sp.init.ModBlocks;
 import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
-import com.sp.sounds.instances.FluorescentLightSoundInstance;
-import com.sp.sounds.ModSounds;
-import com.sp.world.levels.BackroomsLevels;
+import com.sp.sounds.FluorescentLightSoundInstance;
+import com.sp.init.ModSounds;
+import com.sp.world.BackroomsLevels;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.deferred.light.PointLight;
 import net.minecraft.block.BlockState;

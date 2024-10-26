@@ -1,4 +1,4 @@
-package com.sp.sounds;
+package com.sp.init;
 
 import com.sp.SPBRevamped;
 import net.minecraft.registry.Registries;
@@ -43,8 +43,19 @@ public class ModSounds {
     public static final SoundEvent GAS_PIPE = registerSoundEvent("gas_pipe");
     public static final SoundEvent CREAKING1 = registerSoundEvent("creaking1");
     public static final SoundEvent CREAKING2 = registerSoundEvent("creaking2");
-    public static final SoundEvent LEVEL2_WARP_CREAKING = registerSoundEvent("level2_warp_creaking");
+    public static final SoundEvent LEVEL2_AMBIENCE = registerSoundEvent("level2_ambience");
     public static final SoundEvent LEVEL2_WARP_CREAKING_LOOP = registerSoundEvent("level2_warp_creaking_loop");
+
+
+    public static final SoundEvent SWIM = registerSoundEvent("swim");
+    public static final SoundEvent POOLROOMS_AMBIENCE_NOON = registerSoundEvent("poolrooms_ambience_noon");
+    public static final SoundEvent POOLROOMS_AMBIENCE_SUNSET = registerSoundEvent("poolrooms_ambience_sunset");
+    public static final SoundEvent POOLROOMS_SPLASH1 = registerSoundEvent("poolrooms_splash1");
+    public static final SoundEvent POOLROOMS_SPLASH2 = registerSoundEvent("poolrooms_splash2");
+    public static final SoundEvent POOLROOMS_DRIP1 = registerSoundEvent("poolrooms_drip1");
+    public static final SoundEvent POOLROOMS_DRIP2 = registerSoundEvent("poolrooms_drip2");
+    public static final SoundEvent SUNSET_TRANSITION = registerSoundEvent("sunset_transition");
+    public static final SoundEvent SUNSET_TRANSITION_END = registerSoundEvent("sunset_transition_end");
 
 
     private static SoundEvent registerSoundEvent(String name) {

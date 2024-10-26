@@ -1,6 +1,6 @@
 package com.sp.datagen;
 
-import com.sp.block.ModBlocks;
+import com.sp.init.ModBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.client.BlockStateModelGenerator;

@@ -1,6 +1,6 @@
 package com.sp.block.custom;
 
-import com.sp.block.entity.ModBlockEntities;
+import com.sp.init.ModBlockEntities;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;

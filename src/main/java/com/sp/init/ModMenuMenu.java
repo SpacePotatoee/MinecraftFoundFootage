@@ -1,6 +1,5 @@
-package com.sp.config_stuff;
+package com.sp.init;
 
-import com.sp.ConfigStuff;
 import com.sp.SPBRevamped;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;

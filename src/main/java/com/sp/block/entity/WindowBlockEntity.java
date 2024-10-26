@@ -1,5 +1,6 @@
 package com.sp.block.entity;
 
+import com.sp.init.ModBlockEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;

@@ -1,4 +1,4 @@
-package com.sp.block;
+package com.sp.init;
 
 import com.sp.SPBRevamped;
 import com.sp.block.custom.*;

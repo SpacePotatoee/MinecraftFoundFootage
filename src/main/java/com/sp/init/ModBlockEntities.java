@@ -1,7 +1,10 @@
-package com.sp.block.entity;
+package com.sp.init;
 
 import com.sp.SPBRevamped;
-import com.sp.block.ModBlocks;
+import com.sp.block.entity.DrawingMarkerBlockEntity;
+import com.sp.block.entity.FluorescentLightBlockEntity;
+import com.sp.block.entity.ThinFluorescentLightBlockEntity;
+import com.sp.block.entity.WindowBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
