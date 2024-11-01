@@ -190,5 +190,15 @@
     "sounds": [
       "spb-revamped:poolrooms/drip2"
     ]
+  },
+  "falling": {
+    "sounds": [
+      "spb-revamped:cutscene/falling"
+    ]
+  },
+  "glitch": {
+    "sounds": [
+      "spb-revamped:cutscene/glitch"
+    ]
   }
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.VertexSorter;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
+import com.sp.init.RenderLayers;
 import com.sp.mixin.WorldRendererAccessor;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.framebuffer.AdvancedFbo;

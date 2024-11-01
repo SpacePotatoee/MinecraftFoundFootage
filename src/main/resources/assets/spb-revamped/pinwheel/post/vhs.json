@@ -44,6 +44,14 @@
         }
     ],
     "textures": {
+        "NoiseTexture": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/super_noise.png"
+        },
+        "Backrooms": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/backrooms.png"
+        },
         "MidSampler": {
             "type": "framebuffer",
             "name": "spb-revamped:mid"
@@ -88,9 +96,9 @@
             "type": "framebuffer",
             "name": "spb-revamped:puddle_sampler"
         },
-        "NoiseTexture": {
-            "type": "location",
-            "location": "spb-revamped:textures/shaders/super_noise.png"
+        "MinecraftMain": {
+            "type": "framebuffer",
+            "name": "minecraft:main"
         }
     }
 }

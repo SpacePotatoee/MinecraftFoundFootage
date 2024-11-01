@@ -15,7 +15,9 @@ uniform sampler2D MixedSampler;
 uniform sampler2D HandDepth;
 uniform sampler2D TransparentSampler;
 uniform sampler2D PuddleSampler;
+uniform sampler2D Backrooms;
 uniform vec2 Velocity;
+uniform ivec2 resolution;
 uniform float Test;
 uniform float GameTime;
 uniform int FogToggle;
@@ -79,8 +81,13 @@ float brightness(vec4 color){
 	return (color.r + color.g + color.b)/3;
 }
 
+vec3 viewDirFromUv2(vec2 uv) {
+	return (mat3(VeilCamera.IViewMat) * normalize(viewPosFromDepth(1.0, uv))).xyz;
+}
+
 void main() {
 	if(blackScreen == 0){
+		vec4 BackroomsText = texture(Backrooms, vec2(texCoord.x, -texCoord.y));
 		float handDepth = texture(HandDepth, texCoord).r;
 		vec2 uv169 = texCoord * 3;
 		float dist2 = texCoord.x - 0.5f;
@@ -128,14 +135,13 @@ void main() {
 
 		//Initialize
 		vec3 ro = camPos;
-		vec3 rd = viewDirFromUv(texCoord);
+		vec3 rd = normalize(viewToPlayerSpace(positionVS));
 		float travDist = 0.0;
 		float hitDist = 0.0;
 		vec4 col = vec4(0);
 		bool inside = false;
 		float fog = 0.0;
 		vec3 p;
-
 		if (FogToggle == 1) {
 			//Raymarching
 			for (int i = 0; i < 250; i++) {
@@ -166,8 +172,9 @@ void main() {
 				}
 			}
 		}
+//		fragColor = vec4(normalize(rd), 1.0);
 
-		fragColor = fxaa(texCoord, DiffuseSampler0);
+		fragColor = texture(DiffuseSampler0, texCoord);
 
 		vec4 puddles = texture(PuddleSampler, texCoord);
 		fragColor = vec4(blend(fragColor, puddles), 1.0);
@@ -187,10 +194,10 @@ void main() {
 		if (handDepth != 1) {
 			fragColor = texture(HandSampler, texCoord);
 		}
+
 	}else{
 		fragColor = vec4(0.0,0.0,0.0,1.0);
 	}
-
 }
 
 

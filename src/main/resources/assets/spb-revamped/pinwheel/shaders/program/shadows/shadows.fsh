@@ -108,7 +108,7 @@ void main() {
         //////////////////////////////////////////////////////////////////////////
 
         vec3 ro = VeilCamera.CameraPosition;
-        vec3 rd = viewDirFromUv(texCoord);
+        vec3 rd = normalize(viewToPlayerSpace(viewPos));
         float dist = 0.0;
         float brightness = 0.0;
 

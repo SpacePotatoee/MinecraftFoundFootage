@@ -32,6 +32,13 @@ float brightness(vec4 color){
     return (color.r + color.g + color.b) / 3;
 }
 
+void spaceConversion(inout vec4 projectedCoords, inout float posDepth, inout vec3 Pos){
+    projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
+    projectedCoords.xyz /= projectedCoords.w;
+    projectedCoords = projectedCoords * 0.5 + 0.5;
+    posDepth = texture(DepthSampler, projectedCoords.xy).r;
+}
+
 vec2 rayMarch(vec3 dir, vec3 origin){
     float posDepth = 0.0;
     float dDepth = 0.0;
@@ -43,24 +50,15 @@ vec2 rayMarch(vec3 dir, vec3 origin){
     for(int i = 0; i < maxSteps; i++){
         Pos += dir;
 
-        projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
-        projectedCoords.xyz /= projectedCoords.w;
-        projectedCoords = projectedCoords * 0.5 + 0.5;
-        posDepth = texture(DepthSampler, projectedCoords.xy).r;
-
+        spaceConversion(projectedCoords, posDepth, Pos);
         if (projectedCoords.x < 0.0 || projectedCoords.x > 1.0 || projectedCoords.y < 0.0 || projectedCoords.y > 1.0) break;
 
         dDepth = Pos.z - posDepth;
         //Hit
         if (projectedCoords.z > posDepth){
-
-
             //Binary Search
             for (int j = 0; j < BinSearchSteps; j++){
-                projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
-                projectedCoords.xyz /= projectedCoords.w;
-                projectedCoords = projectedCoords * 0.5 + 0.5;
-                posDepth = texture(DepthSampler, projectedCoords.xy).r;
+                spaceConversion(projectedCoords, posDepth, Pos);
 
                 dDepth = projectedCoords.z - posDepth;
                 dir *= 0.5;
@@ -72,10 +70,7 @@ vec2 rayMarch(vec3 dir, vec3 origin){
                 }
             }
 
-            projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
-            projectedCoords.xyz /= projectedCoords.w;
-            projectedCoords = projectedCoords * 0.5 + 0.5;
-            posDepth = texture(DepthSampler, projectedCoords.xy).r;
+            spaceConversion(projectedCoords, posDepth, Pos);
             return projectedCoords.xy;
         }
 
@@ -88,6 +83,7 @@ vec4 getReflection(vec4 fragColor, vec4 normal, vec3 viewPos, float jitterMult){
     vec3 worldSpace = viewToWorldSpace(viewPos);
     vec3 jitter = hash(worldSpace) * jitterMult;
     vec2 projectedCoord = rayMarch(jitter + reflected * max(rayStep, -viewPos.z), viewPos);
+//    vec2 projectedCoord = rayMarch(reflected, viewPos);
     vec3 reflectedTexture = texture(DiffuseSampler0, projectedCoord).rgb;
     float Luminance = luminance(reflectedTexture);
 
@@ -100,7 +96,7 @@ vec4 getReflection(vec4 fragColor, vec4 normal, vec3 viewPos, float jitterMult){
     if(Luminance >= 1.0){
         return mix(fragColor, mix(fragColor, vec4(reflectedTexture * 20, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0, 1));
     }
-
+//    return vec4(projectedCoord, 0.0, 1.0);
     return mix(fragColor, mix(fragColor, vec4(reflectedTexture, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0, 1));
 }
 
@@ -137,6 +133,8 @@ void main() {
                 fragColor -= 0.015;
             }
         }
+//    fragColor = vec4(normalize(viewToPlayerSpace(viewSpace)), 1.0);
+
     }
 }
 

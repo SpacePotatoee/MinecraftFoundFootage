@@ -6,10 +6,9 @@ import com.sp.block.renderer.*;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.RenderLayers;
 import com.sp.networking.InitializePackets;
-import com.sp.render.CameraRoll;
-import com.sp.render.CutsceneManager;
-import com.sp.render.ShadowMapRenderer;
+import com.sp.render.*;
 import com.sp.init.ModSounds;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
@@ -31,8 +30,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.option.SimpleOption;
@@ -41,7 +39,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -58,7 +55,9 @@ import static net.minecraft.util.math.MathHelper.lerp;
 
 public class SPBRevampedClient implements ClientModInitializer {
     private static CutsceneManager cutsceneManager = new CutsceneManager();
+    private static CameraShake cameraShake = new CameraShake();
     private static final Identifier VHS_POST = new Identifier(SPBRevamped.MOD_ID, "vhs");
+    private static final Identifier SSAO = new Identifier(SPBRevamped.MOD_ID, "ssao");
     private static final Identifier VHS_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/vhs");
     private static final Identifier MOTION_BLUR = new Identifier(SPBRevamped.MOD_ID, "vhs/motion_blur");
     private static final Identifier WATER_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/water");
@@ -97,15 +96,22 @@ public class SPBRevampedClient implements ClientModInitializer {
     public static TickTimer SunsetTimer = new TickTimer();
     public static boolean blackScreen;
 
+    private static boolean setSamples = false;
+
     @Override
     public void onInitializeClient() {
-
+        HudRenderCallback.EVENT.register(new TitleText());
 
         InitializePackets.registerS2CPackets();
 
         Keybinds.inizializeKeyBinds();
 
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayer.getCutoutMipped());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayers.getConcreteLayer());
+
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CHAINFENCE, RenderLayers.getChainFence());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CeilingTile, RenderLayers.getCeilingTile());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CarpetBlock, RenderLayers.getCarpet());
+
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.BottomTrim, RenderLayer.getCutout());
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText1, RenderLayer.getCutout());
@@ -146,7 +152,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             if(playerClient != null){
                 SimpleOption<Integer> fps =  MinecraftClient.getInstance().options.getMaxFps();
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(playerClient);
-                if (client.world.getBiome(playerClient.getBlockPos()).getKey().get() == ModBiomes.BASE_BACKROOMS_BIOME || client.world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY){
+                if (client.world.getBiome(playerClient.getBlockPos()).getKey().get() == ModBiomes.BASE_BACKROOMS_BIOME){
                     setInBackrooms(true);
                     //fps.setValue(30);
                 }else {
@@ -154,6 +160,9 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }
 
                 if(client.world != null) {
+                    if(client.world.getBiome(client.player.getBlockPos()) != ModBiomes.BASE_BACKROOMS_BIOME){
+                    }
+
                     if (client.world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
                         if (!changed) {
                             playerComponent.setLightRenderDistance(ConfigStuff.lightRenderDistance);
@@ -181,20 +190,17 @@ public class SPBRevampedClient implements ClientModInitializer {
                             }
                         }
                     }
-
-//                    WorldEvents events = InitializeComponents.EVENTS.get(client.world);
-//                    System.out.println(events.isSunsetTransition());
-
+                    VeilRenderer renderer = VeilRenderSystem.renderer();
+                    VeilDeferredRenderer deferredRenderer = renderer.getDeferredRenderer();
+                    LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
+                    if (!ConfigStuff.enableVanillaLighting && inBackrooms && client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                        lightRenderer.disableVanillaLight();
+                    } else {
+                        lightRenderer.enableVanillaLight();
+                    }
                 }
 
-                VeilRenderer renderer = VeilRenderSystem.renderer();
-                VeilDeferredRenderer deferredRenderer = renderer.getDeferredRenderer();
-                LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
-                if (!ConfigStuff.enableVanillaLighting && inBackrooms) {
-                    lightRenderer.disableVanillaLight();
-                }else{
-                    lightRenderer.enableVanillaLight();
-                }
+
             }
 
 
@@ -316,7 +322,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 if (stage == Stage.AFTER_LEVEL) {
                     PostPipeline Pipeline = postProcessingManager.getPipeline(VHS_POST);
                     if (Pipeline != null) {
-                        if (ConfigStuff.enableVhsEffect && inBackrooms) {
+                        if (ConfigStuff.enableVhsEffect) {
                             postProcessingManager.add(VHS_POST);
                         } else if (postProcessingManager.isActive(VHS_POST)) {
                             postProcessingManager.remove(VHS_POST);
@@ -333,94 +339,113 @@ public class SPBRevampedClient implements ClientModInitializer {
             VeilRenderer renderer = VeilRenderSystem.renderer();
             ShaderPreDefinitions definitions = renderer.getShaderDefinitions();
 
-            if(inBackrooms) {
-                if (player != null && client.world != null) {
-                    WorldEvents events = InitializeComponents.EVENTS.get(client.world);
-                    float yaw = player.getYaw();
-                    float pitch = player.getPitch();
-                    float yawRotAmount = yaw - prevYaw2;
-                    float pitchRotAmount = pitch - prevPitch2;
-
-                    if (VHS_POST.equals(name)) {
-                        ShaderProgram shaderProgram = context.getShader(MOTION_BLUR);
-                        if (shaderProgram != null) {
-                            shaderProgram.setVector("Velocity", MathHelper.cos((float) Math.toRadians(yawRotAmount + 90.0f)), MathHelper.sin((float) Math.toRadians(pitchRotAmount)));
-                        }
-
-                        shaderProgram = context.getShader(VHS_SHADER);
-                        if (shaderProgram != null) {
-                            if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                                shaderProgram.setInt("FogToggle", 1);
-                            } else {
-                                shaderProgram.setInt("FogToggle", 0);
-                            }
-
-                            if(this.blackScreen){
-                                shaderProgram.setInt("blackScreen", 1);
-                            } else {
-                                shaderProgram.setInt("blackScreen", 0);
-                            }
-
-                        }
-
-                        shaderProgram = context.getShader(SHADOWS_SHADER);
-                        if (shaderProgram != null) {
-                            if(this.camera != null) {
-                                setShadowUniforms(shaderProgram, client.world);
-                            }
-
-                            if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                                shaderProgram.setInt("ShadowToggle", 1);
-                            } else {
-                                shaderProgram.setInt("ShadowToggle", 0);
-                            }
-
-                            if(events.isSunsetTransition()) {
-                                setShadowUniforms(shaderProgram, client.world);
-                            }
-
-                            shaderProgram.setFloat("sunsetTimer", getSunsetTimer(client.world));
-
-                        }
-
-                        shaderProgram = context.getShader(WATER_SHADER);
-                        if (shaderProgram != null) {
-                            if(this.camera != null) {
-                                setShadowUniforms(shaderProgram, client.world);
-                            }
-                        }
-
-                        shaderProgram = context.getShader(PUDDLES_SHADER);
-                        if (shaderProgram != null) {
-                            if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                                shaderProgram.setInt("TogglePuddles", 1);
-                            } else {
-                                shaderProgram.setInt("TogglePuddles", 0);
-                            }
-
-                            shaderProgram.setMatrix("projMat", client.gameRenderer.getBasicProjectionMatrix(client.gameRenderer.getFov(camera, this.partialTicks, true)));
-
-                        }
-
-                    }
-
-                    if (events.isLevel2Warp()) {
-                        if(definitions.getDefinition("WARP") == null) {
-                            definitions.define("WARP");
-                        }
-                    } else {
-                        if(definitions.getDefinition("WARP") != null) {
-                            definitions.remove("WARP");
-                        }
-                    }
-                    prevYaw2 = yaw;
-                    prevPitch2 = pitch;
-                }
-            }
-            else {
+            if(!inBackrooms) {
                 if(definitions.getDefinition("WARP") != null) {
                     definitions.remove("WARP");
                 }
+            }
+
+            if (player != null && client.world != null) {
+                WorldEvents events = InitializeComponents.EVENTS.get(client.world);
+                float yaw = player.getYaw();
+                float pitch = player.getPitch();
+                float yawRotAmount = yaw - prevYaw2;
+                float pitchRotAmount = pitch - prevPitch2;
+
+                if(SSAO.equals(name)){
+                    ShaderProgram shaderProgram = context.getShader(SSAO);
+                    if(shaderProgram != null) {
+//                        if (!setSamples) {
+                            shaderProgram.setVectors("samples", SSAOSamples.getSSAOSamples());
+                            setSamples = true;
+//                        }
+                    }
+                }
+
+                if (VHS_POST.equals(name)) {
+                    ShaderProgram shaderProgram = context.getShader(MOTION_BLUR);
+                    if (shaderProgram != null) {
+                        if(!getCutsceneManager().isPlaying) {
+                            shaderProgram.setVector("Velocity", MathHelper.cos((float) Math.toRadians(yawRotAmount + 90.0f)), MathHelper.sin((float) Math.toRadians(pitchRotAmount)));
+                        } else {
+                            shaderProgram.setVector("Velocity", 0, 0);
+                        }
+                    }
+
+                    shaderProgram = context.getShader(VHS_SHADER);
+                    if (shaderProgram != null) {
+                        if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+                            shaderProgram.setInt("FogToggle", 1);
+                        } else {
+                            shaderProgram.setInt("FogToggle", 0);
+                        }
+
+                        if(blackScreen || (player.isInsideWall() && !getCutsceneManager().isPlaying)){
+                            shaderProgram.setInt("blackScreen", 1);
+                        } else {
+                            shaderProgram.setInt("blackScreen", 0);
+                        }
+
+                        shaderProgram.setVectorI("resolution", client.getFramebuffer().viewportWidth, client.getFramebuffer().viewportHeight);
+                    }
+
+                    shaderProgram = context.getShader(SHADOWS_SHADER);
+                    if (shaderProgram != null) {
+                        if(this.camera != null) {
+                            setShadowUniforms(shaderProgram, client.world);
+                        }
+
+                        if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                            shaderProgram.setInt("ShadowToggle", 1);
+                        } else {
+                            shaderProgram.setInt("ShadowToggle", 0);
+                        }
+
+                        if(events.isSunsetTransition()) {
+                            setShadowUniforms(shaderProgram, client.world);
+                        }
+
+                        shaderProgram.setFloat("sunsetTimer", getSunsetTimer(client.world));
+
+                    }
+
+                    shaderProgram = context.getShader(WATER_SHADER);
+                    if (shaderProgram != null) {
+                        if (this.camera != null) {
+                            setShadowUniforms(shaderProgram, client.world);
+                        }
+                        if (inBackrooms) {
+                            shaderProgram.setInt("OverWorld", 0);
+                        } else {
+                            shaderProgram.setInt("OverWorld", 1);
+                        }
+                    }
+
+                    shaderProgram = context.getShader(PUDDLES_SHADER);
+                    if (shaderProgram != null) {
+                        if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+                            shaderProgram.setInt("TogglePuddles", 1);
+                        } else {
+                            shaderProgram.setInt("TogglePuddles", 0);
+                        }
+
+                        shaderProgram.setMatrix("projMat", client.gameRenderer.getBasicProjectionMatrix(client.gameRenderer.getFov(camera, this.partialTicks, true)));
+
+                    }
+
+                }
+
+                if (events.isLevel2Warp()) {
+                    if(definitions.getDefinition("WARP") == null) {
+                        definitions.define("WARP");
+                    }
+                } else {
+                    if(definitions.getDefinition("WARP") != null) {
+                        definitions.remove("WARP");
+                    }
+                }
+                prevYaw2 = yaw;
+                prevPitch2 = pitch;
             }
         }));
 
@@ -607,6 +632,10 @@ public class SPBRevampedClient implements ClientModInitializer {
 
     public static CutsceneManager getCutsceneManager() {
         return cutsceneManager;
+    }
+
+    public static CameraShake getCameraShake() {
+        return cameraShake;
     }
 
 

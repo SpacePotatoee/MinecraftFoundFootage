@@ -5,3 +5,5 @@ accessible field net/minecraft/client/render/WorldRenderer$ChunkInfo chunk Lnet/
 accessible field net/minecraft/client/render/WorldRenderer chunkInfos Lit/unimi/dsi/fastutil/objects/ObjectArrayList;
 accessible field net/minecraft/client/render/WorldRenderer blockBreakingProgressions Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;
 accessible field net/minecraft/client/render/WorldRenderer bufferBuilders Lnet/minecraft/client/render/BufferBuilderStorage;
+accessible method net/minecraft/client/sound/MovingSoundInstance setDone ()V
+accessible method net/minecraft/client/render/Camera setRotation (FF)V

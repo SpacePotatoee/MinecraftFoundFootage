@@ -23,6 +23,7 @@ void main() {
     vec3 pos = Position + ChunkOffset;
     gl_Position = ProjMat * ModelViewMat * vec4(pos, 1.0);
 
+
     vertexColor = Color;
     texCoord0 = UV0;
     texCoord2 = minecraft_sample_lightmap_coords(UV2);

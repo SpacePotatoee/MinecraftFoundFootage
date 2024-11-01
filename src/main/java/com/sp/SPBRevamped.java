@@ -1,5 +1,7 @@
 package com.sp;
 
+import com.sp.cca_stuff.InitializeComponents;
+import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.ModBlockEntities;
 import com.sp.item.ModItemGroups;
 import com.sp.init.ModItems;
@@ -12,6 +14,7 @@ import com.sp.world.generation.PoolroomsChunkGenerator;
 import eu.midnightdust.lib.config.MidnightConfig;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -40,5 +43,12 @@ public class SPBRevamped implements ModInitializer {
 
 		System.out.println("\"WOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooooooooo..........\" -He said as he fell into the backrooms, never to be seen again.");
 
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(((player, origin, destination) -> {
+			PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+
+			playerComponent.setReloadLights(true);
+			playerComponent.sync();
+
+		}));
 	}
 }

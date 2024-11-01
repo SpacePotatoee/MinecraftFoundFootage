@@ -5,7 +5,7 @@
     "settings": "spb-revamped:level0",
     "biome_source": {
       "type": "minecraft:fixed",
-      "biome": "spb-revamped:poolrooms_biome"
+      "biome": "spb-revamped:base_backrooms_biome"
     }
   }
 }

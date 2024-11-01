@@ -23,11 +23,15 @@ out vec2 texCoord2;
 out vec4 lightmapColor;
 out vec3 normal;
 
+const vec4 plane = vec4(0, -1, 0, 7);
+
 void main() {
     vec3 cameraPos = VeilCamera.CameraPosition;
     vec3 pos = Position + ChunkOffset;
     float dist = pos.z;
     pos = playerSpaceToWorldSpace(pos);
+
+
 
 
     #ifdef WARP
@@ -42,9 +46,12 @@ void main() {
     pos = pos - cameraPos;
     gl_Position = ProjMat * ModelViewMat * vec4(pos, 1.0);
 
+    //gl_ClipDistance[0] = dot(vec4(Position, 1.0), plane);
+
     vertexColor = Color;
     texCoord0 = UV0;
     texCoord2 = minecraft_sample_lightmap_coords(UV2);
     lightmapColor = texture(Sampler2, texCoord2);
+//    lightmapColor *= lightmapColor * 2;
     normal = NormalMat * Normal;
 }

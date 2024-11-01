@@ -3,6 +3,7 @@ package com.sp.util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 
 public class MathStuff {
 
@@ -23,6 +24,14 @@ public class MathStuff {
      */
     public static float Lerp(float source, float destination, float smoothingFactor, float tickDelta){
         return MathHelper.lerp(1.0f - (float) Math.pow(smoothingFactor, tickDelta), source, destination);
+    }
+
+    public static int millisecToTick(long l){
+        return (int) ((l/1000) * 20);
+    }
+
+    public static float randomFloat(float min, float max, Random random){
+        return min + random.nextFloat() * (max - min);
     }
 
     public static Vec2f get2DRelativeRotation(Vec3d vec3d, float degrees){

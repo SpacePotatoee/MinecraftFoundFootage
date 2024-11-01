@@ -16,6 +16,8 @@ uniform mat4 orthoMatrix;
 uniform mat4 viewRix;
 uniform float warAngle;
 
+const vec4 plane = vec4(0, -1, 0, 8.99);
+
 
 out vec4 vertexColor;
 out vec2 texCoord0;
@@ -37,6 +39,8 @@ void main() {
 
     pos = vec4(vec4(pos - cameraPos, 1.0) * VeilCamera.IViewMat).xyz;
     gl_Position = ProjMat * ModelViewMat * vec4(pos, 1.0);
+
+    //gl_ClipDistance[0] = -1;
 
     vertexColor = Color;
     texCoord0 = UV0;

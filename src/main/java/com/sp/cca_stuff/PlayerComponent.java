@@ -1,7 +1,10 @@
 package com.sp.cca_stuff;
 
 import com.sp.Keybinds;
+import com.sp.SPBRevamped;
+import com.sp.SPBRevampedClient;
 import com.sp.init.ModSounds;
+import com.sp.networking.InitializePackets;
 import com.sp.sounds.AmbientSoundInstance;
 import com.sp.sounds.PoolroomsNoonAmbienceSoundInstance;
 import com.sp.sounds.PoolroomsSunsetAmbienceSoundInstance;
@@ -11,16 +14,25 @@ import com.sp.world.BackroomsLevels;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
+import foundry.veil.api.client.render.VeilRenderSystem;
+import foundry.veil.api.client.render.VeilRenderer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.SoundInstance;
+import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
@@ -34,12 +46,15 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     private boolean isDoingCutscene;
     private int timer;
+    private boolean playingGlitchSound;
 
-    SoundInstance DeepAmbience;
-    SoundInstance GasPipeAmbience;
-    SoundInstance WaterPipeAmbience;
-    SoundInstance PoolroomsNoonAmbience;
-    SoundInstance PoolroomsSunsetAmbience;
+    private boolean reloadLights;
+
+    MovingSoundInstance DeepAmbience;
+    MovingSoundInstance GasPipeAmbience;
+    MovingSoundInstance WaterPipeAmbience;
+    MovingSoundInstance PoolroomsNoonAmbience;
+    MovingSoundInstance PoolroomsSunsetAmbience;
 
 
     private boolean prevFlashLightOn;
@@ -51,6 +66,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
         this.isDoingCutscene = false;
         this.timer = 0;
+
+        this.reloadLights = false;
     }
 
 
@@ -86,16 +103,36 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         isDoingCutscene = doingCutscene;
     }
 
+    public boolean isReloadLights() {
+        return reloadLights;
+    }
+
+    public void setReloadLights(boolean reloadLights) {
+        this.reloadLights = reloadLights;
+    }
+
+    public boolean isPlayingGlitchSound() {
+        return playingGlitchSound;
+    }
+
+    public void setPlayingGlitchSound(boolean playingGlitchSound) {
+        this.playingGlitchSound = playingGlitchSound;
+    }
+
     @Override
     public void readFromNbt(NbtCompound tag) {
         this.flashLightOn = tag.getBoolean("isFlashLightOn");
         this.isDoingCutscene = tag.getBoolean("isDoingCutscene");
+        this.reloadLights = tag.getBoolean("reloadLights");
+        this.playingGlitchSound = tag.getBoolean("playingGlitchSound");
     }
 
     @Override
     public void writeToNbt(NbtCompound tag) {
         tag.putBoolean("isFlashLightOn", this.flashLightOn);
         tag.putBoolean("isDoingCutscene", this.isDoingCutscene);
+        tag.putBoolean("reloadLights", this.reloadLights);
+        tag.putBoolean("playingGlitchSound", this.playingGlitchSound);
     }
 
     public void sync(){
@@ -105,8 +142,18 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     @Override
     public void clientTick() {
         MinecraftClient client = MinecraftClient.getInstance();
+        VeilRenderer renderer = VeilRenderSystem.renderer();
 
-        getPrevSettings();
+
+        if(this.reloadLights){
+            renderer.getDeferredRenderer().reset();
+            this.reloadLights = false;
+
+            PacketByteBuf buffer = PacketByteBufs.create();
+            buffer.writeBoolean(this.reloadLights);
+            ClientPlayNetworking.send(InitializePackets.RESET_SYNC, buffer);
+        }
+
         if(Keybinds.toggleFlashlight.wasPressed()){
             player.playSound(ModSounds.FLASHLIGHT_CLICK, 1, 1);
             if (player.getWorld().getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
@@ -159,32 +206,47 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 timer = 0;
             }
         }
-
-        shouldSync();
     }
 
     @Override
     public void serverTick() {
+        getPrevSettings();
 
         //Cast him to the Backrooms
-        if (this.player.isInsideWall() && this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
-            timer++;
-            if (timer == 40) {
-                RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
-                ServerWorld backrooms = (ServerWorld) this.player.getWorld().getServer().getWorld(registryKey);
-                if (backrooms == null) {
-                    return;
+        if(this.player.isInsideWall()) {
+            if (this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
+                timer++;
+                if (timer == 1) {
+                    this.player.getWorld().playSoundFromEntity(null, this.player, ModSounds.GLITCH, SoundCategory.AMBIENT, 1.0f, 1.0f);
+                    this.playingGlitchSound = true;
                 }
 
+                if (timer == 40) {
+                    RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
+                    ServerWorld backrooms = (ServerWorld) this.player.getWorld().getServer().getWorld(registryKey);
+                    if (backrooms == null) {
+                        return;
+                    }
 
-                TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-                FabricDimensions.teleport(this.player, backrooms, target);
-                this.setDoingCutscene(true);
-                this.sync();
-                timer = 0;
+                    TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
+                    FabricDimensions.teleport(this.player, backrooms, target);
+                    this.setDoingCutscene(true);
+                    this.sync();
+                    timer = 0;
+                }
             }
+        } else {
+            if (this.playingGlitchSound) {
+                StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(new Identifier(SPBRevamped.MOD_ID, "glitch"), null);
+                ((ServerPlayerEntity) this.player).networkHandler.sendPacket(stopSoundS2CPacket);
+            }
+            this.playingGlitchSound = false;
+            timer = 0;
         }
+
+        shouldSync();
     }
+
 
     private void shouldSync() {
         boolean sync = false;
