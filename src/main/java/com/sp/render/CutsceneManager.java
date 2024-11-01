@@ -3,6 +3,7 @@ package com.sp.render;
 import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
+import com.sp.init.ModSounds;
 import com.sp.mixin.PathAccessor;
 import com.sp.networking.InitializePackets;
 import com.sp.util.MathStuff;
@@ -14,12 +15,15 @@ import foundry.veil.api.client.util.Easings;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.EntityTrackingSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.joml.Random;
 
 import java.util.List;
 
@@ -28,32 +32,51 @@ import java.util.List;
  */
 @SuppressWarnings("DataFlowIssue")
 public class CutsceneManager {
+    public boolean started;
     public boolean isPlaying;
+    public boolean fall;
     public boolean backroomsBySP;
     private long startTime;
-    private int duration;
+    private final int duration;
+    private final int duration2;
     public BlackScreen blackScreen;
     private Entity camera;
     private final Path cameraPathPos;
-    private final Path cameraPathRot;
+//    private final Path cameraPathRot;
+    private final Path cameraPathRotX;
+    private final Path cameraPathRotY;
+    private final Path cameraPathRotZ;
     public float cameraRotZ;
     private final MinecraftClient client;
 
     public CutsceneManager(){
+        this.started = false;
         this.isPlaying = false;
+        this.fall = false;
         this.backroomsBySP = false;
         this.camera = null;
         this.duration = 7000;
+        this.duration2 = 5000;
         this.blackScreen = new BlackScreen();
         this.client = MinecraftClient.getInstance();
         this.cameraRotZ = 0;
         this.cameraPathPos = new Path(List.of(
-                new Keyframe(new Vec3d(0.5,220,0.5), Vec3d.ZERO, Vec3d.ZERO,(int) (this.duration / 1000) * 20, Easings.Easing.easeInSine),
+                new Keyframe(new Vec3d(0.5,220,0.5), Vec3d.ZERO, Vec3d.ZERO, MathStuff.millisecToTick(this.duration), Easings.Easing.easeInSine),
                 new Keyframe(new Vec3d(0.5,27,0.5), Vec3d.ZERO, Vec3d.ZERO,0, Easings.Easing.linear)
         ), false, false);
-        this.cameraPathRot = new Path(List.of(
-                new Keyframe(Vec3d.ZERO, new Vec3d(60,3,-45), Vec3d.ZERO,(int) (this.duration / 1000) * 20, Easings.Easing.linear),
-                new Keyframe(Vec3d.ZERO, new Vec3d(86,114,45), Vec3d.ZERO,0, Easings.Easing.linear)
+        this.cameraPathRotX = new Path(List.of(
+                new Keyframe(Vec3d.ZERO, new Vec3d(80,0,0), Vec3d.ZERO,MathStuff.millisecToTick(this.duration) / 2, Easings.Easing.easeInOutSine),
+                new Keyframe(Vec3d.ZERO, new Vec3d(60,0,0), Vec3d.ZERO,MathStuff.millisecToTick(this.duration) / 2, Easings.Easing.easeInOutSine),
+                new Keyframe(Vec3d.ZERO, new Vec3d(110,0,0), Vec3d.ZERO,0, Easings.Easing.easeInOutSine)
+        ), false, false);
+        this.cameraPathRotY = new Path(List.of(
+                new Keyframe(Vec3d.ZERO, new Vec3d(0,0,0), Vec3d.ZERO, MathStuff.millisecToTick(this.duration), Easings.Easing.linear),
+                new Keyframe(Vec3d.ZERO, new Vec3d(0,120,0), Vec3d.ZERO,0, Easings.Easing.linear)
+        ), false, false);
+        this.cameraPathRotZ = new Path(List.of(
+                new Keyframe(Vec3d.ZERO, new Vec3d(0,0,20), Vec3d.ZERO, MathStuff.millisecToTick(this.duration) / 2, Easings.Easing.easeInOutSine),
+                new Keyframe(Vec3d.ZERO, new Vec3d(0,0,-20), Vec3d.ZERO,MathStuff.millisecToTick(this.duration) / 2, Easings.Easing.easeInOutSine),
+                new Keyframe(Vec3d.ZERO, new Vec3d(0,0,0), Vec3d.ZERO,0, Easings.Easing.easeInOutSine)
         ), false, false);
     }
 
@@ -62,6 +85,7 @@ public class CutsceneManager {
         if(client.player != null && client.world != null) {
             PlayerComponent playerComponent = InitializeComponents.PLAYER.get(client.player);
             if(playerComponent.isDoingCutscene() && client.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY){
+                this.pause();
                 this.Fall();
                 this.BackroomsBySP();
             } else {
@@ -71,28 +95,42 @@ public class CutsceneManager {
         }
     }
 
-    private void Fall() {
-        if(!this.backroomsBySP) {
+    private void pause(){
+        if(!this.backroomsBySP && !this.fall) {
+            if (!this.started) {
+                this.blackScreen.showBlackScreen(60);
+                this.startTime = System.currentTimeMillis();
+                this.started = true;
+            }
+            float timer = (float) (System.currentTimeMillis() - this.startTime) / 2900;
+
+            if (timer >= 1.0) {
+                this.fall = true;
+            }
+        }
+    }
+
+    private void Fall(){
+        if(!this.backroomsBySP && this.fall) {
             if (!this.isPlaying) {
                 this.startTime = System.currentTimeMillis();
                 this.isPlaying = true;
-                client.options.hudHidden = true;
+                SPBRevampedClient.getCameraShake().setCameraShake(MathStuff.millisecToTick(this.duration), 1, Easings.Easing.linear, true);
+                client.getSoundManager().play(new EntityTrackingSoundInstance(ModSounds.FALLING, SoundCategory.AMBIENT, 1.0f, 1.0f, client.cameraEntity, Random.newSeed()));
             }
             float timer = (float) (System.currentTimeMillis() - this.startTime) / this.duration;
             if (this.camera == null) {
                 this.initCamera();
             }
-
             if (timer >= 1.0) {
-                this.blackScreen.showBlackScreen(40);
-//                this.backroomsBySP = true;
-                this.reset();
+                this.blackScreen.showBlackScreen(50);
+                this.backroomsBySP = true;
+                this.startTime = System.currentTimeMillis() + 2500L;
+                this.fall = false;
+                camera.refreshPositionAndAngles(3, 21, 1.5, 15, (float) 90);
             } else {
-                double interpolate = MathStuff.mod(timer * ((PathAccessor) cameraPathPos).getFrames().size(), 1);
-
-
-                Vec3d newCameraPos = lerpedCameraPos(timer, interpolate);
-                Vec3d newCameraRot = lerpedCameraRot(timer, interpolate);
+                Vec3d newCameraPos = lerpedCameraPos(timer);
+                Vec3d newCameraRot = lerpedCameraRot(timer);
 
                 this.cameraRotZ = (float) newCameraRot.z;
                 camera.refreshPositionAndAngles(newCameraPos.x, newCameraPos.y, newCameraPos.z, (float) newCameraRot.y, (float) newCameraRot.x);
@@ -103,40 +141,63 @@ public class CutsceneManager {
 
     private void BackroomsBySP(){
         if(this.backroomsBySP) {
-//            camera.refreshPositionAndAngles(newCameraPos.x, newCameraPos.y, newCameraPos.z, (float) newCameraRot.y, (float) newCameraRot.x);
-//            client.cameraEntity = camera;
+            float timer = (float) (System.currentTimeMillis() - this.startTime) / this.duration2;
+
+            if(timer >= 1.0){
+                this.blackScreen.showBlackScreen(40);
+                this.reset();
+            } else {
+                camera.refreshPositionAndAngles(3, 21, 1.5, 5, (float) 83);
+                this.cameraRotZ = 100;
+                client.cameraEntity = camera;
+            }
         }
     }
 
-    private Vec3d lerpedCameraRot(float timer, double interpolate){
-        Vec3d currentFrameRotX = cameraPathRot.frameAtProgress(timer).getRotation();
-        Vec3d prevFrameRotX = previousFrameAtProgress(cameraPathRot, timer).getRotation();
+    private Vec3d lerpedCameraRot(float timer){
+
+        double interpolateX = MathStuff.mod(timer * ((PathAccessor) cameraPathRotX).getFrames().size(), 1);
+        double currentFrameRotX = cameraPathRotX.frameAtProgress(timer).getRotation().x;
+        double prevFrameRotX = previousFrameAtProgress(cameraPathRotX, timer).getRotation().x;
+
+        double interpolateY = MathStuff.mod(timer * ((PathAccessor) cameraPathRotY).getFrames().size(), 1);
+        double currentFrameRotY = cameraPathRotY.frameAtProgress(timer).getRotation().y;
+        double prevFrameRotY = previousFrameAtProgress(cameraPathRotY, timer).getRotation().y;
+
+        double interpolateZ = MathStuff.mod(timer * ((PathAccessor) cameraPathRotZ).getFrames().size(), 1);
+        double currentFrameRotZ = cameraPathRotZ.frameAtProgress(timer).getRotation().z;
+        double prevFrameRotZ = previousFrameAtProgress(cameraPathRotZ, timer).getRotation().z;
 
         return new Vec3d(
-                MathHelper.lerp(interpolate, prevFrameRotX.x, currentFrameRotX.x),
-                MathHelper.lerp(interpolate, prevFrameRotX.y, currentFrameRotX.y),
-                MathHelper.lerp(interpolate, prevFrameRotX.z, currentFrameRotX.z)
+                MathHelper.lerp(interpolateX, prevFrameRotX, currentFrameRotX),
+                MathHelper.lerp(interpolateY, prevFrameRotY, currentFrameRotY),
+                MathHelper.lerp(interpolateZ, prevFrameRotZ, currentFrameRotZ)
         );
     }
 
-    private Vec3d lerpedCameraPos(float timer, double interpolate){
+    private Vec3d lerpedCameraPos(float timer){
+        double interpolatePos = MathStuff.mod(timer * ((PathAccessor) cameraPathPos).getFrames().size(), 1);
         Vec3d currentFramePos = cameraPathPos.frameAtProgress(timer).getPosition();
         Vec3d prevFramePos = previousFrameAtProgress(cameraPathPos, timer).getPosition();
 
         return new Vec3d(
-                MathHelper.lerp(interpolate, prevFramePos.x, currentFramePos.x),
-                MathHelper.lerp(interpolate, prevFramePos.y, currentFramePos.y),
-                MathHelper.lerp(interpolate, prevFramePos.z, currentFramePos.z)
+                MathHelper.lerp(interpolatePos, prevFramePos.x, currentFramePos.x),
+                MathHelper.lerp(interpolatePos, prevFramePos.y, currentFramePos.y),
+                MathHelper.lerp(interpolatePos, prevFramePos.z, currentFramePos.z)
         );
     }
 
     private void reset(){
         PlayerComponent playerComponent = InitializeComponents.PLAYER.get(client.player);
         this.isPlaying = false;
+        this.started = false;
+        this.fall = false;
+        this.backroomsBySP = false;
         this.camera.remove(Entity.RemovalReason.DISCARDED);
         this.camera = null;
         client.cameraEntity = client.player;
         client.options.hudHidden = false;
+        this.startTime = 0L;
         playerComponent.setDoingCutscene(false);
 
         PacketByteBuf buffer = PacketByteBufs.create();
@@ -145,7 +206,7 @@ public class CutsceneManager {
 
     }
 
-    private void initCamera() {
+    private void initCamera(){
         this.camera = new ItemEntity(client.world, 1.5, 300, 1.5, ItemStack.EMPTY);
         this.camera.refreshPositionAndAngles(1.5, 300, 1.5, 0, 90);
     }
@@ -161,8 +222,7 @@ public class CutsceneManager {
 
 
 
-    @SuppressWarnings("FieldCanBeLocal")
-    public class BlackScreen {
+    public class BlackScreen{
         public boolean isBlackScreen;
         private long duration;
         private long startTime;
@@ -183,7 +243,7 @@ public class CutsceneManager {
 
         //Tick
         public void tick(){
-            if(isBlackScreen) {
+            if(isBlackScreen){
                 MinecraftClient client = MinecraftClient.getInstance();
                 float timer = (float) (System.currentTimeMillis() - this.startTime) / this.duration;
 
@@ -192,7 +252,10 @@ public class CutsceneManager {
                     this.isBlackScreen = false;
                     client.options.hudHidden = false;
                     this.startTime = 0;
+                    client.getSoundManager().resumeAll();
                 } else {
+                    client.getSoundManager().pauseAll();
+                    client.options.hudHidden = true;
                     SPBRevampedClient.blackScreen = true;
                 }
             }

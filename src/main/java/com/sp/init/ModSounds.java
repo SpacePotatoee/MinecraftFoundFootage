@@ -16,6 +16,10 @@ public class ModSounds {
     public static final SoundEvent AMBIENCE = registerSoundEvent("ambience");
 
 
+    public static final SoundEvent FALLING = registerSoundEvent("falling");
+    public static final SoundEvent GLITCH = registerSoundEvent("glitch");
+
+
     public static final SoundEvent FLUORESCENT_LIGHT_HUM = registerSoundEvent("fluorescent_light");
     public static final SoundEvent FLUORESCENT_LIGHT_HUM2 = registerSoundEvent("fluorescent_light2");
 
