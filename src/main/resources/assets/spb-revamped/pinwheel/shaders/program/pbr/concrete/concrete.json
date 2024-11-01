@@ -1,0 +1,11 @@
+{
+  "vertex": "spb-revamped:pbr/concrete/concrete",
+  "geometry": "spb-revamped:pbr/concrete/concrete",
+  "fragment": "spb-revamped:pbr/concrete/concrete",
+  "textures": {
+    "HeightMap": "spb-revamped:textures/shaders/concrete/concrete_height.png",
+    "ColorMap": "spb-revamped:textures/shaders/concrete/concrete_color.png",
+    "AoMap": "spb-revamped:textures/shaders/concrete/concrete_ao.png",
+    "NormalMap": "spb-revamped:textures/shaders/concrete/concrete_normal.png"
+  }
+}
