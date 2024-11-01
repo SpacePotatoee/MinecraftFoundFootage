@@ -25,6 +25,8 @@ public class ModItemGroups {
                         entries.add(ModBlocks.ThinFluorescentLight);
                         entries.add(ModBlocks.drawingMarker);
 
+                        entries.add(ModBlocks.CHAINFENCE);
+                        entries.add(ModBlocks.NEWSTAIRS);
                         entries.add(ModBlocks.BottomTrim);
                         entries.add(ModBlocks.ConcreteBlock1);
                         entries.add(ModBlocks.ConcreteBlock2);

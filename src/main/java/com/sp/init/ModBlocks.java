@@ -71,6 +71,12 @@ public class ModBlocks {
     public static final Block Rug2 = registerBlock("rug2",
             new Rug(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
 
+    public static final Block CHAINFENCE = registerBlock("chain_fence",
+            new ChainFence(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).hardness(-1f).noBlockBreakParticles()));
+
+    public static final Block NEWSTAIRS = registerBlock("new_stairs",
+            new NewStairs(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque()));
+
 
 
     //////Level 2 and 3 Stuff//////
