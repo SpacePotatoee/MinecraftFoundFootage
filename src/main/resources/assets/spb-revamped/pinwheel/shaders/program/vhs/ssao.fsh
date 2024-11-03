@@ -7,7 +7,7 @@ uniform sampler2D DiffuseDepthSampler;
 uniform sampler2D NormalSampler;
 uniform sampler2D DepthSampler;
 uniform sampler2D HandSampler;
-uniform sampler2D rNoise;
+uniform sampler2D RNoiseDir;
 uniform float GameTime;
 
 uniform vec3 samples[150];
@@ -37,17 +37,17 @@ void main() {
     vec3 viewPos = viewPosFromDepth(depth, texCoord);
     vec3 normal = normalize(texture(NormalSampler, texCoord).rgb);
 
-    vec3 randDir = normalize(vec3(texture(rNoise, texCoord * 100).rgb));
-    vec3 tangent = normalize(cross(normal, normalize(randDir)));
-    vec3 bitangent = normalize(cross(normal, tangent));
+    if(depthSample < 1){
+        vec3 randDir = normalize(vec3(texture(RNoiseDir, texCoord * 100).rgb));
+        vec3 tangent = normalize(cross(normal, normalize(randDir)));
+        vec3 bitangent = normalize(cross(normal, tangent));
 
-    mat3 TBN = mat3(tangent, bitangent, normal);
-    TBN = transpose(TBN);
+        mat3 TBN = mat3(tangent, bitangent, normal);
+        TBN = transpose(TBN);
 
-    if (handDepth >= 1 && depthSample < 1){
         float occlusion = 0;
         vec3 samplePos = vec3(0);
-        for(int i = 0; i < QUALITY; i++) {
+        for (int i = 0; i < QUALITY; i++) {
             samplePos = samples[i] * TBN;
 
             //Add the World Pos to it
@@ -59,10 +59,10 @@ void main() {
             float sampleDepth = texture(DepthSampler, screenSamplePos.xy).r;
 
             vec3 viewPos2 = viewPosFromDepth(sampleDepth, screenSamplePos.xy);
-//            vec3 worldSamplePos2 = viewToWorldSpace(viewPos2);
+            //            vec3 worldSamplePos2 = viewToWorldSpace(viewPos2);
 
 
-            if(screenSamplePos.z > sampleDepth){
+            if (screenSamplePos.z > sampleDepth){
                 float dist = smoothstep(0.0, 1.0, 1 / length(viewPos - viewPos2));
                 occlusion += 1.5 * dist;
             }
@@ -70,9 +70,9 @@ void main() {
         }
         occlusion /= QUALITY;
         fragColor = vec4(vec3(1 - occlusion), 1.0);
-
-    } else {
-        fragColor = mainTexture;
+    }else {
+        fragColor = vec4(1);
     }
+//    fragColor = vec4(vec3(depthSample), 1.0);
 
 }

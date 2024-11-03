@@ -1,0 +1,153 @@
+{
+    "stages": [
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:shadows/shadows",
+            "in": "veil:opaque_final",
+            "out": "spb-revamped:shadow_sampler"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/ssao",
+            "in": "veil:opaque_final",
+            "out": "spb-revamped:ssao"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/water",
+            "in": "spb-revamped:shadow_sampler",
+            "out": "spb-revamped:water_fb"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/puddles",
+            "in": "spb-revamped:shadow_sampler",
+            "out": "spb-revamped:puddle_sampler"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/mix",
+            "in": "spb-revamped:shadow_sampler",
+            "out": "spb-revamped:mid"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/highlights",
+            "in": "spb-revamped:mid",
+            "out": "spb-revamped:mixed"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/vhs",
+            "in": "spb-revamped:shadow_sampler",
+            "out": "spb-revamped:pre_motionblur"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/motion_blur",
+            "in": "spb-revamped:pre_motionblur",
+            "out": "veil:post"
+        }
+    ],
+    "textures": {
+        "NoiseTexture": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/super_noise.png"
+        },
+        "CloudNoise1": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/puddle_noise.png"
+        },
+        "CloudNoise2": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/clouds2.png"
+        },
+        "VhsNoise": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/vhs_noise.png"
+        },
+        "SSAOSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:ssao"
+        },
+        "MidSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:mid"
+        },
+        "WaterSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:water_fb"
+        },
+        "MixedSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:mixed"
+        },
+        "PreSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:pre_motionblur"
+        },
+        "FogSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:fog_buffer"
+        },
+        "DiffuseDepthSampler": {
+            "type": "framebuffer",
+            "name": "veil:post:depth"
+        },
+        "HandSampler": {
+            "type": "framebuffer",
+            "name": "minecraft:main"
+        },
+        "HandDepth": {
+            "type": "framebuffer",
+            "name": "veil:first_person:depth"
+        },
+        "OpaqueSampler": {
+            "type": "framebuffer",
+            "name": "veil:opaque_final"
+        },
+        "TransparentSampler": {
+            "type": "framebuffer",
+            "name": "veil:transparent_final"
+        },
+        "PuddleSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:puddle_sampler"
+        },
+        "MinecraftMain": {
+            "type": "framebuffer",
+            "name": "minecraft:main"
+        },
+        "TransparentCompatSampler": {
+            "type": "framebuffer",
+            "name": "veil:transparent",
+            "sampler": 0
+        },
+        "OpaqueCompatSampler": {
+            "type": "framebuffer",
+            "name": "veil:opaque",
+            "sampler": 0
+        },
+        "TransparentMatSampler": {
+            "type": "framebuffer",
+            "name": "veil:transparent",
+            "sampler": 3
+        },
+        "OpaqueMatSampler": {
+            "type": "framebuffer",
+            "name": "veil:opaque",
+            "sampler": 3
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+

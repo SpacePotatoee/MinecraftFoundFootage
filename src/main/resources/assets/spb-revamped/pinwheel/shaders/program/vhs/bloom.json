@@ -1,6 +1,6 @@
 {
   "vertex": "veil:blit_screen",
-  "fragment": "spb-revamped:vhs/vhs"
+  "fragment": "spb-revamped:vhs/bloom"
 }
 
 

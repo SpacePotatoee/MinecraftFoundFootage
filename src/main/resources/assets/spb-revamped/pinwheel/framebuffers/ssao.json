@@ -1,6 +1,6 @@
 {
-  "depth": true,
-  "format": "RGBA8",
+  "depth": false,
+  "format": "RGB8",
   "autoClear": true,
   "linear": true
 }

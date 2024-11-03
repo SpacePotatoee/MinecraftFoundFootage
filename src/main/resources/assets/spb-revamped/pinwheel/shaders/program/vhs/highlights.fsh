@@ -6,7 +6,7 @@ out vec4 fragColor;
 
 void main(){
 	vec4 Color = texture(DiffuseSampler0, texCoord);
-    float Brightness = 1.01 * dot(Color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    float Brightness = 1.4 * dot(Color.rgb, vec3(0.2126, 0.7152, 0.0722));
     float handDepth = texture(HandDepth, texCoord).r;
     
 	

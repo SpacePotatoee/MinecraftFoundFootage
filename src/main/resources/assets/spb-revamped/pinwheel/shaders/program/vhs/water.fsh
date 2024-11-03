@@ -143,73 +143,66 @@ void main() {
 
     vec4 normal = vec4(0);
     vec4 normal2 = vec4(0);
+    if (isReflective > 0 && handDepth == 1 && isBlock(material)) {
+        vec3 viewPos = viewPosFromDepth(waterDepth, texCoord);
+        vec3 playerSpace = viewToPlayerSpace(viewPos);
+        vec3 worldPos = playerSpace + cameraPos;
 
-    if(OverWorld == 0){
-        if (isReflective > 0 && handDepth == 1 && isBlock(material)) {
-            vec3 viewPos = viewPosFromDepth(waterDepth, texCoord);
-            vec3 playerSpace = viewToPlayerSpace(viewPos);
-            vec3 worldPos = playerSpace + cameraPos;
+        color = texture(WaterTexture, worldPos.xz * 0.05 + vec2(GameTime * 50)).rg - 0.5;
+        color2 = texture(WaterTexture, worldPos.xz * 0.05 - vec2(0, GameTime * 50)).rg - 0.5;
+        color = color + color2;
 
-            color = texture(WaterTexture, worldPos.xz * 0.05 + vec2(GameTime * 50)).rg - 0.5;
-            color2 = texture(WaterTexture, worldPos.xz * 0.05 - vec2(0, GameTime * 50)).rg - 0.5;
-            color = color + color2;
-
-            vec3 shadowScreenSpace = getShadow(playerSpace, viewMatrix, orthographMatrix);
-            float shadowDepth = shadowScreenSpace.z;
-            float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
-            float shadow = step(shadowDepth, shadowSampler);
+        vec3 shadowScreenSpace = getShadowCoords(playerSpace, viewMatrix, orthographMatrix);
+        float shadowDepth = shadowScreenSpace.z;
+        float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
+        float shadow = step(shadowDepth, shadowSampler);
 
 
-            fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER);
-            fragColor = getReflection(fragColor, normalSampler, waterDepth, texCoord, viewPos, color) * vec4(0, 1.2, 1.15, 1);
+        fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER);
+        fragColor = getReflection(fragColor, normalSampler, waterDepth, texCoord, viewPos, color) * vec4(0, 1.2, 1.15, 1);
 
 
-            if (shadow >= 1.0){
-                normal = texture(NormalTexture, worldPos.xz * 0.1 + vec2(GameTime * 50));
-                normal2 = texture(NormalTexture, worldPos.xz * 0.1 - vec2(0, GameTime * 50));
-                normal2 += texture(NormalTexture, worldPos.xz * 0.1 - vec2(- GameTime * 103.235456, GameTime * 50));
-                normal = (normal + normal2) / 3;
-                normal = vec4(normal.r, normal.b, normal.g, normal.a) * 2.0 - 1.0;
+        if (shadow >= 1.0){
+            normal = texture(NormalTexture, worldPos.xz * 0.1 + vec2(GameTime * 50));
+            normal2 = texture(NormalTexture, worldPos.xz * 0.1 - vec2(0, GameTime * 50));
+            normal2 += texture(NormalTexture, worldPos.xz * 0.1 - vec2(- GameTime * 103.235456, GameTime * 50));
+            normal = (normal + normal2) / 3;
+            normal = vec4(normal.r, normal.b, normal.g, normal.a) * 2.0 - 1.0;
 
-                vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
-                lightangle.y = - lightangle.y;
+            vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
+            lightangle.y = - lightangle.y;
 
-                vec3 view = -VeilCamera.IViewMat[2].xyz;
-                //            view.z = -view.z;
+            vec3 view = -VeilCamera.IViewMat[2].xyz;
+            //            view.z = -view.z;
 
-                vec3 reflectedLight = reflect(normalize(lightAngled), normalize(normal.rgb));
-                float specular = dot(- reflectedLight, min(viewPos, - 3.0));
-                specular = pow(specular, 20);
-                specular *= 1;
+            vec3 reflectedLight = reflect(normalize(lightAngled), normalize(normal.rgb));
+            float specular = dot(- reflectedLight, min(viewPos, - 3.0));
+            specular = pow(specular, 20);
+            specular *= 1;
 
-                if (specular > 0.0){
-                    fragColor += specular;
-                }
+            if (specular > 0.0){
+                fragColor += specular;
             }
+        }
 
 
-            vec3 opaqueViewPos = viewPosFromDepth(opaqueDepth, texCoord + color * REFRACTION_MULTIPLIER);
-            vec3 opaquePlayerSpace = viewToPlayerSpace(opaqueViewPos);
-            vec3 opaqueWorldPos = opaquePlayerSpace + VeilCamera.CameraPosition;
-            shadowScreenSpace = getShadow(opaquePlayerSpace, viewMatrix, orthographMatrix);
-            shadowDepth = shadowScreenSpace.z;
-            shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
-            shadow = step(shadowDepth, shadowSampler);
+        vec3 opaqueViewPos = viewPosFromDepth(opaqueDepth, texCoord + color * REFRACTION_MULTIPLIER);
+        vec3 opaquePlayerSpace = viewToPlayerSpace(opaqueViewPos);
+        vec3 opaqueWorldPos = opaquePlayerSpace + VeilCamera.CameraPosition;
+        shadowScreenSpace = getShadowCoords(opaquePlayerSpace, viewMatrix, orthographMatrix);
+        shadowDepth = shadowScreenSpace.z;
+        shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
+        shadow = step(shadowDepth, shadowSampler);
 
-            if (shadow >= 1.0){
-            vec4 caustics = getCaustics(color, opaqueWorldPos);
-            fragColor += clamp(caustics, 0, 1) * 2;
-            }
+        if (shadow >= 1.0){
+        vec4 caustics = getCaustics(color, opaqueWorldPos);
+        fragColor += clamp(caustics, 0, 1) * 2;
+        }
 
 //            float vertexDistance = fog_distance(opaqueViewPos, 0);
 //            fragColor = linear_fog(fragColor, vertexDistance, 0, 60, vec4(0, 0.15, 0.2, 1));
 
 
-        } else {
-//            fragColor = minecraftMain;
-        }
-    } else {
-        fragColor = minecraftMain;
     }
 
 }

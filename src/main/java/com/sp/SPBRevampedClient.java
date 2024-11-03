@@ -57,11 +57,13 @@ public class SPBRevampedClient implements ClientModInitializer {
     private static CutsceneManager cutsceneManager = new CutsceneManager();
     private static CameraShake cameraShake = new CameraShake();
     private static final Identifier VHS_POST = new Identifier(SPBRevamped.MOD_ID, "vhs");
-    private static final Identifier SSAO = new Identifier(SPBRevamped.MOD_ID, "ssao");
+    private static final Identifier SSAO = new Identifier(SPBRevamped.MOD_ID, "vhs/ssao");
     private static final Identifier VHS_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/vhs");
-    private static final Identifier MOTION_BLUR = new Identifier(SPBRevamped.MOD_ID, "vhs/motion_blur");
+    private static final Identifier EVERYTHING_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/everything");
+    private static final Identifier POST_VHS = new Identifier(SPBRevamped.MOD_ID, "vhs/vhs_post");
     private static final Identifier WATER_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/water");
-    private static final Identifier SHADOWS_SHADER = new Identifier(SPBRevamped.MOD_ID, "shadows/shadows");
+    private static final Identifier MIXED_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/mixed");
+//    private static final Identifier SHADOWS_SHADER = new Identifier(SPBRevamped.MOD_ID, "shadows/shadows");
     private static final Identifier PUDDLES_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/puddles");
 
     public static HashMap<AbstractClientPlayerEntity, AreaLight> flashLightList = new HashMap<>();
@@ -107,6 +109,7 @@ public class SPBRevampedClient implements ClientModInitializer {
         Keybinds.inizializeKeyBinds();
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayers.getConcreteLayer());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Bricks, RenderLayers.getBricksLayer());
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CHAINFENCE, RenderLayers.getChainFence());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CeilingTile, RenderLayers.getCeilingTile());
@@ -352,18 +355,18 @@ public class SPBRevampedClient implements ClientModInitializer {
                 float yawRotAmount = yaw - prevYaw2;
                 float pitchRotAmount = pitch - prevPitch2;
 
-                if(SSAO.equals(name)){
-                    ShaderProgram shaderProgram = context.getShader(SSAO);
-                    if(shaderProgram != null) {
-//                        if (!setSamples) {
-                            shaderProgram.setVectors("samples", SSAOSamples.getSSAOSamples());
-                            setSamples = true;
-//                        }
-                    }
-                }
+//                if(SSAO.equals(name)){
+//                    ShaderProgram shaderProgram = context.getShader(SSAO);
+//                    if(shaderProgram != null) {
+////                        if (!setSamples) {
+//
+//                            setSamples = true;
+////                        }
+//                    }
+//                }
 
                 if (VHS_POST.equals(name)) {
-                    ShaderProgram shaderProgram = context.getShader(MOTION_BLUR);
+                    ShaderProgram shaderProgram = context.getShader(POST_VHS);
                     if (shaderProgram != null) {
                         if(!getCutsceneManager().isPlaying) {
                             shaderProgram.setVector("Velocity", MathHelper.cos((float) Math.toRadians(yawRotAmount + 90.0f)), MathHelper.sin((float) Math.toRadians(pitchRotAmount)));
@@ -372,7 +375,12 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
                     }
 
-                    shaderProgram = context.getShader(VHS_SHADER);
+                    shaderProgram = context.getShader(SSAO);
+                    if(shaderProgram != null){
+                        shaderProgram.setVectors("samples", SSAOSamples.getSSAOSamples());
+                    }
+
+                    shaderProgram = context.getShader(EVERYTHING_SHADER);
                     if (shaderProgram != null) {
                         if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
                             shaderProgram.setInt("FogToggle", 1);
@@ -386,10 +394,17 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("blackScreen", 0);
                         }
 
+                        if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+                            shaderProgram.setInt("TogglePuddles", 1);
+                        } else {
+                            shaderProgram.setInt("TogglePuddles", 0);
+                        }
+
+                        shaderProgram.setFloat("sunsetTimer", getSunsetTimer(client.world));
                         shaderProgram.setVectorI("resolution", client.getFramebuffer().viewportWidth, client.getFramebuffer().viewportHeight);
                     }
 
-                    shaderProgram = context.getShader(SHADOWS_SHADER);
+                    shaderProgram = context.getShader(MIXED_SHADER);
                     if (shaderProgram != null) {
                         if(this.camera != null) {
                             setShadowUniforms(shaderProgram, client.world);
@@ -401,9 +416,9 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("ShadowToggle", 0);
                         }
 
-                        if(events.isSunsetTransition()) {
-                            setShadowUniforms(shaderProgram, client.world);
-                        }
+//                        if(events.isSunsetTransition()) {
+//                            setShadowUniforms(shaderProgram, client.world);
+//                        }
 
                         shaderProgram.setFloat("sunsetTimer", getSunsetTimer(client.world));
 
@@ -423,13 +438,13 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                     shaderProgram = context.getShader(PUDDLES_SHADER);
                     if (shaderProgram != null) {
-                        if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                            shaderProgram.setInt("TogglePuddles", 1);
-                        } else {
-                            shaderProgram.setInt("TogglePuddles", 0);
-                        }
+//                        if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+//                            shaderProgram.setInt("TogglePuddles", 1);
+//                        } else {
+//                            shaderProgram.setInt("TogglePuddles", 0);
+//                        }
 
-                        shaderProgram.setMatrix("projMat", client.gameRenderer.getBasicProjectionMatrix(client.gameRenderer.getFov(camera, this.partialTicks, true)));
+//                        shaderProgram.setMatrix("projMat", client.gameRenderer.getBasicProjectionMatrix(client.gameRenderer.getFov(camera, this.partialTicks, true)));
 
                     }
 
