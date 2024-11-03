@@ -67,6 +67,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
             Identifier roomIdentifier;
             StructurePlacementData structurePlacementData = new StructurePlacementData();
 
+            //Spawn at level 4
 
             //Spawn Point
             if((float) chunk.getPos().x == 0 && (float) chunk.getPos().z  == 0){

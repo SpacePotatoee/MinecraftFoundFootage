@@ -52,7 +52,7 @@ public class Level1MazeGenerator {
 
         for (int y = 0; y < this.rows; y++) {
             for (int x = 0; x < this.cols; x++) {
-                if(world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 19, y + ((this.size - 1) * y) + this.originY)) == Blocks.AIR.getDefaultState()) {
+                if(world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 20, y + ((this.size - 1) * y) + this.originY)) == Blocks.AIR.getDefaultState()) {
                     grid[x][y] = new HighVarCell(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
                 }
             }
@@ -211,45 +211,13 @@ public class Level1MazeGenerator {
 
             int XOffset = x + (randomPosX * this.size);
             int ZOffset = z + (randomPosZ * this.size);
-            optional.ifPresent(structureTemplate -> structureTemplate.place(
-                    world,
-                    mutable.set(XOffset, 19, ZOffset),
-                    mutable.set(XOffset, 19, ZOffset),
-                    structurePlacementData, random, 16));
-
-
-//            //Second Random Pillar Room
-//            boolean placed = false;
-//            for(int w = 1; w < 7; w++){
-//                for(int q = 1; q < 7; q++){
-//                    if(!placed) {
-//                        XOffset = x + (w * this.size);
-//                        ZOffset = z + (q * this.size);
-//
-//                        boolean clear = true;
-//                        for (int i = XOffset - 1; i <= XOffset + 24; i++) {
-//                            for (int j = ZOffset - 1; j <= ZOffset + 24; j++) {
-//                                if (world.getBlockState(mutable.set(i, 19, j)) == Blocks.LIME_WOOL.getDefaultState()) {
-//                                    clear = false;
-//                                    break;
-//                                }
-//                            }
-//                        }
-//
-//                        if (clear) {
-//                            int finalXOffset1 = XOffset;
-//                            int finalZOffset1 = ZOffset;
-//                            optional.ifPresent(structureTemplate -> structureTemplate.place(
-//                                    world,
-//                                    mutable.set(finalXOffset1, 19, finalZOffset1),
-//                                    mutable.set(finalXOffset1, 19, finalZOffset1),
-//                                    structurePlacementData, random, 16));
-//                            placed = true;
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
+            if (world.getBlockState(mutable.set(XOffset, 20, ZOffset)) == Blocks.AIR.getDefaultState()) {
+                optional.ifPresent(structureTemplate -> structureTemplate.place(
+                        world,
+                        mutable.set(XOffset, 19, ZOffset),
+                        mutable.set(XOffset, 19, ZOffset),
+                        structurePlacementData, random, 16));
+            }
         }
     }
 }
