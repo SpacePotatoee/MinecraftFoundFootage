@@ -16,6 +16,7 @@ public class RenderLayerMixin {
     private static List<RenderLayer> addRenderLayer(List<RenderLayer> original){
         List<RenderLayer> list = new ArrayList<>(original);
         list.add(RenderLayers.getConcreteLayer());
+        list.add(RenderLayers.getBricksLayer());
         list.add(RenderLayers.getChainFence());
         list.add(RenderLayers.getCeilingTile());
         list.add(RenderLayers.getCarpet());

@@ -38,6 +38,7 @@ public class ModItemGroups {
                         entries.add(ModBlocks.ConcreteBlock10);
                         entries.add(ModBlocks.ConcreteBlock11);
                         entries.add(ModBlocks.ConcreteBlock12);
+                        entries.add(ModBlocks.Bricks);
 
                         entries.add(ModBlocks.ThinPipe);
                         entries.add(ModBlocks.ThinPipeCorner);

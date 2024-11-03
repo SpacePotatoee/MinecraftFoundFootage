@@ -14,6 +14,7 @@ public class RenderLayers extends RenderLayer {
     private static final RenderPhase.ShaderProgram CONCRETE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/concrete/concrete"));
     private static final RenderPhase.ShaderProgram CARPET_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/carpet/carpet"));
     private static final RenderPhase.ShaderProgram CHAIN_FENCE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/chainfence/chainfence"));
+    private static final RenderPhase.ShaderProgram BRICK_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/bricks/bricks"));
     private static final RenderPhase.ShaderProgram WINDOW = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/window"));
 
     public static final RenderLayer FLUORESCENT_LIGHT = RenderLayer.of(
@@ -96,6 +97,20 @@ public class RenderLayers extends RenderLayer {
                     .build(true)
     );
 
+    public static final RenderLayer BRICKS_LAYER = RenderLayer.of(
+            "carpet",
+            VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
+            VertexFormat.DrawMode.QUADS,
+            2097152,
+            false,
+            false,
+            RenderLayer.MultiPhaseParameters.builder()
+                    .lightmap(ENABLE_LIGHTMAP)
+                    .program(BRICK_SHADER)
+                    .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
+                    .build(true)
+    );
+
     public static RenderLayer getConcreteLayer() {
         return CONCRETE_LAYER;
     }
@@ -110,6 +125,10 @@ public class RenderLayers extends RenderLayer {
 
     public static RenderLayer getChainFence() {
         return CHAIN_FENCE;
+    }
+
+    public static RenderLayer getBricksLayer() {
+        return BRICKS_LAYER;
     }
 
 

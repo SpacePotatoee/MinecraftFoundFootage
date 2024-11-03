@@ -77,6 +77,9 @@ public class ModBlocks {
     public static final Block NEWSTAIRS = registerBlock("new_stairs",
             new NewStairs(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque()));
 
+    public static final Block Bricks = registerBlock("bricks",
+            new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles()));
+
 
 
     //////Level 2 and 3 Stuff//////
