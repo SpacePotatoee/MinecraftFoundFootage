@@ -44,6 +44,10 @@
         }
     ],
     "textures": {
+        "NoEscape": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/you_cant_escape.png"
+        },
         "NoiseTex": {
             "type": "location",
             "location": "spb-revamped:textures/shaders/rnoise.png"

@@ -19,12 +19,14 @@ public class ModSounds {
     public static final SoundEvent FALLING = registerSoundEvent("falling");
     public static final SoundEvent GLITCH = registerSoundEvent("glitch");
 
+    public static final SoundEvent NO_ESCAPE = registerSoundEvent("noescape");
 
     public static final SoundEvent FLUORESCENT_LIGHT_HUM = registerSoundEvent("fluorescent_light");
     public static final SoundEvent FLUORESCENT_LIGHT_HUM2 = registerSoundEvent("fluorescent_light2");
 
 
     public static final SoundEvent LIGHTS_OUT = registerSoundEvent("lights_out");
+    public static final SoundEvent LIGHTS_ON = registerSoundEvent("lights_on");
     public static final SoundEvent LIGHT_BLINK = registerSoundEvent("light_blink");
 
 

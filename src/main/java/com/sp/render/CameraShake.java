@@ -39,7 +39,6 @@ public class CameraShake {
 
                 camera.setRotation(camera.getYaw() + yawOffset, camera.getPitch() + pitchOffset);
                 updateIntensity(timer);
-                System.out.println(intensity);
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.sp.mixin;
 
 import com.sp.SPBRevampedClient;
-import com.sp.render.CameraShake;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.BlockView;
