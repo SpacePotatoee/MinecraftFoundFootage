@@ -3,20 +3,27 @@
   "package": "com.sp.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ChunkStatusMixin",
     "EntityMixin",
+    "BodyControlMixin",
+    "ChunkStatusMixin",
+    "PlayerEntityMixin",
     "PathAccessor",
-    "StructureBlockEntityMixin"
+    "StructureBlockEntityMixin",
+    "respawnsystem.PlayerManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
     "CameraMixin",
-    "DisableHotbarMixin",
+    "GameOptionsMixin",
     "EntityRenderDispatcherMixin",
+    "MinecraftClientMixin",
+    "InGameHudMixin",
+    "EntityRendererMixin",
     "GameRendererMixin",
     "ItemEntityRendererMixin",
+    "PlayerEntityRendererMixin",
     "WorldRendererAccessor",
     "WorldRendererMixin",
     "cutscene.ClientPlayerEntityMixin",
@@ -25,6 +32,8 @@
     "disableloadingscreen.MinecraftClientMixin",
     "renderlayer.RenderLayerMixin",
     "renderlayer.WorldRendererMixin",
+    "respawnsystem.DeathScreenMixin",
+    "respawnsystem.LivingEntityRendererMixin",
     "uniform.ShaderProgramMixin",
     "uniform.VertexBufferUniformMixin",
     "uniform.WorldRendererUniformMixin"

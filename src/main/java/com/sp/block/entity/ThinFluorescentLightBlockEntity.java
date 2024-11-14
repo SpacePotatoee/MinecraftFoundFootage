@@ -1,6 +1,7 @@
 package com.sp.block.entity;
 
 import com.sp.ConfigStuff;
+import com.sp.SPBRevampedClient;
 import com.sp.init.ModBlockEntities;
 import com.sp.init.ModBlocks;
 import com.sp.block.custom.ThinFluorescentLightBlock;
@@ -56,117 +57,123 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
     }
 
     public void tick(World world, BlockPos pos, BlockState state) {
-        prevOn = world.getBlockState(pos).get(ThinFluorescentLightBlock.ON);
-        Vec3d position = pos.toCenterPos();
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-        Random random = Random.create();
-        java.util.Random random1 = new java.util.Random();
-        this.currentState = state;
-        ticks++;
+        if(world.getBlockState(pos).getBlock() == ModBlocks.ThinFluorescentLight) {
+            prevOn = world.getBlockState(pos).get(ThinFluorescentLightBlock.ON);
+            Vec3d position = pos.toCenterPos();
+            WorldEvents events = InitializeComponents.EVENTS.get(world);
+            Random random = Random.create();
+            java.util.Random random1 = new java.util.Random();
+            this.currentState = state;
+            ticks++;
 
-        if (!world.isClient) {
-            BlockState northState = world.getBlockState(pos.north());
-            BlockState westState = world.getBlockState(pos.west());
-            BlockState downState = world.getBlockState(pos.down());
-            int northOWest = 0;
+            if (!world.isClient) {
+                BlockState northState = world.getBlockState(pos.north());
+                BlockState westState = world.getBlockState(pos.west());
+                BlockState downState = world.getBlockState(pos.down());
+                int northOWest = 0;
 
-            if (northState.getBlock() == ModBlocks.ThinFluorescentLight) {
-                northOWest = 1;
-            } else if (westState.getBlock() == ModBlocks.ThinFluorescentLight) {
-                northOWest = 2;
-            } else if (downState.getBlock() == ModBlocks.ThinFluorescentLight) {
-                northOWest = 3;
-            }
-
-            if (northOWest != 0) {
-                if (northOWest == 1) {
-                    world.setBlockState(pos, northState.with(ThinFluorescentLightBlock.COPY, true));
-                } else if (northOWest == 2) {
-                    world.setBlockState(pos, westState.with(ThinFluorescentLightBlock.COPY, true));
-                } else {
-                    world.setBlockState(pos, downState.with(ThinFluorescentLightBlock.COPY, true));
-                }
-            } else {
-                if(state.get(ThinFluorescentLightBlock.COPY)) {
-                    world.setBlockState(pos, ModBlocks.ThinFluorescentLight.getDefaultState().with(ThinFluorescentLightBlock.COPY, false));
+                if (northState.getBlock() == ModBlocks.ThinFluorescentLight) {
+                    northOWest = 1;
+                } else if (westState.getBlock() == ModBlocks.ThinFluorescentLight) {
+                    northOWest = 2;
+                } else if (downState.getBlock() == ModBlocks.ThinFluorescentLight) {
+                    northOWest = 3;
                 }
 
-                //Turn off if Blackout Event is active
-                if (events.isLevel1Blackout() || events.isLevel2Blackout()) {
-                    if (world.getBlockState(pos).getBlock() == ModBlocks.ThinFluorescentLight) {
-                        world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.BLACKOUT, true));
-                        this.setPlayingSound(false);
-                    }
-                }
-
-                if (events.isLevel1Flicker() && !state.get(ThinFluorescentLightBlock.BLACKOUT)) {
-                    if (ticks % randInt == 0) {
-                        int i = random.nextBetween(1, 2);
-                        if (i == 1) {
-                            world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.ON, true));
-                        } else {
-                            world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.ON, false));
-                        }
+                if (northOWest != 0) {
+                    if (northOWest == 1) {
+                        world.setBlockState(pos, northState.with(ThinFluorescentLightBlock.COPY, true));
+                    } else if (northOWest == 2) {
+                        world.setBlockState(pos, westState.with(ThinFluorescentLightBlock.COPY, true));
+                    } else {
+                        world.setBlockState(pos, downState.with(ThinFluorescentLightBlock.COPY, true));
                     }
                 } else {
-                    if (!state.get(ThinFluorescentLightBlock.ON)) {
-                        world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.ON, true));
+                    if (state.get(ThinFluorescentLightBlock.COPY)) {
+                        world.setBlockState(pos, ModBlocks.ThinFluorescentLight.getDefaultState().with(ThinFluorescentLightBlock.COPY, false));
                     }
-                }
-            }
-        }
 
-        if (world.getBlockState(pos).getBlock() == ModBlocks.ThinFluorescentLight) {
-            if (prevOn != world.getBlockState(pos).get(ThinFluorescentLightBlock.ON)) {
-                if (!world.isClient)
-                    world.playSound(null, pos, ModSounds.LIGHT_BLINK, SoundCategory.AMBIENT, 0.2F, random1.nextFloat(0.9f, 1.1f));
-            }
-        }
-
-        if(world.isClient) {
-            PlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null) {
-                Vec3d playerPos = player.getPos();
-                boolean withinDistance = pos.isWithinDistance(playerPos, ConfigStuff.lightRenderDistance);
-                if(withinDistance) {
-                    if (!state.get(ThinFluorescentLightBlock.COPY) && state.get(ThinFluorescentLightBlock.ON) && !state.get(ThinFluorescentLightBlock.BLACKOUT))
-                    {
-                        if (!this.isPlayingSound() && pos.isWithinDistance(playerPos, 15.0f)) {
-                            MinecraftClient.getInstance().getSoundManager().play(new ThinFluorescentLightSoundInstance(this, player));
-                            this.setPlayingSound(true);
+                    //Turn off if Blackout Event is active
+                    if (events.isLevel1Blackout() || events.isLevel2Blackout()) {
+                        if (world.getBlockState(pos).getBlock() == ModBlocks.ThinFluorescentLight) {
+                            world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.BLACKOUT, true));
+                            this.setPlayingSound(false);
                         }
+                    }
 
-                        if (pointLight == null) {
-                            pointLight = new PointLight();
-                            VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(pointLight
-                                    .setRadius(18f)
-                                    .setColor(255, 255, 255)
-                                    .setBrightness(0.0024f)
-                            );
-                            switch ((WallMountLocation) state.get(FACE)) {
-                                case FLOOR:
-                                    pointLight.setPosition(position.x, position.y, position.z);
-                                case WALL:
-                                    switch ((Direction) state.get(FACING)) {
-                                        case EAST:
-                                            pointLight.setPosition(position.x, position.y, position.z + 0.5);
-                                        case WEST:
-                                            pointLight.setPosition(position.x, position.y, position.z - 0.5);
-                                        case SOUTH:
-                                            pointLight.setPosition(position.x + 0.5, position.y, position.z);
-                                        case NORTH:
-                                        default:
-                                            pointLight.setPosition(position.x - 0.5, position.y, position.z);
-                                    }
-                                case CEILING:
-                                default:
-                                    pointLight.setPosition(position.x, position.y, position.z);
-
+                    if (events.isLevel1Flicker() && !state.get(ThinFluorescentLightBlock.BLACKOUT)) {
+                        if (ticks % randInt == 0) {
+                            int i = random.nextBetween(1, 2);
+                            if (i == 1) {
+                                world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.ON, true));
+                            } else {
+                                world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.ON, false));
                             }
-                            if (world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-                                pointLight
-                                        .setColor(200, 200, 255)
-                                        .setBrightness(0.005f);
+                        }
+                    } else {
+                        if (!state.get(ThinFluorescentLightBlock.ON)) {
+                            world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.ON, true));
+                        }
+                    }
+                }
+            }
+
+            if (world.getBlockState(pos).getBlock() == ModBlocks.ThinFluorescentLight) {
+                if (prevOn != world.getBlockState(pos).get(ThinFluorescentLightBlock.ON)) {
+                    if (!world.isClient)
+                        world.playSound(null, pos, ModSounds.LIGHT_BLINK, SoundCategory.AMBIENT, 0.2F, random1.nextFloat(0.9f, 1.1f));
+                }
+            }
+
+            if (world.isClient) {
+                PlayerEntity player = MinecraftClient.getInstance().player;
+                if (player != null) {
+                    Vec3d playerPos = player.getPos();
+                    boolean withinDistance = pos.isWithinDistance(playerPos, ConfigStuff.lightRenderDistance);
+                    if (withinDistance) {
+                        if (!state.get(ThinFluorescentLightBlock.COPY) && state.get(ThinFluorescentLightBlock.ON) && !state.get(ThinFluorescentLightBlock.BLACKOUT)) {
+                            if (!this.isPlayingSound() && pos.isWithinDistance(playerPos, 15.0f) && !SPBRevampedClient.blackScreen) {
+                                MinecraftClient.getInstance().getSoundManager().play(new ThinFluorescentLightSoundInstance(this, player));
+                                this.setPlayingSound(true);
+                            }
+
+                            if (pointLight == null) {
+                                pointLight = new PointLight();
+                                VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(pointLight
+                                        .setRadius(18f)
+                                        .setColor(255, 255, 255)
+                                        .setBrightness(0.0024f)
+                                );
+                                switch ((WallMountLocation) state.get(FACE)) {
+                                    case FLOOR:
+                                        pointLight.setPosition(position.x, position.y, position.z);
+                                    case WALL:
+                                        switch ((Direction) state.get(FACING)) {
+                                            case EAST:
+                                                pointLight.setPosition(position.x, position.y, position.z + 0.5);
+                                            case WEST:
+                                                pointLight.setPosition(position.x, position.y, position.z - 0.5);
+                                            case SOUTH:
+                                                pointLight.setPosition(position.x + 0.5, position.y, position.z);
+                                            case NORTH:
+                                            default:
+                                                pointLight.setPosition(position.x - 0.5, position.y, position.z);
+                                        }
+                                    case CEILING:
+                                    default:
+                                        pointLight.setPosition(position.x, position.y, position.z);
+
+                                }
+                                if (world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+                                    pointLight
+                                            .setColor(200, 200, 255)
+                                            .setBrightness(0.005f);
+                                }
+                            }
+                        } else {
+                            if (pointLight != null) {
+                                VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(pointLight);
+                                pointLight = null;
                             }
                         }
                     } else {
@@ -175,19 +182,13 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                             pointLight = null;
                         }
                     }
-                } else {
-                    if (pointLight != null) {
-                        VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(pointLight);
-                        pointLight = null;
-                    }
                 }
             }
-        }
 
-        if (ticks > 100) {
-            ticks = 1;
+            if (ticks > 100) {
+                ticks = 1;
+            }
         }
-
     }
 
     public BlockState getCurrentState(){

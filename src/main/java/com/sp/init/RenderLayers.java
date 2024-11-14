@@ -1,10 +1,7 @@
 package com.sp.init;
 
 import com.sp.SPBRevamped;
-import com.sp.render.ShadowMapRenderer;
 import foundry.veil.api.client.render.VeilRenderBridge;
-import foundry.veil.api.client.render.VeilRenderSystem;
-import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;
 import net.minecraft.util.Identifier;
 

@@ -3,6 +3,7 @@
 #include veil:deferred_utils
 #include spb-revamped:puddles
 #include spb-revamped:sky
+#include spb-revamped:common
 
 #define OFFSET vec2(0.1965249, 0.6546237)
 
@@ -66,8 +67,8 @@ void main() {
 		vec4 compat = texture(TransparentCompatSampler, texCoord);
 		vec4 compat2 = texture(OpaqueCompatSampler, texCoord);
 
-		if(!(compat.a > 0) && !(compat2.a > 0)){
-			if(TogglePuddles == 1){
+		if (!(compat.a > 0) && !(compat2.a > 0)){
+			if (TogglePuddles == 1){
 				color = getPuddles(color, texCoord, normal, DiffuseSampler0, TransparentDepthSampler, NoiseTexture, NoiseTexture2);
 			}
 		}
@@ -101,10 +102,10 @@ void main() {
 				}
 				else {
 					float noise = noise3D(p);
-					fog += 0.0005 * noise;
+					fog += 0.0004 * noise;
 					p = ro + rd * travDist;
 					travDist += 0.05;
-					if (travDist > worldDepth || fog >= 1 || travDist > 50 || p.y < 0) {
+					if (travDist > worldDepth || fog >= 1 || travDist > 50 || p.y < 20.5) {
 						break;
 					}
 				}
@@ -112,12 +113,12 @@ void main() {
 			color.rgb = mix(color.rgb, FOG_COLOR.rgb, fog);
 		}
 
-		color.rgb = blend(color, water);
+			color.rgb = blend(color, water);
 
-		if(handDepth < 1){
+		if (handDepth < 1){
 			color = handColor;
 		}
-		fragColor = color;
+			fragColor = color;
 	}else{
 		fragColor = vec4(0.0,0.0,0.0,1.0);
 	}

@@ -249,16 +249,20 @@ public class PoolroomsMazeGenerator {
             }
         }
 
-        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() + this.size)) == Blocks.YELLOW_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() + this.size)) == Blocks.YELLOW_WOOL.getDefaultState() ||
+            world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() + this.size)) == Blocks.PINK_WOOL.getDefaultState()){
             currentCell.setNorth(false);
         }
-        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() - this.size)) == Blocks.RED_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() - this.size)) == Blocks.RED_WOOL.getDefaultState() ||
+            world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() - this.size)) == Blocks.PINK_WOOL.getDefaultState()){
             currentCell.setSouth(false);
         }
-        if (world.getBlockState(mutable.set(currentCell.getX() + this.size, 19, currentCell.getY())) == Blocks.ORANGE_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getX() + this.size, 19, currentCell.getY())) == Blocks.ORANGE_WOOL.getDefaultState() ||
+            world.getBlockState(mutable.set(currentCell.getX() + this.size, 19, currentCell.getY())) == Blocks.PINK_WOOL.getDefaultState()){
             currentCell.setWest(false);
         }
-        if (world.getBlockState(mutable.set(currentCell.getX() - this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getX() - this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState() ||
+            world.getBlockState(mutable.set(currentCell.getX() - this.size, 19, currentCell.getY())) == Blocks.PINK_WOOL.getDefaultState()){
             currentCell.setEast(false);
         }
 

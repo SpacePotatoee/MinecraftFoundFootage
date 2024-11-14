@@ -17,5 +17,9 @@ public class BackroomsLevels {
 
     public static final RegistryKey<World> POOLROOMS_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "poolrooms"));
 
+    public static boolean isInBackrooms(RegistryKey<World> world){
+        return world == LEVEL0_WORLD_KEY || world == LEVEL1_WORLD_KEY || world == LEVEL2_WORLD_KEY || world == POOLROOMS_WORLD_KEY;
+    }
+
 
 }

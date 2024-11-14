@@ -41,6 +41,15 @@ repositories {
 	maven {
 		url = "https://api.modrinth.com/maven"
 	}
+
+	//GeckoLib
+	maven {
+		url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+		content {
+			includeGroupByRegex("software\\.bernie.*")
+			includeGroup("com.eliotlash.mclib")
+		}
+	}
 }
 
 fabricApi {
@@ -79,6 +88,10 @@ dependencies {
 	//Midnight Lib
 	modImplementation "maven.modrinth:midnightlib:${project.midnightlib_version}"
 	include "maven.modrinth:midnightlib:${project.midnightlib_version}"
+
+	//GeckoLib
+	modImplementation("software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}")
+	implementation("com.eliotlash.mclib:mclib:20")
 
 //	implementation "gg.moonflower:molang-compiler:3.1.1.19"
 //	shade "gg.moonflower:molang-compiler:version"

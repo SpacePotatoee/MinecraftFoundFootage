@@ -97,7 +97,7 @@ vec4 getPuddles(vec4 fragColor, vec2 texCoord, vec4 normal, sampler2D DiffuseSam
     vec4 noise_2 = texture(NoiseTexture2, worldSpace.xz * 0.5);
     noise = (clamp(smoothstep(0.1, 0.9, noise_2) * 0.2, 0, 1) + smoothstep(0.1, 0.9, noise));
 
-    if (worldSpace.y <= 21.001 && length(viewSpace) <= 150){
+    if (worldSpace.y <= 21.001 && worldSpace.y >= 20.99 && length(viewSpace) <= 150){
         noise = smoothstep(0.3, 0.7, noise);
         noise = clamp(noise, 0, 1);
 //        color = mainTexture;

@@ -42,7 +42,6 @@ public class CutsceneManager {
     public BlackScreen blackScreen;
     private Entity camera;
     private final Path cameraPathPos;
-//    private final Path cameraPathRot;
     private final Path cameraPathRotX;
     private final Path cameraPathRotY;
     private final Path cameraPathRotZ;
@@ -98,7 +97,7 @@ public class CutsceneManager {
     private void pause(){
         if(!this.backroomsBySP && !this.fall) {
             if (!this.started) {
-                this.blackScreen.showBlackScreen(60);
+                this.blackScreen.showBlackScreen(60, true, false);
                 this.startTime = System.currentTimeMillis();
                 this.started = true;
             }
@@ -123,7 +122,7 @@ public class CutsceneManager {
                 this.initCamera();
             }
             if (timer >= 1.0) {
-                this.blackScreen.showBlackScreen(50);
+                this.blackScreen.showBlackScreen(50, true, false);
                 this.backroomsBySP = true;
                 this.startTime = System.currentTimeMillis() + 2500L;
                 this.fall = false;
@@ -144,7 +143,7 @@ public class CutsceneManager {
             float timer = (float) (System.currentTimeMillis() - this.startTime) / this.duration2;
 
             if(timer >= 1.0){
-                this.blackScreen.showBlackScreen(40);
+                this.blackScreen.showBlackScreen(40, true, false);
                 this.reset();
             } else {
                 camera.refreshPositionAndAngles(3, 21, 1.5, 5, (float) 83);
@@ -224,8 +223,10 @@ public class CutsceneManager {
 
     public class BlackScreen{
         public boolean isBlackScreen;
+        public boolean noEscape;
         private long duration;
         private long startTime;
+        private boolean shouldPauseSounds;
 
         //Duration in ticks
         public BlackScreen(){
@@ -234,10 +235,12 @@ public class CutsceneManager {
             this.duration = 0;
         }
 
-        public void showBlackScreen(int time){
+        public void showBlackScreen(int time, boolean shouldPauseSounds, boolean noEscape){
             this.duration = time * 50L;
             this.isBlackScreen = true;
+            this.noEscape = noEscape;
             this.startTime = System.currentTimeMillis();
+            this.shouldPauseSounds = shouldPauseSounds;
             client.options.hudHidden = true;
         }
 
@@ -249,12 +252,18 @@ public class CutsceneManager {
 
                 if (timer >= 1.0) {
                     SPBRevampedClient.blackScreen = false;
+                    SPBRevampedClient.youCantEscape = false;
                     this.isBlackScreen = false;
                     client.options.hudHidden = false;
                     this.startTime = 0;
                     client.getSoundManager().resumeAll();
                 } else {
-                    client.getSoundManager().pauseAll();
+                    if(shouldPauseSounds) {
+                        client.getSoundManager().pauseAll();
+                    }
+                    if(noEscape){
+                        SPBRevampedClient.youCantEscape = true;
+                    }
                     client.options.hudHidden = true;
                     SPBRevampedClient.blackScreen = true;
                 }

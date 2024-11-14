@@ -51,7 +51,6 @@ void main() {
     vertexColor = Color;
     texCoord0 = UV0;
     texCoord2 = minecraft_sample_lightmap_coords(UV2);
-    lightmapColor = texture(Sampler2, texCoord2);
-//    lightmapColor *= lightmapColor * 2;
+    lightmapColor = pow(texture(Sampler2, texCoord2), vec4(1));
     normal = NormalMat * Normal;
 }

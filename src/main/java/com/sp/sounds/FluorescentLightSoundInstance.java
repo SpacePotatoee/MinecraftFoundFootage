@@ -1,5 +1,6 @@
 package com.sp.sounds;
 
+import com.sp.SPBRevampedClient;
 import com.sp.init.ModBlocks;
 import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.block.entity.FluorescentLightBlockEntity;
@@ -46,7 +47,8 @@ public class FluorescentLightSoundInstance extends MovingSoundInstance {
                 this.entity.getPos().isWithinDistance(player.getPos(), 12.0f) &&
                 !events.isLevel0Blackout() &&
                 ((FluorescentLightBlockEntity) entity).getCurrentState() == ModBlocks.FluorescentLight.getDefaultState().with(FluorescentLightBlock.ON, true) &&
-                !((FluorescentLightBlockEntity) entity).getCurrentState().get(FluorescentLightBlock.BLACKOUT))
+                !((FluorescentLightBlockEntity) entity).getCurrentState().get(FluorescentLightBlock.BLACKOUT) &&
+                !SPBRevampedClient.blackScreen)
             {
                 this.pitch = 1.0F;
                 this.volume = 0.4F;

@@ -23,12 +23,13 @@ in vec3 Pos;
 in mat3 TBN;
 
 const int MaxSteps = 200;
+const float ZOOM = 0.8;
 
 void main() {
     vec2 faceUV = getAccurateUV(worldPos, normal);
 
-    vec4 color = texture(ColorMap, worldPos.xz * 0.8) * vertexColor;
-    vec4 normalMap = (texture(NormalMap, worldPos.xz * 0.8) * 2.0 - 1.0);
+    vec4 color = texture(ColorMap, worldPos.xz * ZOOM) * vertexColor;
+    vec4 normalMap = (texture(NormalMap, worldPos.xz * ZOOM) * 2.0 - 1.0);
 //    vec4 aoMap = texture(AoMap, faceUV);
 //    aoMap.rgb *= abs(viewToWorldSpaceDirection(normal).g);
     normalMap.g = normalMap.g;

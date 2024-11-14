@@ -129,13 +129,17 @@ public class Level0MazeGenerator {
             neighbors.add(East);
         }
 
-        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() + this.size)) == Blocks.LIME_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() + this.size)) == Blocks.LIME_WOOL.getDefaultState() ||
+            world.getBlockState(mutable.set(currentCell.getX(), 4, currentCell.getY() + this.size)) == Blocks.LIME_WOOL.getDefaultState())
+        {
             currentCell.setNorth(false);
         }
-        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() - this.size)) == Blocks.LIME_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() - this.size)) == Blocks.LIME_WOOL.getDefaultState())
+        {
             currentCell.setSouth(false);
         }
-        if (world.getBlockState(mutable.set(currentCell.getX() + this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getX() + this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState() ||
+            world.getBlockState(mutable.set(currentCell.getX() + this.size, 4, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState()){
             currentCell.setWest(false);
         }
         if (world.getBlockState(mutable.set(currentCell.getX() - this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState()){

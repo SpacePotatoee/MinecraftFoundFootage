@@ -6,7 +6,6 @@ import com.sp.init.ModDamageTypes;
 import com.sp.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;

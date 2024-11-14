@@ -46,13 +46,17 @@ public class Level1MazeGenerator {
         this.levelDirectory = levelDirectory;
     }
 
-    public void setup(StructureWorldAccess world){
+    public void setup(StructureWorldAccess world, boolean spawnRandomRooms){
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        this.spawnRandomRooms(world, this.originX, this.originY);
+
+        if(spawnRandomRooms) {
+            this.spawnRandomRooms(world, this.originX, this.originY);
+        }
 
         for (int y = 0; y < this.rows; y++) {
             for (int x = 0; x < this.cols; x++) {
-                if(world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 20, y + ((this.size - 1) * y) + this.originY)) == Blocks.AIR.getDefaultState()) {
+                if(world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 20, y + ((this.size - 1) * y) + this.originY)) == Blocks.AIR.getDefaultState() &&
+                    world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 26, y + ((this.size - 1) * y) + this.originY)) == Blocks.AIR.getDefaultState()) {
                     grid[x][y] = new HighVarCell(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
                 }
             }
@@ -150,7 +154,8 @@ public class Level1MazeGenerator {
         if (world.getBlockState(mutable.set(currentCell.getX() + this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState()){
             currentCell.setWest(false);
         }
-        if (world.getBlockState(mutable.set(currentCell.getX() - this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState()){
+        if (world.getBlockState(mutable.set(currentCell.getX() - this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState() ||
+            world.getBlockState(mutable.set(currentCell.getX() - this.size, 26, currentCell.getY())) == Blocks.YELLOW_WOOL.getDefaultState()){
             currentCell.setEast(false);
         }
 
@@ -197,6 +202,7 @@ public class Level1MazeGenerator {
 
     public void spawnRandomRooms(StructureWorldAccess world, int x, int z) {
         if (world.getServer() != null) {
+            boolean place = true;
             Random random = Random.create();
             BlockPos.Mutable mutable = new BlockPos.Mutable();
             StructureTemplateManager structureTemplateManager = world.getServer().getStructureTemplateManager();
@@ -211,7 +217,17 @@ public class Level1MazeGenerator {
 
             int XOffset = x + (randomPosX * this.size);
             int ZOffset = z + (randomPosZ * this.size);
-            if (world.getBlockState(mutable.set(XOffset, 20, ZOffset)) == Blocks.AIR.getDefaultState()) {
+
+            for(int i = 0; i < 3; i++){
+                for(int j = 0; j < 3; j++){
+                    if(world.getBlockState(mutable.set(XOffset + this.size * i, 20, ZOffset + this.size * j)) != Blocks.AIR.getDefaultState() ||
+                        world.getBlockState(mutable.set(XOffset + this.size * i, 26, ZOffset + this.size * j)) == Blocks.YELLOW_WOOL.getDefaultState()){
+                        place = false;
+                    }
+                }
+            }
+
+            if (place) {
                 optional.ifPresent(structureTemplate -> structureTemplate.place(
                         world,
                         mutable.set(XOffset, 19, ZOffset),

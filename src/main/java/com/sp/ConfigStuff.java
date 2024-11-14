@@ -33,4 +33,8 @@ public class ConfigStuff extends MidnightConfig {
 
     @Entry(category = ADMIN)
     public static boolean forceBackrooms = false;
+
+    @Entry(category = ADMIN)
+    public static boolean enable3rdPerson = false;
+
 }

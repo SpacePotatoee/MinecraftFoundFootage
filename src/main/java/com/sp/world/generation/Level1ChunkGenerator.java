@@ -26,6 +26,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.math.noise.SimplexNoiseSampler;
 import net.minecraft.util.math.random.CheckedRandom;
@@ -92,6 +93,7 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
         int lights = random.nextBetween(1,6);
+        int exit;
 
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         MinecraftServer server = world.getServer();
@@ -111,18 +113,40 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
             if(optional.isPresent()){
                 optional.get().place(
                         world,
-                        mutable.set(0,19,0),
-                        mutable.set(0,19,0),
+                        mutable.set(-1,19,-1),
+                        mutable.set(-1,19,-1),
                         structurePlacementData, random, 2
                 );
             }
 
             Level1MazeGenerator level1MazeGenerator = new Level1MazeGenerator(8, 10, 10, x, z, "level1");
-            level1MazeGenerator.setup(world);
+            level1MazeGenerator.setup(world, false);
         } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0){
             world.setBlockState(mutable.set(x - 32, 17, z - 32), Blocks.GLOWSTONE.getDefaultState(), 16);
             double noise1 = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
             if (server != null) {
+
+                if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000)){
+                    if(noise1 <= 0){
+                        exit = random.nextBetween(1,3);
+                        if(exit == 1){
+
+                            roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level1/stairwell2_1");
+                            structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
+                            optional = structureTemplateManager.getTemplate(roomIdentifier);
+
+                            if (optional.isPresent()) {
+                                optional.get().place(
+                                        world,
+                                        mutable.set(x,11,z),
+                                        mutable.set(x,11,z),
+                                        structurePlacementData, random, 2
+                                );
+                            }
+
+                        }
+                    }
+                }
 
                 if(noise1 > 0){
                     roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level1/megaroom1");
@@ -162,7 +186,7 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
                     } else {
                         if(world.getBlockState(mutable.set(x, 19, z)) != Blocks.RED_WOOL.getDefaultState()) {
                             Level1MazeGenerator level1MazeGenerator = new Level1MazeGenerator(8, 10, 10, x, z, "level1");
-                            level1MazeGenerator.setup(world);
+                            level1MazeGenerator.setup(world, true);
                         }
 
                     }
@@ -171,7 +195,7 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
 
                     if(world.getBlockState(mutable.set(x, 19, z)) != Blocks.RED_WOOL.getDefaultState()) {
                         Level1MazeGenerator level1MazeGenerator = new Level1MazeGenerator(8, 10, 10, x, z, "level1");
-                        level1MazeGenerator.setup(world);
+                        level1MazeGenerator.setup(world, true);
                     }
 
                 }

@@ -14,6 +14,7 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
@@ -63,6 +64,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
             Optional<StructureTemplate> optional;
 
             int megaRooms = random.nextBetween(1, 3);
+            int exit;
 
             Identifier roomIdentifier;
             StructurePlacementData structurePlacementData = new StructurePlacementData();
@@ -99,7 +101,30 @@ public class Level0ChunkGenerator extends ChunkGenerator {
                 }
             } else if (((float) chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float) chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
                 world.setBlockState(mutable.set(x - 32, 28, z - 32), Blocks.GLOWSTONE.getDefaultState(), 16);
-                if (megaRooms == 1 ) {
+
+                if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000)){
+                    if(megaRooms != 1){
+                        exit = random.nextBetween(1,3);
+                        if(exit == 1){
+
+                            roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level0/stairwell_0");
+                            structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
+                            optional = structureTemplateManager.getTemplate(roomIdentifier);
+
+                            if (optional.isPresent()) {
+                                optional.get().place(
+                                        world,
+                                        mutable.set(x,4,z),
+                                        mutable.set(x,4,z),
+                                        structurePlacementData, random, 2
+                                );
+                            }
+
+                        }
+                    }
+                }
+
+                if (megaRooms == 1) {
                     if (!isNearMegaRooms(x, z, world)) {
 
                         megaRooms = random.nextBetween(1, 6);
@@ -108,7 +133,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
                         optional = structureTemplateManager.getTemplate(roomIdentifier);
 
                         if (optional.isPresent()) {
-                            if(megaRooms == 1 || megaRooms == 2) {
+                            if (megaRooms == 1 || megaRooms == 2) {
                                 optional.get().place(
                                         world,
                                         mutable.set(x - 32, 18, z - 32),
@@ -129,8 +154,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
                                         mutable.set(x, 18, z),
                                         mutable.set(x, 18, z),
                                         structurePlacementData, random, 2);
-                            }
-                            else {
+                            } else {
                                 optional.get().place(
                                         world,
                                         mutable.set(x - 16, 18, z - 16),
@@ -165,7 +189,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
                     optional = structureTemplateManager.getTemplate(roomIdentifier);
 
                     if (optional.isPresent()) {
-                        if (world.getBlockState(mutable.set(x + 8 * i, 18, z + 8 * j)) != Blocks.CYAN_WOOL.getDefaultState()){
+                        if (world.getBlockState(mutable.set(x + 8 * i, 18, z + 8 * j)) != Blocks.CYAN_WOOL.getDefaultState() && world.getBlockState(mutable.set(x + 8 * i, 25, z + 8 * j)) == Blocks.AIR.getDefaultState() ){
                             if (structurePlacementData.getRotation() == BlockRotation.CLOCKWISE_90) {
                                 optional.get().place(world, new BlockPos((x + 7) + 8 * i, 25, (z) + 8 * j), mutable.set((x + 7) + 8 * i, 25, (z) + 8 * j), structurePlacementData, random, 16);
                             } else {

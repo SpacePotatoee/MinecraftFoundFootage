@@ -1,6 +1,7 @@
 package com.sp.block.entity;
 
 import com.sp.ConfigStuff;
+import com.sp.SPBRevampedClient;
 import com.sp.init.ModBlockEntities;
 import com.sp.init.ModBlocks;
 import com.sp.block.custom.FluorescentLightBlock;
@@ -144,7 +145,7 @@ public class FluorescentLightBlockEntity extends BlockEntity {
                                 .with(FluorescentLightBlock.COPY, false)
                                 .with(FluorescentLightBlock.ON, true)
                                 .with(FluorescentLightBlock.BLACKOUT, false)) {
-                            if (!this.isPlayingSound() && pos.isWithinDistance(playerPos, 12.0f) && world.getBlockState(pos) != ModBlocks.FluorescentLight.getDefaultState().with(FluorescentLightBlock.BLACKOUT, true)) {
+                            if (!this.isPlayingSound() && pos.isWithinDistance(playerPos, 12.0f) && world.getBlockState(pos) != ModBlocks.FluorescentLight.getDefaultState().with(FluorescentLightBlock.BLACKOUT, true)  && !SPBRevampedClient.blackScreen) {
                                 MinecraftClient.getInstance().getSoundManager().play(new FluorescentLightSoundInstance(this, player));
                                 this.setPlayingSound(true);
                             }

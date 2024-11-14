@@ -1,0 +1,16 @@
+{
+  "stages": [
+    {
+      "type": "veil:blit",
+      "shader": "spb-revamped:glitch",
+      "in": "minecraft:main",
+      "out": "veil:post"
+    }
+  ],
+  "textures": {
+    "NoEscape": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/you_cant_escape.png"
+    }
+  }
+}

@@ -30,6 +30,11 @@
       "spb-revamped:lights_out"
     ]
   },
+  "lights_on": {
+    "sounds": [
+      "spb-revamped:lights_on"
+    ]
+  },
   "ambience": {
     "sounds": [
       "spb-revamped:ambience"
@@ -199,6 +204,11 @@
   "glitch": {
     "sounds": [
       "spb-revamped:cutscene/glitch"
+    ]
+  },
+  "noescape": {
+    "sounds": [
+      "spb-revamped:noescape"
     ]
   }
 }

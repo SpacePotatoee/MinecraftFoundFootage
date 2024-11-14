@@ -29,9 +29,7 @@ void main() {
 
     vec4 color = texture(Sampler0, texCoord0) * vertexColor;
     vec4 normalMap = (texture(NormalMap, faceUV) * 2.0 - 1.0);
-//    vec4 aoMap = texture(AoMap, faceUV);
-//    aoMap.rgb *= abs(viewToWorldSpaceDirection(normal).g);
-    normalMap.g = normalMap.g;
+    normalMap.g = -normalMap.g;
     normalMap.rgb *= TBN;
     normalMap.rgb *= abs(viewToWorldSpaceDirection(normal).g);
     if(abs(viewToWorldSpaceDirection(normal).g) <= 0.01){

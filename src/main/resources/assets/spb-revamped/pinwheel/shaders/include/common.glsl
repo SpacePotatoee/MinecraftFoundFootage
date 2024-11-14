@@ -32,3 +32,18 @@ vec4 blur(float kernalSize, float offset, sampler2D textureSampler, vec2 texCoor
     }
     return blur;
 }
+
+float random (vec2 st) {
+    float p = fract(sin(dot(st.xy,vec2(0,300.233))));
+    return p;
+}
+
+float hash12(vec2 p){
+    vec3 p3  = fract(vec3(p.xyx) * .1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
+}
+
+float octave(float x){
+    return mod(sin(x * 2) * sin(x * 4) * sin(x * 32), 1);
+}

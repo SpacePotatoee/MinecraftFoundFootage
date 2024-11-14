@@ -54,11 +54,9 @@ public class ShadowMapRenderer {
             accessor.invokeRenderLayer(RenderLayer.getCutoutMipped(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
             accessor.invokeRenderLayer(RenderLayer.getSolid(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
 
-            //shadowMap.bindDraw(true);
             if(client.world != null) {
                 VertexConsumerProvider.Immediate immediate = accessor.getBufferBuilders().getEntityVertexConsumers();
 
-                //accessor.getEntityRenderDispatcher().;
                 for(Entity entity : client.world.getEntities()){
                     if(accessor.getEntityRenderDispatcher().shouldRender(entity, accessor.getFrustum(), cameraPos.x, cameraPos.y, cameraPos.z) || entity.isSpectator()){
                         accessor.invokeRenderEntity(entity, cameraPos.x, cameraPos.y, cameraPos.z, tickDelta, shadowModelView, immediate);

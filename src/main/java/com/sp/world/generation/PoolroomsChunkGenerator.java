@@ -71,19 +71,30 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
 
 
 
+        if(chunk.getPos().x == 0 && chunk.getPos().z == 0){
+            roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "poolrooms/entrance");
+            optional = structureTemplateManager.getTemplate(roomIdentifier);
 
-        if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0){
+            optional.ifPresent(structureTemplate -> structureTemplate.place(
+                    world,
+                    mutable.set(0, 18, 0),
+                    mutable.set(0, 18, 0),
+                    structurePlacementData,
+                    random,
+                    2
+            ));
+
+            if(server != null){
+                PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
+                poolroomsMazeGenerator.setup(world);
+            }
+
+        } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0){
             if (server != null) {
                 PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
                 poolroomsMazeGenerator.setup(world);
             }
         }
-
-//        for (int j = 0; j < 16; j++){
-//            for (int i = 0; i < 16; i++){
-//                world.setBlockState(mutable.set(x + j, 27, z + i), Blocks.AIR.getDefaultState(), 16);
-//            }
-//        }
 
     }
 

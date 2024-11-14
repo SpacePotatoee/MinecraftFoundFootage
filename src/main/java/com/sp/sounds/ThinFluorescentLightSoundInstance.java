@@ -1,11 +1,13 @@
 package com.sp.sounds;
 
+import com.sp.SPBRevampedClient;
 import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.ModSounds;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,7 +48,8 @@ public class ThinFluorescentLightSoundInstance extends MovingSoundInstance {
                     !events.isLevel1Blackout() &&
                     !events.isLevel2Blackout() &&
                     ((ThinFluorescentLightBlockEntity) entity).getCurrentState().get(ThinFluorescentLightBlock.ON) &&
-                    !((ThinFluorescentLightBlockEntity) entity).getCurrentState().get(ThinFluorescentLightBlock.BLACKOUT)) {
+                    !((ThinFluorescentLightBlockEntity) entity).getCurrentState().get(ThinFluorescentLightBlock.BLACKOUT) &&
+                    !SPBRevampedClient.blackScreen) {
                 this.pitch = 1.0F;
                 this.volume = 0.2F;
             } else {

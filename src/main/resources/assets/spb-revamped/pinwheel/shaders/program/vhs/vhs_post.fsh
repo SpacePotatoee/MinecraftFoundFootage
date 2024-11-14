@@ -7,9 +7,11 @@ uniform sampler2D DiffuseSampler0;
 uniform sampler2D DiffuseDepthSampler;
 uniform sampler2D MidSampler;
 uniform sampler2D VhsNoise;
+uniform sampler2D NoEscape;
 
 uniform vec2 Velocity;
 uniform float GameTime;
+uniform int youCantEscape;
 
 in vec2 texCoord;
 out vec4 fragColor;
@@ -35,18 +37,6 @@ vec4 Viginette(vec2 uv){
     uv = 0.5f * (uv + 1.0f);
     return vec4(disty);
 }
-
-float random (vec2 st) {
-    float p = fract(sin(dot(st.xy,vec2(0,300.233))));
-    return p;
-}
-
-float hash12(vec2 p){
-    vec3 p3  = fract(vec3(p.xyx) * .1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.x + p3.y) * p3.z);
-}
-
 
 void main() {
     vec2 uv = BarrelDistortionCoordinates(texCoord);
@@ -111,14 +101,27 @@ void main() {
         uv = uv/2 + 0.5;
         fragColor *= viginette+0.3;
     }else {
-        fragColor = (blur2 + blur3) / 2;
+        if(youCantEscape == 0){
+            fragColor = (blur2 + blur3) / 2;
+        } else {
+            vec2 uv2 = vec2(uv.x + octave(uv.y + GameTime * 2000) * 0.01, uv.y);
+
+            vec2 offset = uv2 + ((hash12(uv2 * 260.23535 + GameTime * 70)) * 0.005) + ((hash12(vec2(GameTime * 4562))) * 0.01);
+
+            float red = texture(NoEscape, offset + 0.001).r;
+            float green = texture(NoEscape, offset - 0.001).g;
+            float blue = texture(NoEscape, offset).b;
+
+
+            fragColor = vec4(red, green, blue, 1.0);
+        }
 
         //VHS POSST EFFECTS
         fragColor.rgb = rgb2yuv(fragColor.rgb);
         fragColor.rgb += (fragColor.rgb * vec3((hash12(uv * 260.23535 + GameTime * 70) + hash12(uv * 737.36346 + GameTime * 100)) * 2.0 - 1.0)) * 0.2;
         fragColor.r += step(0.99994, (hash12(uv * 260.23535 + GameTime * 70))) * 10;
         vec2 vhsNoise = texture(VhsNoise, vec2(uv.x - GameTime * 3000, uv.y + GameTime * 5000)).gb * 0.1;
-        fragColor.gb += vec2(vhsNoise.x * 0.9, vhsNoise.y * 0.9) * 0.1;
+        fragColor.gb += vec2(vhsNoise.x * 0.9, vhsNoise.y * 0.9) * 0.2;
         fragColor.rgb = yuv2rgb(fragColor.rgb);
     }
 }

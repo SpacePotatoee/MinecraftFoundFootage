@@ -71,8 +71,17 @@ public final class Level2ChunkGenerator extends ChunkGenerator {
 
 
 
+        if(chunk.getPos().x == 0 && chunk.getPos().z == 0 ){
+            roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level2/stairwell2_2");
+            optional = structureTemplateManager.getTemplate(roomIdentifier);
 
-        if (((float)chunk.getPos().x) == 0){
+            optional.ifPresent(structureTemplate -> structureTemplate.place(
+                    world,
+                    mutable.set(x - 1, 19, z),
+                    mutable.set(x - 1, 19, z),
+                    structurePlacementData, random, 2));
+
+        } else if (((float)chunk.getPos().x) == 0){
             double noise1 = noiseSampler.sample((x) * 0.02, 0, (z) * 0.02);
             if (server != null) {
 
