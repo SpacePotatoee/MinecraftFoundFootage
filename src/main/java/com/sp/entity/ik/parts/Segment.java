@@ -1,6 +1,7 @@
 package com.sp.entity.ik.parts;
 
-import net.minecraft.world.phys.Vec3;
+
+import net.minecraft.util.math.Vec3d;
 
 public class Segment {
     public double length;
@@ -8,7 +9,7 @@ public class Segment {
     public boolean hasAngleConstraints;
     public double angleOffset;
     public double angleSize;
-    private Vec3 position = Vec3.ZERO;
+    private Vec3d position = Vec3d.ZERO;
 
     protected Segment(Builder builder) {
         this.length = builder.length;
@@ -18,11 +19,11 @@ public class Segment {
         this.hasAngleConstraints = builder.hasAngleConstraints;
     }
 
-    public Vec3 getPosition() {
+    public Vec3d getPosition() {
         return this.position;
     }
 
-    public void move(Vec3 position) {
+    public void move(Vec3d position) {
         this.position = position;
     }
 

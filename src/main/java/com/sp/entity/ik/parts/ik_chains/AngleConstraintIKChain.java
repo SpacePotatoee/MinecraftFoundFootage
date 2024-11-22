@@ -1,10 +1,5 @@
 package com.sp.entity.ik.parts.ik_chains;
 
-import net.dumbcode.projectnublar.entity.ik.parts.Segment;
-import net.dumbcode.projectnublar.entity.ik.util.MathUtil;
-import net.dumbcode.projectnublar.entity.ik.util.PrAnCommonClass;
-import net.minecraft.world.phys.Vec3;
-
 public abstract class AngleConstraintIKChain extends StretchingIKChain {
 
     public AngleConstraintIKChain(double... lengths) {

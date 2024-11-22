@@ -1,8 +1,6 @@
 package com.sp.entity.ik.parts.sever_limbs;
 
-import net.dumbcode.projectnublar.entity.ik.components.IKLegComponent;
-import net.dumbcode.projectnublar.entity.ik.util.ArrayUtil;
-import net.minecraft.world.phys.Vec3;
+import com.sp.entity.ik.components.IKLegComponent;
 
 import java.util.ArrayList;
 import java.util.List;
