@@ -3,15 +3,13 @@ package com.sp.mixin;
 import com.sp.ConfigStuff;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.PlayerComponent;
 import com.sp.render.CameraRoll;
 import com.sp.render.CutsceneManager;
 import com.sp.render.ShadowMapRenderer;
-import com.sp.world.BackroomsLevels;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
@@ -25,9 +23,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -118,6 +114,16 @@ public abstract class GameRendererMixin {
         if(!SPBRevampedClient.getCutsceneManager().isPlaying){
             this.renderHand(matrices, camera, tickDelta);
         }
+    }
+
+    @Redirect(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;getReachDistance()F"))
+    private float increaseReach(ClientPlayerInteractionManager instance){
+        return 6;
+    }
+
+    @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
+    private double increaseReach(double constant){
+        return 36;
     }
 
 

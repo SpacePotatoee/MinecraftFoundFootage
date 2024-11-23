@@ -1,23 +1,25 @@
 package com.sp.entity.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.sp.SPBRevamped;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.render.physics.PhysicsPoint;
 import com.sp.render.physics.PhysicsStick;
-import com.sp.util.MathStuff;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.cache.object.GeoCube;
 import software.bernie.geckolib.cache.object.GeoQuad;
 import software.bernie.geckolib.cache.object.GeoVertex;
+import software.bernie.geckolib.renderer.DynamicGeoEntityRenderer;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 import java.lang.Math;
@@ -25,19 +27,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SkinWalkerRenderer extends GeoEntityRenderer<SkinWalkerEntity> {
+public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntity> {
+    private final Identifier SPIDER_LEGS_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/skinwalker_legs_texture.png");
     private Double prevWorldX;
     private Double prevWorldY;
     private Double prevWorldZ;
-//    private PhysicsPoint pointA;
+    private PhysicsPoint pointA;
     private PhysicsPoint pointB;
-//    private PhysicsStick stick;
-    private ArrayList<PhysicsPoint> points;
-    private ArrayList<PhysicsStick> sticks;
+    private PhysicsStick stick;
+    private final List<String> spiderLegBones = new ArrayList<>();
 
 
     public SkinWalkerRenderer(EntityRendererFactory.Context renderManager) {
         super(renderManager, new SkinWalkerModel());
+        spiderLegBones.add("top_left_spider_leg");
+        spiderLegBones.add("bone2");
+        spiderLegBones.add("bone3");
+        spiderLegBones.add("bone4");
+
+        spiderLegBones.add("top_right_spider_leg");
+        spiderLegBones.add("bone5");
+        spiderLegBones.add("bone6");
+        spiderLegBones.add("bone7");
+
+        spiderLegBones.add("bottom_left_spider_leg2");
+        spiderLegBones.add("bone11");
+        spiderLegBones.add("bone12");
+        spiderLegBones.add("bone13");
+
+        spiderLegBones.add("bottom_right_spider_leg2");
+        spiderLegBones.add("bone8");
+        spiderLegBones.add("bone9");
+        spiderLegBones.add("bone10");
     }
 
     @Override
@@ -66,6 +87,15 @@ public class SkinWalkerRenderer extends GeoEntityRenderer<SkinWalkerEntity> {
         float animationProgress = this.getAnimationProgress(entity, partialTick);
         this.animateModel(entity, bufferSource, poseStack, pos, speed, animationProgress, -yaw, -pitch, partialTick);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    }
+
+    @Override
+    protected @Nullable Identifier getTextureOverrideForBone(GeoBone bone, SkinWalkerEntity animatable, float partialTick) {
+        if(spiderLegBones.contains(bone.getName())){
+            return SPIDER_LEGS_TEXTURE;
+        } else {
+            return null;
+        }
     }
 
     protected void animateModel(SkinWalkerEntity entity, VertexConsumerProvider vertexConsumers, MatrixStack matrices, float limbPos, float limbSpeed, float animationProgress, float yaw, float pitch, float partialTicks) {
@@ -107,24 +137,17 @@ public class SkinWalkerRenderer extends GeoEntityRenderer<SkinWalkerEntity> {
             GeoBone right_leg = rightLeg.get();
             GeoBone left_leg = leftLeg.get();
 
-//            List<GeoBone> boneList = new ArrayList<>();
-//
-//            boneList.add(right_arm);
-//            boneList.add(left_arm);
-//            boneList.add(right_leg);
-//            boneList.add(left_leg);
-//
             if(camera != null) {
-//                for (GeoBone bone : boneList) {
-                    Vec3d cameraPos = camera.getPos();
-//                    int index = boneList.indexOf(bone);
+                Vec3d cameraPos = camera.getPos();
 
-                if(this.prevWorldX == null || this.prevWorldY == null || this.prevWorldZ == null){
+
+                if(this.prevWorldX == null || this.prevWorldY == null || this.prevWorldZ == null) {
                     this.prevWorldX = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f()).x;
                     this.prevWorldY = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f()).y;
                     this.prevWorldZ = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f()).z;
                 }
-                    Vector3d vector3d = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f());
+
+                Vector3d vector3d = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f());
 
 //                    Vector3d vector3d = right_arm.getWorldPosition();
 
@@ -132,68 +155,46 @@ public class SkinWalkerRenderer extends GeoEntityRenderer<SkinWalkerEntity> {
 //                    double y = vector3d.y;
 //                    double z = vector3d.z;
 
-                    if (right_arm.getWorldPosition().x != 0 && right_arm.getWorldPosition().y != 0 && right_arm.getWorldPosition().z != 0) {
-                        PhysicsPoint pointA = new PhysicsPoint(new Vec3d(vector3d.x, vector3d.y, vector3d.z), true);
-//                        if(this.pointA == null){
-//                            this.pointA = new PhysicsPoint(new Vec3d(x, y, z), true);
-//                        }
-//                        pointA.set(vector3d);
-
-                        if(this.pointB == null){
-                            this.pointB = new PhysicsPoint(Vec3d.ZERO, Vec3d.ZERO, false);
-                        }
-                        PhysicsStick stick = new PhysicsStick(pointA, this.pointB, 1);
-
-                        this.pointB.updatePoint();
-                        stick.updateSticks();
-
-//                        if (this.points == null) {
-//                            this.initialize(boneList);
-//                        }
-//                        PhysicsPoint currentPoint = this.points.get(index);
-//                        this.points.get(index).updatePoint();
-
-//                        Vec3d currentPointPosition = this.pointB.getPosition().subtract(cameraPos).rotateX((float) Math.toRadians(90));
-
-//                        this.sticks.get(index).set(pointA);
-//                        this.sticks.get(index).updateSticks();
-
-
-                        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-                        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getDebugLineStrip(20.0));
-
-                        Vec2f angles = this.calculateAngles(vector3d.x, vector3d.y, vector3d.z, this.pointB.getX(), this.pointB.getY(), this.pointB.getZ(), yaw);
-
-                        float dirX = (float) (this.pointB.getX() - vector3d.x);
-                        float dirY = (float) (this.pointB.getY() - vector3d.y);
-                        float dirZ = (float) (this.pointB.getZ() - vector3d.z);
-
-//                        System.out.println(entity.getYaw());
-//                        System.out.println(yaw);
-//                        System.out.println("=====================");
-                        Quaternionf quaternionf = new Quaternionf(new AxisAngle4f((float) Math.toRadians(90), new Vector3f(0,0,1).rotateY((float) Math.toRadians(yaw + 90))));
-                        Vector3f normalizedDir = new Vector3f(dirX, dirY, dirZ).rotate(quaternionf).normalize();
-
-//                        right_arm.setRotX(-angles.x);
-                        right_arm.setRotZ(-angles.y);
-
-                        vertexConsumer.vertex(matrix4f, (float) (0 - cameraPos.x), (float) (0 - cameraPos.y), (float) (0 - cameraPos.z)).color(0, 0, 0, 0.0f).next();
-                        vertexConsumer.vertex(matrix4f, (float) (0 - cameraPos.x), (float) (0 - cameraPos.y), (float) (0 - cameraPos.z)).color(0, 0, 0, 1.0f).next();
-                        vertexConsumer.vertex(matrix4f, (float) (normalizedDir.x - cameraPos.x), (float) (normalizedDir.y - cameraPos.y), (float) (normalizedDir.z - cameraPos.z)).color(1, 0, 0, 1.0f).next();
-                        vertexConsumer.vertex(matrix4f, (float) (normalizedDir.x - cameraPos.x), (float) (normalizedDir.y - cameraPos.y), (float) (normalizedDir.z - cameraPos.z)).color(1, 0, 0, 0.0f).next();
-
+                if (right_arm.getWorldPosition().x != 0 && right_arm.getWorldPosition().y != 0 && right_arm.getWorldPosition().z != 0) {
+                    if(this.pointA == null) {
+                        this.pointA = new PhysicsPoint(new Vec3d(vector3d.x, vector3d.y, vector3d.z), true);
                     }
-//                }
+                    this.pointA.set(vector3d);
 
-//                if(this.prevWorldX != right_arm.getWorldPosition().x) {
-                    this.prevWorldX = vector3d.x;
-//                }
-//                if(this.prevWorldY != right_arm.getWorldPosition().y) {
-                    this.prevWorldY = vector3d.y;
-//                }
-//                if(this.prevWorldZ != right_arm.getWorldPosition().z) {
-                    this.prevWorldZ = vector3d.z;
-//                }
+                    if(this.pointB == null) {
+                        this.pointB = new PhysicsPoint(Vec3d.ZERO, Vec3d.ZERO, false);
+                    }
+
+                    if(this.stick == null) {
+                        this.stick = new PhysicsStick(pointA, this.pointB, 1);
+                    }
+
+//                    this.pointB.updatePoint();
+//                    stick.updateSticks();
+
+//                    Matrix4f matrix4f = matrices.peek().getPositionMatrix();
+//                    VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getDebugLineStrip(20.0));
+
+                    Vec2f angles = this.calculateAngles(vector3d.x, vector3d.y, vector3d.z, this.pointB.getX(), this.pointB.getY(), this.pointB.getZ(), yaw);
+
+//                    float dirX = (float) (this.pointB.getX() - vector3d.x);
+//                    float dirY = (float) (this.pointB.getY() - vector3d.y);
+//                    float dirZ = (float) (this.pointB.getZ() - vector3d.z);
+//
+//                    Quaternionf quaternionf = new Quaternionf(new AxisAngle4f((float) Math.toRadians(90), new Vector3f(0,0,1).rotateY((float) Math.toRadians(yaw + 90))));
+//                    Vector3f normalizedDir = new Vector3f(dirX, dirY, dirZ).rotate(quaternionf).normalize();
+
+
+
+                    right_arm.setRotX((float) (angles.x + Math.toRadians(50)));
+                    right_arm.setRotZ((float) (angles.y - Math.toRadians(90)));
+
+//                    vertexConsumer.vertex(matrix4f, (float) (0 - cameraPos.x), (float) (0 - cameraPos.y), (float) (0 - cameraPos.z)).color(0, 0, 0, 0.0f).next();
+//                    vertexConsumer.vertex(matrix4f, (float) (0 - cameraPos.x), (float) (0 - cameraPos.y), (float) (0 - cameraPos.z)).color(0, 0, 0, 1.0f).next();
+//                    vertexConsumer.vertex(matrix4f, (float) (normalizedDir.x - cameraPos.x), (float) (normalizedDir.y - cameraPos.y), (float) (normalizedDir.z - cameraPos.z)).color(1, 0, 0, 1.0f).next();
+//                    vertexConsumer.vertex(matrix4f, (float) (normalizedDir.x - cameraPos.x), (float) (normalizedDir.y - cameraPos.y), (float) (normalizedDir.z - cameraPos.z)).color(1, 0, 0, 0.0f).next();
+
+                }
             }
 
 //            head.setRotY(yaw * (float) (Math.PI / 180.0));
@@ -247,27 +248,12 @@ public class SkinWalkerRenderer extends GeoEntityRenderer<SkinWalkerEntity> {
         float dirZ = (float) (z2 - z);
 
         Quaternionf quaternionf = new Quaternionf(new AxisAngle4f((float) Math.toRadians(90), new Vector3f(0,0,1).rotateY((float) Math.toRadians(bodyYaw + 90))));
-        Vector3f normalizedDir = new Vector3f(dirX, dirY, dirZ).normalize();
+        Vector3f normalizedDir = new Vector3f(dirX, dirY, dirZ).rotate(quaternionf).normalize();
+        Vec3d normalizedDir2 = new Vec3d(dirX, dirY, dirZ).rotateX((float) Math.toRadians(90)).normalize();
 
         float pitch = (float) Math.asin(normalizedDir.y);
-        float yaw = (float) Math.atan2(normalizedDir.x, normalizedDir.z);
-        System.out.println(yaw);
-        return new Vec2f((pitch) * 10, yaw * 10);
-    }
-
-    private void initialize(List<GeoBone> boneList) {
-        this.points = new ArrayList<>();
-        this.sticks = new ArrayList<>();
-        for(GeoBone bone: boneList){
-            float x = (float) (bone.getWorldPosition().x);
-            float y = (float) (bone.getWorldPosition().y);
-            float z = (float) (bone.getWorldPosition().z);
-
-            PhysicsPoint pointA = new PhysicsPoint(new Vec3d(x, y, z), new Vec3d(x, y, z), true );
-            PhysicsPoint pointB = new PhysicsPoint(new Vec3d(0, -1, 0).rotateX(bone.getRotX()).rotateY(bone.getRotY()).add(x, y, z), new Vec3d(0, -1, 0).rotateX(bone.getRotX()).rotateY(bone.getRotY()).add(x, y, z), false);
-            this.sticks.add(new PhysicsStick(pointA, pointB, 1));
-            this.points.add(pointB);
-        }
+        float yaw = (float) Math.atan2(normalizedDir2.z, normalizedDir2.x);
+        return new Vec2f(pitch * 5, yaw * 5);
     }
 
     private void punch(SkinWalkerEntity entity, float tickDelta, GeoBone body, GeoBone head, GeoBone rightArm, GeoBone leftArm){

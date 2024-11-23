@@ -4,6 +4,7 @@ import com.sp.SPBRevamped;
 import com.sp.networking.C2S.CutsceneSync;
 import com.sp.networking.C2S.FlashLightSync;
 import com.sp.networking.C2S.ShouldDoStaticPacket;
+import com.sp.networking.C2S.TargetEntitySync;
 import com.sp.networking.S2C.InvokeBlackScreenPacket;
 import com.sp.networking.S2C.InvokeScreenShakePacket;
 import com.sp.networking.S2C.ReloadLightsPacket;
@@ -15,6 +16,7 @@ public class InitializePackets {
     public static final Identifier FL_SYNC = new Identifier(SPBRevamped.MOD_ID, "fl_sync");
     public static final Identifier CUTSCENE_SYNC = new Identifier(SPBRevamped.MOD_ID, "cut_sync");
     public static final Identifier STATIC_PACKET = new Identifier(SPBRevamped.MOD_ID, "stat_pack");
+    public static final Identifier TARGET_ENTITY_SYNC = new Identifier(SPBRevamped.MOD_ID, "targ_ent");
 
     public static final Identifier SCREEN_SHAKE = new Identifier(SPBRevamped.MOD_ID, "scr_shake");
     public static final Identifier BLACK_SCREEN = new Identifier(SPBRevamped.MOD_ID, "blk_screen");
@@ -24,6 +26,7 @@ public class InitializePackets {
         ServerPlayNetworking.registerGlobalReceiver(FL_SYNC, FlashLightSync::receive);
         ServerPlayNetworking.registerGlobalReceiver(CUTSCENE_SYNC, CutsceneSync::receive);
         ServerPlayNetworking.registerGlobalReceiver(STATIC_PACKET, ShouldDoStaticPacket::receive);
+        ServerPlayNetworking.registerGlobalReceiver(TARGET_ENTITY_SYNC, TargetEntitySync::receive);
     }
 
     public static void registerS2CPackets() {
