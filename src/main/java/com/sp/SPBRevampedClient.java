@@ -178,12 +178,18 @@ public class SPBRevampedClient implements ClientModInitializer {
                     VeilRenderer renderer = VeilRenderSystem.renderer();
                     VeilDeferredRenderer deferredRenderer = renderer.getDeferredRenderer();
                     LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
-                    if (!ConfigStuff.enableVanillaLighting && inBackrooms && client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
+
+                    if (inBackrooms) {
+                        if (!ConfigStuff.enableVanillaLighting && client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                            lightRenderer.disableVanillaLight();
+                        } else {
+                            lightRenderer.enableVanillaLight();
+                        }
+
                         lightRenderer.disableAmbientOcclusion();
-                        lightRenderer.disableVanillaLight();
                     } else {
-                        lightRenderer.enableAmbientOcclusion();
                         lightRenderer.enableVanillaLight();
+                        lightRenderer.enableAmbientOcclusion();
                     }
                 }
             }
