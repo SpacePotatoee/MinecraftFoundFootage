@@ -1,5 +1,10 @@
 package com.sp.entity.ik.parts.ik_chains;
 
+import com.sp.entity.ik.parts.Segment;
+import com.sp.entity.ik.util.MathUtil;
+import com.sp.entity.ik.util.PrAnCommonClass;
+import net.minecraft.util.math.Vec3d;
+
 public abstract class AngleConstraintIKChain extends StretchingIKChain {
 
     public AngleConstraintIKChain(double... lengths) {
@@ -11,25 +16,25 @@ public abstract class AngleConstraintIKChain extends StretchingIKChain {
     }
     
     @Override
-    public void reachBackwards(Vec3 base) {
+    public void reachBackwards(Vec3d base) {
         this.getFirst().move(base);
 
-        Vec3 targetDir = this.get(1).getPosition().subtract(base).normalize();
-        Vec3 newPos = base.add(targetDir.scale(this.getFirst().length));
+        Vec3d targetDir = this.get(1).getPosition().subtract(base).normalize();
+        Vec3d newPos = base.add(targetDir.multiply(this.getFirst().length));
 
         this.segments.get(1).move(newPos);
 
-        Vec3 referencePoint = this.rotatePointOnLegPlane(base.add(this.getDownNormalOnLegPlane()), base, this.getFirst().angleOffset);
+        Vec3d referencePoint = this.rotatePointOnLegPlane(base.add(this.getDownNormalOnLegPlane()), base, this.getFirst().angleOffset);
 
-        Vec3 dotBaseDir = referencePoint.subtract(base).normalize();
-        Vec3 dotTargetDir = this.get(1).getPosition().subtract(base).normalize();
+        Vec3d dotBaseDir = referencePoint.subtract(base).normalize();
+        Vec3d dotTargetDir = this.get(1).getPosition().subtract(base).normalize();
 
-        double angle = Math.toDegrees(Math.acos(dotBaseDir.dot(dotTargetDir)));
+        double angle = Math.toDegrees(Math.acos(dotBaseDir.dotProduct(dotTargetDir)));
 
         if (angle > this.getFirst().angleSize) {
             double angleDifference = this.getFirst().angleSize - angle;
 
-            Vec3 rotatedPos = this.rotatePointOnLegPlane(this.get(1).getPosition(), base, angleDifference);
+            Vec3d rotatedPos = this.rotatePointOnLegPlane(this.get(1).getPosition(), base, angleDifference);
 
             this.segments.get(1).move(rotatedPos);
         }
@@ -44,15 +49,15 @@ public abstract class AngleConstraintIKChain extends StretchingIKChain {
         this.endJoint = this.moveSegment(this.endJoint, this.getLast().getPosition(), this.getLast().length);
     }
 
-    public abstract Vec3 getDownNormalOnLegPlane();
+    public abstract Vec3d getDownNormalOnLegPlane();
 
-    public Vec3 rotatePointOnLegPlane(Vec3 point, Vec3 base, double angle) {
+    public Vec3d rotatePointOnLegPlane(Vec3d point, Vec3d base, double angle) {
         return MathUtil.rotatePointOnAPlaneAround(point, base, angle, this.getLegPlane());
     }
 
     /*
     @Override
-    public void reachBackwards(Vec3 base) {
+    public void reachBackwards(Vec3d base) {
         this.getFirst().move(base);
         this.segments.get(1).move(this.getConstrainedPosForRootSegment());
 
@@ -75,7 +80,7 @@ public abstract class AngleConstraintIKChain extends StretchingIKChain {
 
     /*
     @Override
-    public void reachForwards(Vec3 target) {
+    public void reachForwards(Vec3d target) {
         this.endJoint = target;
 
         this.getLast().move(this.moveSegment(this.getLast().getPosition(), this.endJoint, this.getLast().length));
@@ -88,14 +93,14 @@ public abstract class AngleConstraintIKChain extends StretchingIKChain {
     }
     */
 
-    public Vec3 getLegPlane() {
+    public Vec3d getLegPlane() {
         return MathUtil.getNormalClosestTo(this.getFirst().getPosition(), this.endJoint, this.getStretchingPos(this.endJoint, this.getFirst().getPosition()), this.getReferencePoint());
     }
 
-    public abstract Vec3 getReferencePoint();
+    public abstract Vec3d getReferencePoint();
 
-    public Vec3 getConstrainedPosForRootSegment() {
-        Vec3 C = new Vec3(0, 1, 0);
+    public Vec3d getConstrainedPosForRootSegment() {
+        Vec3d C = new Vec3d(0, 1, 0);
         return this.getConstrainedPosForRootSegment(C);
     }
 
@@ -121,13 +126,13 @@ public abstract class AngleConstraintIKChain extends StretchingIKChain {
         Segment currentSegment = this.segments.get(index);
         Segment nextSegment = this.segments.get(index + 1);
 
-        Vec3 baseDir = previousSegment.getPosition().subtract(currentSegment.getPosition()).normalize();
-        Vec3 targetDir = nextSegment.getPosition().subtract(currentSegment.getPosition()).normalize();
+        Vec3d baseDir = previousSegment.getPosition().subtract(currentSegment.getPosition()).normalize();
+        Vec3d targetDir = nextSegment.getPosition().subtract(currentSegment.getPosition()).normalize();
 
-        return Math.toDegrees(Math.acos(baseDir.dot(targetDir)));
+        return Math.toDegrees(Math.acos(baseDir.dotProduct(targetDir)));
     }
 
-    public Vec3 getConstrainedPosForRootSegment(Vec3 downVector) {
+    public Vec3d getConstrainedPosForRootSegment(Vec3d downVector) {
         double angle = Math.toDegrees(MathUtil.calculateAngle(this.getFirst().getPosition(), this.segments.get(1).getPosition(), this.getFirst().getPosition().add(downVector)));
         double clampedAngle = Math.min(this.getFirst().angleSize, angle);
 
@@ -135,14 +140,14 @@ public abstract class AngleConstraintIKChain extends StretchingIKChain {
 
         double angleDelta = clampedAngle - angle;
 
-        //Vec3 normal = MathUtil.getNormalClosestTo(this.segments.get(1).getPosition(), this.getFirst().getPosition(), this.segments.get(2).getPosition(), this.getReferencePoint());
+        //Vec3d normal = MathUtil.getNormalClosestTo(this.segments.get(1).getPosition(), this.getFirst().getPosition(), this.segments.get(2).getPosition(), this.getReferencePoint());
         return MathUtil.rotatePointOnAPlaneAround(this.segments.get(1).getPosition(), this.getFirst().getPosition(), angleDelta, this.getLegPlane());
     }
 
-    public Vec3 getConstrainedPositions(Vec3 reference, Segment middle, Vec3 endpoint) {
-        //Vec3 normal = MathUtil.getNormalClosestTo(endpoint, middle.getPosition(), reference, this.getReferencePoint());
+    public Vec3d getConstrainedPositions(Vec3d reference, Segment middle, Vec3d endpoint) {
+        //Vec3d normal = MathUtil.getNormalClosestTo(endpoint, middle.getPosition(), reference, this.getReferencePoint());
 
-        Vec3 referencePoint = MathUtil.rotatePointOnAPlaneAround(reference, middle.getPosition(), middle.angleOffset, this.getLegPlane());
+        Vec3d referencePoint = MathUtil.rotatePointOnAPlaneAround(reference, middle.getPosition(), middle.angleOffset, this.getLegPlane());
 
         double angle = Math.toDegrees(MathUtil.calculateAngle(middle.getPosition(), endpoint, referencePoint));
         double clampedAngle = Math.min(middle.angleSize, angle);

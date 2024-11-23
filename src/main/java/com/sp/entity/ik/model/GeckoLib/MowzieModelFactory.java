@@ -1,7 +1,7 @@
 package com.sp.entity.ik.model.GeckoLib;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
@@ -37,8 +37,8 @@ public class MowzieModelFactory implements BakedModelFactory {
     public GeoBone constructBone(BoneStructure boneStructure, ModelProperties properties, @Nullable GeoBone parent) {
         Bone bone = boneStructure.self();
         MowzieGeoBone newBone = new MowzieGeoBone(parent, bone.name(), bone.mirror(), bone.inflate(), bone.neverRender(), bone.reset());
-        Vec3 rotation = RenderUtils.arrayToVec(bone.rotation());
-        Vec3 pivot = RenderUtils.arrayToVec(bone.pivot());
+        Vec3d rotation = RenderUtils.arrayToVec(bone.rotation());
+        Vec3d pivot = RenderUtils.arrayToVec(bone.pivot());
 
         newBone.updateRotation((float) Math.toRadians(-rotation.x), (float) Math.toRadians(-rotation.y), (float) Math.toRadians(rotation.z));
         newBone.updatePivot((float) -pivot.x, (float) pivot.y, (float) pivot.z);
@@ -58,15 +58,15 @@ public class MowzieModelFactory implements BakedModelFactory {
     public GeoCube constructCube(Cube cube, ModelProperties properties, GeoBone bone) {
         boolean mirror = cube.mirror() == Boolean.TRUE;
         double inflate = cube.inflate() != null ? cube.inflate() / 16f : (bone.getInflate() == null ? 0 : bone.getInflate() / 16f);
-        Vec3 size = RenderUtils.arrayToVec(cube.size());
-        Vec3 origin = RenderUtils.arrayToVec(cube.origin());
-        Vec3 rotation = RenderUtils.arrayToVec(cube.rotation());
-        Vec3 pivot = RenderUtils.arrayToVec(cube.pivot());
-        origin = new Vec3(-(origin.x + size.x) / 16d, origin.y / 16d, origin.z / 16d);
-        Vec3 vertexSize = size.multiply(1 / 16d, 1 / 16d, 1 / 16d);
+        Vec3d size = RenderUtils.arrayToVec(cube.size());
+        Vec3d origin = RenderUtils.arrayToVec(cube.origin());
+        Vec3d rotation = RenderUtils.arrayToVec(cube.rotation());
+        Vec3d pivot = RenderUtils.arrayToVec(cube.pivot());
+        origin = new Vec3d(-(origin.x + size.x) / 16d, origin.y / 16d, origin.z / 16d);
+        Vec3d vertexSize = size.multiply(1 / 16d, 1 / 16d, 1 / 16d);
 
         pivot = pivot.multiply(-1, 1, 1);
-        rotation = new Vec3(Math.toRadians(-rotation.x), Math.toRadians(-rotation.y), Math.toRadians(rotation.z));
+        rotation = new Vec3d(Math.toRadians(-rotation.x), Math.toRadians(-rotation.y), Math.toRadians(rotation.z));
         GeoQuad[] quads = buildQuads(cube.uv(), new VertexSet(origin, vertexSize, inflate), cube, (float) properties.textureWidth(), (float) properties.textureHeight(), mirror);
 
         return new GeoCube(quads, pivot, rotation, size, inflate, mirror);

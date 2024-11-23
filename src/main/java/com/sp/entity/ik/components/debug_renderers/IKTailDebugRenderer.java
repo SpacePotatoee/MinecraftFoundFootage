@@ -1,17 +1,17 @@
 package com.sp.entity.ik.components.debug_renderers;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.dumbcode.projectnublar.entity.ik.components.IKAnimatable;
-import net.dumbcode.projectnublar.entity.ik.components.IKTailComponent;
-import net.dumbcode.projectnublar.entity.ik.parts.ik_chains.IKChain;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.entity.Entity;
+import com.sp.entity.ik.components.IKAnimatable;
+import com.sp.entity.ik.components.IKTailComponent;
+import com.sp.entity.ik.parts.ik_chains.IKChain;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 
 public class IKTailDebugRenderer<E extends IKAnimatable<E>> extends IKChainDebugRenderer<E, IKTailComponent<? extends IKChain, E>> {
     @Override
-    public void renderDebug(IKTailComponent<? extends IKChain, E> component, E animatable, PoseStack poseStack, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void renderDebug(IKTailComponent<? extends IKChain, E> component, E animatable, MatrixStack poseStack, RenderLayer renderType, VertexConsumerProvider bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         super.renderDebug(component, animatable, poseStack, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
 
         if (!(animatable instanceof Entity entity)) {

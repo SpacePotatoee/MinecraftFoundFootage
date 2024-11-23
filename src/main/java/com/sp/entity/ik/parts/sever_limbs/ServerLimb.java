@@ -1,26 +1,28 @@
 package com.sp.entity.ik.parts.sever_limbs;
 
 import com.sp.entity.ik.components.IKLegComponent;
+import com.sp.entity.ik.util.ArrayUtil;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServerLimb {
-    public Vec3 target = Vec3.ZERO;
-    public Vec3 oldTarget = Vec3.ZERO;
-    public Vec3 pos = Vec3.ZERO;
-    public Vec3 baseOffset;
+    public Vec3d target = Vec3d.ZERO;
+    public Vec3d oldTarget = Vec3d.ZERO;
+    public Vec3d pos = Vec3d.ZERO;
+    public Vec3d baseOffset;
     public boolean hasToBeSet = true;
 
-    public ServerLimb(Vec3 baseOffset) {
+    public ServerLimb(Vec3d baseOffset) {
         this.baseOffset = baseOffset;
     }
 
     public ServerLimb(double x, double y, double z) {
-        this.baseOffset = new Vec3(x, y, z);
+        this.baseOffset = new Vec3d(x, y, z);
     }
 
-    public void set(Vec3 newPos) {
+    public void set(Vec3d newPos) {
         this.pos = newPos;
         this.oldTarget = newPos;
         this.target = newPos;
@@ -28,7 +30,7 @@ public class ServerLimb {
     }
 
     public void tick(IKLegComponent legComponent, int i, double movementSpeed) {
-        if (!this.pos.closerThan(this.target, 5 * legComponent.scale)) {
+        if (!this.pos.isInRange(this.target, 5 * legComponent.scale)) {
             this.pos = this.target;
             this.oldTarget = this.target;
         }
@@ -37,17 +39,17 @@ public class ServerLimb {
             return;
         }
 
-        Vec3 flatTarget = new Vec3(this.target.x(), 0, this.target.z());
-        Vec3 flatPos = new Vec3(this.pos.x(), 0, this.pos.z());
+        Vec3d flatTarget = new Vec3d(this.target.x, 0, this.target.z);
+        Vec3d flatPos = new Vec3d(this.pos.x, 0, this.pos.z);
 
         double flatDistanceToEndPos = flatTarget.distanceTo(flatPos);
-        Vec3 raisedTarget = this.target.add(0, flatDistanceToEndPos, 0);
+        Vec3d raisedTarget = this.target.add(0, flatDistanceToEndPos, 0);
 
-        Vec3 targetDirection = raisedTarget.subtract(this.pos).normalize();
+        Vec3d targetDirection = raisedTarget.subtract(this.pos).normalize();
 
-        this.pos = this.pos.add(targetDirection.scale((this.target.distanceTo(this.pos)) * movementSpeed));
+        this.pos = this.pos.add(targetDirection.multiply((this.target.distanceTo(this.pos)) * movementSpeed));
 
-        if (this.pos.closerThan(this.target, 0.3)) {
+        if (this.pos.isInRange(this.target, 0.3)) {
             this.pos = this.target;
             this.oldTarget = this.target;
         }
@@ -70,15 +72,15 @@ public class ServerLimb {
     }
 
 
-    public Vec3 getPos() {
+    public Vec3d getPos() {
         return this.pos;
     }
 
-    public void setPos(Vec3 pos) {
+    public void setPos(Vec3d pos) {
         this.pos = pos;
     }
 
-    public void setTarget(Vec3 target) {
+    public void setTarget(Vec3d target) {
         this.target = target;
     }
 

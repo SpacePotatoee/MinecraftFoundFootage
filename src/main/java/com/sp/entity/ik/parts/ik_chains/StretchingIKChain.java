@@ -1,7 +1,8 @@
 package com.sp.entity.ik.parts.ik_chains;
 
-import net.dumbcode.projectnublar.entity.ik.parts.Segment;
-import net.minecraft.world.phys.Vec3;
+
+import com.sp.entity.ik.parts.Segment;
+import net.minecraft.util.math.Vec3d;
 
 public abstract class StretchingIKChain extends IKChain {
 
@@ -14,20 +15,20 @@ public abstract class StretchingIKChain extends IKChain {
         super(segments);
     }
 
-    public static Vec3 stretchToTargetPos(Vec3 target, StretchingIKChain chain) {
-        Vec3 direction = target.subtract(chain.getFirst().getPosition());
-        return chain.getFirst().getPosition().add(direction.scale(chain.getMaxLength() * 2));
+    public static Vec3d stretchToTargetPos(Vec3d target, StretchingIKChain chain) {
+        Vec3d direction = target.subtract(chain.getFirst().getPosition());
+        return chain.getFirst().getPosition().add(direction.multiply(chain.getMaxLength() * 2));
     }
 
     @Override
-    public void solve(Vec3 target, Vec3 base) {
+    public void solve(Vec3d target, Vec3d base) {
         this.stretch(this.getStretchingPos(target, base), base);
         super.solve(target, base);
     }
 
-    public abstract Vec3 getStretchingPos(Vec3 target, Vec3 base);
+    public abstract Vec3d getStretchingPos(Vec3d target, Vec3d base);
 
-    public void stretch(Vec3 target, Vec3 base) {
+    public void stretch(Vec3d target, Vec3d base) {
         this.extendFully(target, base);
     }
 }

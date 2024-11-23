@@ -1,11 +1,11 @@
 package com.sp.entity.ik.parts.ik_chains;
 
-import net.dumbcode.projectnublar.entity.ik.parts.Segment;
-import net.dumbcode.projectnublar.entity.ik.util.MathUtil;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
+import com.sp.entity.ik.parts.Segment;
+import com.sp.entity.ik.util.MathUtil;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 
-import static net.dumbcode.projectnublar.entity.ik.util.MathUtil.getFlatRotationVector;
+import static com.sp.entity.ik.util.MathUtil.getFlatRotationVector;
 
 public class EntityLeg extends AngleConstraintIKChain {
     public Entity entity;
@@ -19,31 +19,31 @@ public class EntityLeg extends AngleConstraintIKChain {
     }
 
     @Override
-    public Vec3 getReferencePoint() {
-        Vec3 referencePoint = getFlatRotationVector(this.entity.getYRot() + 90);
-        return this.getFirst().getPosition().add(referencePoint.scale(100));
+    public Vec3d getReferencePoint() {
+        Vec3d referencePoint = getFlatRotationVector(this.entity.getYaw() + 90);
+        return this.getFirst().getPosition().add(referencePoint.multiply(100));
     }
 
     @Override
-    public Vec3 getStretchingPos(Vec3 target, Vec3 base) {
-        return base.add(MathUtil.getFlatRotationVector(this.entity).scale(this.getMaxLength() * 2));
+    public Vec3d getStretchingPos(Vec3d target, Vec3d base) {
+        return base.add(getFlatRotationVector(this.entity).multiply(this.getMaxLength() * 2));
     }
 
-    public Vec3 getDownNormalOnLegPlane() {
-        Vec3 baseRotated = this.getFirst().getPosition().yRot(-this.entity.getYRot());
-        Vec3 targetRotated = this.endJoint.yRot(-this.entity.getYRot());
+    public Vec3d getDownNormalOnLegPlane() {
+        Vec3d baseRotated = this.getFirst().getPosition().rotateY(-this.entity.getYaw());
+        Vec3d targetRotated = this.endJoint.rotateY(-this.entity.getYaw());
 
-        Vec3 flatRotatedBase = new Vec3(baseRotated.x(), baseRotated.y(), 0);
-        Vec3 flatRotatedTarget = new Vec3(targetRotated.x(), targetRotated.y(), 0);
+        Vec3d flatRotatedBase = new Vec3d(baseRotated.x, baseRotated.y, 0);
+        Vec3d flatRotatedTarget = new Vec3d(targetRotated.x, targetRotated.y, 0);
 
-        Vec3 flatBase = flatRotatedBase.yRot(this.entity.getYRot());
-        Vec3 flatTarget = flatRotatedTarget.yRot(this.entity.getYRot());
+        Vec3d flatBase = flatRotatedBase.rotateY(this.entity.getYaw());
+        Vec3d flatTarget = flatRotatedTarget.rotateY(this.entity.getYaw());
 
         return flatTarget.subtract(flatBase).normalize();
     }
 
     @Override
-    public Vec3 getConstrainedPosForRootSegment() {
+    public Vec3d getConstrainedPosForRootSegment() {
         return this.getConstrainedPosForRootSegment(this.getDownNormalOnLegPlane());
     }
 }

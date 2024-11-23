@@ -1,10 +1,10 @@
 package com.sp.entity.ik.parts.ik_chains;
 
-import net.dumbcode.projectnublar.entity.ik.parts.Segment;
-import net.dumbcode.projectnublar.entity.ik.parts.WorldCollidingSegment;
-import net.dumbcode.projectnublar.entity.ik.util.MathUtil;
-import net.dumbcode.projectnublar.entity.ik.util.PrAnCommonClass;
-import net.minecraft.world.phys.Vec3;
+import com.sp.entity.ik.parts.Segment;
+import com.sp.entity.ik.parts.WorldCollidingSegment;
+import com.sp.entity.ik.util.MathUtil;
+import com.sp.entity.ik.util.PrAnCommonClass;
+import net.minecraft.util.math.Vec3d;
 
 public class EntityLegWithFoot extends EntityLeg {
     public final WorldCollidingSegment foot;
@@ -25,14 +25,14 @@ public class EntityLegWithFoot extends EntityLeg {
     }
 
     @Override
-    public void solve(Vec3 target, Vec3 base) {
+    public void solve(Vec3d target, Vec3d base) {
         super.solve(target, base);
         if (this.foot.getLevel() == null) {
-            this.foot.setLevel(this.entity.level());
+            this.foot.setLevel(this.entity.getWorld());
         }
 
 
-        Vec3 referencePoint = MathUtil.rotatePointOnAPlaneAround(this.endJoint.add(this.getDownNormalOnLegPlane()), this.endJoint, this.foot.angleOffset, this.getLegPlane());
+        Vec3d referencePoint = MathUtil.rotatePointOnAPlaneAround(this.endJoint.add(this.getDownNormalOnLegPlane()), this.endJoint, this.foot.angleOffset, this.getLegPlane());
         this.footAngel = Math.toDegrees(MathUtil.calculateAngle(this.endJoint, this.foot.getPosition(), referencePoint));
 
         if (this.footAngel > 2) {
@@ -45,7 +45,7 @@ public class EntityLegWithFoot extends EntityLeg {
 
         this.footAngel = clampedAngle;
 
-        Vec3 newFootPosition = this.getFootPosition(clampedAngle);
+        Vec3d newFootPosition = this.getFootPosition(clampedAngle);
 
         this.foot.move(newFootPosition, false);
 
@@ -55,13 +55,13 @@ public class EntityLegWithFoot extends EntityLeg {
         }
     }
 
-    public Vec3 getFootPosition() {
+    public Vec3d getFootPosition() {
         return this.getFootPosition(this.footAngel);
     }
 
-    public Vec3 getFootPosition(double angle) {
-        //Vec3 normal = MathUtil.getNormalClosestTo(this.endJoint, this.getLast().getPosition(), this.get(this.segments.size() - 2).getPosition(), this.getReferencePoint());
+    public Vec3d getFootPosition(double angle) {
+        //Vec3d normal = MathUtil.getNormalClosestTo(this.endJoint, this.getLast().getPosition(), this.get(this.segments.size() - 2).getPosition(), this.getReferencePoint());
 
-        return MathUtil.rotatePointOnAPlaneAround(this.endJoint.add(this.getDownNormalOnLegPlane().scale(this.foot.length * this.getScale())), this.endJoint, angle + this.foot.angleOffset, this.getLegPlane());
+        return MathUtil.rotatePointOnAPlaneAround(this.endJoint.add(this.getDownNormalOnLegPlane().multiply(this.foot.length * this.getScale())), this.endJoint, angle + this.foot.angleOffset, this.getLegPlane());
     }
 }
