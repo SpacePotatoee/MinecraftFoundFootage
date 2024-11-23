@@ -133,63 +133,13 @@ public class SPBRevampedClient implements ClientModInitializer {
             }
 
             MinecraftClient client = MinecraftClient.getInstance();
-            PlayerEntity playerClient = client.player;
-            if(playerClient != null){
-                SimpleOption<Integer> fps =  MinecraftClient.getInstance().options.getMaxFps();
-                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(playerClient);
-                if (BackroomsLevels.isInBackrooms(playerClient.getWorld().getRegistryKey())){
-                    setInBackrooms(true);
-                    //fps.setValue(30);
-                }else {
-                    setInBackrooms(ConfigStuff.forceBackrooms);
-                }
-
-                if(client.world != null) {
-
-                    if (client.world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-                        if (!changed) {
-                            playerComponent.setLightRenderDistance(ConfigStuff.lightRenderDistance);
-                            changed = true;
+            if(client.world != null) {
+                //Only render the shadow map when in the poolrooms
+                if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                    if (stage == Stage.AFTER_SKY) {
+                        if (camera != null) {
+                            ShadowMapRenderer.renderShadowMap(camera, partialTicks, client.world);
                         }
-
-                        if (ConfigStuff.lightRenderDistance != 32) {
-                            playerComponent.setLightRenderDistance(ConfigStuff.lightRenderDistance);
-                        }
-
-                        if (ConfigStuff.lightRenderDistance > 32) {
-                            ConfigStuff.lightRenderDistance = 32;
-                        }
-                    } else {
-                        if (changed) {
-                            ConfigStuff.lightRenderDistance = playerComponent.getLightRenderDistance();
-                            changed = false;
-                        }
-                    }
-
-                    //Only render the shadow map when in the poolrooms
-                    if(client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                        if (stage == Stage.AFTER_SKY) {
-                            if (camera != null) {
-                                ShadowMapRenderer.renderShadowMap(camera, partialTicks, client.world);
-                            }
-                        }
-                    }
-
-                    VeilRenderer renderer = VeilRenderSystem.renderer();
-                    VeilDeferredRenderer deferredRenderer = renderer.getDeferredRenderer();
-                    LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
-
-                    if (inBackrooms) {
-                        if (!ConfigStuff.enableVanillaLighting && client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                            lightRenderer.disableVanillaLight();
-                        } else {
-                            lightRenderer.enableVanillaLight();
-                        }
-
-                        lightRenderer.disableAmbientOcclusion();
-                    } else {
-                        lightRenderer.enableVanillaLight();
-                        lightRenderer.enableAmbientOcclusion();
                     }
                 }
             }
@@ -197,7 +147,6 @@ public class SPBRevampedClient implements ClientModInitializer {
 
             //Flashlight
             flashlightRenderer.renderFlashlightForEveryPlayer(partialTicks);
-
 
 
             //Enable the VHS shader
@@ -364,6 +313,58 @@ public class SPBRevampedClient implements ClientModInitializer {
             if(!physicsSticks.isEmpty()){
                 for(PhysicsStick sticks : physicsSticks){
                     sticks.updateSticks();
+                }
+            }
+
+            PlayerEntity playerClient = client.player;
+            if(playerClient != null){
+                SimpleOption<Integer> fps =  MinecraftClient.getInstance().options.getMaxFps();
+                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(playerClient);
+                if (BackroomsLevels.isInBackrooms(playerClient.getWorld().getRegistryKey())){
+                    setInBackrooms(true);
+                    //fps.setValue(30);
+                }else {
+                    setInBackrooms(ConfigStuff.forceBackrooms);
+                }
+
+                if(client.world != null) {
+
+                    if (client.world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+                        if (!changed) {
+                            playerComponent.setLightRenderDistance(ConfigStuff.lightRenderDistance);
+                            changed = true;
+                        }
+
+                        if (ConfigStuff.lightRenderDistance != 32) {
+                            playerComponent.setLightRenderDistance(ConfigStuff.lightRenderDistance);
+                        }
+
+                        if (ConfigStuff.lightRenderDistance > 32) {
+                            ConfigStuff.lightRenderDistance = 32;
+                        }
+                    } else {
+                        if (changed) {
+                            ConfigStuff.lightRenderDistance = playerComponent.getLightRenderDistance();
+                            changed = false;
+                        }
+                    }
+
+                    VeilRenderer renderer = VeilRenderSystem.renderer();
+                    VeilDeferredRenderer deferredRenderer = renderer.getDeferredRenderer();
+                    LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
+
+                    if (inBackrooms) {
+                        if (!ConfigStuff.enableVanillaLighting && client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                            lightRenderer.disableVanillaLight();
+                        } else {
+                            lightRenderer.enableVanillaLight();
+                        }
+
+                        lightRenderer.disableAmbientOcclusion();
+                    } else {
+                        lightRenderer.enableVanillaLight();
+                        lightRenderer.disableAmbientOcclusion();
+                    }
                 }
             }
         });
