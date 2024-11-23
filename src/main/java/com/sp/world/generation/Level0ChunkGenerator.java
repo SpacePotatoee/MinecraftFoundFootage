@@ -223,7 +223,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
 
     public Identifier getRoof(){
         Random random = Random.create();
-        int roofNumber = random.nextBetween(1,2);
+        int roofNumber = random.nextBetween(1,3);
 
         if (roofNumber == 1){
             return new Identifier(SPBRevamped.MOD_ID, "level0/roof2");

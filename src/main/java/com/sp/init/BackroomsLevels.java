@@ -1,4 +1,4 @@
-package com.sp.world;
+package com.sp.init;
 
 import com.sp.SPBRevamped;
 import net.minecraft.registry.RegistryKey;

@@ -11,7 +11,7 @@ import com.sp.sounds.PoolroomsSunsetAmbienceSoundInstance;
 import com.sp.sounds.pipes.GasPipeSoundInstance;
 import com.sp.sounds.pipes.WaterPipeSoundInstance;
 import com.sp.util.Timer;
-import com.sp.world.BackroomsLevels;
+import com.sp.init.BackroomsLevels;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MovingSoundInstance;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -60,6 +61,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private boolean shouldDoStatic;
     private Timer staticTimer;
 
+    private Entity targetEntity;
+    private int skinWalkerLookDelay;
+
     MovingSoundInstance DeepAmbience;
     MovingSoundInstance GasPipeAmbience;
     MovingSoundInstance WaterPipeAmbience;
@@ -84,6 +88,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.readyForLevel2 = false;
         this.readyForPoolrooms = false;
 
+        this.skinWalkerLookDelay = 60;
+
         this.suffocationTimer = 0;
         this.level2Timer = 200;
     }
@@ -92,7 +98,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public int getLightRenderDistance() {
         return lightRenderDistance;
     }
-
     public void setLightRenderDistance(int lightRenderDistance) {
         this.lightRenderDistance = lightRenderDistance;
     }
@@ -100,7 +105,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public boolean isShouldRender() {
         return shouldRender;
     }
-
     public void setShouldRender(boolean shouldRender) {
         this.shouldRender = shouldRender;
     }
@@ -108,7 +112,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public void setFlashLightOn(boolean set){
         this.flashLightOn = set;
     }
-
     public boolean isFlashLightOn() {
         return flashLightOn;
     }
@@ -116,7 +119,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public boolean isDoingCutscene() {
         return isDoingCutscene;
     }
-
     public void setDoingCutscene(boolean doingCutscene) {
         isDoingCutscene = doingCutscene;
     }
@@ -124,7 +126,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public boolean isTeleporting() {
         return isTeleporting;
     }
-
     public void setTeleporting(boolean teleporting) {
         isTeleporting = teleporting;
     }
@@ -132,7 +133,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public boolean isTeleportingToPoolrooms() {
         return isTeleportingToPoolrooms;
     }
-
     public void setTeleportingToPoolrooms(boolean teleportingToPoolrooms) {
         isTeleportingToPoolrooms = teleportingToPoolrooms;
     }
@@ -140,7 +140,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public boolean shouldNoClip() {
         return shouldNoClip;
     }
-
     public void setShouldNoClip(boolean shouldNoClip) {
         this.shouldNoClip = shouldNoClip;
     }
@@ -148,9 +147,25 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public boolean isShouldDoStatic() {
         return shouldDoStatic;
     }
-
     public void setShouldDoStatic(boolean shouldDoStatic) {
         this.shouldDoStatic = shouldDoStatic;
+    }
+
+    public Entity getTargetEntity() {
+        return targetEntity;
+    }
+    public void setTargetEntity(Entity targetEntity) {
+        this.targetEntity = targetEntity;
+    }
+
+    public int getSkinWalkerLookDelay() {
+        return skinWalkerLookDelay;
+    }
+    public void setSkinWalkerLookDelay(int skinWalkerLookDelay) {
+        this.skinWalkerLookDelay = skinWalkerLookDelay;
+    }
+    public void subtractSkinWalkerLookDelay() {
+        this.skinWalkerLookDelay -= 1;
     }
 
     @Override
@@ -185,6 +200,19 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public void clientTick() {
         MinecraftClient client = MinecraftClient.getInstance();
 
+        //Sync Target Entity
+        if(this.getTargetEntity() != client.targetedEntity) {
+            this.setTargetEntity(client.targetedEntity);
+
+            PacketByteBuf buffer = PacketByteBufs.create();
+            if(this.getTargetEntity() != null){
+                buffer.writeInt(this.getTargetEntity().getId());
+            } else {
+                buffer.writeInt(-1);
+            }
+            ClientPlayNetworking.send(InitializePackets.TARGET_ENTITY_SYNC, buffer);
+        }
+
         //Client side stuff for level 0 -> 1 and 1 -> 2 transitions
         if(this.isTeleporting){
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -203,7 +231,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
 
         //Flashlight
-        if (Keybinds.toggleFlashlight.wasPressed()) {
+        if (Keybinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen) {
             player.playSound(ModSounds.FLASHLIGHT_CLICK, 1, 1);
             if (player.getWorld().getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
                 this.setFlashLightOn(!this.isFlashLightOn());
@@ -256,7 +284,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     @Override
     public void serverTick() {
-//        System.out.println("Server: " + this.isShouldDoStatic());
 
         getPrevSettings();
 

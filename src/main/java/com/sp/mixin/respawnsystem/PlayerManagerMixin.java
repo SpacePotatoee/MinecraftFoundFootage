@@ -1,6 +1,6 @@
 package com.sp.mixin.respawnsystem;
 
-import com.sp.world.BackroomsLevels;
+import com.sp.init.BackroomsLevels;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;

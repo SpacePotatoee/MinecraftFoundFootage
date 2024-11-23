@@ -9,7 +9,7 @@ import com.sp.item.ModItemGroups;
 import com.sp.init.ModItems;
 import com.sp.networking.InitializePackets;
 import com.sp.init.ModSounds;
-import com.sp.world.BackroomsLevels;
+import com.sp.init.BackroomsLevels;
 import com.sp.world.generation.Level0ChunkGenerator;
 import com.sp.world.generation.Level1ChunkGenerator;
 import com.sp.world.generation.Level2ChunkGenerator;

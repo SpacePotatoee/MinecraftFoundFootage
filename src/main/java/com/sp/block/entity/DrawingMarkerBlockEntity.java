@@ -4,7 +4,7 @@ import com.sp.init.ModBlockEntities;
 import com.sp.init.ModBlocks;
 import com.sp.block.custom.DrawingMarker;
 import com.sp.block.custom.WallText;
-import com.sp.world.BackroomsLevels;
+import com.sp.init.BackroomsLevels;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;

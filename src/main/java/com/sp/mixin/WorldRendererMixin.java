@@ -1,6 +1,6 @@
 package com.sp.mixin;
 
-import com.sp.world.BackroomsLevels;
+import com.sp.init.BackroomsLevels;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.sound.SoundInstance;

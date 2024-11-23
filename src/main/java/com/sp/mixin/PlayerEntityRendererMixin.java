@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerEntityRenderer.class)
 public class PlayerEntityRendererMixin {
 
-    @Inject(method = "setModelPose", at = @At("TAIL"))
+    //@Inject(method = "setModelPose", at = @At("TAIL"))
     private void shouldRender(AbstractClientPlayerEntity player, CallbackInfo ci, @Local PlayerEntityModel<AbstractClientPlayerEntity> playerEntityModel){
         PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
         if (!playerComponent.isShouldRender()) {

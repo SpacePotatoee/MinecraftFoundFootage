@@ -1,6 +1,6 @@
 package com.sp.mixin;
 
-import com.sp.world.BackroomsLevels;
+import com.sp.init.BackroomsLevels;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;

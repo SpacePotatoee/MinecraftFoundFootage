@@ -1,13 +1,9 @@
 package com.sp.sounds;
 
 import com.sp.init.ModSounds;
-import com.sp.world.BackroomsLevels;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.world.World;
 
 public class GlitchSoundInstance extends MovingSoundInstance {
     private int timer;

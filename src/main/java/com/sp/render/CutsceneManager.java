@@ -7,7 +7,7 @@ import com.sp.init.ModSounds;
 import com.sp.mixin.PathAccessor;
 import com.sp.networking.InitializePackets;
 import com.sp.util.MathStuff;
-import com.sp.world.BackroomsLevels;
+import com.sp.init.BackroomsLevels;
 import foundry.veil.api.client.anim.Frame;
 import foundry.veil.api.client.anim.Keyframe;
 import foundry.veil.api.client.anim.Path;

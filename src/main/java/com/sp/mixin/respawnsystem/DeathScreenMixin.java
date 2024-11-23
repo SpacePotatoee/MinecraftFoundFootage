@@ -1,6 +1,6 @@
 package com.sp.mixin.respawnsystem;
 
-import com.sp.world.BackroomsLevels;
+import com.sp.init.BackroomsLevels;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;

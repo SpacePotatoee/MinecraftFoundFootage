@@ -1,6 +1,6 @@
 package com.sp;
 
-import com.sp.entity.client.renderer.SkinWalkerRenderer;
+import com.sp.entity.client.SkinWalkerRenderer;
 import com.sp.init.*;
 import com.sp.block.renderer.*;
 import com.sp.cca_stuff.InitializeComponents;
@@ -9,9 +9,11 @@ import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.RenderLayers;
 import com.sp.networking.InitializePackets;
 import com.sp.render.*;
+import com.sp.render.physics.PhysicsPoint;
+import com.sp.render.physics.PhysicsStick;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
-import com.sp.world.BackroomsLevels;
+import com.sp.init.BackroomsLevels;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
 import foundry.veil.api.client.render.deferred.VeilDeferredRenderer;
@@ -53,25 +55,13 @@ import static net.minecraft.util.math.MathHelper.lerp;
 public class SPBRevampedClient implements ClientModInitializer {
     private static final CutsceneManager cutsceneManager = new CutsceneManager();
     private static final CameraShake cameraShake = new CameraShake();
+    private final FlashlightRenderer flashlightRenderer = new FlashlightRenderer();
     private static final Identifier VHS_POST = new Identifier(SPBRevamped.MOD_ID, "vhs");
     private static final Identifier SSAO = new Identifier(SPBRevamped.MOD_ID, "vhs/ssao");
     private static final Identifier EVERYTHING_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/everything");
     private static final Identifier POST_VHS = new Identifier(SPBRevamped.MOD_ID, "vhs/vhs_post");
     private static final Identifier WATER_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/water");
     private static final Identifier MIXED_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/mixed");
-
-    public static HashMap<AbstractClientPlayerEntity, AreaLight> flashLightList = new HashMap<>();
-    AreaLight flashLight;
-    int ticks = 0;
-
-    float yaw;
-    float pitch;
-    float yawLerp = 0;
-    float pitchLerp = 0;
-    float prevYaw;
-    float prevPitch;
-    float yawRotAmount;
-    float pitchRotAmount;
 
     float prevYaw2;
     float prevPitch2;
@@ -155,6 +145,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }
 
                 if(client.world != null) {
+
                     if (client.world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
                         if (!changed) {
                             playerComponent.setLightRenderDistance(ConfigStuff.lightRenderDistance);
@@ -198,133 +189,25 @@ public class SPBRevampedClient implements ClientModInitializer {
             }
 
 
-
-
-
-            ticks++;
-            assert MinecraftClient.getInstance().world != null;
-            List<AbstractClientPlayerEntity> playerList = MinecraftClient.getInstance().world.getPlayers();
-
-            PlayerEntity player = MinecraftClient.getInstance().player;
-
-            if(player != null){
-                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                if (playerComponent.isFlashLightOn()) {
-                    if (flashLight == null) {
-                        flashLight = new AreaLight();
-                        VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(this.flashLight
-                                .setBrightness(1f)
-                                .setDistance(25f)
-                                .setSize(0, 0)
-                        );
-                    }
-                    else{
-                        yaw = player.getYaw(partialTicks);
-                            pitch = player.getPitch(partialTicks);
-
-                            if (prevYaw != -10000 && prevPitch != -10000) {
-                                yawRotAmount = yaw - prevYaw;
-                                yawLerp += lerp(0.000001f, yawRotAmount, 0);
-                                yawLerp = yawLerp * 0.985f;
-
-                                pitchRotAmount = pitch - prevPitch;
-                                pitchLerp += lerp(0.000001f, pitchRotAmount, 0);
-                                pitchLerp = pitchLerp * 0.985f;
-
-                                flashLight.setOrientation(new Quaternionf().rotateXYZ((float) -(Math.toRadians(pitch - pitchLerp)), (float) Math.toRadians(yaw - yawLerp), 0.0f));
-
-                                Vec3d cameraPos = player.getCameraPosVec(partialTicks);
-
-                                flashLight.setPosition(cameraPos.getX(), cameraPos.getY(), cameraPos.getZ());
-                            }
-
-                            prevYaw = yaw;
-                            prevPitch = pitch;
-                    }
-                }
-                else {
-                    pitchLerp = 0;
-                    yawLerp = 0;
-                    prevYaw = player.getYaw();
-                    prevPitch = player.getPitch();
-                    if (flashLight != null) {
-                        VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(flashLight);
-                        flashLight = null;
-                        //flashLightList.remove(playerd);
-                    }
-                }
-            }
-
-
             //Flashlight
-//            while (playerList.hasNext()) {
-//                AbstractClientPlayerEntity player = playerList.next();
-//                if (player != null) {
-//                    PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-//                    if (playerComponent.isFlashLightOn()) {
-//                        if (!flashLightList.containsKey(player)) {
-//                            flashLight = new AreaLight();
-//                            VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(flashLight
-//                                    .setBrightness(1f)
-//                                    .setDistance(25f)
-//                                    .setSize(0, 0)
-//                            );
-//                            flashLightList.put(player, flashLight);
-//                        } else {
-//                            yaw = player.getYaw(partialTicks);  //act as the flashlight to get the player from the iterator
-//                            pitch = player.getPitch(partialTicks);
-//
-//                            if (prevYaw != -10000 && prevPitch != -10000) {
-//                                yawRotAmount = yaw - prevYaw;
-//                                yawLerp += lerp(0.000001f, yawRotAmount, 0);
-//                                yawLerp = yawLerp * 0.985f;
-//
-//                                pitchRotAmount = pitch - prevPitch;
-//                                pitchLerp += lerp(0.000001f, pitchRotAmount, 0);
-//                                pitchLerp = pitchLerp * 0.985f;
-//
-//                                flashLight.setOrientation(new Quaternionf().rotateXYZ((float) -(Math.toRadians(pitch - pitchLerp)), (float) Math.toRadians(yaw - yawLerp), 0.0f));
-//
-//                                Vec3d cameraPos = player.getCameraPosVec(partialTicks);
-//
-//                                flashLight.setPosition(cameraPos.getX(), cameraPos.getY(), cameraPos.getZ());
-//                            }
-//
-//                            prevYaw = yaw;
-//                            prevPitch = pitch;
-//                        }
-//                    } else {
-//                        pitchLerp = 0;
-//                        yawLerp = 0;
-//                        prevYaw = player.getYaw();
-//                        prevPitch = player.getPitch();
-//                        if (flashLight != null) {
-//                            if (flashLightList.containsKey(player)) {
-//                                VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(flashLightList.get(player));
-//                                flashLightList.remove(player);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-
+            flashlightRenderer.renderFlashlightForEveryPlayer(partialTicks);
 
 
 
             //Enable the VHS shader
             PostProcessingManager postProcessingManager = VeilRenderSystem.renderer().getPostProcessingManager();
-                if (stage == Stage.AFTER_LEVEL) {
-                    PostPipeline Pipeline = postProcessingManager.getPipeline(VHS_POST);
-                    if (Pipeline != null) {
-                        if (ConfigStuff.enableVhsEffect || isInBackrooms()) {
-                            if(!postProcessingManager.isActive(VHS_POST)) {
-                                postProcessingManager.add(VHS_POST);
-                            }
-                        } else if (postProcessingManager.isActive(VHS_POST)) {
-                            postProcessingManager.remove(VHS_POST);
+            if (stage == Stage.AFTER_LEVEL) {
+                PostPipeline Pipeline = postProcessingManager.getPipeline(VHS_POST);
+                if (Pipeline != null) {
+                    if (ConfigStuff.enableVhsEffect || isInBackrooms()) {
+                        if(!postProcessingManager.isActive(VHS_POST)) {
+                            postProcessingManager.add(VHS_POST);
                         }
+                    } else if (postProcessingManager.isActive(VHS_POST)) {
+                        postProcessingManager.remove(VHS_POST);
                     }
                 }
+            }
         });
 
 
@@ -447,7 +330,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             if (player != null) {
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                 playerComponent.setFlashLightOn(false);
-                flashLightList.clear();
+                flashlightRenderer.flashLightList.clear();
             }
         }));
 
@@ -457,6 +340,24 @@ public class SPBRevampedClient implements ClientModInitializer {
             if(!tickTimers.isEmpty()){
                 for(TickTimer timer : tickTimers){
                     timer.addCurrentTick();
+                }
+            }
+        });
+
+        ClientTickEvents.END_CLIENT_TICK.register((client) ->{
+            Vector<PhysicsPoint> physicsPoints = PhysicsPoint.getAllInstances();
+            if(!physicsPoints.isEmpty()){
+                for(PhysicsPoint point : physicsPoints){
+                    if(!point.isFixed()) {
+                        point.updatePoint();
+                    }
+                }
+            }
+
+            Vector<PhysicsStick> physicsSticks = PhysicsStick.getAllInstances();
+            if(!physicsSticks.isEmpty()){
+                for(PhysicsStick sticks : physicsSticks){
+                    sticks.updateSticks();
                 }
             }
         });
