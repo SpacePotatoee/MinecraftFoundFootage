@@ -72,7 +72,6 @@ public class SPBRevampedClient implements ClientModInitializer {
     static boolean playedZoomIn = false;
     static boolean playedZoomOut = true;
     static boolean inBackrooms = false;
-    boolean changed = false;
     Camera camera;
 
     public static TickTimer tickTimer = new TickTimer();
@@ -328,27 +327,6 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }
 
                 if(client.world != null) {
-
-                    if (client.world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-                        if (!changed) {
-                            playerComponent.setLightRenderDistance(ConfigStuff.lightRenderDistance);
-                            changed = true;
-                        }
-
-                        if (ConfigStuff.lightRenderDistance != 32) {
-                            playerComponent.setLightRenderDistance(ConfigStuff.lightRenderDistance);
-                        }
-
-                        if (ConfigStuff.lightRenderDistance > 32) {
-                            ConfigStuff.lightRenderDistance = 32;
-                        }
-                    } else {
-                        if (changed) {
-                            ConfigStuff.lightRenderDistance = playerComponent.getLightRenderDistance();
-                            changed = false;
-                        }
-                    }
-
                     VeilRenderer renderer = VeilRenderSystem.renderer();
                     VeilDeferredRenderer deferredRenderer = renderer.getDeferredRenderer();
                     LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
@@ -363,7 +341,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                         lightRenderer.disableAmbientOcclusion();
                     } else {
                         lightRenderer.enableVanillaLight();
-                        lightRenderer.disableAmbientOcclusion();
+                        lightRenderer.enableAmbientOcclusion();
                     }
                 }
             }

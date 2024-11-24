@@ -14,12 +14,10 @@ import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.deferred.light.PointLight;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
@@ -129,7 +127,14 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                 PlayerEntity player = MinecraftClient.getInstance().player;
                 if (player != null) {
                     Vec3d playerPos = player.getPos();
-                    boolean withinDistance = pos.isWithinDistance(playerPos, ConfigStuff.lightRenderDistance);
+                    double distance;
+                    if(world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY){
+                        distance = ConfigStuff.lightRenderDistance < 32 ? ConfigStuff.lightRenderDistance : 32;
+                    } else {
+                        distance = ConfigStuff.lightRenderDistance;
+                    }
+
+                    boolean withinDistance = pos.isWithinDistance(playerPos, distance);
                     if (withinDistance) {
                         if (!state.get(ThinFluorescentLightBlock.COPY) && state.get(ThinFluorescentLightBlock.ON) && !state.get(ThinFluorescentLightBlock.BLACKOUT)) {
                             if (!this.isPlayingSound() && pos.isWithinDistance(playerPos, 15.0f) && !SPBRevampedClient.blackScreen) {
@@ -144,11 +149,11 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                                         .setColor(255, 255, 255)
                                         .setBrightness(0.0024f)
                                 );
-                                switch ((WallMountLocation) state.get(FACE)) {
+                                switch (state.get(FACE)) {
                                     case FLOOR:
                                         pointLight.setPosition(position.x, position.y, position.z);
                                     case WALL:
-                                        switch ((Direction) state.get(FACING)) {
+                                        switch (state.get(FACING)) {
                                             case EAST:
                                                 pointLight.setPosition(position.x, position.y, position.z + 0.5);
                                             case WEST:
