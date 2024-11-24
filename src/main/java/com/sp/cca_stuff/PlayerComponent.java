@@ -46,7 +46,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private final PlayerEntity player;
     private boolean flashLightOn;
     private boolean shouldRender;
-    private int lightRenderDistance;
     private boolean isDoingCutscene;
     private boolean playingGlitchSound;
     private boolean shouldNoClip;
@@ -94,13 +93,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.level2Timer = 200;
     }
 
-
-    public int getLightRenderDistance() {
-        return lightRenderDistance;
-    }
-    public void setLightRenderDistance(int lightRenderDistance) {
-        this.lightRenderDistance = lightRenderDistance;
-    }
 
     public boolean isShouldRender() {
         return shouldRender;
@@ -226,7 +218,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             executorService.schedule(() -> {
                 client.player.playSound(ModSounds.LIGHTS_ON, SoundCategory.AMBIENT, 1, 1);
                 executorService.shutdown();
-            }, 9000, TimeUnit.MILLISECONDS);
+            }, 4000, TimeUnit.MILLISECONDS);
         }
 
 

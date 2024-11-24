@@ -173,6 +173,10 @@ public class ModBlocks {
             new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
 
 
+    public static final Block WOODEN_CRATE = registerBlock("wooden_crate",
+            new WoodenCrate(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles()));
+
+
 
     //////Poolrooms Stuff//////
     public static final Block PoolTiles = registerBlock("pool_tiles",

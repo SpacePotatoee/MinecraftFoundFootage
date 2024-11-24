@@ -1,10 +1,7 @@
 package com.sp.init;
 
 import com.sp.SPBRevamped;
-import com.sp.block.entity.DrawingMarkerBlockEntity;
-import com.sp.block.entity.FluorescentLightBlockEntity;
-import com.sp.block.entity.ThinFluorescentLightBlockEntity;
-import com.sp.block.entity.WindowBlockEntity;
+import com.sp.block.entity.*;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
@@ -16,6 +13,7 @@ public class ModBlockEntities {
     public static BlockEntityType<DrawingMarkerBlockEntity> DRAWING_MARKER_BLOCK_ENTITY;
     public static BlockEntityType<WindowBlockEntity> WINDOW_BLOCK_ENTITY;
     public static BlockEntityType<ThinFluorescentLightBlockEntity> THIN_FLUORESCENT_LIGHT_BLOCK_ENTITY;
+    public static BlockEntityType<WoodenCrateBlockEntity> WOODEN_CRATE_BLOCK_ENTITY;
 
 
     public static void registerAllBlockEntities(){
@@ -39,5 +37,10 @@ public class ModBlockEntities {
                 new Identifier(SPBRevamped.MOD_ID,"thin_fluorescent_light_block_entity"),
                 FabricBlockEntityTypeBuilder.create(ThinFluorescentLightBlockEntity::new,
                         ModBlocks.ThinFluorescentLight).build());
+
+        WOODEN_CRATE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
+                new Identifier(SPBRevamped.MOD_ID,"wooden_crate_block_entity"),
+                FabricBlockEntityTypeBuilder.create(WoodenCrateBlockEntity::new,
+                        ModBlocks.WOODEN_CRATE).build());
     }
 }
