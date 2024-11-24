@@ -20,6 +20,7 @@ public class RenderLayerMixin {
         list.add(RenderLayers.getChainFence());
         list.add(RenderLayers.getCeilingTile());
         list.add(RenderLayers.getCarpet());
+        list.add(RenderLayers.getWoodenCrateLayer());
         return list;
     }
 

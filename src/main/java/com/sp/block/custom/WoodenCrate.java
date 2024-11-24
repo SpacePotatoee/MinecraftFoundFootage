@@ -1,8 +1,10 @@
 package com.sp.block.custom;
 
 import com.sp.block.entity.WoodenCrateBlockEntity;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -24,13 +26,20 @@ public class WoodenCrate extends BlockWithEntity {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         } else {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof WoodenCrateBlockEntity) {
-                player.openHandledScreen((WoodenCrateBlockEntity)blockEntity);
+            if(world.getBlockState(pos.up()) == Blocks.AIR.getDefaultState()) {
+                BlockEntity blockEntity = world.getBlockEntity(pos);
+                if (blockEntity instanceof WoodenCrateBlockEntity) {
+                    player.openHandledScreen((WoodenCrateBlockEntity) blockEntity);
+                }
             }
 
             return ActionResult.CONSUME;
         }
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
     }
 
     @Override
