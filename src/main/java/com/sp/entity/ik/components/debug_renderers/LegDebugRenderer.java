@@ -19,7 +19,7 @@ import net.minecraft.world.RaycastContext;
 
 import java.util.List;
 
-public class LegDebugRenderer<E extends IKAnimatable<E>, C extends EntityLeg> extends IKChainDebugRenderer<E, IKLegComponent<C, E>> {
+public class LegDebugRenderer<E extends IKAnimatable<E>, C extends IKChain> extends IKChainDebugRenderer<E, IKLegComponent<C, E>> {
     private static <C extends IKChain> void drawAngleConstraintsForBase(Segment currentSegment, C chain, Entity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
         Vec3d entityPos = entity.getPos();
 
@@ -114,11 +114,14 @@ public class LegDebugRenderer<E extends IKAnimatable<E>, C extends EntityLeg> ex
     }
 
     private void drawAngleConstraintsForBase(C chain, Entity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+        if (!(chain instanceof EntityLeg entityLeg)) {
+            return;
+        }
         Vec3d entityPos = entity.getPos();
 
-        Vec3d base = chain.getFirst().getPosition();
+        Vec3d base = entityLeg.getFirst().getPosition();
 
-        Vec3d referencePoint = chain.rotatePointOnLegPlane(base.add(chain.getDownNormalOnLegPlane()), base, chain.getFirst().angleOffset);
+        Vec3d referencePoint = entityLeg.rotatePointOnLegPlane(base.add(entityLeg.getDownNormalOnLegPlane()), base, chain.getFirst().angleOffset);
 
         Vec3d dotBaseDir = referencePoint.subtract(base).normalize();
         Vec3d dotTargetDir = chain.get(1).getPosition().subtract(base).normalize();
@@ -127,31 +130,35 @@ public class LegDebugRenderer<E extends IKAnimatable<E>, C extends EntityLeg> ex
 
         double angleDifference = chain.getFirst().angleSize - angle;
 
-        Vec3d rotatedPos = MathUtil.rotatePointOnAPlaneAround(chain.getFirst().getPosition().add(chain.getDownNormalOnLegPlane()), chain.getFirst().getPosition(), chain.getFirst().angleSize, chain.getLegPlane());
-        Vec3d rotatedPos2 = MathUtil.rotatePointOnAPlaneAround(chain.getFirst().getPosition().add(chain.getDownNormalOnLegPlane()), chain.getFirst().getPosition(), -chain.getFirst().angleSize, chain.getLegPlane());
-        Vec3d newPos = MathUtil.rotatePointOnAPlaneAround(chain.get(1).getPosition(), chain.getFirst().getPosition(), angleDifference, chain.getLegPlane());
+        Vec3d rotatedPos = MathUtil.rotatePointOnAPlaneAround(chain.getFirst().getPosition().add(entityLeg.getDownNormalOnLegPlane()), chain.getFirst().getPosition(), chain.getFirst().angleSize, entityLeg.getLegPlane());
+        Vec3d rotatedPos2 = MathUtil.rotatePointOnAPlaneAround(chain.getFirst().getPosition().add(entityLeg.getDownNormalOnLegPlane()), chain.getFirst().getPosition(), -chain.getFirst().angleSize, entityLeg.getLegPlane());
+        Vec3d newPos = MathUtil.rotatePointOnAPlaneAround(chain.get(1).getPosition(), chain.getFirst().getPosition(), angleDifference, entityLeg.getLegPlane());
 
         IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, chain.getFirst().getPosition(), rotatedPos, 255, 0, 0, 127);
         IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, chain.getFirst().getPosition(), rotatedPos2, 0, 255, 0, 127);
         IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, chain.getFirst().getPosition(), newPos, 0, 0, 255, 127);
 
-        IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, chain.getFirst().getPosition(), chain.getFirst().getPosition().add(chain.getDownNormalOnLegPlane()), 180, 180, 180, 127);
-        IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, chain.getFirst().getPosition(), chain.getFirst().getPosition().add(chain.getLegPlane()), 12, 12, 12, 127);
+        IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, chain.getFirst().getPosition(), chain.getFirst().getPosition().add(entityLeg.getDownNormalOnLegPlane()), 180, 180, 180, 127);
+        IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, chain.getFirst().getPosition(), chain.getFirst().getPosition().add(entityLeg.getLegPlane()), 12, 12, 12, 127);
     }
 
     private void drawAngleConstraints(int i, C chain, Entity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+        if (!(chain instanceof EntityLeg entityLeg)) {
+            return;
+        }
+
         Vec3d entityPos = entity.getPos();
 
         Segment currentSegment = chain.get(i);
 
-        List<Vec3d> positions = this.getConstrainedPositions(chain.get(i - 1).getPosition(), currentSegment, chain.getJoints().get(i + 1), chain);
+        List<Vec3d> positions = this.getConstrainedPositions(chain.get(i - 1).getPosition(), currentSegment, chain.getJoints().get(i + 1), entityLeg);
 
         IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, currentSegment.getPosition(), positions.get(0), 255, 0, 0, 127);
         IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, currentSegment.getPosition(), positions.get(1), 180, 180, 180, 127);
         IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, currentSegment.getPosition(), positions.get(2), 0, 255, 0, 127);
     }
 
-    private List<Vec3d> getConstrainedPositions(Vec3d reference, Segment middle, Vec3d endpoint, C chain) {
+    private List<Vec3d> getConstrainedPositions(Vec3d reference, Segment middle, Vec3d endpoint, EntityLeg chain) {
         //Vec3d normal = MathUtil.getClosestNormalRelativeToEntity(endpoint, middle.getPosition(), reference, entity);
 
         Vec3d normal = chain.getLegPlane();

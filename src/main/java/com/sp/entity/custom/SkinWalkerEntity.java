@@ -7,6 +7,12 @@ import com.sp.entity.ai.SlightlyBetterMobNavigation;
 import com.sp.entity.ai.goals.ActNaturalGoal;
 import com.sp.entity.ai.goals.FollowClosestPlayerGoal;
 import com.sp.entity.ai.goals.TalkInChatGoal;
+import com.sp.entity.ik.components.IKAnimatable;
+import com.sp.entity.ik.components.IKLegComponent;
+import com.sp.entity.ik.components.IKModelComponent;
+import com.sp.entity.ik.parts.Segment;
+import com.sp.entity.ik.parts.ik_chains.TargetReachingIKChain;
+import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import foundry.veil.api.client.util.Easings;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -37,14 +43,16 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-public class SkinWalkerEntity extends HostileEntity implements GeoEntity {
+public class SkinWalkerEntity extends HostileEntity implements GeoEntity, IKAnimatable<SkinWalkerEntity> {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private final UUID targetPlayerID;
     public SkinWalkerComponent component;
+    public List<IKModelComponent<SkinWalkerEntity>> components = new ArrayList<>();
 
     public SkinWalkerEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
@@ -54,7 +62,26 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity {
         this.component = InitializeComponents.SKIN_WALKER.get(this);
         component.setTargetPlayerUUID(this.targetPlayerID);
         component.setSneaking(false);
+        this.setUpLimbs();
     }
+
+    protected void setUpLimbs() {
+        this.addComponent(new IKLegComponent<>(
+                new IKLegComponent.LegSetting.Builder()
+                        .maxDistance(1.5)
+                        .stepInFront(1)
+                        .movementSpeed(0.4).build(),
+                List.of(new ServerLimb(2, 0, 2),
+                        new ServerLimb(-2, 0, 2),
+                        new ServerLimb(2, 0, -2),
+                        new ServerLimb(-2, 0, -2)),
+                new TargetReachingIKChain(new Segment.Builder().length(0.7).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(0.5).build()),
+                new TargetReachingIKChain(new Segment.Builder().length(0.7).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(0.5).build()),
+                new TargetReachingIKChain(new Segment.Builder().length(0.7).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(0.5).build()),
+                new TargetReachingIKChain(new Segment.Builder().length(0.7).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(0.5).build())
+        ));
+    }
+
 
     private UUID getRandomPlayer(World world) {
         List<? extends PlayerEntity> players = world.getPlayers();
@@ -80,7 +107,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity {
 
     @Override
     protected void initGoals() {
-        this.targetSelector.add(1, new ActiveTargetGoal(this, PlayerEntity.class, false));
+        this.targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
 //        this.goalSelector.add(1, new WanderAroundGoal(this, 1.0, 1));
 //        this.goalSelector.add(1, new FollowClosestPlayerGoal(this, 5, 15, 1.0f));
 //        this.goalSelector.add(2, new ActNaturalGoal(this));
@@ -89,6 +116,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity {
 
     @Override
     public void tick() {
+        this.tickComponentsServer(this);
 
         if(!this.getWorld().isClient) {
             if(!this.component.isInTrueForm() && !this.component.shouldBeginReveal()) {
@@ -198,6 +226,15 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity {
         return (AbstractClientPlayerEntity) world.getPlayerByUuid(this.targetPlayerID);
     }
 
+    @Override
+    public List<IKModelComponent<SkinWalkerEntity>> getComponents() {
+        return this.components;
+    }
+
+    @Override
+    public double getSize() {
+        return 1;
+    }
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class SkinWalkerLookControl extends LookControl{

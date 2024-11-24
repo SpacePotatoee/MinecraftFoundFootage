@@ -5,6 +5,7 @@ import com.sp.entity.ik.model.BoneAccessor;
 import com.sp.entity.ik.model.ModelAccessor;
 import com.sp.entity.ik.parts.ik_chains.EntityLeg;
 import com.sp.entity.ik.parts.ik_chains.EntityLegWithFoot;
+import com.sp.entity.ik.parts.ik_chains.IKChain;
 import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import com.sp.entity.ik.util.PrAnCommonClass;
 import net.minecraft.client.render.RenderLayer;
@@ -21,7 +22,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class IKLegComponent<C extends EntityLeg, E extends IKAnimatable<E>> extends IKChainComponent<C, E> {
+public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extends IKChainComponent<C, E> {
     /// summon projectnublar:tyrannosaurus_rex ~ ~ ~ {NoAI:1b}
     private final List<ServerLimb> endPoints;
     private final LegSetting settings;
@@ -59,6 +60,7 @@ public class IKLegComponent<C extends EntityLeg, E extends IKAnimatable<E>> exte
 
         double average = sum / this.endPoints.size();
 
+        /*
         if (model.getBone("entity_base").isEmpty()) {
             return;
         }
@@ -66,7 +68,8 @@ public class IKLegComponent<C extends EntityLeg, E extends IKAnimatable<E>> exte
 
         double newY = average; //Mth.lerp(2, entityBase.getPosition(entity).y(), average);
 
-        //entityBase.moveTo(new Vec3d(entity.position().x(), newY, entity.position().z()), null, entity);
+        entityBase.moveTo(new Vec3d(entity.position().x(), newY, entity.position().z()), null, entity);
+         */
 
         for (int i = 0; i < this.limbs.size(); i++) {
             if (model.getBone("base_" + "leg" + (i + 1)).isEmpty()) {
@@ -189,8 +192,9 @@ public class IKLegComponent<C extends EntityLeg, E extends IKAnimatable<E>> exte
     public C setLimb(int index, Vec3d base, Entity entity) {
         C limb = this.limbs.get(index);
 
-        limb.entity = entity;
-
+        if (limb instanceof EntityLeg entityLeg) {
+            entityLeg.entity = entity;
+        }
 
         limb.setScale(this.getScale());
 

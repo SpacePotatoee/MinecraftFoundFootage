@@ -3,6 +3,8 @@ package com.sp;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.entity.custom.SkinWalkerEntity;
+import com.sp.entity.ik.model.GeckoLib.MowzieModelFactory;
+import com.sp.entity.ik.util.PrAnCommonClass;
 import com.sp.init.ModBlockEntities;
 import com.sp.init.ModEntities;
 import com.sp.item.ModItemGroups;
@@ -23,6 +25,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.registry.Registries;
@@ -34,6 +37,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.bernie.geckolib.GeckoLib;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -46,6 +50,17 @@ public class SPBRevamped implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+        // Thanks Bob Mowzie
+        GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());
+        GeckoLib.initialize();
+        // !
+		PrAnCommonClass.init();
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            PrAnCommonClass.isDev = true;
+            PrAnCommonClass.shouldRenderDebugLegs = true;
+            PrAnCommonClass.LOGGER.info("Started in a development environment. Debug renderers will be activated by default.");
+        }
+
 		MidnightConfig.init(MOD_ID, ConfigStuff.class);
 
 

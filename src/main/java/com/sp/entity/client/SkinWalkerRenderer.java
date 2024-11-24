@@ -1,7 +1,9 @@
 package com.sp.entity.client;
 
 import com.sp.SPBRevamped;
+import com.sp.entity.client.debug.IKDebugRenderLayer;
 import com.sp.entity.custom.SkinWalkerEntity;
+import com.sp.entity.ik.model.GeckoLib.MowzieGeoBone;
 import com.sp.render.physics.PhysicsPoint;
 import com.sp.render.physics.PhysicsStick;
 import net.minecraft.client.MinecraftClient;
@@ -21,6 +23,7 @@ import software.bernie.geckolib.cache.object.GeoQuad;
 import software.bernie.geckolib.cache.object.GeoVertex;
 import software.bernie.geckolib.renderer.DynamicGeoEntityRenderer;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.util.RenderUtils;
 
 import java.lang.Math;
 import java.util.ArrayList;
@@ -40,6 +43,7 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 
     public SkinWalkerRenderer(EntityRendererFactory.Context renderManager) {
         super(renderManager, new SkinWalkerModel());
+        this.addRenderLayer(new IKDebugRenderLayer(this));
         spiderLegBones.add("top_left_spider_leg");
         spiderLegBones.add("bone2");
         spiderLegBones.add("bone3");
@@ -295,5 +299,77 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
             return new Vec3d(0, -0.125, 0);
         }
         return super.getPositionOffset(entity, tickDelta);
+    }
+
+    @Override
+    public void renderRecursively(MatrixStack poseStack, SkinWalkerEntity animatable, GeoBone bone, RenderLayer renderType, VertexConsumerProvider bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        if (bone == null) return;
+        poseStack.push();
+        if (bone instanceof MowzieGeoBone mowzieGeoBone && mowzieGeoBone.isForceMatrixTransform() && animatable != null) {
+            MatrixStack.Entry last = poseStack.peek();
+            double d0 = animatable.getX();
+            double d1 = animatable.getY();
+            double d2 = animatable.getZ();
+            Matrix4f matrix4f = new Matrix4f();
+            matrix4f = matrix4f.translate(0, -0.01f, 0);
+            matrix4f = matrix4f.translate((float) -d0, (float) -d1, (float) -d2);
+            matrix4f = matrix4f.mul(bone.getWorldSpaceMatrix());
+            last.getPositionMatrix().mul(matrix4f);
+            last.getNormalMatrix().mul(bone.getWorldSpaceNormal());
+
+            RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
+        } else {
+            boolean rotOverride = false;
+            if (bone instanceof MowzieGeoBone mowzieGeoBone) {
+                rotOverride = mowzieGeoBone.rotationOverride != null;
+            }
+
+            RenderUtils.translateMatrixToBone(poseStack, bone);
+            RenderUtils.translateToPivotPoint(poseStack, bone);
+
+            if (bone instanceof MowzieGeoBone mowzieGeoBone) {
+                if (!mowzieGeoBone.inheritRotation && !mowzieGeoBone.inheritTranslation) {
+                    poseStack.peek().getPositionMatrix().identity();
+                    poseStack.peek().getPositionMatrix().mul(this.entityRenderTranslations);
+                } else if (!mowzieGeoBone.inheritRotation) {
+                    Vector4f t = new Vector4f().mul(poseStack.peek().getPositionMatrix());
+                    poseStack.peek().getPositionMatrix().identity();
+                    poseStack.translate(t.x, t.y, t.z);
+                } else if (!mowzieGeoBone.inheritTranslation) {
+                    MowzieGeoBone.removeMatrixTranslation(poseStack.peek().getPositionMatrix());
+                    poseStack.peek().getPositionMatrix().mul(this.entityRenderTranslations);
+                }
+            }
+
+            if (rotOverride) {
+                MowzieGeoBone mowzieGeoBone = (MowzieGeoBone) bone;
+                poseStack.peek().getPositionMatrix().mul(mowzieGeoBone.rotationOverride);
+                poseStack.peek().getNormalMatrix().mul(new Matrix3f(mowzieGeoBone.rotationOverride));
+            } else {
+                RenderUtils.rotateMatrixAroundBone(poseStack, bone);
+            }
+
+            RenderUtils.scaleMatrixForBone(poseStack, bone);
+
+            if (bone.isTrackingMatrices()) {
+                Matrix4f poseState = new Matrix4f(poseStack.peek().getPositionMatrix());
+                Matrix4f localMatrix = RenderUtils.invertAndMultiplyMatrices(poseState, this.entityRenderTranslations);
+
+                bone.setModelSpaceMatrix(RenderUtils.invertAndMultiplyMatrices(poseState, this.modelRenderTranslations));
+                bone.setLocalSpaceMatrix(RenderUtils.translateMatrix(localMatrix, getPositionOffset(this.animatable, 1).toVector3f()));
+                bone.setWorldSpaceMatrix(RenderUtils.translateMatrix(new Matrix4f(localMatrix), this.animatable.getPos().toVector3f()));
+            }
+
+            RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
+        }
+
+        renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+
+        if (!isReRender)
+            applyRenderLayersForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
+
+        renderChildBones(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+
+        poseStack.pop();
     }
 }
