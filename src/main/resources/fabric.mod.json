@@ -2,8 +2,8 @@
 	"schemaVersion": 1,
 	"id": "spb-revamped",
 	"version": "${version}",
-	"name": "SPB-Revamped",
-	"description": "Now this is epic",
+	"name": "SP-Backrooms Revamped",
+	"description": "A MAJOR overhaul to my first Backrooms Mod",
 	"authors": [
 		"SpacePotato"
 	],
@@ -32,9 +32,6 @@
 			"links": {
 				"My Youtube": "https://www.youtube.com/@SpacePotatoee",
 				"Join the Discord!": "https://discord.gg/z3sfGTdjEn"
-			},
-			"parent": {
-				"description": "A MAJOR overhaul to my first Backrooms Mod"
 			},
 			"update_checker": false
 		}

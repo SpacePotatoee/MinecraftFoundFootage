@@ -7,3 +7,4 @@ accessible field net/minecraft/client/render/WorldRenderer blockBreakingProgress
 accessible field net/minecraft/client/render/WorldRenderer bufferBuilders Lnet/minecraft/client/render/BufferBuilderStorage;
 accessible method net/minecraft/client/render/Camera setRotation (FF)V
 accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/entity/ai/goal/GoalSelector;
+accessible field net/minecraft/world/chunk/Chunk blockEntityNbts Ljava/util/Map;

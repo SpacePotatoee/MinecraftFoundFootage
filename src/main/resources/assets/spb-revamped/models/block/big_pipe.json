@@ -2,8 +2,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [1024, 1024],
 	"textures": {
-		"2": "spb-revamped:block/metal3",
-		"particle": "spb-revamped:block/rust1"
+		"2": "spb-revamped:block/metal3"
 	},
 	"elements": [
 		{
