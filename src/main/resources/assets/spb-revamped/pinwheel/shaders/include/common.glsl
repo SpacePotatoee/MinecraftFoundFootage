@@ -19,9 +19,9 @@ vec3 yuv2rgb(vec3 yuv){
 
 
 vec4 blur(float kernalSize, float offset, sampler2D textureSampler, vec2 texCoord){
-    vec4 blur = vec4(0);
-    float halfSize = (kernalSize - 1) / 2;
-    float coeff = 1 / (kernalSize * kernalSize);
+    vec4 blur = vec4(0.0);
+    float halfSize = (kernalSize - 1.0) / 2.0;
+    float coeff = 1.0 / (kernalSize * kernalSize);
     vec2 dx = vec2(offset, 0.0);
     vec2 dy = vec2(0.0, offset);
 
@@ -34,16 +34,16 @@ vec4 blur(float kernalSize, float offset, sampler2D textureSampler, vec2 texCoor
 }
 
 float random (vec2 st) {
-    float p = fract(sin(dot(st.xy,vec2(0,300.233))));
+    float p = fract(sin(dot(st.xy,vec2(0.0,300.233))));
     return p;
 }
 
 float hash12(vec2 p){
-    vec3 p3  = fract(vec3(p.xyx) * .1031);
+    vec3 p3  = fract(vec3(p.xyx) * 0.1031);
     p3 += dot(p3, p3.yzx + 33.33);
     return fract((p3.x + p3.y) * p3.z);
 }
 
 float octave(float x){
-    return mod(sin(x * 2) * sin(x * 4) * sin(x * 32), 1);
+    return mod(sin(x * 2.0) * sin(x * 4.0) * sin(x * 32.0), 1.0);
 }

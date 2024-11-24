@@ -20,7 +20,7 @@ mat2 randRotMat(vec2 coord, sampler2D NoiseTex){
     float randomAngle = texture(NoiseTex, coord * 20.0).r * 100.0;
     float cosTheta = cos(randomAngle);
     float sinTheta = sin(randomAngle);
-    return mat2(cosTheta, -sinTheta, sinTheta, cosTheta) / 2048;
+    return mat2(cosTheta, -sinTheta, sinTheta, cosTheta) / 2048.0;
 }
 
 vec3 getShadowCoords(vec4 normal, vec3 viewPos, mat4 viewMatrix, mat4 orthographMatrix){
@@ -51,7 +51,7 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, mat4 view
     float worldDepth = length(viewPos);
     vec4 color = incolor;
     //SHADOWS
-    vec3 LIGHT_COLOR = mix(vec3(1), vec3(0.9411, 0.8156, 0.5803), smoothstep(0.0, 1.0, sunsetTimer));
+    vec3 LIGHT_COLOR = mix(vec3(1.0), vec3(0.9411, 0.8156, 0.5803), smoothstep(0.0, 1.0, sunsetTimer));
     color.rgb = pow(color.rgb, vec3(2.2));
     vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
     lightangle.y = -lightangle.y;
@@ -120,7 +120,7 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, mat4 view
 
     color.rgb += (brightness * LIGHT_COLOR);
 
-    color.rgb = pow(color.rgb, vec3(1 / 2.2));
+    color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
 
     return color;
 }

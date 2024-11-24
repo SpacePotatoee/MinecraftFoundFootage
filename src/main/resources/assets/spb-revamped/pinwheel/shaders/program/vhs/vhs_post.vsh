@@ -10,7 +10,7 @@ void main() {
 	
 	
     gl_Position = vec4(Position.x/1.08, Position.y, 0, 0.92);
-    texCoord = Position.xy/2 + 0.5;
+    texCoord = Position.xy/2.0 + 0.5;
 }
 
 

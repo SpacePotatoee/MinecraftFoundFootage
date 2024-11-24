@@ -26,10 +26,10 @@ vec4 fxaa(vec2 texCoord, sampler2D DiffuseSampler0){
         return vec4(colorCenter, 1.0);
     }
     else{
-        vec4 blur = vec4(0);
-        const float kernalSize = 3;
-        const float halfSize = 1;
-        const float coeff = 1 / (kernalSize * kernalSize);
+        vec4 blur = vec4(0.0);
+        const float kernalSize = 3.0;
+        const float halfSize = 1.0;
+        const float coeff = 1.0 / (kernalSize * kernalSize);
         const vec2 dx = vec2(0.001, 0.0);
         const vec2 dy = vec2(0.0, 0.001);
 

@@ -51,17 +51,18 @@ void main(){
     uint Mat = texture(TransparentMatSampler, texCoord).r;
     uint Mat2 = texture(OpaqueMatSampler, texCoord).r;
 
-    if(transparent.a > 0 && isBlock(Mat)){
+    if(transparent.a > 0.0 && isBlock(Mat)){
         color = opaque;
     }
 
-    color *= blur(7, 0.001, SSAOSampler, texCoord) * 2;
+
+    color *= blur(7.0, 0.001, SSAOSampler, texCoord) * 2.0;
 
     if(ShadowToggle == 1){
         color = getShadow(color, texCoord, viewPos, normal, viewMatrix, orthographMatrix, NoiseTex, ShadowSampler, sunsetTimer);
     }
 
-    if(compat.a > 0 || compat2.a > 0){
+    if(compat.a > 0.0 || compat2.a > 0.0){
         if(Mat == 15 || Mat2 == 15){
             color = getSky(texCoord, sunsetTimer, GameTime, CloudNoise1, CloudNoise2);
         }

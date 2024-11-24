@@ -24,7 +24,7 @@ vec2 BarrelDistortionCoordinates(vec2 uv){
 void main() {
 	vec2 uv = BarrelDistortionCoordinates(vec2(texCoord.x + octave(texCoord.y + GameTime * 2000) * 0.01, texCoord.y));
 
-	vec2 offset = uv + ((hash12(uv * 260.23535 + GameTime * 70)) * 0.005) + ((hash12(vec2(GameTime * 4562))) * 0.01);
+	vec2 offset = uv + ((hash12(uv * 260.23535 + GameTime * 70.0)) * 0.005) + ((hash12(vec2(GameTime * 4562.0))) * 0.01);
 
 	float red = texture(NoEscape, offset + 0.001).r;
 	float green = texture(NoEscape, offset - 0.001).g;

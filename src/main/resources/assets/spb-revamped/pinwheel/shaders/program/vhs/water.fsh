@@ -37,7 +37,7 @@ const int BinSearchSteps = 10;
 
 
 float brightness(vec4 color){
-    return (color.r + color.g + color.b) / 3;
+    return (color.r + color.g + color.b) / 3.0;
 }
 
 vec2 rayMarch(vec3 dir, vec3 origin){
@@ -101,11 +101,11 @@ vec4 getReflection(vec4 fragColor, vec4 normal, float depth, vec2 texCoord, vec3
 
     vec2 dCoords = smoothstep(0.3, 0.5, abs(vec2(0.5) - projectedCoord));
 
-    float screenEdgefactor = clamp(1.0 - (dCoords.x + dCoords.y), 0.0, 1.0);
+    float screenEdgefactor = clamp(1.0f - (dCoords.x + dCoords.y), 0.0f, 1.0f);
 
     float ReflectionMultiplier = screenEdgefactor * (reflected.z);
 
-    return mix(fragColor, mix(fragColor, vec4(reflectedTexture, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0, 1));
+    return mix(fragColor, mix(fragColor, vec4(reflectedTexture, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0.0, 1.0));
 }
 
 vec4 getCaustics(vec2 color, vec3 opaqueWorldPos){
@@ -115,15 +115,15 @@ vec4 getCaustics(vec2 color, vec3 opaqueWorldPos){
     vec3 opaqueNormal = texture(OpaqueNormalSampler, texCoord).rgb;
     opaqueNormal = abs(viewToWorldSpaceDirection(opaqueNormal));
 
-    vec4 caustics = (texture(CausticsTexture, (opaqueWorldPos.yz * scale + GameTime * 40) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.r;
-    caustics += (texture(CausticsTexture, (opaqueWorldPos.xz * scale + GameTime * 40) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.g;
-    caustics += (texture(CausticsTexture, (opaqueWorldPos.xy * scale + GameTime * 40) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.b;
+    vec4 caustics = (texture(CausticsTexture, (opaqueWorldPos.yz * scale + GameTime * 40.0) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.r;
+    caustics += (texture(CausticsTexture, (opaqueWorldPos.xz * scale + GameTime * 40.0) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.g;
+    caustics += (texture(CausticsTexture, (opaqueWorldPos.xy * scale + GameTime * 40.0) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.b;
 
-    caustics += (texture(CausticsTexture, (opaqueWorldPos.yz * scale - vec2(GameTime * 40, -GameTime * 10)) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.r;
-    caustics += (texture(CausticsTexture, (opaqueWorldPos.xz * scale - vec2(GameTime * 40, -GameTime * 10)) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.g;
-    caustics += (texture(CausticsTexture, (opaqueWorldPos.xy * scale - vec2(GameTime * 40, -GameTime * 10)) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.b;
+    caustics += (texture(CausticsTexture, (opaqueWorldPos.yz * scale - vec2(GameTime * 40.0, -GameTime * 10.0)) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.r;
+    caustics += (texture(CausticsTexture, (opaqueWorldPos.xz * scale - vec2(GameTime * 40.0, -GameTime * 10.0)) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.g;
+    caustics += (texture(CausticsTexture, (opaqueWorldPos.xy * scale - vec2(GameTime * 40.0, -GameTime * 10.0)) + color * REFRACTION_MULTIPLIER) * mult) * opaqueNormal.b;
 
-    return caustics * brightness(underWater) * 2;
+    return caustics * brightness(underWater) * 2.0;
 }
 
 
@@ -138,18 +138,18 @@ void main() {
     vec4 minecraftMain = texture(MinecraftMain, texCoord);
     float opaqueDepth = texture(OpaqueDepth, texCoord).r;
 
-    vec2 color = vec2(0);
-    vec2 color2 = vec2(0);
+    vec2 color = vec2(0.0);
+    vec2 color2 = vec2(0.0);
 
-    vec4 normal = vec4(0);
-    vec4 normal2 = vec4(0);
-    if (isReflective > 0 && handDepth == 1 && isBlock(material)) {
+    vec4 normal = vec4(0.0);
+    vec4 normal2 = vec4(0.0);
+    if (isReflective > 0.0 && handDepth == 1.0 && isBlock(material)) {
         vec3 viewPos = viewPosFromDepth(waterDepth, texCoord);
         vec3 playerSpace = viewToPlayerSpace(viewPos);
         vec3 worldPos = playerSpace + cameraPos;
 
-        color = texture(WaterTexture, worldPos.xz * 0.05 + vec2(GameTime * 50)).rg - 0.5;
-        color2 = texture(WaterTexture, worldPos.xz * 0.05 - vec2(0, GameTime * 50)).rg - 0.5;
+        color = texture(WaterTexture, worldPos.xz * 0.05 + vec2(GameTime * 50.0)).rg - 0.5;
+        color2 = texture(WaterTexture, worldPos.xz * 0.05 - vec2(0.0, GameTime * 50.0)).rg - 0.5;
         color = color + color2;
 
         vec3 shadowScreenSpace = getShadowCoords(playerSpace, viewMatrix, orthographMatrix);
@@ -159,14 +159,14 @@ void main() {
 
 
         fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER);
-        fragColor = getReflection(fragColor, normalSampler, waterDepth, texCoord, viewPos, color) * vec4(0, 1.2, 1.15, 1);
+        fragColor = getReflection(fragColor, normalSampler, waterDepth, texCoord, viewPos, color) * vec4(0.0, 1.2, 1.15, 1.0);
 
 
         if (shadow >= 1.0){
-            normal = texture(NormalTexture, worldPos.xz * 0.1 + vec2(GameTime * 50));
-            normal2 = texture(NormalTexture, worldPos.xz * 0.1 - vec2(0, GameTime * 50));
-            normal2 += texture(NormalTexture, worldPos.xz * 0.1 - vec2(- GameTime * 103.235456, GameTime * 50));
-            normal = (normal + normal2) / 3;
+            normal = texture(NormalTexture, worldPos.xz * 0.1 + vec2(GameTime * 50.0));
+            normal2 = texture(NormalTexture, worldPos.xz * 0.1 - vec2(0, GameTime * 50.0));
+            normal2 += texture(NormalTexture, worldPos.xz * 0.1 - vec2(- GameTime * 103.235456, GameTime * 50.0));
+            normal = (normal + normal2) / 3.0;
             normal = vec4(normal.r, normal.b, normal.g, normal.a) * 2.0 - 1.0;
 
             vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
@@ -177,8 +177,8 @@ void main() {
 
             vec3 reflectedLight = reflect(normalize(lightAngled), normalize(normal.rgb));
             float specular = dot(- reflectedLight, min(viewPos, - 3.0));
-            specular = pow(specular, 20);
-            specular *= 1;
+            specular = pow(specular, 20.0);
+            specular *= 1.0;
 
             if (specular > 0.0){
                 fragColor += specular;
@@ -196,7 +196,7 @@ void main() {
 
         if (shadow >= 1.0){
         vec4 caustics = getCaustics(color, opaqueWorldPos);
-        fragColor += clamp(caustics, 0, 1) * 2;
+        fragColor += clamp(caustics, 0.0, 1.0) * 2.0;
         }
 
 //            float vertexDistance = fog_distance(opaqueViewPos, 0);

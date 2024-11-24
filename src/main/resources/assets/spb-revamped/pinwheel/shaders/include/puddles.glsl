@@ -80,10 +80,10 @@ vec4 getReflection(vec4 fragColor, vec4 normal, vec3 viewPos, float jitterMult, 
     float ReflectionMultiplier = screenEdgefactor * (reflected.z);
 
     if(Luminance >= 0.5){
-        return mix(fragColor, mix(fragColor, vec4(reflectedTexture * 20, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0, 1));
+        return mix(fragColor, mix(fragColor, vec4(reflectedTexture * 20, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0.0, 1.0));
     }
 
-    return mix(fragColor, mix(fragColor, vec4(reflectedTexture, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0, 1));
+    return mix(fragColor, mix(fragColor, vec4(reflectedTexture, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0.0, 1.0));
 }
 
 vec4 getPuddles(vec4 fragColor, vec2 texCoord, vec4 normal, sampler2D DiffuseSampler0, sampler2D DepthSampler, sampler2D NoiseTexture, sampler2D NoiseTexture2){
@@ -95,22 +95,22 @@ vec4 getPuddles(vec4 fragColor, vec2 texCoord, vec4 normal, sampler2D DiffuseSam
 
     vec4 noise = texture(NoiseTexture, worldSpace.xz * 0.02);
     vec4 noise_2 = texture(NoiseTexture2, worldSpace.xz * 0.5);
-    noise = (clamp(smoothstep(0.1, 0.9, noise_2) * 0.2, 0, 1) + smoothstep(0.1, 0.9, noise));
+    noise = (clamp(smoothstep(0.1, 0.9, noise_2) * 0.2, 0.0, 1.0) + smoothstep(0.1, 0.9, noise));
 
     if (worldSpace.y <= 21.001 && worldSpace.y >= 20.99 && length(viewSpace) <= 150){
         noise = smoothstep(0.3, 0.7, noise);
-        noise = clamp(noise, 0, 1);
+        noise = clamp(noise, 0.0, 1.0);
 //        color = mainTexture;
 
         if (noise.r < 0.5){
             color = getReflection(color, normal, viewSpace, 0.02, DiffuseSampler0, DepthSampler);
             color = mix(color, mainTexture, noise) - (noise * 0.02);
-            color -= (1 - noise) * 0.1;
+            color -= (1.0 - noise) * 0.1;
         }
         else if (noise.r < 0.8){
             color = getReflection(color, normal, viewSpace, 1, DiffuseSampler0, DepthSampler);
             color = mix(color, mainTexture, noise) - (noise * 0.02);
-            color -= (1 - noise) * 0.1;
+            color -= (1.0 - noise) * 0.1;
         }
         else if (noise.r < 0.85){
             color -= 0.015;

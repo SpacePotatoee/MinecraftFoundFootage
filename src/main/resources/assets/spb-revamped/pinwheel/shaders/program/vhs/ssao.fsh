@@ -37,16 +37,16 @@ void main() {
     vec3 viewPos = viewPosFromDepth(depth, texCoord);
     vec3 normal = normalize(texture(NormalSampler, texCoord).rgb);
 
-    if(depthSample < 1){
-        vec3 randDir = normalize(vec3(texture(RNoiseDir, texCoord * 100).rgb));
+    if(depthSample < 1.0){
+        vec3 randDir = normalize(vec3(texture(RNoiseDir, texCoord * 100.0).rgb));
         vec3 tangent = normalize(cross(normal, normalize(randDir)));
         vec3 bitangent = normalize(cross(normal, tangent));
 
         mat3 TBN = mat3(tangent, bitangent, normal);
         TBN = transpose(TBN);
 
-        float occlusion = 0;
-        vec3 samplePos = vec3(0);
+        float occlusion = 0.0;
+        vec3 samplePos = vec3(0.0);
         for (int i = 0; i < QUALITY; i++) {
             samplePos = samples[i] * TBN;
 
@@ -63,15 +63,15 @@ void main() {
 
 
             if (screenSamplePos.z > sampleDepth){
-                float dist = smoothstep(0.0, 1.0, 1 / length(viewPos - viewPos2));
+                float dist = smoothstep(0.0, 1.0, 1.0 / length(viewPos - viewPos2));
                 occlusion += 1.5 * dist;
             }
 
         }
         occlusion /= QUALITY;
-        fragColor = vec4(vec3(1 - occlusion), 1.0);
+        fragColor = vec4(vec3(1.0 - occlusion), 1.0);
     }else {
-        fragColor = vec4(1);
+        fragColor = vec4(1.0);
     }
 //    fragColor = vec4(vec3(depthSample), 1.0);
 

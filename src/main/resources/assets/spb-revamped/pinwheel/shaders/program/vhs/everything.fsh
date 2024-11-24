@@ -45,10 +45,10 @@ float map(vec3 p){
 
 float noise3D(vec3 p){
 	float z = p.z;
-	vec2 z1 = (floor(z) * OFFSET + p.xz)/5;
-	vec2 z2 = ((floor(z) + 1.0) * OFFSET + p.xz)/5;
-	float n1 = texture(FogTexture, z1 + GameTime * 100).r;
-	float n2 = texture(FogTexture, z2 + GameTime * 100).r;
+	vec2 z1 = (floor(z) * OFFSET + p.xz)/5.0;
+	vec2 z2 = ((floor(z) + 1.0) * OFFSET + p.xz)/5.0;
+	float n1 = texture(FogTexture, z1 + GameTime * 100.0).r;
+	float n2 = texture(FogTexture, z2 + GameTime * 100.0).r;
 	float ratio = fract(z);
 	return mix(n1, n2, ratio);
 }
@@ -67,7 +67,7 @@ void main() {
 		vec4 compat = texture(TransparentCompatSampler, texCoord);
 		vec4 compat2 = texture(OpaqueCompatSampler, texCoord);
 
-		if (!(compat.a > 0) && !(compat2.a > 0)){
+		if (!(compat.a > 0.0) && !(compat2.a > 0.0)){
 			if (TogglePuddles == 1){
 				color = getPuddles(color, texCoord, normal, DiffuseSampler0, TransparentDepthSampler, NoiseTexture, NoiseTexture2);
 			}
@@ -85,7 +85,7 @@ void main() {
 			//Raymarching
 			for (int i = 0; i < 250; i++) {
 				if (inside == false) {
-					if (worldDepth > 500) {
+					if (worldDepth > 500.0) {
 						break;
 					}
 
@@ -105,7 +105,7 @@ void main() {
 					fog += 0.0004 * noise;
 					p = ro + rd * travDist;
 					travDist += 0.05;
-					if (travDist > worldDepth || fog >= 1 || travDist > 50 || p.y < 20.5) {
+					if (travDist > worldDepth || fog >= 1.0 || travDist > 50.0 || p.y < 20.5) {
 						break;
 					}
 				}
@@ -115,7 +115,7 @@ void main() {
 
 			color.rgb = blend(color, water);
 
-		if (handDepth < 1){
+		if (handDepth < 1.0){
 			color = handColor;
 		}
 			fragColor = color;

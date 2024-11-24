@@ -107,7 +107,7 @@ in vec3 Pos;
 
 void main() {
     vec4 color = texture(Sampler0, texCoord0);
-    vec3 staticColor = vec3(0);
+    vec3 staticColor = vec3(0.0);
     if (color.a < 0.1) {
         discard;
     }
@@ -117,7 +117,7 @@ void main() {
 
     //If static timer is active
     if(StaticTimer > 0.0 && StaticTimer <= 1.0){
-        staticColor = vec3(hash12(texCoord0 * 260.235 + GameTime * 70), hash12(texCoord0 * 937.275 + GameTime * 70), hash12(texCoord0 * 33.352 + GameTime * 70));
+        staticColor = vec3(hash12(texCoord0 * 260.235 + GameTime * 70.0), hash12(texCoord0 * 937.275 + GameTime * 70.0), hash12(texCoord0 * 33.352 + GameTime * 70.0));
         color.rgb = mix(staticColor, color.rgb, StaticTimer);
     }
 

@@ -35,13 +35,13 @@ void main() {
     float dist = viewToPlayerSpace(Position).z;
 
     #ifdef WARP
-        dist *= 0.02 * sin(warpAngle * 200);
+        dist *= 0.02 * sin(warpAngle * 200.0);
     #else
-        dist *= 0;
+        dist *= 0.0;
     #endif
-    pos -= vec3(0.5, 21.5, 0);
+    pos -= vec3(0.5, 21.5, 0.0);
     pos = vec3((pos.x*cos(dist)) - (pos.y * sin(dist)),(pos.y  * cos(dist)) + (pos.x * sin(dist)),pos.z);
-    pos += vec3(0.5, 21.5, 0);
+    pos += vec3(0.5, 21.5, 0.0);
 
     pos = vec4(vec4(pos - cameraPos, 1.0) * VeilCamera.IViewMat).xyz;
     gl_Position = ProjMat * ModelViewMat * vec4(pos, 1.0);

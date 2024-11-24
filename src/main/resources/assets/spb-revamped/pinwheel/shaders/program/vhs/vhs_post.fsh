@@ -47,10 +47,10 @@ void main() {
     vec3 positionVS = viewPosFromDepthSample(depth, uv);
     float worldDepth = length(positionVS);
 
-    vec4 blur2 = vec4(0);
-    const float kernalSize2 = 11;
-    const float halfSize2 = 5;
-    const float coeff2 = 1 / (kernalSize2 * kernalSize2);
+    vec4 blur2 = vec4(0.0);
+    const float kernalSize2 = 11.0;
+    const float halfSize2 = 5.0;
+    const float coeff2 = 1.0 / (kernalSize2 * kernalSize2);
     const vec2 dx2 = vec2(0.0002, 0.0);
     const vec2 dy2 = vec2(0.0, 0.0002);
     for(float x = -halfSize2; x<= halfSize2; x++){
@@ -60,10 +60,10 @@ void main() {
     }
 
     //Motion Blur
-    vec4 blur3 = vec4(0);
-    const float kernalSize3 = 11;
-    const float coeff3 = 1 / (kernalSize3 * kernalSize3);
-    for(float x = -1; x <= 1; x += coeff3){
+    vec4 blur3 = vec4(0.0);
+    const float kernalSize3 = 11.0;
+    const float coeff3 = 1.0 / (kernalSize3 * kernalSize3);
+    for(float x = -1.0; x <= 1.0; x += coeff3){
         blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(Velocity.x * x, Velocity.y * x) * 0.04) * 0.5;
     }
 
@@ -74,39 +74,39 @@ void main() {
         fragColor *= viginette+0.4;
 
     }
-    else if(uv.y > 2*uv.x-uv.y && uv.x > 1.0 || uv.x > 2*uv.y-uv.x && uv.x < 0.0 ||  uv.y > -2*uv.x-uv.y+2 && uv.x < 0.0 || uv.y < -2*uv.x-uv.y+2 && uv.x > 1.0 ){
+    else if(uv.y > 2.0*uv.x-uv.y && uv.x > 1.0 || uv.x > 2.0*uv.y-uv.x && uv.x < 0.0 ||  uv.y > -2.0*uv.x-uv.y+2.0 && uv.x < 0.0 || uv.y < -2.0*uv.x-uv.y+2.0 && uv.x > 1.0 ){
         uv = 2*uv-1;
 
-        float disty = abs(distance(uv.y, 0)-1.5);
+        float disty = abs(distance(uv.y, 0.0)-1.5);
         fragColor = vec4(vec3(disty),1.0f)-0.35;
 
-        uv = uv/2 + 0.5;
+        uv = uv/2.0 + 0.5;
         fragColor *= viginette+0.3;
     }
     else if(uv.x < 0 || uv.x > 1){
-        uv = 2*uv-1;
+        uv = 2.0*uv-1.0;
 
-        float distx = abs(distance(uv.x, 0)-1.5);
+        float distx = abs(distance(uv.x, 0.0)-1.5);
         fragColor = vec4(vec3(distx),1.0f)-0.35;
 
-        uv = uv/2 + 0.5;
+        uv = uv/2.0 + 0.5;
         fragColor *= viginette+0.3;
     }
     else if(uv.y < 0.0f || uv.y > 1.0f){
-        uv = 2*uv-1;
+        uv = 2.0*uv-1;
 
-        float disty = abs(distance(uv.y, 0)-1.5);
+        float disty = abs(distance(uv.y, 0.0)-1.5);
         fragColor = vec4(vec3(disty),1.0f)-0.35;
 
-        uv = uv/2 + 0.5;
+        uv = uv/2.0 + 0.5;
         fragColor *= viginette+0.3;
     }else {
         if(youCantEscape == 0){
-            fragColor = (blur2 + blur3) / 2;
+            fragColor = (blur2 + blur3) / 2.0;
         } else {
-            vec2 uv2 = vec2(uv.x + octave(uv.y + GameTime * 2000) * 0.01, uv.y);
+            vec2 uv2 = vec2(uv.x + octave(uv.y + GameTime * 2000.0) * 0.01, uv.y);
 
-            vec2 offset = uv2 + ((hash12(uv2 * 260.23535 + GameTime * 70)) * 0.005) + ((hash12(vec2(GameTime * 4562))) * 0.01);
+            vec2 offset = uv2 + ((hash12(uv2 * 260.23535 + GameTime * 70.0)) * 0.005) + ((hash12(vec2(GameTime * 4562.0))) * 0.01);
 
             float red = texture(NoEscape, offset + 0.001).r;
             float green = texture(NoEscape, offset - 0.001).g;
@@ -118,9 +118,9 @@ void main() {
 
         //VHS POSST EFFECTS
         fragColor.rgb = rgb2yuv(fragColor.rgb);
-        fragColor.rgb += (fragColor.rgb * vec3((hash12(uv * 260.23535 + GameTime * 70) + hash12(uv * 737.36346 + GameTime * 100)) * 2.0 - 1.0)) * 0.2;
-        fragColor.r += step(0.99994, (hash12(uv * 260.23535 + GameTime * 70))) * 10;
-        vec2 vhsNoise = texture(VhsNoise, vec2(uv.x - GameTime * 3000, uv.y + GameTime * 5000)).gb * 0.1;
+        fragColor.rgb += (fragColor.rgb * vec3((hash12(uv * 260.23535 + GameTime * 70.0) + hash12(uv * 737.36346 + GameTime * 100.0)) * 2.0 - 1.0)) * 0.2;
+        fragColor.r += step(0.99994, (hash12(uv * 260.23535 + GameTime * 70.0))) * 10.0;
+        vec2 vhsNoise = texture(VhsNoise, vec2(uv.x - GameTime * 3000.0, uv.y + GameTime * 5000.0)).gb * 0.1;
         fragColor.gb += vec2(vhsNoise.x * 0.9, vhsNoise.y * 0.9) * 0.2;
         fragColor.rgb = yuv2rgb(fragColor.rgb);
     }

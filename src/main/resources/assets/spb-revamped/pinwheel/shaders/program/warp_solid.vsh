@@ -23,7 +23,6 @@ out vec2 texCoord2;
 out vec4 lightmapColor;
 out vec3 normal;
 
-const vec4 plane = vec4(0, -1, 0, 7);
 
 void main() {
     vec3 cameraPos = VeilCamera.CameraPosition;
@@ -35,22 +34,20 @@ void main() {
 
 
     #ifdef WARP
-    dist *= 0.02 * sin(warpAngle * 200);
+    dist *= 0.02 * sin(warpAngle * 200.0);
     #else
     dist *= 0;
     #endif
-    pos -= vec3(0.5, 21, 0);
+    pos -= vec3(0.5, 21.0, 0.0);
 	pos = vec3((pos.x*cos(dist)) - (pos.y * sin(dist)),(pos.y  * cos(dist)) + (pos.x * sin(dist)),pos.z);
-    pos += vec3(0.5, 21, 0);
+    pos += vec3(0.5, 21.0, 0.0);
 
     pos = pos - cameraPos;
     gl_Position = ProjMat * ModelViewMat * vec4(pos, 1.0);
 
-    //gl_ClipDistance[0] = dot(vec4(Position, 1.0), plane);
-
     vertexColor = Color;
     texCoord0 = UV0;
     texCoord2 = minecraft_sample_lightmap_coords(UV2);
-    lightmapColor = pow(texture(Sampler2, texCoord2), vec4(1));
+    lightmapColor = pow(texture(Sampler2, texCoord2), vec4(1.0));
     normal = NormalMat * Normal;
 }
