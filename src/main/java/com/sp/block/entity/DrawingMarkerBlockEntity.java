@@ -26,6 +26,8 @@ public class DrawingMarkerBlockEntity extends BlockEntity {
         int rand2 = random.nextBetween(1, 10);
         if(!world.isClient){
             if(world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+                world.removeBlockEntity(pos);
+                world.getWorldChunk(pos).blockEntityNbts.remove(pos);
                 if(rand2 == 1 && !blockState.get(DrawingMarker.TYPE)) {
                     switch (rand) {
                         case 2:
