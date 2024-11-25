@@ -318,7 +318,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
             ServerWorld level1 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL1_WORLD_KEY);
 
-            if (this.player.getPos().getY() <= 11) {
+            if (this.player.getPos().getY() <= 11 && this.player.isOnGround()) {
                 if (!this.isTeleporting() && !this.readyForLevel1) {
                     for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
                         if (players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
@@ -344,7 +344,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         else if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
             ServerWorld level2 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL2_WORLD_KEY);
 
-            if (this.player.getPos().getY() <= 12.5) {
+            if (this.player.getPos().getY() <= 12.5 && this.player.isOnGround()) {
                 if (!this.isTeleporting() && !this.readyForLevel2) {
                     for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
                         if (players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {

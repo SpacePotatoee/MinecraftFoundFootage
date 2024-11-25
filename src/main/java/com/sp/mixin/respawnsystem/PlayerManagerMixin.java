@@ -25,8 +25,6 @@ import java.util.Optional;
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
 
-    @Unique int yOffset = 0;
-
     @Shadow @Final private MinecraftServer server;
 
     @Unique ServerPlayerEntity targetPlayer;
@@ -39,7 +37,7 @@ public class PlayerManagerMixin {
     @Redirect(method = "respawnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;getSpawnPointPosition()Lnet/minecraft/util/math/BlockPos;"))
     private BlockPos setSpawnPointPos(ServerPlayerEntity instance){
         if(BackroomsLevels.isInBackrooms(targetPlayer.getWorld().getRegistryKey())) {
-            return targetPlayer.getLastDeathPos().isPresent() ? targetPlayer.getLastDeathPos().get().getPos().add(0, yOffset, 0) : instance.getSpawnPointPosition();
+            return targetPlayer.getLastDeathPos().isPresent() ? targetPlayer.getLastDeathPos().get().getPos() : instance.getSpawnPointPosition();
         }
         return instance.getSpawnPointPosition();
     }
@@ -60,7 +58,7 @@ public class PlayerManagerMixin {
     private Optional<Vec3d> respawn(ServerWorld world, BlockPos pos, float angle, boolean forced, boolean alive){
         if(BackroomsLevels.isInBackrooms(targetPlayer.getWorld().getRegistryKey())) {
             if (targetPlayer.getLastDeathPos().isPresent()) {
-                return Optional.of(targetPlayer.getLastDeathPos().get().getPos().add(0, yOffset, 0).toCenterPos());
+                return Optional.of(targetPlayer.getLastDeathPos().get().getPos().toCenterPos());
             }
         }
         return PlayerEntity.findRespawnPosition(world, pos, angle, forced, alive);
@@ -84,9 +82,14 @@ public class PlayerManagerMixin {
 
             if (currentWorld != null) {
                 if (lastDeathPos.isPresent()) {
+                    BlockPos pos = lastDeathPos.get().getPos();
+
+                    if (pos.getY() < 0){
+                        pos = BackroomsLevels.getCurrentLevelsOrigin(currentWorld.getRegistryKey());
+                    }
 
                     args.set(0, currentWorld.getRegistryKey());
-                    args.set(1, lastDeathPos.get().getPos().add(0, yOffset, 0));
+                    args.set(1, pos);
                     args.set(2, args.get(2));
                     args.set(3, args.get(3));
                     args.set(4, args.get(4));

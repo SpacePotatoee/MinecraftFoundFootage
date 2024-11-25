@@ -77,7 +77,7 @@ void main() {
 		vec3 rd = normalize(viewToPlayerSpace(viewPos));
 		float travDist = 0.0;
 		float hitDist = 0.0;
-		vec4 col = vec4(0);
+		vec4 col = vec4(0.0);
 		bool inside = false;
 		float fog = 0.0;
 		vec3 p;
