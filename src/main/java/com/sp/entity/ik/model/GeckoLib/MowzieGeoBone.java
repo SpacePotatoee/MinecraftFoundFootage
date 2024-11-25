@@ -213,19 +213,21 @@ public class MowzieGeoBone extends GeoBone implements BoneAccessor /* only the i
         if (facing != null) {
             Vec3d newTargetVecWorldSpace = MathUtil.rotatePointOnAPlaneAround(facing, entity.getPos(), -180 + entity.getBodyYaw(), new Vec3d(0, 1, 0));
 
+            Vector3f forward = new Vector3f(facing.toVector3f());
+            forward.sub(to.toVector3f()).normalize();
+
             Quaternionf q;
             Vector3d p1 = MathUtil.toVector3d(newModelPosWorldSpace);
             Vector3d p2 = MathUtil.toVector3d(newTargetVecWorldSpace);
-            Vector3d desiredDir = p2.sub(p1, new Vector3d()).normalize();
 
-            Vector3d startingDir = new Vector3d(0, 0, 1);
+            Vector3f desiredDir = newTargetVecWorldSpace.toVector3f().sub(newModelPosWorldSpace.toVector3f(),  new Vector3f()).normalize();
+
+            Vector3f startingDir = new Vector3f(0, 0, 1);
             double dot = desiredDir.dot(startingDir);
             if (dot > 0.9999999) {
                 q = new Quaternionf();
             } else {
-                Vector3d cross = startingDir.cross(desiredDir);
-                double w = Math.sqrt(desiredDir.lengthSquared() * startingDir.lengthSquared()) + dot;
-                q = new Quaternionf(cross.x, cross.y, cross.z, w).normalize();
+                q = new Quaternionf().rotateTo(new Vector3f(0,0,1), desiredDir).normalize();
             }
             xformOverride.rotate(q);
         }
