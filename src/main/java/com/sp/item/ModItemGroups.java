@@ -2,6 +2,7 @@ package com.sp.item;
 
 import com.sp.SPBRevamped;
 import com.sp.init.ModBlocks;
+import com.sp.init.ModItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,8 @@ public class ModItemGroups {
             new Identifier(SPBRevamped.MOD_ID, "spbrevamped"),
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.spbrevamped"))
                     .icon(() -> new ItemStack(ModBlocks.WallBlock)).entries((displayContext, entries) -> {
+                        entries.add(ModItems.BACKSHROOM);
+                        entries.add(ModItems.CANNED_FOOD);
                         entries.add(ModBlocks.WallBlock);
                         entries.add(ModBlocks.WallBlock2);
                         entries.add(ModBlocks.CeilingTile);

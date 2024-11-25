@@ -1,4 +1,7 @@
 {
+  "itemgroup.spbrevamped": "Backrooms",
+
+
   "block.spb-revamped.wall_block": "Wallpaper Block",
   "block.spb-revamped.wall_block_2": "Manilla Wallpaper Block",
   "block.spb-revamped.ceiling_tile": "Ceiling Tile",
@@ -50,6 +53,10 @@
   "block.spb-revamped.wall_small_2": "Wall Drawing Face",
   "block.spb-revamped.wall_drawing_door": "Wall Drawing Door",
   "block.spb-revamped.wall_drawing_window": "Wall Drawing Window",
+
+  "item.spb-revamped.backshroom": "Backshrooms",
+  "item.spb-revamped.canned_food": "Canned Food",
+
 
 
   "spb-revamped.midnightconfig.category.cameraStuff": "Camera Settings",
