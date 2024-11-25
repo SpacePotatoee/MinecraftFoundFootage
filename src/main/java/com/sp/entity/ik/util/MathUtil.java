@@ -20,7 +20,7 @@ public class MathUtil {
     }
 
     public static Vec3d getFlatRotationVector(Entity entity) {
-        return getFlatRotationVector(entity.getYaw());
+        return getFlatRotationVector(entity.getBodyYaw());
     }
 
     public static Vec3d getFlatRotationVector(double yRot) {
@@ -34,7 +34,7 @@ public class MathUtil {
     }
 
     public static Vec3d getOpposingFlatRotationVector(Entity entity) {
-        return getFlatRotationVector(entity.getYaw() - 180);
+        return getFlatRotationVector(entity.getBodyYaw() - 180);
     }
 
     public static Vec3d getRotation(Vec3d base, Vec3d target) {
@@ -133,7 +133,7 @@ public class MathUtil {
     }
 
     public static Vec3d getClosestNormalRelativeToEntity(Vec3d basePoint, Vec3d v2, Vec3d v3, Entity entity) {
-        Vec3d referencePoint = getFlatRotationVector(entity.getYaw() + 90);
+        Vec3d referencePoint = getFlatRotationVector(entity.getBodyYaw() + 90);
         Vec3d normal = getNormalClosestTo(basePoint, v2, v3, basePoint.add(referencePoint.multiply(100)));
         return normal;
     }

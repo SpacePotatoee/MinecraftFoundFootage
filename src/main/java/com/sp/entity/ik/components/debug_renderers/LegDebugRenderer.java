@@ -65,7 +65,7 @@ public class LegDebugRenderer<E extends IKAnimatable<E>, C extends IKChain> exte
                     limbOffset = limbOffset.add(0, 0, component.getSettings().stepInFront() * component.getScale());
                 }
 
-                limbOffset = limbOffset.rotateY((float) Math.toRadians(-entity.getYaw()));
+                limbOffset = limbOffset.rotateY((float) Math.toRadians(-entity.getBodyYaw()));
 
                 Vec3d rotatedLimbOffset = limbOffset.add(entity.getPos());
 

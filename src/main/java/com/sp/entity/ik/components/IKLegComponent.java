@@ -134,7 +134,7 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
                 limbOffset = limbOffset.add(0, 0, this.settings.stepInFront() * this.getScale());
             }
 
-            limbOffset = limbOffset.rotateY((float) Math.toRadians(-entity.getYaw()));
+            limbOffset = limbOffset.rotateY((float) Math.toRadians(-entity.getBodyYaw()));
 
             Vec3d rotatedLimbOffset = limbOffset.add(pos);
 

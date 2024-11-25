@@ -5,11 +5,10 @@ import com.sp.entity.ik.util.MathUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3d;
+import org.joml.*;
 import software.bernie.geckolib.cache.object.GeoBone;
 
+import java.lang.Math;
 import java.util.List;
 
 /**
@@ -207,19 +206,19 @@ public class MowzieGeoBone extends GeoBone implements BoneAccessor /* only the i
 
         Matrix4f xformOverride = new Matrix4f();
 
-        Vec3d newModelPosWorldSpace = MathUtil.rotatePointOnAPlaneAround(to, entity.getPos(), -180 + entity.getYaw(), new Vec3d(0, 1, 0));
+        Vec3d newModelPosWorldSpace = MathUtil.rotatePointOnAPlaneAround(to, entity.getPos(), -180 + entity.getBodyYaw(), new Vec3d(0, 1, 0));
         // Translation
         xformOverride = xformOverride.translate((float) newModelPosWorldSpace.x, (float) newModelPosWorldSpace.y, (float) newModelPosWorldSpace.z);
 
         if (facing != null) {
-            Vec3d newTargetVecWorldSpace = MathUtil.rotatePointOnAPlaneAround(facing, entity.getPos(), -180 + entity.getYaw(), new Vec3d(0, 1, 0));
+            Vec3d newTargetVecWorldSpace = MathUtil.rotatePointOnAPlaneAround(facing, entity.getPos(), -180 + entity.getBodyYaw(), new Vec3d(0, 1, 0));
 
             Quaternionf q;
             Vector3d p1 = MathUtil.toVector3d(newModelPosWorldSpace);
             Vector3d p2 = MathUtil.toVector3d(newTargetVecWorldSpace);
             Vector3d desiredDir = p2.sub(p1, new Vector3d()).normalize();
 
-            Vector3d startingDir = new Vector3d(0, -1, 0);
+            Vector3d startingDir = new Vector3d(0, 0, 1);
             double dot = desiredDir.dot(startingDir);
             if (dot > 0.9999999) {
                 q = new Quaternionf();

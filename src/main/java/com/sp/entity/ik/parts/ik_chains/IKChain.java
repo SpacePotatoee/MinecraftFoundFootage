@@ -29,7 +29,7 @@ public class IKChain {
     }
 
     public void solve(Vec3d target, Vec3d base) {
-        target = base.add(0, this.getMaxLength() * 2, 0);
+//        target = base.add(0, this.getMaxLength() * 2, 0);
         for (int iteration = 0; iteration < MAX_ITERATIONS; iteration++) {
             if (this.isTargetToFar(target)) {
                 this.iterate(target, base);

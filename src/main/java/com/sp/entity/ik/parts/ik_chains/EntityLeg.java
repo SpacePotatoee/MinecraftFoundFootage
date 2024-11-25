@@ -20,7 +20,7 @@ public class EntityLeg extends AngleConstraintIKChain {
 
     @Override
     public Vec3d getReferencePoint() {
-        Vec3d referencePoint = getFlatRotationVector(this.entity.getYaw() + 90);
+        Vec3d referencePoint = getFlatRotationVector(this.entity.getBodyYaw() + 90);
         return this.getFirst().getPosition().add(referencePoint.multiply(100));
     }
 
@@ -30,14 +30,14 @@ public class EntityLeg extends AngleConstraintIKChain {
     }
 
     public Vec3d getDownNormalOnLegPlane() {
-        Vec3d baseRotated = this.getFirst().getPosition().rotateY(-this.entity.getYaw());
-        Vec3d targetRotated = this.endJoint.rotateY(-this.entity.getYaw());
+        Vec3d baseRotated = this.getFirst().getPosition().rotateY(-this.entity.getBodyYaw());
+        Vec3d targetRotated = this.endJoint.rotateY(-this.entity.getBodyYaw());
 
         Vec3d flatRotatedBase = new Vec3d(baseRotated.x, baseRotated.y, 0);
         Vec3d flatRotatedTarget = new Vec3d(targetRotated.x, targetRotated.y, 0);
 
-        Vec3d flatBase = flatRotatedBase.rotateY(this.entity.getYaw());
-        Vec3d flatTarget = flatRotatedTarget.rotateY(this.entity.getYaw());
+        Vec3d flatBase = flatRotatedBase.rotateY(this.entity.getBodyYaw());
+        Vec3d flatTarget = flatRotatedTarget.rotateY(this.entity.getBodyYaw());
 
         return flatTarget.subtract(flatBase).normalize();
     }

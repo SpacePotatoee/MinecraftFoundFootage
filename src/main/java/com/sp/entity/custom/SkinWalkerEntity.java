@@ -75,10 +75,10 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, IKAnim
                         new ServerLimb(-2, 0, 2),
                         new ServerLimb(2, 0, -2),
                         new ServerLimb(-2, 0, -2)),
-                new TargetReachingIKChain(new Segment.Builder().length(0.7).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(0.5).build()),
-                new TargetReachingIKChain(new Segment.Builder().length(0.7).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(0.5).build()),
-                new TargetReachingIKChain(new Segment.Builder().length(0.7).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(0.5).build()),
-                new TargetReachingIKChain(new Segment.Builder().length(0.7).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(0.5).build())
+                new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
+                new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
+                new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
+                new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build())
         ));
     }
 

@@ -82,14 +82,14 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 
         float pitch = MathHelper.lerp(partialTick, entity.prevPitch, entity.getPitch());
 
-        Vec3d vec3d = this.getPositionOffset(entity, partialTick);
-        double e = entity.getY() + vec3d.getY();
-        poseStack.push();
-        poseStack.translate(0, e, 0);
-        poseStack.pop();
+//        Vec3d vec3d = this.getPositionOffset(entity, partialTick);
+//        double e = entity.getY() + vec3d.getY();
+//        poseStack.push();
+//        poseStack.translate(0, e, 0);
+//        poseStack.pop();
 
         float animationProgress = this.getAnimationProgress(entity, partialTick);
-        this.animateModel(entity, bufferSource, poseStack, pos, speed, animationProgress, -yaw, -pitch, partialTick);
+//        this.animateModel(entity, bufferSource, poseStack, pos, speed, animationProgress, -yaw, -pitch, partialTick);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
@@ -163,40 +163,30 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
                     if(this.pointA == null) {
                         this.pointA = new PhysicsPoint(new Vec3d(vector3d.x, vector3d.y, vector3d.z), true);
                     }
-                    this.pointA.set(vector3d);
+
+                    PhysicsPoint pointA = new PhysicsPoint(new Vec3d(vector3d.x, vector3d.y, vector3d.z), true);
+
+//                    this.pointA.set(vector3d);
 
                     if(this.pointB == null) {
                         this.pointB = new PhysicsPoint(Vec3d.ZERO, Vec3d.ZERO, false);
                     }
 
-                    if(this.stick == null) {
-                        this.stick = new PhysicsStick(pointA, this.pointB, 1);
-                    }
+                    PhysicsStick stick = new PhysicsStick(pointA, this.pointB, 1);
 
-//                    this.pointB.updatePoint();
-//                    stick.updateSticks();
+//                    if(this.stick == null) {
+//                        this.stick = new PhysicsStick(pointA, this.pointB, 1);
+//                    }
 
-//                    Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-//                    VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getDebugLineStrip(20.0));
+                    this.pointB.updatePoint();
+                    stick.updateSticks();
 
                     Vec2f angles = this.calculateAngles(vector3d.x, vector3d.y, vector3d.z, this.pointB.getX(), this.pointB.getY(), this.pointB.getZ(), yaw);
-
-//                    float dirX = (float) (this.pointB.getX() - vector3d.x);
-//                    float dirY = (float) (this.pointB.getY() - vector3d.y);
-//                    float dirZ = (float) (this.pointB.getZ() - vector3d.z);
-//
-//                    Quaternionf quaternionf = new Quaternionf(new AxisAngle4f((float) Math.toRadians(90), new Vector3f(0,0,1).rotateY((float) Math.toRadians(yaw + 90))));
-//                    Vector3f normalizedDir = new Vector3f(dirX, dirY, dirZ).rotate(quaternionf).normalize();
 
 
 
                     right_arm.setRotX((float) (angles.x + Math.toRadians(50)));
                     right_arm.setRotZ((float) (angles.y - Math.toRadians(90)));
-
-//                    vertexConsumer.vertex(matrix4f, (float) (0 - cameraPos.x), (float) (0 - cameraPos.y), (float) (0 - cameraPos.z)).color(0, 0, 0, 0.0f).next();
-//                    vertexConsumer.vertex(matrix4f, (float) (0 - cameraPos.x), (float) (0 - cameraPos.y), (float) (0 - cameraPos.z)).color(0, 0, 0, 1.0f).next();
-//                    vertexConsumer.vertex(matrix4f, (float) (normalizedDir.x - cameraPos.x), (float) (normalizedDir.y - cameraPos.y), (float) (normalizedDir.z - cameraPos.z)).color(1, 0, 0, 1.0f).next();
-//                    vertexConsumer.vertex(matrix4f, (float) (normalizedDir.x - cameraPos.x), (float) (normalizedDir.y - cameraPos.y), (float) (normalizedDir.z - cameraPos.z)).color(1, 0, 0, 0.0f).next();
 
                 }
             }

@@ -42,8 +42,8 @@ public interface IKDebugRenderer<E extends IKAnimatable<E>, C extends IKModelCom
     }
 
     static void drawBox(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Vec3d targetPos, Entity entity, int red, int green, int blue, int alpha) {
-        Vec3d offsetEntityPos = entity.getPos().add(0.1, 0.1, 0.1);
-        DebugRenderer.drawBox(matrices, vertexConsumers, Box.from(targetPos).contract(0.8, 0.8, 0.8).offset(-offsetEntityPos.x, -offsetEntityPos.y, -offsetEntityPos.z), (float) red / 255, (float) green / 255, (float) blue / 255, (float) alpha / 255);
+        Vec3d offsetEntityPos = entity.getPos().add(0.5, 0.5, 0.5);
+        DebugRenderer.drawBox(matrices, vertexConsumers, Box.from(targetPos).contract(0.65, 0.65, 0.65).offset(-offsetEntityPos.x, -offsetEntityPos.y, -offsetEntityPos.z), (float) red / 255, (float) green / 255, (float) blue / 255, (float) alpha / 255);
     }
 
     static void drawLine(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Vec3d camera, Vec3d startPos, Vec3d targetPos, int red, int green, int blue, int alpha) {
