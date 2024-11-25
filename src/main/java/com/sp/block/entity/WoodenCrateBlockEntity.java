@@ -90,7 +90,7 @@ public class WoodenCrateBlockEntity extends LootableContainerBlockEntity {
 
     @Override
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
-        return new GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X1, syncId, playerInventory, this, 1);
+        return GenericContainerScreenHandler.createGeneric9x3(syncId, playerInventory, this);
     }
 
     @Override
