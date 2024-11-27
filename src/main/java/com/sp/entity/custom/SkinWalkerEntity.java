@@ -69,12 +69,14 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, IKAnim
         this.addComponent(new IKLegComponent<>(
                 new IKLegComponent.LegSetting.Builder()
                         .maxDistance(1.5)
-                        .stepInFront(1)
-                        .movementSpeed(0.4).build(),
-                List.of(new ServerLimb(2, 0, 2),
-                        new ServerLimb(-2, 0, 2),
-                        new ServerLimb(2, 0, -2),
-                        new ServerLimb(-2, 0, -2)),
+                        .stepInFront(0.1)
+                        .movementSpeed(0.5)
+                        .maxStandingStillDistance(0.1)
+                        .standStillCounter(20).build(),
+                List.of(new ServerLimb(1.5, 0, 2),
+                        new ServerLimb(-1.5, 0, 2),
+                        new ServerLimb(1.5, 0, -2),
+                        new ServerLimb(-1.5, 0, -2)),
                 new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
                 new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
                 new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
@@ -109,7 +111,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, IKAnim
     protected void initGoals() {
         this.targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
 //        this.goalSelector.add(1, new WanderAroundGoal(this, 1.0, 1));
-//        this.goalSelector.add(1, new FollowClosestPlayerGoal(this, 5, 15, 1.0f));
+        this.goalSelector.add(1, new FollowClosestPlayerGoal(this, 5, 15, 1.0f));
 //        this.goalSelector.add(2, new ActNaturalGoal(this));
 //        this.goalSelector.add(2, new TalkInChatGoal(this, 10));
     }

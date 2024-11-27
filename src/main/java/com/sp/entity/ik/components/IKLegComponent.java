@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
@@ -37,8 +38,11 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
     }
 
     private static boolean hasMovedOverLastTick(PathAwareEntity entity) {
-        Vec3d oldPos = new Vec3d(entity.prevX, entity.prevY, entity.prevZ);
-        return !entity.getPos().equals(oldPos);
+        Vec3d difference = entity.getVelocity();
+        float yaw = entity.prevHeadYaw;
+        float pitch = entity.prevPitch;
+        Vec2f rotation = new Vec2f(entity.getPitch() - pitch, entity.getHeadYaw() - yaw);
+        return difference.x != 0 || difference.z != 0 || rotation.x != 0 || Math.abs(rotation.y) >= 0.01;
     }
 
     public static BlockHitResult rayCastToGround(Vec3d rotatedLimbOffset, Entity entity, RaycastContext.FluidHandling fluid) {

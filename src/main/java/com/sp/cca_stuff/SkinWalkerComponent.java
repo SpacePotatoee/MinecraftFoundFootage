@@ -1,11 +1,18 @@
 package com.sp.cca_stuff;
 
 import com.sp.entity.custom.SkinWalkerEntity;
+import com.sp.entity.ik.components.IKAnimatable;
+import com.sp.entity.ik.components.IKLegComponent;
+import com.sp.entity.ik.parts.Segment;
+import com.sp.entity.ik.parts.ik_chains.IKChain;
+import com.sp.entity.ik.parts.ik_chains.TargetReachingIKChain;
+import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 
+import java.util.List;
 import java.util.UUID;
 
 public class SkinWalkerComponent implements AutoSyncedComponent, ServerTickingComponent {
@@ -21,6 +28,23 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ServerTickingCo
     private boolean beginReveal;
     private int suspicion;
 
+    private final IKLegComponent<? extends IKChain, ? extends IKAnimatable<?>> IKComponent = new IKLegComponent<>(
+            new IKLegComponent.LegSetting.Builder()
+                    .maxDistance(1.5)
+                    .stepInFront(0.1)
+                    .movementSpeed(0.5)
+                    .maxStandingStillDistance(0.1)
+                    .standStillCounter(20).build(),
+            List.of(new ServerLimb(1.5, 0, 2),
+                    new ServerLimb(-1.5, 0, 2),
+                    new ServerLimb(1.5, 0, -2),
+                    new ServerLimb(-1.5, 0, -2)),
+            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
+            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
+            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
+            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build())
+    );
+
     public SkinWalkerComponent(SkinWalkerEntity entity){
         this.entity = entity;
         this.isSneaking = false;
@@ -32,6 +56,10 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ServerTickingCo
         this.beginReveal = false;
         this.nearestTarget = null;
         this.suspicion = 0;
+    }
+
+    public IKLegComponent getIKComponent() {
+        return IKComponent;
     }
 
     public int getSuspicion() {return suspicion;}

@@ -1,9 +1,12 @@
 package com.sp.entity.client;
 
 import com.sp.SPBRevamped;
+import com.sp.cca_stuff.InitializeComponents;
+import com.sp.cca_stuff.SkinWalkerComponent;
 import com.sp.entity.client.debug.IKDebugRenderLayer;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.ik.model.GeckoLib.MowzieGeoBone;
+import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import com.sp.render.physics.PhysicsPoint;
 import com.sp.render.physics.PhysicsStick;
 import net.minecraft.client.MinecraftClient;
@@ -103,28 +106,6 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
     }
 
     protected void animateModel(SkinWalkerEntity entity, VertexConsumerProvider vertexConsumers, MatrixStack matrices, float limbPos, float limbSpeed, float animationProgress, float yaw, float pitch, float partialTicks) {
-//        Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
-
-//        if(camera != null) {
-//            Vec3d cameraPos = camera.getPos();
-//            PhysicsPoint pointA = new PhysicsPoint(new Vec3d(48 + MathHelper.sin(RenderSystem.getShaderGameTime() * 2000f) * 5, 78, 494), new Vec3d(48 + MathHelper.sin(RenderSystem.getShaderGameTime() * 2000f) * 5, 78, 494), true);
-//            if(this.pointB == null){
-//                this.pointB = new PhysicsPoint(Vec3d.ZERO, Vec3d.ZERO, false);
-//            }
-//            PhysicsStick stick = new PhysicsStick(pointA, this.pointB, 3);
-//
-//            this.pointB.updatePoint();
-//            stick.updateSticks();
-//            Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-//            VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getDebugLineStrip(20.0));
-//
-//            vertexConsumer.vertex(matrix4f, (float) (pointA.x - cameraPos.x), (float) (pointA.y - cameraPos.y), (float) (pointA.z - cameraPos.z)).color(1, 0, 0, 0.0f).next();
-//            vertexConsumer.vertex(matrix4f, (float) (pointA.x - cameraPos.x), (float) (pointA.y - cameraPos.y), (float) (pointA.z - cameraPos.z)).color(1, 0, 0, 1.0f).next();
-//            vertexConsumer.vertex(matrix4f, (float) (this.pointB.getX() - cameraPos.x), (float) (this.pointB.getY() - cameraPos.y), (float) (this.pointB.getZ() - cameraPos.z)).color(1, 0, 0, 1.0f).next();
-//            vertexConsumer.vertex(matrix4f, (float) (this.pointB.getX() - cameraPos.x), (float) (this.pointB.getY() - cameraPos.y), (float) (this.pointB.getZ() - cameraPos.z)).color(1, 0, 0, 0.0f).next();
-//        }
-
-
         Optional<GeoBone> headBone = this.model.getBone("head");
         Optional<GeoBone> bodyBone = this.model.getBone("body");
         Optional<GeoBone> rightArm = this.model.getBone("right_arm");
@@ -141,55 +122,72 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
             GeoBone right_leg = rightLeg.get();
             GeoBone left_leg = leftLeg.get();
 
-            if(camera != null) {
-                Vec3d cameraPos = camera.getPos();
+            SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(entity);
+
+//            Vector3f avgPos = new Vector3f(0,0,0);
+//            for(Object endPoint : component.getIKComponent().endPoints){
+//                avgPos.add(((ServerLimb)endPoint).pos.toVector3f());
+//            }
+//            avgPos = avgPos.mul(0.25f);
+//            Vector4f vector4f = new Vector4f(avgPos.x, avgPos.y, avgPos.z, 1.0f).mul(body.getModelSpaceMatrix());
+
+//            System.out.println(avgPos);
+
+//            Matrix4f newWorldSpaceMatrix = new Matrix4f().translate(entity.getLerpedPos(partialTicks).toVector3f()).translate(avgPos.x, avgPos.y + 1, avgPos.z);
+//            System.out.println(newWorldSpaceMatrix);
+//            body.setPosY(vector4f.y);
+//            body.setWorldSpaceMatrix(newWorldSpaceMatrix);
 
 
-                if(this.prevWorldX == null || this.prevWorldY == null || this.prevWorldZ == null) {
-                    this.prevWorldX = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f()).x;
-                    this.prevWorldY = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f()).y;
-                    this.prevWorldZ = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f()).z;
-                }
-
-                Vector3d vector3d = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f());
-
-//                    Vector3d vector3d = right_arm.getWorldPosition();
-
-//                    double x = vector3d.x;
-//                    double y = vector3d.y;
-//                    double z = vector3d.z;
-
-                if (right_arm.getWorldPosition().x != 0 && right_arm.getWorldPosition().y != 0 && right_arm.getWorldPosition().z != 0) {
-                    if(this.pointA == null) {
-                        this.pointA = new PhysicsPoint(new Vec3d(vector3d.x, vector3d.y, vector3d.z), true);
-                    }
-
-                    PhysicsPoint pointA = new PhysicsPoint(new Vec3d(vector3d.x, vector3d.y, vector3d.z), true);
-
-//                    this.pointA.set(vector3d);
-
-                    if(this.pointB == null) {
-                        this.pointB = new PhysicsPoint(Vec3d.ZERO, Vec3d.ZERO, false);
-                    }
-
-                    PhysicsStick stick = new PhysicsStick(pointA, this.pointB, 1);
-
-//                    if(this.stick == null) {
-//                        this.stick = new PhysicsStick(pointA, this.pointB, 1);
+//            if(camera != null) {
+//                Vec3d cameraPos = camera.getPos();
+//
+//
+//                if(this.prevWorldX == null || this.prevWorldY == null || this.prevWorldZ == null) {
+//                    this.prevWorldX = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f()).x;
+//                    this.prevWorldY = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f()).y;
+//                    this.prevWorldZ = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f()).z;
+//                }
+//
+//                Vector3d vector3d = right_arm.getModelPosition().add(entity.getLerpedPos(partialTicks).toVector3f());
+//
+////                    Vector3d vector3d = right_arm.getWorldPosition();
+//
+////                    double x = vector3d.x;
+////                    double y = vector3d.y;
+////                    double z = vector3d.z;
+//
+//                if (right_arm.getWorldPosition().x != 0 && right_arm.getWorldPosition().y != 0 && right_arm.getWorldPosition().z != 0) {
+//                    if(this.pointA == null) {
+//                        this.pointA = new PhysicsPoint(new Vec3d(vector3d.x, vector3d.y, vector3d.z), true);
 //                    }
-
-                    this.pointB.updatePoint();
-                    stick.updateSticks();
-
-                    Vec2f angles = this.calculateAngles(vector3d.x, vector3d.y, vector3d.z, this.pointB.getX(), this.pointB.getY(), this.pointB.getZ(), yaw);
-
-
-
-                    right_arm.setRotX((float) (angles.x + Math.toRadians(50)));
-                    right_arm.setRotZ((float) (angles.y - Math.toRadians(90)));
-
-                }
-            }
+//
+//                    PhysicsPoint pointA = new PhysicsPoint(new Vec3d(vector3d.x, vector3d.y, vector3d.z), true);
+//
+////                    this.pointA.set(vector3d);
+//
+//                    if(this.pointB == null) {
+//                        this.pointB = new PhysicsPoint(Vec3d.ZERO, Vec3d.ZERO, false);
+//                    }
+//
+//                    PhysicsStick stick = new PhysicsStick(pointA, this.pointB, 1);
+//
+////                    if(this.stick == null) {
+////                        this.stick = new PhysicsStick(pointA, this.pointB, 1);
+////                    }
+//
+//                    this.pointB.updatePoint();
+//                    stick.updateSticks();
+//
+//                    Vec2f angles = this.calculateAngles(vector3d.x, vector3d.y, vector3d.z, this.pointB.getX(), this.pointB.getY(), this.pointB.getZ(), yaw);
+//
+//
+//
+//                    right_arm.setRotX((float) (angles.x + Math.toRadians(50)));
+//                    right_arm.setRotZ((float) (angles.y - Math.toRadians(90)));
+//
+//                }
+//            }
 
 //            head.setRotY(yaw * (float) (Math.PI / 180.0));
 //            head.setRotX(pitch * (float) (Math.PI / 180.0));
