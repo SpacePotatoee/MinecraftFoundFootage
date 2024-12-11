@@ -14,12 +14,23 @@
 	"icon": "assets/spb-revamped/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": ["com.sp.SPBRevamped"],
-		"client": ["com.sp.SPBRevampedClient"],
-		"fabric-datagen": ["com.sp.SPBRevampedDataGenerator"],
-		"cardinal-components": ["com.sp.cca_stuff.InitializeComponents"],
+		"main": [
+			"com.sp.SPBRevamped"
+		],
+		"client": [
+			"com.sp.SPBRevampedClient"
+		],
+		"fabric-datagen": [
+			"com.sp.SPBRevampedDataGenerator"
+		],
+		"cardinal-components": [
+			"com.sp.cca_stuff.InitializeComponents"
+		],
 		"modmenu": [
 			"com.sp.init.ModMenuMenu"
+		],
+		"voicechat": [
+			"com.sp.sounds.voicechat.BackroomsVoicechatPlugin"
 		]
 	},
 	"custom": {
@@ -45,7 +56,8 @@
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*",
-		"fabric-key-binding-api-v1": "*"
+		"fabric-key-binding-api-v1": "*",
+		"voicechat": ">=1.20.1-2.5.11"
 	},
 	"suggests": {
 		"mod-menu": "*"

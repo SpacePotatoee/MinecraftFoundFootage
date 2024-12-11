@@ -1,7 +1,9 @@
 package com.sp.init;
 
 import com.sp.SPBRevamped;
+import com.sp.render.ShadowMapRenderer;
 import foundry.veil.api.client.render.VeilRenderBridge;
+import foundry.veil.api.client.render.VeilRenderSystem;
 import net.minecraft.client.render.*;
 import net.minecraft.util.Identifier;
 
@@ -10,11 +12,15 @@ public class RenderLayers extends RenderLayer {
     private static final RenderPhase.ShaderProgram WINDOW = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/window"));
 
     private static final RenderPhase.ShaderProgram CEILING_TILE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/ceilingtile/ceilingtile"));
-    private static final RenderPhase.ShaderProgram CONCRETE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/concrete/concrete"));
-    private static final RenderPhase.ShaderProgram CARPET_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/carpet/carpet"));
     private static final RenderPhase.ShaderProgram CHAIN_FENCE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/chainfence/chainfence"));
     private static final RenderPhase.ShaderProgram BRICK_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/bricks/bricks"));
     private static final RenderPhase.ShaderProgram WOODEN_CRATE = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/crate/crate"));
+    private static final RenderPhase.ShaderProgram CONCRETE = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/concrete/concrete"));
+
+
+    private static final Identifier shadowSolid = new Identifier(SPBRevamped.MOD_ID, "shadowmap/rendertype_solid");
+    private static final Identifier normalCarpet = new Identifier(SPBRevamped.MOD_ID, "pbr/carpet/carpet");
+    public static final RenderPhase.ShaderProgram CARPET_PROGRAM = new RenderPhase.ShaderProgram(RenderLayers::getCarpetProgram);
 
     public static final RenderLayer FLUORESCENT_LIGHT = RenderLayer.of(
             "fluorescent_light",
@@ -49,7 +55,7 @@ public class RenderLayers extends RenderLayer {
             false,
             RenderLayer.MultiPhaseParameters.builder()
                     .lightmap(ENABLE_LIGHTMAP)
-                    .program(CONCRETE_SHADER)
+                    .program(CONCRETE)
                     .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
                     .build(true)
     );
@@ -77,7 +83,7 @@ public class RenderLayers extends RenderLayer {
             false,
             RenderLayer.MultiPhaseParameters.builder()
                     .lightmap(ENABLE_LIGHTMAP)
-                    .program(CARPET_SHADER)
+                    .program(CARPET_PROGRAM)
                     .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
                     .build(true)
     );
@@ -124,6 +130,22 @@ public class RenderLayers extends RenderLayer {
                     .build(true)
     );
 
+    private static net.minecraft.client.gl.ShaderProgram getCarpetProgram(){
+        if(ShadowMapRenderer.isRenderingShadowMap()) {
+            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(shadowSolid);
+            if (shader == null) {
+                return null;
+            }
+            return shader.toShaderInstance();
+        }
+        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(normalCarpet);
+        if (shader == null) {
+            return null;
+        }
+
+        return shader.toShaderInstance();
+    }
+
     public static RenderLayer getConcreteLayer() {
         return CONCRETE_LAYER;
     }
@@ -147,8 +169,6 @@ public class RenderLayers extends RenderLayer {
     public static RenderLayer getWoodenCrateLayer() {
         return WOODEN_CRATE_LAYER;
     }
-
-
 
     public RenderLayers(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, Runnable startAction, Runnable endAction) {
         super(name, vertexFormat, drawMode, expectedBufferSize, hasCrumbling, translucent, startAction, endAction);

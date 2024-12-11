@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.6-SNAPSHOT'
+	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -50,6 +50,18 @@ repositories {
 			includeGroup("com.eliotlash.mclib")
 		}
 	}
+
+	//Simple Voice Chat
+	maven {
+		url = 'https://maven.maxhenkel.de/repository/public'
+	}
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+		content {
+			includeGroup "maven.modrinth"
+		}
+	}
 }
 
 fabricApi {
@@ -92,6 +104,10 @@ dependencies {
 	//GeckoLib
 	modImplementation("software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}")
 	implementation("com.eliotlash.mclib:mclib:20")
+
+	//Simple Voice Chat
+	implementation "de.maxhenkel.voicechat:voicechat-api:2.5.0"
+	modImplementation "maven.modrinth:simple-voice-chat:fabric-${voicechat_version}"
 
 //	implementation "gg.moonflower:molang-compiler:3.1.1.19"
 //	shade "gg.moonflower:molang-compiler:version"

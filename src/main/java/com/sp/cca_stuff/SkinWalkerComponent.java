@@ -8,16 +8,19 @@ import com.sp.entity.ik.parts.ik_chains.IKChain;
 import com.sp.entity.ik.parts.ik_chains.TargetReachingIKChain;
 import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 import java.util.UUID;
 
-public class SkinWalkerComponent implements AutoSyncedComponent, ServerTickingComponent {
+public class SkinWalkerComponent implements AutoSyncedComponent, ClientTickingComponent, ServerTickingComponent {
     private final SkinWalkerEntity entity;
-    private PlayerEntity nearestTarget;
+    private PlayerEntity followTarget;
+    private boolean isChasing;
     private UUID targetPlayerUUID;
     private boolean shouldLookAtTarget;
     private boolean active;
@@ -26,13 +29,15 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ServerTickingCo
     private boolean currentlyActingNatural;
     private boolean isSneaking;
     private boolean beginReveal;
+    private boolean isNoticing;
     private int suspicion;
+    private BlockPos lastKnownTargetLocation;
 
     private final IKLegComponent<? extends IKChain, ? extends IKAnimatable<?>> IKComponent = new IKLegComponent<>(
             new IKLegComponent.LegSetting.Builder()
                     .maxDistance(1.5)
-                    .stepInFront(0.1)
-                    .movementSpeed(0.5)
+                    .stepInFront(1)
+                    .movementSpeed(0.7)
                     .maxStandingStillDistance(0.1)
                     .standStillCounter(20).build(),
             List.of(new ServerLimb(1.5, 0, 2),
@@ -54,9 +59,20 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ServerTickingCo
         this.currentlyActingNatural = false;
         this.shouldLookAtTarget = true;
         this.beginReveal = false;
-        this.nearestTarget = null;
+        this.isNoticing = false;
+        this.followTarget = null;
+        this.isChasing = false;
         this.suspicion = 0;
     }
+
+    public boolean isChasing() {return isChasing;}
+    public void setChasing(boolean chasing) {
+        isChasing = chasing;
+        this.sync();
+    }
+
+    public BlockPos getLastKnownTargetLocation() {return lastKnownTargetLocation;}
+    public void setLastKnownTargetLocation(BlockPos lastKnownTargetLocation) {this.lastKnownTargetLocation = lastKnownTargetLocation;}
 
     public IKLegComponent getIKComponent() {
         return IKComponent;
@@ -69,8 +85,8 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ServerTickingCo
     public boolean shouldLookAtTarget() {return shouldLookAtTarget;}
     public void setShouldLookAtTarget(boolean shouldLookAtTarget) {this.shouldLookAtTarget = shouldLookAtTarget;}
 
-    public PlayerEntity getNearestTarget() {return this.nearestTarget;}
-    public void setNearestTarget(PlayerEntity nearestTarget) {this.nearestTarget = nearestTarget;}
+    public PlayerEntity getFollowTarget() {return this.followTarget;}
+    public void setFollowTarget(PlayerEntity followTarget) {this.followTarget = followTarget;}
 
     public boolean shouldActNatural() {return this.shouldActNatural;}
     public void setShouldActNatural(boolean shouldActNatural) {this.shouldActNatural = shouldActNatural;}
@@ -79,7 +95,7 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ServerTickingCo
     public void setCurrentlyActingNatural(boolean currentlyActingNatural) {this.currentlyActingNatural = currentlyActingNatural;}
 
     public boolean isInTrueForm() {return this.trueForm;}
-    public void setTrueForm(boolean trueForm) {this.trueForm = trueForm;}
+    public void setTrueForm(boolean trueForm) {this.trueForm = trueForm; this.sync();}
 
     public boolean isActive() {return this.active;}
     public void setActive(boolean active) {this.active = active;}
@@ -87,31 +103,43 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ServerTickingCo
     public boolean isSneaking() {return this.isSneaking;}
     public void setSneaking(boolean sneaking) {this.isSneaking = sneaking; sync();}
 
+    public boolean isNoticing() {return isNoticing;}
+    public void setNoticing(boolean noticing) {isNoticing = noticing;}
+
     public boolean shouldBeginReveal() {return beginReveal;}
-    public void setBeginReveal(boolean typingInChat) {this.beginReveal = typingInChat;}
+    public void setBeginReveal(boolean beginReveal) {this.beginReveal = beginReveal; this.sync();}
 
     public UUID getTargetPlayerUUID() {return this.targetPlayerUUID;}
     public void setTargetPlayerUUID(UUID targetPlayerUUID) {this.targetPlayerUUID = targetPlayerUUID; sync();}
 
-     public void sync(){InitializeComponents.SKIN_WALKER.sync(this.entity);}
+    public void sync(){InitializeComponents.SKIN_WALKER.sync(this.entity);}
 
 
     @Override
     public void readFromNbt(NbtCompound tag) {
         this.isSneaking = tag.getBoolean("isSneaking");
         this.targetPlayerUUID = tag.getUuid("targetPlayerUUID");
+        this.isChasing = tag.getBoolean("isChasing");
+        this.trueForm = tag.getBoolean("trueForm");
+        this.beginReveal = tag.getBoolean("beginReveal");
     }
 
     @Override
     public void writeToNbt(NbtCompound tag) {
         tag.putBoolean("isSneaking", this.isSneaking);
         tag.putUuid("targetPlayerUUID", this.targetPlayerUUID);
+        tag.putBoolean("isChasing", this.isChasing);
+        tag.putBoolean("trueForm", this.trueForm);
+        tag.putBoolean("beginReveal", this.beginReveal);
+    }
+
+    @Override
+    public void clientTick() {
     }
 
     @Override
     public void serverTick() {
-        if(this.getNearestTarget() == null){
-
-        }
     }
+
+
 }

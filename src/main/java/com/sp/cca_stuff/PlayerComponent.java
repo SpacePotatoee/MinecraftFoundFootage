@@ -62,6 +62,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     private Entity targetEntity;
     private int skinWalkerLookDelay;
+    private boolean shouldStayUnmuted;
+    private boolean visibleToEntity;
+    private int visibilityTimer;
+    private int visibilityTimerCooldown;
 
     MovingSoundInstance DeepAmbience;
     MovingSoundInstance GasPipeAmbience;
@@ -88,6 +92,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.readyForPoolrooms = false;
 
         this.skinWalkerLookDelay = 60;
+        this.shouldStayUnmuted = true;
+        this.visibleToEntity = false;
+        this.visibilityTimer = 15;
+        this.visibilityTimerCooldown = 0;
 
         this.suffocationTimer = 0;
         this.level2Timer = 200;
@@ -143,9 +151,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.shouldDoStatic = shouldDoStatic;
     }
 
-    public Entity getTargetEntity() {
-        return targetEntity;
-    }
+    public Entity getTargetEntity() {return targetEntity;}
     public void setTargetEntity(Entity targetEntity) {
         this.targetEntity = targetEntity;
     }
@@ -159,6 +165,12 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public void subtractSkinWalkerLookDelay() {
         this.skinWalkerLookDelay -= 1;
     }
+
+    public boolean shouldStayUnmuted() {return shouldStayUnmuted;}
+    public void setShouldStayUnmuted(boolean shouldStayUnmuted) {this.shouldStayUnmuted = shouldStayUnmuted;}
+
+    public boolean isVisibleToEntity() {return visibleToEntity;}
+    public void setVisibleToEntity(boolean visibleToEntity) {this.visibleToEntity = visibleToEntity;}
 
     @Override
     public void readFromNbt(NbtCompound tag) {
@@ -276,7 +288,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     @Override
     public void serverTick() {
-
         getPrevSettings();
 
         //Cast him to the Backrooms
@@ -394,9 +405,40 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.level2Timer = 200;
                 this.readyForPoolrooms = false;
             }
-
         }
 
+
+        //Update Entity Visibility
+        if(!this.isVisibleToEntity()) {
+            float speed = this.player.horizontalSpeed - this.player.prevHorizontalSpeed;
+
+            if (!this.player.isSneaking() && speed != 0) {
+                this.visibilityTimer--;
+            }
+            if (this.player.isSprinting()) {
+                this.visibilityTimer--;
+            }
+
+            //reset timer if the player is not moving
+            if(speed == 0){
+                this.visibilityTimer = 15;
+            }
+
+            if (this.visibilityTimer <= 0) {
+                this.visibilityTimerCooldown = 20;
+                this.setVisibleToEntity(true);
+            }
+        } else {
+            if(this.visibilityTimerCooldown > 0){
+                this.visibilityTimerCooldown--;
+            } else {
+                this.visibilityTimer = 15;
+                this.setVisibleToEntity(false);
+            }
+        }
+
+//        System.out.println(this.visibilityTimer);
+//        System.out.println(this.isVisibleToEntity());
 
         shouldSync();
     }

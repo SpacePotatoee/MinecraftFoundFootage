@@ -1,6 +1,19 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "block/block",
   "textures": {
     "all": "spb-revamped:block/wall_block"
-  }
+  },
+  "elements": [
+    {   "from": [ 0, 0, 0 ],
+      "to": [ 16, 16, 16 ],
+      "faces": {
+        "down":  { "texture": "#all", "cullface": "down" },
+        "up":    { "texture": "#all"},
+        "north": { "texture": "#all", "cullface": "north" },
+        "south": { "texture": "#all", "cullface": "south" },
+        "west":  { "texture": "#all", "cullface": "west" },
+        "east":  { "texture": "#all", "cullface": "east" }
+      }
+    }
+  ]
 }
