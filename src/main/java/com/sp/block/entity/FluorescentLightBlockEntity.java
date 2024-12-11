@@ -7,18 +7,18 @@ import com.sp.init.ModBlocks;
 import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
+import com.sp.render.PointLightWithShadow;
 import com.sp.sounds.FluorescentLightSoundInstance;
 import com.sp.init.ModSounds;
 import com.sp.init.BackroomsLevels;
 import foundry.veil.api.client.render.VeilRenderSystem;
-import foundry.veil.api.client.render.deferred.light.PointLight;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -29,7 +29,7 @@ public class FluorescentLightBlockEntity extends BlockEntity {
     private Random random = Random.create();
     private java.util.Random random1 = new java.util.Random();
     private boolean playingSound;
-    public PointLight pointLight;
+    public PointLightWithShadow pointLight;
     private boolean prevOn;
     private final int randInt;
     private int ticks = 0;
@@ -64,7 +64,6 @@ public class FluorescentLightBlockEntity extends BlockEntity {
             this.currentState = state;
 
             if (!world.isClient) {
-                prevOn = world.getBlockState(pos).get(FluorescentLightBlock.ON);
                 //Set to ceiling tile if it can't be seen
                 if (world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                     if (world.getBlockState(pos.down()) != Blocks.AIR.getDefaultState()) {
@@ -124,19 +123,26 @@ public class FluorescentLightBlockEntity extends BlockEntity {
 
                 }
 
-                if (world.getBlockState(pos).getBlock() == ModBlocks.FluorescentLight) {
-                    if (prevOn != world.getBlockState(pos).get(FluorescentLightBlock.ON)) {
-                        world.playSound(null, pos, ModSounds.LIGHT_BLINK, SoundCategory.AMBIENT, 0.2F, random1.nextFloat(0.9f, 1.1f));
-                    }
-                }
+
             }
 
 
 
 
             if (world.isClient) {
-                PlayerEntity player = MinecraftClient.getInstance().player;
+                MinecraftClient client = MinecraftClient.getInstance();
+                PlayerEntity player = client.player;
+
                 if (player != null) {
+
+                    if(!state.get(FluorescentLightBlock.COPY)) {
+                        if (pos.isWithinDistance(player.getPos(), 20)) {
+                            if (prevOn != world.getBlockState(pos).get(FluorescentLightBlock.ON)) {
+                                client.getSoundManager().play(new PositionedSoundInstance(ModSounds.LIGHT_BLINK, SoundCategory.AMBIENT, 0.1F, random1.nextFloat(0.9f, 1.1f), this.random, pos));
+                            }
+                        }
+                    }
+
                     Vec3d playerPos = player.getPos();
                     boolean withinDistance = pos.isWithinDistance(playerPos, ConfigStuff.lightRenderDistance);
                     if (withinDistance) {
@@ -149,11 +155,12 @@ public class FluorescentLightBlockEntity extends BlockEntity {
                             }
 
                             if (this.pointLight == null) {
-                                this.pointLight = new PointLight();
+                                this.pointLight = new PointLightWithShadow();
                                 VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(this.pointLight
+                                        .setShouldRenderShadows(true)
                                         .setRadius(13f)
                                         .setColor(255, 240, 130)
-                                        .setPosition(position.x, position.y - 0.5, position.z)
+                                        .setPosition(position.x, position.y - 1, position.z)
                                         .setBrightness(0.003f)
                                 );
                             }
@@ -177,7 +184,9 @@ public class FluorescentLightBlockEntity extends BlockEntity {
             if (ticks > 100) {
                 ticks = 1;
             }
+            prevOn = world.getBlockState(pos).get(FluorescentLightBlock.ON);
         }
+
     }
 
     public boolean isPlayingSound() {

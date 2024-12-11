@@ -1,0 +1,18 @@
+{
+  "fragment": "spbrevamped:point",
+  "vertex": "spbrevamped:point",
+  "textures": {
+    "ShadowSampler": {
+      "type": "framebuffer",
+      "name": "spb-revamped:shadowmap:depth"
+    },
+    "LightSampler": {
+      "type": "framebuffer",
+      "name": "spb-revamped:opaque_light"
+    },
+    "RNoiseDir": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/rnoisedir.png"
+    }
+  }
+}

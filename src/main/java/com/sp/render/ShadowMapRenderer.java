@@ -21,6 +21,8 @@ import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 
 public class ShadowMapRenderer {
     private static boolean renderingShadowMap;
@@ -46,6 +48,7 @@ public class ShadowMapRenderer {
             setRenderingShadowMap(true);
 
 
+
             frustum = new Frustum(shadowModelView.peek().getPositionMatrix(), shadowProjMat);
             frustum.setPosition(cameraPos.x, cameraPos.y, cameraPos.z);
             accessor.setFrustum(frustum);
@@ -66,6 +69,51 @@ public class ShadowMapRenderer {
                 immediate.draw();
 
             }
+            
+            setRenderingShadowMap(false);
+            AdvancedFbo.unbind();
+            RenderSystem.viewport(0, 0, width, height);
+
+            RenderSystem.setProjectionMatrix(backupProjMat, VertexSorter.BY_DISTANCE);
+
+
+
+        }
+    }
+
+    public static void renderLevel0ShadowMap(Camera camera, World world){
+        MinecraftClient client = MinecraftClient.getInstance();
+        WorldRendererAccessor accessor = (WorldRendererAccessor) client.worldRenderer;
+        Vec3d cameraPos = camera.getPos();
+        MatrixStack shadowModelView = createShadowModelView(cameraPos.x, cameraPos.y, cameraPos.z, true);
+        Matrix4f shadowProjMat = createProjMat();
+        Matrix4f backupProjMat = RenderSystem.getProjectionMatrix();
+
+        int width = client.getFramebuffer().viewportWidth;
+        int height = client.getFramebuffer().viewportHeight;
+        Frustum frustum;
+
+        AdvancedFbo shadowMap = VeilRenderSystem.renderer().getFramebufferManager().getFramebuffer(new Identifier(SPBRevamped.MOD_ID, "shadowmap"));
+        if(shadowMap != null) {
+            RenderSystem.setProjectionMatrix(shadowProjMat, VertexSorter.BY_Z);
+
+            shadowMap.bind(true);
+            setRenderingShadowMap(true);
+
+
+            GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
+
+            frustum = new Frustum(shadowModelView.peek().getPositionMatrix(), shadowProjMat);
+            frustum.setPosition(cameraPos.x, cameraPos.y, cameraPos.z);
+            accessor.setFrustum(frustum);
+            accessor.invokeSetupTerrain(camera, frustum, false, false);
+            accessor.invokeRenderLayer(RenderLayer.getCutout(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
+            accessor.invokeRenderLayer(RenderLayer.getCutoutMipped(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
+            accessor.invokeRenderLayer(RenderLayer.getSolid(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
+            accessor.invokeRenderLayer(RenderLayers.getCarpet(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
+
+
+            GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
             setRenderingShadowMap(false);
             AdvancedFbo.unbind();
             RenderSystem.viewport(0, 0, width, height);
@@ -105,15 +153,40 @@ public class ShadowMapRenderer {
         return shadowModelView;
     }
 
+    public static MatrixStack createShadowModelView(double CameraX, double CameraY, double CameraZ, boolean doInterval){
+        MatrixStack shadowModelView = new MatrixStack();
+
+        shadowModelView.peek().getNormalMatrix().identity();
+        shadowModelView.peek().getPositionMatrix().identity();
+
+        shadowModelView.peek().getPositionMatrix().translate(0.0f, 0.0f, -100.0f);
+        rotateShadowModelView(shadowModelView.peek().getPositionMatrix());
+
+        if(doInterval) {
+            float offsetX = (float) CameraX % 2.0f;
+            float offsetY = (float) CameraY % 2.0f;
+            float offsetZ = (float) CameraZ % 2.0f;
+
+            float halfIntervalSize = 1.0f;
+
+            offsetX -= halfIntervalSize;
+            offsetY -= halfIntervalSize;
+            offsetZ -= halfIntervalSize;
+            shadowModelView.peek().getPositionMatrix().translate(offsetX, offsetY, offsetZ);
+        }
+        return shadowModelView;
+    }
+
+    public static void rotateShadowModelView(Matrix4f shadowModelView){
+        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(90f));
+    }
+
     //Global Light Rotation
     public static void rotateShadowModelView(Matrix4f shadowModelView, World world){
         float MaxAngle = 120.0f;
         float MinAngle = 85.0f;
-//        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(45f));
-//        shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(45f));
         shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(Easings.Easing.easeInOutQuad.ease(SPBRevampedClient.getSunsetTimer(world)) * (MaxAngle - MinAngle) + MinAngle));
         shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(4f));
-//        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(15.0f * sin(RenderSystem.getShaderGameTime() * 200) + 90.0f));
     }
 
     public static Matrix4f createProjMat(){

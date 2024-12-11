@@ -8,6 +8,7 @@ import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.ModSounds;
+import com.sp.render.PointLightWithShadow;
 import com.sp.sounds.ThinFluorescentLightSoundInstance;
 import com.sp.init.BackroomsLevels;
 import foundry.veil.api.client.render.VeilRenderSystem;
@@ -27,7 +28,7 @@ import static com.sp.block.custom.ThinFluorescentLightBlock.*;
 public class ThinFluorescentLightBlockEntity extends BlockEntity {
     BlockState currentState;
     private boolean playingSound;
-    public PointLight pointLight;
+    public PointLightWithShadow pointLight;
     private boolean prevOn;
     private final int randInt;
     private int ticks = 0;
@@ -143,8 +144,9 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                             }
 
                             if (pointLight == null) {
-                                pointLight = new PointLight();
+                                pointLight = new PointLightWithShadow();
                                 VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(pointLight
+                                        .setShouldRenderShadows(false)
                                         .setRadius(18f)
                                         .setColor(255, 255, 255)
                                         .setBrightness(0.0024f)
