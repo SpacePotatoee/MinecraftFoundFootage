@@ -34,11 +34,14 @@ public class SlightlyBetterMobNavigation extends MobNavigation {
         if (entity2.getWorld() != entity1.getWorld()) {
             return false;
         } else {
-            Vec3d vec3d = new Vec3d(entity1.getX(), entity1.getY(), entity1.getZ());
+            Vec3d vec3d = new Vec3d(entity1.getX(), entity1.getY() + 0.05, entity1.getZ());
             Vec3d vec3d2 = new Vec3d(entity2.getX(), entity2.getEyeY(), entity2.getZ());
-            return vec3d2.distanceTo(vec3d) > 128.0
-                    ? false
-                    : entity1.getWorld().raycast(new RaycastContext(vec3d, vec3d2, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, entity1)).getType()
+            return entity1.getWorld().raycast(new RaycastContext(
+                    vec3d,
+                    vec3d2,
+                    RaycastContext.ShapeType.COLLIDER,
+                    RaycastContext.FluidHandling.NONE,
+                    entity1)).getType()
                     == HitResult.Type.MISS;
         }
     }

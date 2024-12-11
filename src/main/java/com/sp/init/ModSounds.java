@@ -64,6 +64,18 @@ public class ModSounds {
     public static final SoundEvent SUNSET_TRANSITION_END = registerSoundEvent("sunset_transition_end");
 
 
+
+    public static final SoundEvent SKINWALKER_AMBIENCE = registerSoundEvent("skinwalker_ambience");
+    public static final SoundEvent SKINWALKER_CHASE = registerSoundEvent("skinwalker_chase");
+    public static final SoundEvent SKINWALKER_NOTICE = registerSoundEvent("skinwalker_notice");
+    public static final SoundEvent SKINWALKER_SNIFF = registerSoundEvent("skinwalker_sniff");
+    public static final SoundEvent SKINWALKER_FOOTSTEP = registerSoundEvent("skinwalker_footstep");
+
+    public static final SoundEvent SKINWALKER_BONE_CRACK = registerSoundEvent("skinwalker_bone_crack");
+    public static final SoundEvent SKINWALKER_BONE_CRACK_LONG = registerSoundEvent("skinwalker_bone_crack_long");
+    public static final SoundEvent SKINWALKER_REVEAL = registerSoundEvent("skinwalker_reveal");
+
+
     private static SoundEvent registerSoundEvent(String name) {
         Identifier id = new Identifier(SPBRevamped.MOD_ID, name);
         return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));

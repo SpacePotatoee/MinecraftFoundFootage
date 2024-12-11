@@ -10,7 +10,6 @@ import com.sp.entity.ik.model.GeckoLib.MowzieGeoBone;
 import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import com.sp.render.physics.PhysicsPoint;
 import com.sp.render.physics.PhysicsStick;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
@@ -22,11 +21,7 @@ import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.cache.object.GeoCube;
-import software.bernie.geckolib.cache.object.GeoQuad;
-import software.bernie.geckolib.cache.object.GeoVertex;
 import software.bernie.geckolib.renderer.DynamicGeoEntityRenderer;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.RenderUtils;
 
 import java.lang.Math;
@@ -36,6 +31,8 @@ import java.util.Optional;
 
 public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntity> {
     private final Identifier SPIDER_LEGS_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/skinwalker_legs_texture.png");
+    private final Identifier PLACEHOLDER_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/placeholder.png");
+    private final Identifier HEAD_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/final_form_head_texture.png");
     private Double prevWorldX;
     private Double prevWorldY;
     private Double prevWorldZ;
@@ -48,25 +45,26 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
     public SkinWalkerRenderer(EntityRendererFactory.Context renderManager) {
         super(renderManager, new SkinWalkerModel());
         this.addRenderLayer(new IKDebugRenderLayer(this));
-        spiderLegBones.add("top_left_spider_leg");
-        spiderLegBones.add("bone2");
-        spiderLegBones.add("bone3");
-        spiderLegBones.add("bone4");
 
-        spiderLegBones.add("top_right_spider_leg");
-        spiderLegBones.add("bone5");
-        spiderLegBones.add("bone6");
-        spiderLegBones.add("bone7");
+        spiderLegBones.add("seg1_leg1");
+        spiderLegBones.add("seg2_leg1");
+        spiderLegBones.add("seg3_leg1");
+        spiderLegBones.add("seg4_leg1");
 
-        spiderLegBones.add("bottom_left_spider_leg2");
-        spiderLegBones.add("bone11");
-        spiderLegBones.add("bone12");
-        spiderLegBones.add("bone13");
+        spiderLegBones.add("seg1_leg2");
+        spiderLegBones.add("seg2_leg2");
+        spiderLegBones.add("seg3_leg2");
+        spiderLegBones.add("seg4_leg2");
 
-        spiderLegBones.add("bottom_right_spider_leg2");
-        spiderLegBones.add("bone8");
-        spiderLegBones.add("bone9");
-        spiderLegBones.add("bone10");
+        spiderLegBones.add("seg1_leg3");
+        spiderLegBones.add("seg2_leg3");
+        spiderLegBones.add("seg3_leg3");
+        spiderLegBones.add("seg4_leg3");
+
+        spiderLegBones.add("seg1_leg4");
+        spiderLegBones.add("seg2_leg4");
+        spiderLegBones.add("seg3_leg4");
+        spiderLegBones.add("seg4_leg4");
     }
 
     @Override
@@ -81,7 +79,7 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 
         float h = MathHelper.lerpAngleDegrees(partialTick, entity.prevBodyYaw, entity.bodyYaw);
         float j = MathHelper.lerpAngleDegrees(partialTick, entity.prevHeadYaw, entity.headYaw);
-        float yaw = h;
+        float yaw = j- h;
 
         float pitch = MathHelper.lerp(partialTick, entity.prevPitch, entity.getPitch());
 
@@ -92,18 +90,23 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 //        poseStack.pop();
 
         float animationProgress = this.getAnimationProgress(entity, partialTick);
-//        this.animateModel(entity, bufferSource, poseStack, pos, speed, animationProgress, -yaw, -pitch, partialTick);
+        this.animateModel(entity, bufferSource, poseStack, pos, speed, animationProgress, -yaw, -pitch, partialTick);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         entity.getModelPositions(entity, new GeoModelAccessor(this.model));
     }
 
     @Override
     protected @Nullable Identifier getTextureOverrideForBone(GeoBone bone, SkinWalkerEntity animatable, float partialTick) {
-        if(spiderLegBones.contains(bone.getName())){
-            return SPIDER_LEGS_TEXTURE;
-        } else {
-            return null;
+        SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(animatable);
+        if(component.isInTrueForm()) {
+            if (spiderLegBones.contains(bone.getName())) {
+                return SPIDER_LEGS_TEXTURE;
+            } else if (bone.getName().equals("head") || bone.getName().equals("headwear")) {
+                return HEAD_TEXTURE;
+            }
         }
+
+        return null;
     }
 
     protected void animateModel(SkinWalkerEntity entity, VertexConsumerProvider vertexConsumers, MatrixStack matrices, float limbPos, float limbSpeed, float animationProgress, float yaw, float pitch, float partialTicks) {
@@ -115,7 +118,6 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
         Optional<GeoBone> leftLeg = this.model.getBone("left_leg");
 
         if(headBone.isPresent() && bodyBone.isPresent() && rightArm.isPresent() && leftArm.isPresent() && rightLeg.isPresent() && leftLeg.isPresent()) {
-            Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
             GeoBone head = headBone.get();
             GeoBone body = bodyBone.get();
             GeoBone right_arm = rightArm.get();
@@ -190,64 +192,92 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 //                }
 //            }
 
-//            head.setRotY(yaw * (float) (Math.PI / 180.0));
-//            head.setRotX(pitch * (float) (Math.PI / 180.0));
-//
-//            right_arm.setRotX(MathHelper.cos(limbPos * 0.6662F + (float) Math.PI) * 2.0F * limbSpeed * 0.5F);
-//            left_arm.setRotX(MathHelper.cos(limbPos * 0.6662F) * 2.0F * limbSpeed * 0.5F);
-//            right_arm.setRotZ(0.0F);
-//            left_arm.setRotZ(0.0F);
-//            right_leg.setRotX(MathHelper.cos(limbPos * 0.6662F) * 1.4F * limbSpeed);
-//            left_leg.setRotX(MathHelper.cos(limbPos * 0.6662F + (float) Math.PI) * 1.4F * limbSpeed);
-//            right_leg.setRotY(0.005F);
-//            left_leg.setRotY(-0.005F);
-//            right_leg.setRotZ(0.005F);
-//            left_leg.setRotZ(-0.005F);
-//
-//            right_arm.setRotY(0.0F);
-//            left_arm.setRotY(0.0F);
-//
-//            this.punch(entity, partialTicks, body, head, right_arm, left_arm);
-//
-//            if (entity.component.isSneaking()) {
-//                body.setRotX(-0.5F);
-//                right_arm.setRotX(right_arm.getRotX() - 0.4F);
-//                left_arm.setRotX(left_arm.getRotX() - 0.4F);
-//
-//                head.setPosY(-3.2f);
-//                body.setPosY(-3.2f);
-//
-//                right_arm.setPosY(-3.2f);
-//                left_arm.setPosY(-3.2f);
-//
-//                right_leg.setPosZ(4f);
-//                left_leg.setPosZ(4f);
-//            } else {
-//                right_leg.setPosZ(0);
-//                left_leg.setPosZ(0);
-//            }
-//
-//            this.swingArm(right_arm, animationProgress, 1.0f);
-//            this.swingArm(left_arm, animationProgress, -1.0f);
+            if(component.isInTrueForm()) {
+                Vector3f offset = new Vector3f();
+                int limbCount = 0;
+                for (Object limbs : component.getIKComponent().getEndPoints()) {
+                    ServerLimb limb = (ServerLimb) limbs;
+                    offset.add(limb.pos.toVector3f());
+                }
+                offset.mul(0.25f);
+
+                body.setWorldSpaceMatrix(new Matrix4f().identity().translate(offset.sub(entity.getLerpedPos(partialTicks).toVector3f()).mul(0.2f)));
+            }
+
+
+            float pitchOffset = 0;
+            if(component.isInTrueForm()){
+                pitchOffset = 35;
+            }
+
+            head.setRotY(yaw * (float) (Math.PI / 180.0));
+            head.setRotX((pitch + pitchOffset) * (float) (Math.PI / 180.0));
+
+            if(!component.isInTrueForm()) {
+                right_arm.setRotX(MathHelper.cos(limbPos * 0.6662F + (float) Math.PI) * 2.0F * limbSpeed * 0.5F);
+                left_arm.setRotX(MathHelper.cos(limbPos * 0.6662F) * 2.0F * limbSpeed * 0.5F);
+                right_arm.setRotZ(0.0F);
+                left_arm.setRotZ(0.0F);
+                right_leg.setRotX(MathHelper.cos(limbPos * 0.6662F) * 1.4F * limbSpeed);
+                left_leg.setRotX(MathHelper.cos(limbPos * 0.6662F + (float) Math.PI) * 1.4F * limbSpeed);
+                right_leg.setRotY(0.005F);
+                left_leg.setRotY(-0.005F);
+                right_leg.setRotZ(0.005F);
+                left_leg.setRotZ(-0.005F);
+
+                right_arm.setRotY(0.0F);
+                left_arm.setRotY(0.0F);
+
+                this.punch(entity, partialTicks, body, head, right_arm, left_arm);
+
+                if (component.isSneaking()) {
+                    body.setRotX(-0.5F);
+                    right_arm.setRotX(right_arm.getRotX() - 0.4F);
+                    left_arm.setRotX(left_arm.getRotX() - 0.4F);
+
+                    head.setPosY(-3.2f);
+                    body.setPosY(-3.2f);
+
+                    right_arm.setPosY(-3.2f);
+                    left_arm.setPosY(-3.2f);
+
+                    right_leg.setPosZ(4f);
+                    left_leg.setPosZ(4f);
+                } else {
+                    right_leg.setPosZ(0);
+                    left_leg.setPosZ(0);
+                }
+
+                this.swingArm(right_arm, animationProgress, 1.0f);
+                this.swingArm(left_arm, animationProgress, -1.0f);
+            }
         }
     }
 
 
-
+    private Vec2f calculateAngles(Vec3d direction, float bodyYaw) {
+        return this.calculateAngles((float) direction.x, (float) direction.y, (float) direction.z, bodyYaw);
+    }
 
     private Vec2f calculateAngles(double x, double y, double z, double x2, double y2, double z2, float bodyYaw) {
         float dirX = (float) (x2 - x);
         float dirY = (float) (y2 - y);
         float dirZ = (float) (z2 - z);
 
+        return this.calculateAngles(dirX, dirY, dirZ, bodyYaw);
+    }
+
+    private Vec2f calculateAngles(float dirX, float dirY, float dirZ, float bodyYaw) {
         Quaternionf quaternionf = new Quaternionf(new AxisAngle4f((float) Math.toRadians(90), new Vector3f(0,0,1).rotateY((float) Math.toRadians(bodyYaw + 90))));
         Vector3f normalizedDir = new Vector3f(dirX, dirY, dirZ).rotate(quaternionf).normalize();
         Vec3d normalizedDir2 = new Vec3d(dirX, dirY, dirZ).rotateX((float) Math.toRadians(90)).normalize();
 
         float pitch = (float) Math.asin(normalizedDir.y);
         float yaw = (float) Math.atan2(normalizedDir2.z, normalizedDir2.x);
-        return new Vec2f(pitch * 5, yaw * 5);
+        return new Vec2f(pitch, yaw);
     }
+
+
 
     private void punch(SkinWalkerEntity entity, float tickDelta, GeoBone body, GeoBone head, GeoBone rightArm, GeoBone leftArm){
         if (!(entity.getHandSwingProgress(tickDelta) <= 0.0F)) {
@@ -308,6 +338,18 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 
             RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
         } else {
+            if(animatable != null) {
+                SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(animatable);
+
+                if(component.isInTrueForm()) {
+                    if (bone.getName().equals("body")) {
+                        Matrix4f matrix4f = new Matrix4f();
+                        matrix4f = matrix4f.mul(bone.getWorldSpaceMatrix());
+                        poseStack.peek().getPositionMatrix().mul(matrix4f);
+                    }
+                }
+            }
+
             boolean rotOverride = false;
             if (bone instanceof MowzieGeoBone mowzieGeoBone) {
                 rotOverride = mowzieGeoBone.rotationOverride != null;
@@ -352,7 +394,21 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
             RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
         }
 
-        renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.textureOverride = getTextureOverrideForBone(bone, this.animatable, partialTick);
+        Identifier texture = this.textureOverride == null ? getTexture(this.animatable) : this.textureOverride;
+        RenderLayer renderTypeOverride = getRenderTypeOverrideForBone(bone, this.animatable, texture, bufferSource, partialTick);
+
+        if (texture != null && renderTypeOverride == null)
+            renderTypeOverride = getRenderType(this.animatable, texture, bufferSource, partialTick);
+
+        if (renderTypeOverride != null)
+            buffer = bufferSource.getBuffer(renderTypeOverride);
+
+        if (!boneRenderOverride(poseStack, bone, bufferSource, buffer, partialTick, packedLight, packedOverlay, red, green, blue, alpha))
+            super.renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+
+        if (renderTypeOverride != null)
+            buffer = bufferSource.getBuffer(getRenderType(this.animatable, getTexture(this.animatable), bufferSource, partialTick));
 
         if (!isReRender)
             applyRenderLayersForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);

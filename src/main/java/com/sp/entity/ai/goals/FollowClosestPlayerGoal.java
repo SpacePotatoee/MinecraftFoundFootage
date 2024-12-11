@@ -26,7 +26,7 @@ public class FollowClosestPlayerGoal extends Goal {
 
     @Override
     public boolean canStart() {
-        if(!this.component.isInTrueForm() && !this.component.isCurrentlyActingNatural()) {
+        if(!this.component.isInTrueForm() && !this.component.shouldBeginReveal() && !this.component.isCurrentlyActingNatural()) {
             PlayerEntity player = this.entity.getWorld().getClosestPlayer(this.entity, 200);
 
             if(player != null) {
@@ -41,7 +41,7 @@ public class FollowClosestPlayerGoal extends Goal {
 
     @Override
     public void start() {
-        this.component.setNearestTarget(this.target);
+        this.component.setFollowTarget(this.target);
         this.component.setShouldActNatural(false);
     }
 
@@ -56,7 +56,7 @@ public class FollowClosestPlayerGoal extends Goal {
     @Override
     public void stop() {
         if(this.target == null){
-            this.component.setNearestTarget(null);
+            this.component.setFollowTarget(null);
         }
         this.target = null;
         this.component.setShouldActNatural(true);

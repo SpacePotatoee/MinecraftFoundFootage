@@ -30,7 +30,7 @@ public class ActNaturalGoal extends Goal {
 
     @Override
     public boolean canStart() {
-        return this.component.shouldActNatural();
+        return this.component.shouldActNatural() && !this.component.isInTrueForm() && !this.component.shouldBeginReveal();
     }
 
     @Override
@@ -125,7 +125,7 @@ public class ActNaturalGoal extends Goal {
 
     private void punchPlayer() {
         this.entity.swingHand(Hand.MAIN_HAND);
-        this.entity.tryAttack(this.component.getNearestTarget());
+        this.entity.tryAttack(this.component.getFollowTarget());
         this.component.setCurrentlyActingNatural(false);
         this.randomAction = null;
         this.setRandomActCoolDown();

@@ -210,5 +210,63 @@
     "sounds": [
       "spb-revamped:noescape"
     ]
+  },
+  "skinwalker_ambience": {
+    "sounds": [
+      "spb-revamped:skinwalker/ambience/skinwalker_ambience1",
+      "spb-revamped:skinwalker/ambience/skinwalker_ambience2",
+      "spb-revamped:skinwalker/ambience/skinwalker_ambience3",
+      "spb-revamped:skinwalker/ambience/skinwalker_ambience4",
+      "spb-revamped:skinwalker/ambience/skinwalker_ambience5",
+      "spb-revamped:skinwalker/ambience/skinwalker_ambience6",
+      "spb-revamped:skinwalker/ambience/skinwalker_ambience7",
+      "spb-revamped:skinwalker/ambience/skinwalker_ambience8"
+    ]
+  },
+  "skinwalker_sniff": {
+    "sounds": [
+      "spb-revamped:skinwalker/sniff/skinwalker_sniff1",
+      "spb-revamped:skinwalker/sniff/skinwalker_sniff2",
+      "spb-revamped:skinwalker/sniff/skinwalker_sniff3",
+      "spb-revamped:skinwalker/sniff/skinwalker_sniff4",
+      "spb-revamped:skinwalker/sniff/skinwalker_sniff5"
+    ]
+  },
+  "skinwalker_footstep": {
+    "sounds": [
+      "spb-revamped:skinwalker/footstep/skinwalker_footstep1",
+      "spb-revamped:skinwalker/footstep/skinwalker_footstep2",
+      "spb-revamped:skinwalker/footstep/skinwalker_footstep3",
+      "spb-revamped:skinwalker/footstep/skinwalker_footstep4",
+      "spb-revamped:skinwalker/footstep/skinwalker_footstep5",
+      "spb-revamped:skinwalker/footstep/skinwalker_footstep6",
+      "spb-revamped:skinwalker/footstep/skinwalker_footstep7",
+      "spb-revamped:skinwalker/footstep/skinwalker_footstep8"
+    ]
+  },
+  "skinwalker_chase": {
+    "sounds": [
+      "spb-revamped:skinwalker/skinwalker_chase"
+    ]
+  },
+  "skinwalker_notice": {
+    "sounds": [
+      "spb-revamped:skinwalker/skinwalker_notice"
+    ]
+  },
+  "skinwalker_bone_crack": {
+    "sounds": [
+      "spb-revamped:skinwalker/reveal/bone_crack"
+    ]
+  },
+  "skinwalker_bone_crack_long": {
+    "sounds": [
+      "spb-revamped:skinwalker/reveal/bone_crack_long"
+    ]
+  },
+  "skinwalker_reveal": {
+    "sounds": [
+      "spb-revamped:skinwalker/reveal/reveal"
+    ]
   }
 }

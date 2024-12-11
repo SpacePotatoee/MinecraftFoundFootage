@@ -47,9 +47,8 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
     private static boolean hasMovedOverLastTick(PathAwareEntity entity) {
         Vec3d difference = entity.getVelocity();
         float yaw = entity.prevHeadYaw;
-        float pitch = entity.prevPitch;
-        Vec2f rotation = new Vec2f(entity.getPitch() - pitch, entity.getHeadYaw() - yaw);
-        return difference.x != 0 || difference.z != 0 || rotation.x != 0 || Math.abs(rotation.y) >= 0.01;
+        float rotation = entity.getHeadYaw() - yaw;
+        return difference.x != 0 || difference.z != 0 || Math.abs(rotation) >= 0.01;
     }
 
     public static BlockHitResult rayCastToGround(Vec3d rotatedLimbOffset, Entity entity, RaycastContext.FluidHandling fluid) {
@@ -62,14 +61,6 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
         if (!(animatable instanceof Entity entity)) {
             return;
         }
-
-        double sum = 0;
-
-        for (Vec3d point : this.endPoints.stream().map((serverLimb -> serverLimb.target)).toList()) {
-            sum += point.y;
-        }
-
-        double average = sum / this.endPoints.size();
 
         for (int i = 0; i < this.limbs.size(); i++) {
             if (model.getBone("base_" + "leg" + (i + 1)).isEmpty()) {
