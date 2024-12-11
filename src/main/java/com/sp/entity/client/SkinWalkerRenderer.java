@@ -5,6 +5,7 @@ import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.SkinWalkerComponent;
 import com.sp.entity.client.debug.IKDebugRenderLayer;
 import com.sp.entity.custom.SkinWalkerEntity;
+import com.sp.entity.ik.model.GeckoLib.GeoModelAccessor;
 import com.sp.entity.ik.model.GeckoLib.MowzieGeoBone;
 import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import com.sp.render.physics.PhysicsPoint;
@@ -70,14 +71,13 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 
     @Override
     public void render(SkinWalkerEntity entity, float entityYaw, float partialTick, MatrixStack poseStack, VertexConsumerProvider bufferSource, int packedLight) {
+
         float speed = entity.limbAnimator.getSpeed(partialTick);
         float pos = entity.limbAnimator.getPos(partialTick);
 
         if (speed > 1.0F) {
             speed = 1.0F;
         }
-
-
 
         float h = MathHelper.lerpAngleDegrees(partialTick, entity.prevBodyYaw, entity.bodyYaw);
         float j = MathHelper.lerpAngleDegrees(partialTick, entity.prevHeadYaw, entity.headYaw);
@@ -94,6 +94,7 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
         float animationProgress = this.getAnimationProgress(entity, partialTick);
 //        this.animateModel(entity, bufferSource, poseStack, pos, speed, animationProgress, -yaw, -pitch, partialTick);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+        entity.getModelPositions(entity, new GeoModelAccessor(this.model));
     }
 
     @Override

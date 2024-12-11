@@ -20,6 +20,8 @@ import java.util.Objects;
 
 public class IKTailComponent<C extends IKChain, E extends IKAnimatable<E>> extends IKChainComponent<C, E> {
     public Vec3d tailTarget = Vec3d.ZERO;
+    public Vec3d centerDirection = Vec3d.ZERO;
+    public Vec3d tailBase = Vec3d.ZERO;
 
     public IKTailComponent(C limb) {
         this.limbs.add(limb);
@@ -57,32 +59,17 @@ public class IKTailComponent<C extends IKChain, E extends IKAnimatable<E>> exten
             this.tailTarget = model.getBone("tail1_base").get().getPosition();
         }
 
-        if (model.getBone("head").isEmpty()) {
-            return;
-        }
-        Vec3d headPos = model.getBone("head").get().getPosition();
+        this.tailTarget = this.getMovedTailPos(this.tailBase.add(this.centerDirection.multiply(this.getLimb().getMaxLength())), entity);
 
-        if (model.getBone("center_of_mass").isEmpty()) {
-            return;
-        }
-        Vec3d centerDirection = model.getBone("center_of_mass").get().getPosition().subtract(headPos).normalize();
-
-        if (model.getBone("tail1_base").isEmpty()) {
-            return;
-        }
-        Vec3d tailStart = model.getBone("tail1_base").get().getPosition();
-
-        this.tailTarget = this.getMovedTailPos(tailStart.add(centerDirection.multiply(this.getLimb().getMaxLength())), entity);
-
-        this.setLimb(0, tailStart, entity);
+        this.setLimb(0, this.tailBase, entity);
 
         for (int i = 0; i < this.limbs.get(0).getJoints().size() - 1; i++) {
             Segment currentSegment = this.getLimb().segments.get(i);
 
-            if (model.getBone("tail" + 1 + "_seg" + (i + 1)).isEmpty()) {
+            if (model.getBone("segment" + (i + 1) + "_tail" + 1).isEmpty()) {
                 return;
             }
-            BoneAccessor bone = model.getBone("tail" + 1 + "_seg" + (i + 1)).get();
+            BoneAccessor bone = model.getBone("segment" + (i + 1) + "_tail" + 1).get();
 
             Vec3d endPos = this.getLimb().getJoints().get(i + 1);
 
@@ -93,6 +80,25 @@ public class IKTailComponent<C extends IKChain, E extends IKAnimatable<E>> exten
 
             bone.moveTo(currentSegment.getPosition(), endPos, entity);
         }
+    }
+
+    @Override
+    public void getModelPositions(E animatable, ModelAccessor model) {
+        if (model.getBone("tail1_base").isEmpty()) {
+            return;
+        }
+        this.tailBase = model.getBone("tail1_base").get().getPosition();
+
+        if (model.getBone("center_of_mass").isEmpty()) {
+            return;
+        }
+
+        if (model.getBone("head").isEmpty()) {
+            return;
+        }
+
+        this.centerDirection = model.getBone("center_of_mass").get().getPosition().subtract(model.getBone("head").get().getPosition()).normalize();
+
     }
 
     private Vec3d getMovedTailPos(Vec3d newPos, Entity entity) {

@@ -97,8 +97,6 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, IKAnim
         return players.get(rand).getUuid();
     }
 
-
-
     public static DefaultAttributeContainer.Builder createSkinWalkerAttributes(){
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 1000F)

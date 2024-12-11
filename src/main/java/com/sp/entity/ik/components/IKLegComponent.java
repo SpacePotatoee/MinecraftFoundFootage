@@ -21,11 +21,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extends IKChainComponent<C, E> {
     /// summon projectnublar:tyrannosaurus_rex ~ ~ ~ {NoAI:1b}
     private final List<ServerLimb> endPoints;
+    private List<Vec3d> bases;
     private final LegSetting settings;
     public double scale = 1;
     private int stillStandCounter = 0;
@@ -35,6 +38,10 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
         this.limbs.addAll(List.of(limbs));
         this.settings = settings;
         this.endPoints = endpoints;
+        this.bases = new ArrayList<>();
+        Arrays.stream(limbs).forEach(
+                limb -> this.bases.add(new Vec3d(0,0,0))
+        );
     }
 
     private static boolean hasMovedOverLastTick(PathAwareEntity entity) {
@@ -64,24 +71,18 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
 
         double average = sum / this.endPoints.size();
 
-        /*
-        if (model.getBone("entity_base").isEmpty()) {
-            return;
-        }
-        BoneAccessor entityBase = model.getBone("entity_base").get();
-
-        double newY = average; //Mth.lerp(2, entityBase.getPosition(entity).y(), average);
-
-        entityBase.moveTo(new Vec3d(entity.position().x(), newY, entity.position().z()), null, entity);
-         */
-
         for (int i = 0; i < this.limbs.size(); i++) {
             if (model.getBone("base_" + "leg" + (i + 1)).isEmpty()) {
                 return;
             }
-            BoneAccessor baseAccessor = model.getBone("base_" + "leg" + (i + 1)).get();
+            //BoneAccessor baseAccessor = model.getBone("base_" + "leg" + (i + 1)).get();//
 
-            Vec3d basePosWorldSpace = baseAccessor.getPosition();
+            //Vec3d basePosWorldSpace = baseAccessor.getgetPos()();
+            if (this.bases.isEmpty()) {
+                return;
+            }
+
+            Vec3d basePosWorldSpace = this.bases.get(i);
 
             C limb = this.setLimb(i, basePosWorldSpace, entity);
 
@@ -114,6 +115,20 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
                     footSegmentAccessor.moveTo(PrAnCommonClass.shouldRenderDebugLegs ? shortenedEndPoint.subtract(0, 200, 0) : shortenedEndPoint, entityLegWithFoot.getFootPosition().add(0, yOffset, 0), entity);
                 }
             }
+        }
+    }
+
+    @Override
+    public void getModelPositions(E animatable, ModelAccessor model) {
+        for (int i = 0; i < this.limbs.size(); i++) {
+            if (model.getBone("base_" + "leg" + (i + 1)).isEmpty()) {
+                return;
+            }
+            BoneAccessor baseAccessor = model.getBone("base_" + "leg" + (i + 1)).get();
+
+            Vec3d basePosWorldSpace = baseAccessor.getPosition();
+
+            this.bases.set(i, basePosWorldSpace);
         }
     }
 
@@ -285,32 +300,32 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
             public Builder() {
             }
 
-            public Builder fluid(RaycastContext.FluidHandling fluid) {
+            public LegSetting.Builder fluid(RaycastContext.FluidHandling fluid) {
                 this.fluid = fluid;
                 return this;
             }
 
-            public Builder maxStandingStillDistance(double maxStandingStillDistance) {
+            public LegSetting.Builder maxStandingStillDistance(double maxStandingStillDistance) {
                 this.maxStandingStillDistance = maxStandingStillDistance;
                 return this;
             }
 
-            public Builder maxDistance(double maxDistance) {
+            public LegSetting.Builder maxDistance(double maxDistance) {
                 this.maxDistance = maxDistance;
                 return this;
             }
 
-            public Builder standStillCounter(int standStillCounter) {
+            public LegSetting.Builder standStillCounter(int standStillCounter) {
                 this.standStillCounter = standStillCounter;
                 return this;
             }
 
-            public Builder stepInFront(double stepInFront) {
+            public LegSetting.Builder stepInFront(double stepInFront) {
                 this.stepInFront = stepInFront;
                 return this;
             }
 
-            public Builder movementSpeed(double movementSpeed) {
+            public LegSetting.Builder movementSpeed(double movementSpeed) {
                 this.movementSpeed = movementSpeed;
                 return this;
             }
