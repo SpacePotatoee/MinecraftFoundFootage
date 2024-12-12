@@ -83,7 +83,7 @@ void main() {
 		vec3 p;
 		if (FogToggle == 1) {
 			//Raymarching
-			for (int i = 0; i < 250; i++) {
+			for (int i = 0; i < 100; i++) {
 				if (inside == false) {
 					if (worldDepth > 500.0) {
 						break;
@@ -102,9 +102,9 @@ void main() {
 				}
 				else {
 					float noise = noise3D(p);
-					fog += 0.0004 * noise;
+					fog += 0.001 * noise;
 					p = ro + rd * travDist;
-					travDist += 0.05;
+					travDist += 0.1;
 					if (travDist > worldDepth || fog >= 1.0 || travDist > 50.0 || p.y < 20.5) {
 						break;
 					}

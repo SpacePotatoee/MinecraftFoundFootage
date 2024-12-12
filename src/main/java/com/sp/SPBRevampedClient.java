@@ -9,6 +9,8 @@ import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.RenderLayers;
 import com.sp.networking.InitializePackets;
 import com.sp.render.*;
+import com.sp.render.camera.CameraShake;
+import com.sp.render.camera.CutsceneManager;
 import com.sp.render.physics.PhysicsPoint;
 import com.sp.render.physics.PhysicsStick;
 import com.sp.util.MathStuff;
@@ -17,7 +19,6 @@ import com.sp.init.BackroomsLevels;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
 import foundry.veil.api.client.render.deferred.VeilDeferredRenderer;
-import foundry.veil.api.client.render.deferred.light.AreaLight;
 import foundry.veil.api.client.render.deferred.light.renderer.LightRenderer;
 import foundry.veil.api.client.render.post.PostPipeline;
 import foundry.veil.api.client.render.post.PostProcessingManager;
@@ -33,7 +34,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
@@ -42,14 +42,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.joml.*;
 
 import java.lang.Math;
 import java.util.*;
-
-import static net.minecraft.util.math.MathHelper.lerp;
 
 
 public class SPBRevampedClient implements ClientModInitializer {
@@ -127,7 +124,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
 
         VeilEventPlatform.INSTANCE.onVeilRenderTypeStageRender((stage, levelRenderer, bufferSource, poseStack, projectionMatrix, renderTick, partialTicks, camera, frustum) -> {
-
+//        MinecraftClient.getInstance().getResourcePackManager().enable();
             //Setting for later use
             if(camera != null){
                 this.camera = camera;
@@ -140,6 +137,14 @@ public class SPBRevampedClient implements ClientModInitializer {
                     if (stage == Stage.AFTER_SKY) {
                         if (camera != null) {
                             ShadowMapRenderer.renderShadowMap(camera, partialTicks, client.world);
+                        }
+                    }
+                }
+
+                if (client.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+                    if (stage == Stage.AFTER_SKY) {
+                        if (camera != null) {
+                            ShadowMapRenderer.renderLevel0ShadowMap(camera, client.world);
                         }
                     }
                 }
@@ -301,6 +306,8 @@ public class SPBRevampedClient implements ClientModInitializer {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) ->{
+//            ClientManager.getPlayerStateManager().setMuted(false);
+
             Vector<PhysicsPoint> physicsPoints = PhysicsPoint.getAllInstances();
             if(!physicsPoints.isEmpty()){
                 for(PhysicsPoint point : physicsPoints){

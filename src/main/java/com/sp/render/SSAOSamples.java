@@ -9,7 +9,7 @@ import org.joml.Vector3f;
  * This saves A LOT of processing power
  */
 public class SSAOSamples {
-    private static final int MaxSamples = 150;
+    private static final int MaxSamples = 50;
     private static final float radius = 1.0f;
     private static Vector3f[] Samples;
 

@@ -8,3 +8,5 @@ accessible field net/minecraft/client/render/WorldRenderer bufferBuilders Lnet/m
 accessible method net/minecraft/client/render/Camera setRotation (FF)V
 accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/entity/ai/goal/GoalSelector;
 accessible field net/minecraft/world/chunk/Chunk blockEntityNbts Ljava/util/Map;
+accessible field net/minecraft/entity/ai/goal/MeleeAttackGoal lastUpdateTime J
+accessible field net/minecraft/entity/ai/goal/MeleeAttackGoal path Lnet/minecraft/entity/ai/pathing/Path;

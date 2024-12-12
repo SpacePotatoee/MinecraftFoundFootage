@@ -1,4 +1,4 @@
-package com.sp.render;
+package com.sp.render.camera;
 
 import com.sp.ConfigStuff;
 import com.sp.util.MathStuff;

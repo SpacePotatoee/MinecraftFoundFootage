@@ -50,19 +50,11 @@ public class SPBRevamped implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-        // Thanks Bob Mowzie
-        GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());
-        GeckoLib.initialize();
-        // !
-		PrAnCommonClass.init();
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
             PrAnCommonClass.isDev = true;
             PrAnCommonClass.shouldRenderDebugLegs = true;
             PrAnCommonClass.LOGGER.info("Started in a development environment. Debug renderers will be activated by default.");
         }
-
-		MidnightConfig.init(MOD_ID, ConfigStuff.class);
-
 
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level0_chunk_generator"), Level0ChunkGenerator.CODEC);
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level1_chunk_generator"), Level1ChunkGenerator.CODEC);
@@ -76,6 +68,13 @@ public class SPBRevamped implements ModInitializer {
 		ModItemGroups.registerItemGroups();
 		ModBlockEntities.registerAllBlockEntities();
 		GeckoLib.initialize();
+		MidnightConfig.init(MOD_ID, ConfigStuff.class);
+
+		// Thanks Bob Mowzie
+		GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());
+		GeckoLib.initialize();
+		// !
+		PrAnCommonClass.init();
 
 
 		FabricDefaultAttributeRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerEntity.createSkinWalkerAttributes());

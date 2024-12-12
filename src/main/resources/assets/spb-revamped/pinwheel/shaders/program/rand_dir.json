@@ -1,6 +1,6 @@
 {
   "vertex": "veil:blit_screen",
-  "fragment": "spb-revamped:glitch"
+  "fragment": "spb-revamped:rand_dir"
 }
 
 

@@ -10,7 +10,7 @@ uniform sampler2D HandSampler;
 uniform sampler2D RNoiseDir;
 uniform float GameTime;
 
-uniform vec3 samples[150];
+uniform vec3 samples[50];
 
 out vec4 fragColor;
 in vec2 texCoord;
@@ -25,14 +25,13 @@ vec3 viewToScreenSpace(vec3 viewPos){
     return ndcPos * 0.5 + 0.5;
 }
 
-const int QUALITY = 50;
+const int QUALITY = 20;
 
 void main() {
     float depthSample = texture(DiffuseDepthSampler, texCoord).r;
     vec4 mainTexture = texture2D(DiffuseSampler0, texCoord);
     float depth = texture(DepthSampler, texCoord).r;
     float handDepth = texture(HandSampler, texCoord).r;
-
 
     vec3 viewPos = viewPosFromDepth(depth, texCoord);
     vec3 normal = normalize(texture(NormalSampler, texCoord).rgb);
@@ -50,7 +49,7 @@ void main() {
         for (int i = 0; i < QUALITY; i++) {
             samplePos = samples[i] * TBN;
 
-            //Add the World Pos to it
+            //Add the view Pos to it
             vec3 worldSamplePos = samplePos + viewPos;
 
             //To screen space
@@ -70,9 +69,10 @@ void main() {
         }
         occlusion /= QUALITY;
         fragColor = vec4(vec3(1.0 - occlusion), 1.0);
+//        fragColor = vec4(randDir * TBN, 1.0);
     }else {
         fragColor = vec4(1.0);
     }
-//    fragColor = vec4(vec3(depthSample), 1.0);
+
 
 }

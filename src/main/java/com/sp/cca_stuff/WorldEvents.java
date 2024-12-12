@@ -79,6 +79,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     private AbstractEvent activeEvent;
     private boolean eventActive;
     private int ticks;
+    private int delay;
 
 
     public WorldEvents(World world){
@@ -101,12 +102,12 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.registered = false;
         this.eventActive = false;
         this.ticks = 0;
+        this.delay = 0;
     }
 
     public boolean isEventActive() {
         return eventActive;
     }
-
     public void setEventActive(boolean eventActive) {
         this.eventActive = eventActive;
     }
@@ -114,7 +115,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public int getIntercomCount() {
         return intercomCount;
     }
-
     public void addIntercomCount() {
         this.intercomCount = this.intercomCount + 1;
     }
@@ -122,7 +122,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public boolean isLevel0Blackout() {
         return level0Blackout;
     }
-
     public void setLevel0Blackout(boolean level0Blackout) {
         this.level0Blackout = level0Blackout;
     }
@@ -130,7 +129,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public boolean isLevel1Blackout() {
         return level1Blackout;
     }
-
     public void setLevel1Blackout(boolean level1Blackout) {
         this.level1Blackout = level1Blackout;
     }
@@ -138,7 +136,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public boolean isLevel2Blackout() {
         return level2Blackout;
     }
-
     public void setLevel2Blackout(boolean level2Blackout) {
         this.level2Blackout = level2Blackout;
     }
@@ -146,7 +143,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public boolean isLevel0On() {
         return level0On;
     }
-
     public void setLevel0On(boolean level0On) {
         this.level0On = level0On;
     }
@@ -154,7 +150,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public boolean isLevel0Flicker() {
         return level0Flicker;
     }
-
     public void setLevel0Flicker(boolean level0Flicker) {
         this.level0Flicker = level0Flicker;
     }
@@ -162,7 +157,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public boolean isLevel1Flicker() {
         return level1Flicker;
     }
-
     public void setLevel1Flicker(boolean level1Flicker) {
         this.level1Flicker = level1Flicker;
     }
@@ -170,7 +164,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public boolean isLevel2Flicker() {
         return level2Flicker;
     }
-
     public void setLevel2Flicker(boolean level2Flicker) {
         this.level2Flicker = level2Flicker;
     }
@@ -178,7 +171,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public boolean isLevel2Warp() {
         return level2Warp;
     }
-
     public void setLevel2Warp(boolean level2Warp) {
         this.level2Warp = level2Warp;
     }
@@ -186,7 +178,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public boolean isSunsetTransition() {
         return sunsetTransition;
     }
-
     public void setSunsetTransition(boolean sunsetTransition) {
         this.sunsetTransition = sunsetTransition;
     }
@@ -194,7 +185,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     public boolean isNoon() {
         return noon;
     }
-
     public void setNoon(boolean noon) {
         this.noon = noon;
     }
@@ -247,22 +237,20 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         Random random = Random.create();
         getPrevSettings();
 
-        if (!registered) {
+        if (!this.registered) {
             registerEvents();
-            registered = true;
+            this.registered = true;
         }
 
         if(client.world != null && client.player != null) {
             //Only tick for the current Dimension instead of all of them
             if (this.world.getRegistryKey() == client.world.getRegistryKey()){
                 ticks++;
-
-
-
+                delay++;
                 checkDimension(client);
 
                 if (!eventActive) {
-                    if (client.player.isSneaking()) {
+                    if (delay >= 1200) {
                         if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty()) {
                             int currentDimension = getCurrentDimension();
 
@@ -307,6 +295,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                     return;
                             }
                         }
+                        delay = 0;
                     }
                 } else {
                     if (activeEvent.duration() <= ticks) {
@@ -324,14 +313,14 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
     private void registerEvents(){
         level0EventList = new ArrayList<>();
-            level0EventList.add(Level0Blackout::new);
+//            level0EventList.add(Level0Blackout::new);
             level0EventList.add(Level0Flicker::new);
-            level0EventList.add(Level0IntercomBasic::new);
-            level0EventList.add(Level0Music::new);
+//            level0EventList.add(Level0IntercomBasic::new);
+//            level0EventList.add(Level0Music::new);
 
 
         level1EventList = new ArrayList<>();
-            level1EventList.add(Level1Blackout::new);
+//            level1EventList.add(Level1Blackout::new);
             level1EventList.add(Level1Flicker::new);
             level1EventList.add(Level1Ambience::new);
 

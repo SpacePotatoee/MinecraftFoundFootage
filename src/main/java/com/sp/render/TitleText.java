@@ -2,10 +2,10 @@ package com.sp.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevampedClient;
+import com.sp.render.camera.CutsceneManager;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 

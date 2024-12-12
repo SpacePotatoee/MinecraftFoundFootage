@@ -3,8 +3,8 @@ package com.sp.mixin;
 import com.sp.ConfigStuff;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
-import com.sp.render.CameraRoll;
-import com.sp.render.CutsceneManager;
+import com.sp.render.camera.CameraRoll;
+import com.sp.render.camera.CutsceneManager;
 import com.sp.render.ShadowMapRenderer;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import net.minecraft.client.gl.ShaderProgram;
@@ -81,7 +81,11 @@ public abstract class GameRendererMixin {
     }
 
 
-    @Inject(method = {"getRenderTypeSolidProgram", "getRenderTypeCutoutProgram", "getRenderTypeCutoutMippedProgram"}, at = @At("HEAD"), cancellable = true)
+    @Inject(method = {
+            "getRenderTypeSolidProgram",
+            "getRenderTypeCutoutProgram",
+            "getRenderTypeCutoutMippedProgram"
+    }, at = @At("HEAD"), cancellable = true)
     private static void setSolidShader(CallbackInfoReturnable<ShaderProgram> cir) {
         if(ShadowMapRenderer.isRenderingShadowMap()) {
             foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(shadowSolid);

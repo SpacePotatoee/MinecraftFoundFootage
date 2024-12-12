@@ -7,11 +7,15 @@
     "ChunkStatusMixin",
     "EntityMixin",
     "LevelPropertiesMixin",
-    "PathAccessor",
-    "EntityMixin",
-    "PathAccessor",
     "PlayerEntityMixin",
     "StructureBlockEntityMixin",
+    "cutscene.PathAccessor",
+    "lightshadows.IndirectLightRendererMixin",
+    "lightshadows.IndirectPointLightRendererMixin",
+    "lightshadows.InstancedLightRendererMixin",
+    "lightshadows.InstancedPointLightRendererMixin",
+    "lightshadows.LightRendererMixin",
+    "lightshadows.VeilShadersMixin",
     "respawnsystem.PlayerManagerMixin"
   ],
   "injectors": {

@@ -126,7 +126,7 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
             double noise1 = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
             if (server != null) {
 
-                if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000)){
+                if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 5000)){
                     if(noise1 <= 0){
                         exit = random.nextBetween(1,3);
                         if(exit == 1){

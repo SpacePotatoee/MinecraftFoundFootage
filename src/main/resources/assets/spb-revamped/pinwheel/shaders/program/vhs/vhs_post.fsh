@@ -48,23 +48,23 @@ void main() {
     float worldDepth = length(positionVS);
 
     vec4 blur2 = vec4(0.0);
-    const float kernalSize2 = 11.0;
-    const float halfSize2 = 5.0;
-    const float coeff2 = 1.0 / (kernalSize2 * kernalSize2);
-    const vec2 dx2 = vec2(0.0002, 0.0);
-    const vec2 dy2 = vec2(0.0, 0.0002);
-    for(float x = -halfSize2; x<= halfSize2; x++){
-        for(float y = -halfSize2; y<= halfSize2; y++){
-            blur2 += (coeff2) * texture(DiffuseSampler0, uv + x * dx2 + y * dy2);
-        }
-    }
+//    const float kernalSize2 = 21.0;
+//    const float halfSize2 = 10.0;
+//    const float coeff2 = 1.0 / (kernalSize2 * kernalSize2);
+//    const vec2 dx2 = vec2(0.0002, 0.0);
+//    const vec2 dy2 = vec2(0.0, 0.0002);
+//    for(float x = -halfSize2; x<= halfSize2; x++){
+//        for(float y = -halfSize2; y<= halfSize2; y++){
+//            blur2 += (coeff2) * texture(DiffuseSampler0, uv + x * dx2 + y * dy2);
+//        }
+//    }
 
     //Motion Blur
     vec4 blur3 = vec4(0.0);
-    const float kernalSize3 = 11.0;
+    const float kernalSize3 = 3.0;
     const float coeff3 = 1.0 / (kernalSize3 * kernalSize3);
     for(float x = -1.0; x <= 1.0; x += coeff3){
-        blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(Velocity.x * x, Velocity.y * x) * 0.04) * 0.5;
+        blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(Velocity.x * x, Velocity.y * x) * 0.05) * 0.5;
     }
 
     //TV OVERLAY
@@ -102,7 +102,7 @@ void main() {
         fragColor *= viginette+0.3;
     }else {
         if(youCantEscape == 0){
-            fragColor = (blur2 + blur3) / 2.0;
+            fragColor = (blur2 + blur3);
         } else {
             vec2 uv2 = vec2(uv.x + octave(uv.y + GameTime * 2000.0) * 0.01, uv.y);
 

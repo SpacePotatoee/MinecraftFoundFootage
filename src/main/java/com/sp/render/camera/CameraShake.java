@@ -1,4 +1,4 @@
-package com.sp.render;
+package com.sp.render.camera;
 
 import foundry.veil.api.client.util.Easings;
 import net.minecraft.client.render.Camera;

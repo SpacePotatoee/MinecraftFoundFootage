@@ -1,10 +1,10 @@
-package com.sp.render;
+package com.sp.render.camera;
 
 import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.ModSounds;
-import com.sp.mixin.PathAccessor;
+import com.sp.mixin.cutscene.PathAccessor;
 import com.sp.networking.InitializePackets;
 import com.sp.util.MathStuff;
 import com.sp.init.BackroomsLevels;

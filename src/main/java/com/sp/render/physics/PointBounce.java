@@ -1,16 +1,10 @@
-package com.sp.render;
+package com.sp.render.physics;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.sp.render.physics.PhysicsPoint;
-import com.sp.render.physics.PhysicsStick;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.math.Vec3d;
 
 public class PointBounce implements HudRenderCallback {
     private boolean initialized = false;

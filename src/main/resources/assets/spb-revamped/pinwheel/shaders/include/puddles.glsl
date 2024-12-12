@@ -4,9 +4,10 @@
 
 #define REFLECTIVITY 0.6
 
-const float rayStep = 0.01;
-const int maxSteps = 1000;
-const int BinSearchSteps = 50;
+const float rayStep = 0.1;
+const int maxSteps = 100;
+const int BinSearchSteps = 10;
+const float SCALE = 0.75;
 
 vec3 hash(vec3 p){
     p = vec3( dot(p,vec3(127.1,311.7, -74.7)),
@@ -93,8 +94,8 @@ vec4 getPuddles(vec4 fragColor, vec2 texCoord, vec4 normal, sampler2D DiffuseSam
     vec3 viewSpace = viewPosFromDepth(depth, texCoord);
     vec3 worldSpace = viewToWorldSpace(viewSpace);
 
-    vec4 noise = texture(NoiseTexture, worldSpace.xz * 0.02);
-    vec4 noise_2 = texture(NoiseTexture2, worldSpace.xz * 0.5);
+    vec4 noise = texture(NoiseTexture, (worldSpace.xz * 0.02) * SCALE);
+    vec4 noise_2 = texture(NoiseTexture2, (worldSpace.xz * 0.5) * SCALE);
     noise = (clamp(smoothstep(0.1, 0.9, noise_2) * 0.2, 0.0, 1.0) + smoothstep(0.1, 0.9, noise));
 
     if (worldSpace.y <= 21.001 && worldSpace.y >= 20.99 && length(viewSpace) <= 150){
