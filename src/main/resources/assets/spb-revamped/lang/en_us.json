@@ -72,5 +72,6 @@
   "spb-revamped.midnightconfig.lightRenderDistance": "Light Render Distance (In Blocks)",
   "spb-revamped.midnightconfig.disableHud": "Hide your Hud (Except your hand)",
 
-  "death.attack.acid": "%1$s burned in Acid!"
+  "death.attack.acid": "%1$s burned in Acid!",
+  "death.attack.smiler": "%1$s was killed by a Smiler!"
 }

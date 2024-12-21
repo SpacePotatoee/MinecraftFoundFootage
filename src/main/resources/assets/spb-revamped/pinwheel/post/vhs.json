@@ -40,14 +40,21 @@
             "type": "veil:blit",
             "shader": "spb-revamped:vhs/vhs_post",
             "in": "spb-revamped:everything_wbloom",
+            "out": "swap"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/glitch",
+            "in": "swap",
             "out": "veil:post"
         }
     ],
+    "framebuffers": {
+        "swap": {
+            "depth": true
+        }
+    },
     "textures": {
-        "NoEscape": {
-            "type": "location",
-            "location": "spb-revamped:textures/shaders/you_cant_escape.png"
-        },
         "NoiseTex": {
             "type": "location",
             "location": "spb-revamped:textures/shaders/rnoise.png"

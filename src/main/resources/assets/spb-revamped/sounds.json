@@ -268,5 +268,25 @@
     "sounds": [
       "spb-revamped:skinwalker/reveal/reveal"
     ]
+  },
+  "jumpscare": {
+    "sounds": [
+      "spb-revamped:skinwalker/jumpscare"
+    ]
+  },
+  "skinwalker_release": {
+    "sounds": [
+      "spb-revamped:skinwalker/release"
+    ]
+  },
+  "smiler_laugh": {
+    "sounds": [
+      "spb-revamped:smiler/smiler_laugh"
+    ]
+  },
+  "smiler_glitch": {
+    "sounds": [
+      "spb-revamped:smiler/smiler_glitch"
+    ]
   }
 }

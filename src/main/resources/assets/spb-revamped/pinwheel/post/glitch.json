@@ -1,0 +1,20 @@
+{
+  "stages": [
+    {
+      "type": "veil:blit",
+      "shader": "spb-revamped:glitch",
+      "in": "minecraft:main",
+      "out": "veil:post"
+    }
+  ],
+  "textures": {
+    "rNoise": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/rnoisedir.png"
+    },
+    "DepthSampler": {
+      "type": "framebuffer",
+      "name": "veil:transparent:depth"
+    }
+  }
+}

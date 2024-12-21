@@ -8,10 +8,18 @@ uniform sampler2D DiffuseDepthSampler;
 uniform sampler2D MidSampler;
 uniform sampler2D VhsNoise;
 uniform sampler2D NoEscape;
+uniform sampler2D CreepyFace1Image;
+uniform sampler2D CreepyFace2Image;
 
 uniform vec2 Velocity;
 uniform float GameTime;
+
 uniform int youCantEscape;
+uniform int Jumpscare;
+uniform int CreepyFace1;
+uniform int CreepyFace2;
+uniform vec2 Rand;
+
 
 in vec2 texCoord;
 out vec4 fragColor;
@@ -114,6 +122,18 @@ void main() {
 
 
             fragColor = vec4(red, green, blue, 1.0);
+        }
+
+        if(Jumpscare == 1){
+            fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+            if(CreepyFace1 == 1){
+                fragColor = texture(CreepyFace1Image, texCoord);
+            }
+
+            if(CreepyFace2 == 1){
+                fragColor = texture(CreepyFace2Image, texCoord + Rand * 0.01);
+            }
         }
 
         //VHS POSST EFFECTS

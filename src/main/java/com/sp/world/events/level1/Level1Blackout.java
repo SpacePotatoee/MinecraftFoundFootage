@@ -22,11 +22,17 @@ public class Level1Blackout implements AbstractEvent {
     public void reset(World world) {
         WorldEvents events = InitializeComponents.EVENTS.get(world);
         events.setLevel1Blackout(false);
+        this.playSound(world, ModSounds.LIGHTS_ON);
         done = true;
     }
 
     @Override
     public boolean isDone() {
         return done;
+    }
+
+    @Override
+    public int duration() {
+        return 1200;
     }
 }

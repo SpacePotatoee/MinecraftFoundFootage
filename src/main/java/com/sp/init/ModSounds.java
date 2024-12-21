@@ -74,6 +74,11 @@ public class ModSounds {
     public static final SoundEvent SKINWALKER_BONE_CRACK = registerSoundEvent("skinwalker_bone_crack");
     public static final SoundEvent SKINWALKER_BONE_CRACK_LONG = registerSoundEvent("skinwalker_bone_crack_long");
     public static final SoundEvent SKINWALKER_REVEAL = registerSoundEvent("skinwalker_reveal");
+    public static final SoundEvent JUMPSCARE = registerSoundEvent("jumpscare");
+    public static final SoundEvent SKINWALKER_RELEASE = registerSoundEvent("skinwalker_release");
+
+    public static final SoundEvent SMILER_AMBIENCE = registerSoundEvent("smiler_laugh");
+    public static final SoundEvent SMILER_GLITCH = registerSoundEvent("smiler_glitch");
 
 
     private static SoundEvent registerSoundEvent(String name) {

@@ -1,4 +1,18 @@
 {
   "vertex": "spb-revamped:vhs/vhs_post",
-  "fragment": "spb-revamped:vhs/vhs_post"
+  "fragment": "spb-revamped:vhs/vhs_post",
+  "textures": {
+    "NoEscape": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/you_cant_escape.png"
+    },
+    "CreepyFace1Image": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/creepy_face1.png"
+    },
+    "CreepyFace2Image": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/creepy_face2.png"
+    }
+  }
 }
