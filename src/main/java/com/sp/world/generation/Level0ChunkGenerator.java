@@ -100,9 +100,8 @@ public class Level0ChunkGenerator extends ChunkGenerator {
                             structurePlacementData, random, 2);
                 }
             } else if (((float) chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float) chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
-                world.setBlockState(mutable.set(x - 32, 28, z - 32), Blocks.GLOWSTONE.getDefaultState(), 16);
 
-                if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 5000)){
+                if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000)) {
                     if(megaRooms != 1){
                         exit = random.nextBetween(1,3);
                         if(exit == 1){
@@ -223,7 +222,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
 
     public Identifier getRoof(){
         Random random = Random.create();
-        int roofNumber = random.nextBetween(1,7);
+        int roofNumber = random.nextBetween(1,5);
 
         if (roofNumber == 1){
             return new Identifier(SPBRevamped.MOD_ID, "level0/roof2");

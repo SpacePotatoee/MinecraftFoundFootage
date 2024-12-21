@@ -37,6 +37,9 @@ public abstract class GameRendererMixin {
     @Unique
     private static final Identifier shadowEntity = new Identifier(SPBRevamped.MOD_ID, "shadowmap/rendertype_entity");
 
+    @Unique
+    private static final Identifier warpEntity = new Identifier("spbrevamped", "warp_player");
+
 
     @Shadow @Final private Camera camera;
     @Shadow @Final MinecraftClient client;
@@ -55,7 +58,7 @@ public abstract class GameRendererMixin {
         if (player != null) {
             CutsceneManager cutsceneManager = SPBRevampedClient.getCutsceneManager();
 
-            if(ConfigStuff.enableCameraRoll && !cutsceneManager.isPlaying) {
+            if(ConfigStuff.enableCameraRoll && !cutsceneManager.isPlaying && client.getCameraEntity() == player) {
                 matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(CameraRoll.doCameraRoll(player, tickDelta)));
             }
             else if(cutsceneManager.isPlaying){
@@ -111,6 +114,17 @@ public abstract class GameRendererMixin {
             }
             cir.setReturnValue(shader.toShaderInstance());
         }
+    }
+
+    @Inject(method = {
+            "getRenderTypeEntityTranslucentProgram"
+    }, at = @At("TAIL"), cancellable = true)
+    private static void setPlayerWarpShader(CallbackInfoReturnable<ShaderProgram> cir) {
+        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(warpEntity);
+        if (shader == null) {
+            return;
+        }
+        cir.setReturnValue(shader.toShaderInstance());
     }
 
     @Redirect(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Camera;F)V"))

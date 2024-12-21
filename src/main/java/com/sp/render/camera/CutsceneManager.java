@@ -1,5 +1,6 @@
 package com.sp.render.camera;
 
+import com.sp.ConfigStuff;
 import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
@@ -35,6 +36,7 @@ public class CutsceneManager {
     public boolean started;
     public boolean isPlaying;
     public boolean fall;
+    private int prevLightRenderDistance;
     public boolean backroomsBySP;
     private long startTime;
     private final int duration;
@@ -112,6 +114,8 @@ public class CutsceneManager {
     private void Fall(){
         if(!this.backroomsBySP && this.fall) {
             if (!this.isPlaying) {
+                this.prevLightRenderDistance = ConfigStuff.lightRenderDistance;
+                ConfigStuff.lightRenderDistance = 1000;
                 this.startTime = System.currentTimeMillis();
                 this.isPlaying = true;
                 SPBRevampedClient.getCameraShake().setCameraShake(MathStuff.millisecToTick(this.duration), 1, Easings.Easing.linear, true);
@@ -127,6 +131,7 @@ public class CutsceneManager {
                 this.startTime = System.currentTimeMillis() + 2500L;
                 this.fall = false;
                 camera.refreshPositionAndAngles(3, 21, 1.5, 15, (float) 90);
+                ConfigStuff.lightRenderDistance = this.prevLightRenderDistance;
             } else {
                 Vec3d newCameraPos = lerpedCameraPos(timer);
                 Vec3d newCameraRot = lerpedCameraRot(timer);

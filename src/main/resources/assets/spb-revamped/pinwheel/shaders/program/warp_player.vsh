@@ -27,7 +27,6 @@ out vec2 texCoord2;
 out vec4 overlayColor;
 out vec4 lightmapColor;
 out vec3 normal;
-out vec3 Pos;
 
 void main() {
     vec3 cameraPos = VeilCamera.CameraPosition;

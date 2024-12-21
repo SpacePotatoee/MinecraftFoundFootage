@@ -3,6 +3,7 @@ package com.sp;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.entity.custom.SkinWalkerEntity;
+import com.sp.entity.custom.SmilerEntity;
 import com.sp.entity.ik.model.GeckoLib.MowzieModelFactory;
 import com.sp.entity.ik.util.PrAnCommonClass;
 import com.sp.init.ModBlockEntities;
@@ -33,6 +34,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +80,7 @@ public class SPBRevamped implements ModInitializer {
 
 
 		FabricDefaultAttributeRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerEntity.createSkinWalkerAttributes());
+		FabricDefaultAttributeRegistry.register(ModEntities.SMILER_ENTITY, SmilerEntity.createSmilerAttributes());
 
 
 		System.out.println("\"WOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooooooooo..........\" -He said as he fell into the backrooms, never to be seen again.");
@@ -135,6 +138,14 @@ public class SPBRevamped implements ModInitializer {
 		buffer.writeBoolean(shouldPauseSounds);
 		buffer.writeBoolean(noEscape);
 		ServerPlayNetworking.send(player, InitializePackets.BLACK_SCREEN, buffer);
+	}
+
+	public static void sendPlaySoundPacket(ServerPlayerEntity player, SoundEvent sound, float volume, float pitch){
+		PacketByteBuf buffer = PacketByteBufs.create();
+		buffer.writeRegistryEntry(Registries.SOUND_EVENT.getIndexedEntries(), RegistryEntry.of(sound), (packetByteBuf, soundEvent) -> soundEvent.writeBuf(packetByteBuf));
+		buffer.writeFloat(volume);
+		buffer.writeFloat(pitch);
+		ServerPlayNetworking.send(player, InitializePackets.SOUND, buffer);
 	}
 
 }

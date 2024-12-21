@@ -1,6 +1,9 @@
 package com.sp;
 
-import com.sp.entity.client.SkinWalkerRenderer;
+import com.sp.entity.client.model.SmilerModel;
+import com.sp.entity.client.renderer.SkinWalkerRenderer;
+import com.sp.entity.client.renderer.SmilerRenderer;
+import com.sp.entity.custom.SmilerEntity;
 import com.sp.init.*;
 import com.sp.block.renderer.*;
 import com.sp.cca_stuff.InitializeComponents;
@@ -11,8 +14,10 @@ import com.sp.networking.InitializePackets;
 import com.sp.render.*;
 import com.sp.render.camera.CameraShake;
 import com.sp.render.camera.CutsceneManager;
+import com.sp.render.gui.TitleText;
 import com.sp.render.physics.PhysicsPoint;
 import com.sp.render.physics.PhysicsStick;
+import com.sp.sounds.entity.SmilerGlitchSoundInstance;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
 import com.sp.init.BackroomsLevels;
@@ -31,8 +36,12 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.render.*;
@@ -40,8 +49,13 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.resource.ResourcePackManager;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.*;
 
@@ -59,6 +73,7 @@ public class SPBRevampedClient implements ClientModInitializer {
     private static final Identifier POST_VHS = new Identifier(SPBRevamped.MOD_ID, "vhs/vhs_post");
     private static final Identifier WATER_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/water");
     private static final Identifier MIXED_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/mixed");
+    private static final Identifier GLITCH_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/glitch");
 
     float prevYaw2;
     float prevPitch2;
@@ -75,6 +90,8 @@ public class SPBRevampedClient implements ClientModInitializer {
     public static TickTimer SunsetTimer = new TickTimer();
     public static boolean blackScreen;
     public static boolean youCantEscape;
+
+    Random random = Random.create();
 
     @Override
     public void onInitializeClient() {
@@ -121,34 +138,42 @@ public class SPBRevampedClient implements ClientModInitializer {
         BlockEntityRendererFactories.register(ModBlockEntities.THIN_FLUORESCENT_LIGHT_BLOCK_ENTITY, ThinFluorescentLightBlockEntityRenderer::new);
 
         EntityRendererRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerRenderer::new);
+        EntityRendererRegistry.register(ModEntities.SMILER_ENTITY, SmilerRenderer::new);
+
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SMILER, SmilerModel::getTexturedModelData);
 
 
         VeilEventPlatform.INSTANCE.onVeilRenderTypeStageRender((stage, levelRenderer, bufferSource, poseStack, projectionMatrix, renderTick, partialTicks, camera, frustum) -> {
-//        MinecraftClient.getInstance().getResourcePackManager().enable();
             //Setting for later use
             if(camera != null){
                 this.camera = camera;
             }
 
             MinecraftClient client = MinecraftClient.getInstance();
-            if(client.world != null) {
+            World clientWorld = client.world;
+            if(clientWorld != null) {
                 //Only render the shadow map when in the poolrooms
-                if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                if (clientWorld.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
                     if (stage == Stage.AFTER_SKY) {
                         if (camera != null) {
-                            ShadowMapRenderer.renderShadowMap(camera, partialTicks, client.world);
+                            ShadowMapRenderer.renderShadowMap(camera, partialTicks, clientWorld);
                         }
                     }
                 }
 
-                if (client.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                    if (stage == Stage.AFTER_SKY) {
-                        if (camera != null) {
-                            ShadowMapRenderer.renderLevel0ShadowMap(camera, client.world);
+                if(!cutsceneManager.fall) {
+                    if (clientWorld.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+                        if (stage == Stage.AFTER_SKY) {
+                            if (camera != null) {
+                                ShadowMapRenderer.renderLevel0ShadowMap(camera, clientWorld);
+                            }
                         }
                     }
                 }
             }
+
+            ResourcePackManager resourcePackManager = client.getResourcePackManager();
+            resourcePackManager.enable("veil:deferred");
 
 
             //Flashlight
@@ -168,7 +193,41 @@ public class SPBRevampedClient implements ClientModInitializer {
                         postProcessingManager.remove(VHS_POST);
                     }
                 }
+
+
+                if (client.player != null) {
+                    if (clientWorld != null) {
+                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(client.player);
+                        WorldEvents events = InitializeComponents.EVENTS.get(clientWorld);
+                        Entity activeSkinwalker = events.getActiveSkinwalkerTarget();
+
+
+                        if (activeSkinwalker != null) {
+                            Box box = activeSkinwalker.getVisibilityBoundingBox().expand(0.1);
+                            boolean inFrustum = frustum.isVisible(box);
+
+                            if (inFrustum && client.player.canSee(activeSkinwalker)) {
+                                if (!playerComponent.canSeeActiveSkinWalkerTarget()) {
+                                    playerComponent.setCanSeeActiveSkinWalkerTarget(true);
+
+                                    PacketByteBuf buffer = PacketByteBufs.create();
+                                    buffer.writeBoolean(playerComponent.canSeeActiveSkinWalkerTarget());
+                                    ClientPlayNetworking.send(InitializePackets.SEE_SKINWALKER_SYNC, buffer);
+                                }
+                            } else {
+                                if (playerComponent.canSeeActiveSkinWalkerTarget()) {
+                                    playerComponent.setCanSeeActiveSkinWalkerTarget(false);
+
+                                    PacketByteBuf buffer = PacketByteBufs.create();
+                                    buffer.writeBoolean(playerComponent.canSeeActiveSkinWalkerTarget());
+                                    ClientPlayNetworking.send(InitializePackets.SEE_SKINWALKER_SYNC, buffer);
+                                }
+                            }
+                        }
+                    }
+                }
             }
+
         });
 
 
@@ -186,6 +245,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
             if (player != null && client.world != null) {
                 WorldEvents events = InitializeComponents.EVENTS.get(client.world);
+                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                 float yaw = player.getYaw();
                 float pitch = player.getPitch();
                 float yawRotAmount = yaw - prevYaw2;
@@ -194,8 +254,12 @@ public class SPBRevampedClient implements ClientModInitializer {
                 if (VHS_POST.equals(name)) {
                     ShaderProgram shaderProgram = context.getShader(POST_VHS);
                     if (shaderProgram != null) {
-                        if(!getCutsceneManager().isPlaying) {
-                            shaderProgram.setVector("Velocity", MathHelper.cos((float) Math.toRadians(yawRotAmount + 90.0f)), MathHelper.sin((float) Math.toRadians(pitchRotAmount)));
+                        if(client.getCameraEntity() == player) {
+                            if (!getCutsceneManager().isPlaying) {
+                                shaderProgram.setVector("Velocity", MathHelper.cos((float) Math.toRadians(yawRotAmount + 90.0f)), MathHelper.sin((float) Math.toRadians(pitchRotAmount)));
+                            } else {
+                                shaderProgram.setVector("Velocity", 0, 0);
+                            }
                         } else {
                             shaderProgram.setVector("Velocity", 0, 0);
                         }
@@ -204,6 +268,15 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("youCantEscape", 1);
                         } else {
                             shaderProgram.setInt("youCantEscape", 0);
+                        }
+
+                        if(playerComponent.isBeingCaptured()){
+                            SkinwalkerJumpscare.doJumpscare(shaderProgram, client, playerComponent);
+                        } else {
+                            shaderProgram.setInt("Jumpscare", 0);
+                            shaderProgram.setInt("CreepyFace1", 0);
+                            shaderProgram.setInt("CreepyFace2", 0);
+                            shaderProgram.setVector("Rand", 0, 0);
                         }
                     }
 
@@ -220,7 +293,8 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("FogToggle", 0);
                         }
 
-                        if(blackScreen || (player.isInsideWall() && !getCutsceneManager().isPlaying)){
+
+                        if(blackScreen || (player.isInsideWall() && !getCutsceneManager().isPlaying) || playerComponent.isBeingReleased()){
                             shaderProgram.setInt("blackScreen", 1);
                         } else {
                             shaderProgram.setInt("blackScreen", 0);
@@ -262,6 +336,11 @@ public class SPBRevampedClient implements ClientModInitializer {
                         } else {
                             shaderProgram.setInt("OverWorld", 1);
                         }
+                    }
+
+                    shaderProgram = context.getShader(GLITCH_SHADER);
+                    if (shaderProgram != null) {
+                        shaderProgram.setFloat("glitchTime", playerComponent.getGlitchTimer());
                     }
 
                 }
@@ -306,7 +385,6 @@ public class SPBRevampedClient implements ClientModInitializer {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) ->{
-//            ClientManager.getPlayerStateManager().setMuted(false);
 
             Vector<PhysicsPoint> physicsPoints = PhysicsPoint.getAllInstances();
             if(!physicsPoints.isEmpty()){
@@ -475,6 +553,13 @@ public class SPBRevampedClient implements ClientModInitializer {
                 return 1;
             }
         }
+    }
+
+    public static void sendGlitchDamagePacket(boolean shouldDamage) {
+        System.out.println("SENT PACKET TO: " + MinecraftClient.getInstance().player.getName().toString());
+        PacketByteBuf buffer = PacketByteBufs.create();
+        buffer.writeBoolean(shouldDamage);
+        ClientPlayNetworking.send(InitializePackets.GLITCH_DAMAGE_SYNC, buffer);
     }
 
     public static boolean isInBackrooms() {

@@ -122,7 +122,6 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
             Level1MazeGenerator level1MazeGenerator = new Level1MazeGenerator(8, 10, 10, x, z, "level1");
             level1MazeGenerator.setup(world, false);
         } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0){
-            world.setBlockState(mutable.set(x - 32, 17, z - 32), Blocks.GLOWSTONE.getDefaultState(), 16);
             double noise1 = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
             if (server != null) {
 

@@ -1,4 +1,4 @@
-package com.sp.render;
+package com.sp.render.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevampedClient;

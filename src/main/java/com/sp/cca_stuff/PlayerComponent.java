@@ -3,13 +3,19 @@ package com.sp.cca_stuff;
 import com.sp.Keybinds;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
+import com.sp.entity.client.SkinWalkerCapturedFlavorText;
+import com.sp.entity.custom.SmilerEntity;
+import com.sp.init.ModDamageTypes;
 import com.sp.init.ModSounds;
 import com.sp.networking.InitializePackets;
 import com.sp.sounds.AmbientSoundInstance;
 import com.sp.sounds.PoolroomsNoonAmbienceSoundInstance;
 import com.sp.sounds.PoolroomsSunsetAmbienceSoundInstance;
+import com.sp.sounds.entity.SmilerAmbienceSoundInstance;
+import com.sp.sounds.entity.SmilerGlitchSoundInstance;
 import com.sp.sounds.pipes.GasPipeSoundInstance;
 import com.sp.sounds.pipes.WaterPipeSoundInstance;
+import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.util.Timer;
 import com.sp.init.BackroomsLevels;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
@@ -22,6 +28,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -37,6 +44,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -60,9 +68,15 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private boolean shouldDoStatic;
     private Timer staticTimer;
 
+    private boolean isBeingCaptured;
+    private boolean hasBeenCaptured;
+    private boolean isBeingReleased;
     private Entity targetEntity;
     private int skinWalkerLookDelay;
-    private boolean shouldStayUnmuted;
+    private boolean shouldBeMuted;
+    private boolean isSpeaking;
+    private int speakingBuffer;
+    private float prevSpeakingTime;
     private boolean visibleToEntity;
     private int visibilityTimer;
     private int visibilityTimerCooldown;
@@ -72,9 +86,16 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     MovingSoundInstance WaterPipeAmbience;
     MovingSoundInstance PoolroomsNoonAmbience;
     MovingSoundInstance PoolroomsSunsetAmbience;
+    MovingSoundInstance GlitchAmbience;
+    MovingSoundInstance SmilerAmbience;
 
-
+    private boolean canSeeActiveSkinWalker;
     private boolean prevFlashLightOn;
+
+    public float glitchTimer;
+    private boolean shouldGlitch;
+    public int glitchTick;
+    public boolean shouldInflictGlitchDamage;
 
     public PlayerComponent(PlayerEntity player){
         this.player = player;
@@ -91,14 +112,26 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.readyForLevel2 = false;
         this.readyForPoolrooms = false;
 
+        this.isBeingCaptured = false;
+        this.hasBeenCaptured = false;
+        this.isBeingReleased = false;
         this.skinWalkerLookDelay = 60;
-        this.shouldStayUnmuted = true;
+        this.shouldBeMuted = false;
+        this.isSpeaking = false;
+        this.speakingBuffer = 80;
+        this.prevSpeakingTime = 0;
         this.visibleToEntity = false;
         this.visibilityTimer = 15;
         this.visibilityTimerCooldown = 0;
 
         this.suffocationTimer = 0;
         this.level2Timer = 200;
+
+        this.canSeeActiveSkinWalker = false;
+
+        this.glitchTimer = 0.0f;
+        this.shouldGlitch = false;
+        this.glitchTick = 0;
     }
 
 
@@ -151,6 +184,19 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.shouldDoStatic = shouldDoStatic;
     }
 
+    public boolean isBeingCaptured() {return isBeingCaptured;}
+    public void setBeingCaptured(boolean beingCaptured) {isBeingCaptured = beingCaptured;}
+
+    public boolean hasBeenCaptured() {return hasBeenCaptured;}
+    public void setHasBeenCaptured(boolean hasBeenCaptured) {this.hasBeenCaptured = hasBeenCaptured;}
+
+    public boolean isBeingReleased() {
+        return isBeingReleased;
+    }
+    public void setBeingReleased(boolean beingReleased) {
+        isBeingReleased = beingReleased;
+    }
+
     public Entity getTargetEntity() {return targetEntity;}
     public void setTargetEntity(Entity targetEntity) {
         this.targetEntity = targetEntity;
@@ -166,11 +212,39 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.skinWalkerLookDelay -= 1;
     }
 
-    public boolean shouldStayUnmuted() {return shouldStayUnmuted;}
-    public void setShouldStayUnmuted(boolean shouldStayUnmuted) {this.shouldStayUnmuted = shouldStayUnmuted;}
+    public boolean shouldBeMuted() {return shouldBeMuted;}
+    public void setShouldBeMuted(boolean shouldStayUnmuted) {this.shouldBeMuted = shouldStayUnmuted;}
+
+    public boolean isSpeaking() {
+        return isSpeaking;
+    }
+    public void setSpeaking(boolean speaking) {
+        isSpeaking = speaking;
+    }
 
     public boolean isVisibleToEntity() {return visibleToEntity;}
     public void setVisibleToEntity(boolean visibleToEntity) {this.visibleToEntity = visibleToEntity;}
+
+    public boolean canSeeActiveSkinWalkerTarget() {return canSeeActiveSkinWalker;}
+    public void setCanSeeActiveSkinWalkerTarget(boolean canSeeActiveSkinWalker) {this.canSeeActiveSkinWalker = canSeeActiveSkinWalker;}
+
+    public float getGlitchTimer() {
+        return glitchTimer;
+    }
+
+    public boolean shouldGlitch() {
+        return shouldGlitch;
+    }
+    public void setShouldGlitch(boolean shouldGlitch) {
+        this.shouldGlitch = shouldGlitch;
+    }
+
+    public boolean shouldInflictGlitchDamage() {
+        return shouldInflictGlitchDamage;
+    }
+    public void setShouldInflictGlitchDamage(boolean shouldInflictGlitchDamage) {
+        this.shouldInflictGlitchDamage = shouldInflictGlitchDamage;
+    }
 
     @Override
     public void readFromNbt(NbtCompound tag) {
@@ -182,6 +256,12 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.isTeleportingToPoolrooms = tag.getBoolean("isTeleportingToPoolrooms");
         this.shouldNoClip = tag.getBoolean("shouldNoClip");
         this.shouldDoStatic = tag.getBoolean("shouldDoStatic");
+        this.isBeingCaptured = tag.getBoolean("isBeingCaptured");
+        this.hasBeenCaptured = tag.getBoolean("hasBeenCaptured");
+        this.isBeingReleased = tag.getBoolean("isBeingReleased");
+        this.shouldBeMuted = tag.getBoolean("shouldBeMuted");
+        this.shouldGlitch = tag.getBoolean("shouldGlitch");
+        this.shouldInflictGlitchDamage = tag.getBoolean("shouldInflictGlitchDamage");
     }
 
     @Override
@@ -194,6 +274,12 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         tag.putBoolean("isTeleportingToPoolrooms", this.isTeleportingToPoolrooms);
         tag.putBoolean("shouldNoClip", this.shouldNoClip);
         tag.putBoolean("shouldDoStatic", this.shouldDoStatic);
+        tag.putBoolean("isBeingCaptured", this.isBeingCaptured);
+        tag.putBoolean("hasBeenCaptured", this.hasBeenCaptured);
+        tag.putBoolean("isBeingReleased", this.isBeingReleased);
+        tag.putBoolean("shouldBeMuted", this.shouldBeMuted);
+        tag.putBoolean("shouldGlitch", this.shouldGlitch);
+        tag.putBoolean("shouldInflictGlitchDamage", this.shouldInflictGlitchDamage);
     }
 
     public void sync(){
@@ -204,91 +290,201 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public void clientTick() {
         MinecraftClient client = MinecraftClient.getInstance();
 
-        //Sync Target Entity
-        if(this.getTargetEntity() != client.targetedEntity) {
-            this.setTargetEntity(client.targetedEntity);
+        if(client.player != null && this.player == client.player) {
 
-            PacketByteBuf buffer = PacketByteBufs.create();
-            if(this.getTargetEntity() != null){
-                buffer.writeInt(this.getTargetEntity().getId());
-            } else {
-                buffer.writeInt(-1);
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //Get a list of all the smilers in the area and see if any of them can see you
+            List<SmilerEntity> smilerEntityList = this.player.getWorld().getEntitiesByClass(SmilerEntity.class, this.player.getBoundingBox().expand(15, 1, 15), livingEntity -> true);
+            boolean isSeen = false;
+            if(!smilerEntityList.isEmpty()){
+                for(SmilerEntity smiler : smilerEntityList) {
+                    if(smiler.canSee(this.player)){
+                        this.setShouldGlitch(true);
+                        isSeen = true;
+                    }
+                }
             }
-            ClientPlayNetworking.send(InitializePackets.TARGET_ENTITY_SYNC, buffer);
-        }
 
-        //Client side stuff for level 0 -> 1 and 1 -> 2 transitions
-        if(this.isTeleporting){
-            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-            this.isTeleporting = false;
+            if (!isSeen) {
+                this.setShouldGlitch(false);
+            }
 
-            //Turn off the lights
-            client.player.playSound(ModSounds.LIGHTS_OUT, SoundCategory.AMBIENT, 1, 1);
-            SPBRevampedClient.getCutsceneManager().blackScreen.showBlackScreen(80, false, false);
+            //Update smiler glitch effect
+            if(this.shouldGlitch()) {
+                this.glitchTick = Math.min(this.glitchTick + 1, 80);
+                this.glitchTimer = Math.min((float) this.glitchTick / 80, 1.0f);
 
-            //PlaySound after black screen is over
-            executorService.schedule(() -> {
-                client.player.playSound(ModSounds.LIGHTS_ON, SoundCategory.AMBIENT, 1, 1);
-                executorService.shutdown();
-            }, 4000, TimeUnit.MILLISECONDS);
-        }
+                if(!client.getSoundManager().isPlaying(GlitchAmbience)) {
+                    GlitchAmbience = new SmilerGlitchSoundInstance(this.player);
+                    client.getSoundManager().play(GlitchAmbience);
+                }
 
+                if(this.glitchTimer >= 0.25f){
+                    if(!this.shouldInflictGlitchDamage) {
+                        this.shouldInflictGlitchDamage = true;
+//                                System.out.println("SENT TRUE TO: " + this.player.getName().toString());
+                        SPBRevampedClient.sendGlitchDamagePacket(true);
+                    }
+                }
 
-        //Flashlight
-        if (Keybinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen) {
-            player.playSound(ModSounds.FLASHLIGHT_CLICK, 1, 1);
-            if (player.getWorld().getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                this.setFlashLightOn(!this.isFlashLightOn());
+            } else {
+                this.glitchTick = Math.max(this.glitchTick - 1, 0);
+                this.glitchTimer = Math.max((float) this.glitchTick / 80, 0.0f);
+
+                if(this.glitchTimer <= 0){
+                    if(client.getSoundManager().isPlaying(GlitchAmbience)) {
+                        client.getSoundManager().stop(GlitchAmbience);
+                    }
+                }
+
+                if(this.glitchTimer <= 0.75f) {
+                    if(this.shouldInflictGlitchDamage) {
+                        this.shouldInflictGlitchDamage = false;
+//                                System.out.println("SENT FALSE TO: " + this.player.getName().toString());
+                        SPBRevampedClient.sendGlitchDamagePacket(false);
+                    }
+                }
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //Sync Target Entity for updating SkinWalker suspicion
+            if (this.getTargetEntity() != client.targetedEntity) {
+                this.setTargetEntity(client.targetedEntity);
 
                 PacketByteBuf buffer = PacketByteBufs.create();
-                buffer.writeBoolean(this.isFlashLightOn());
-                ClientPlayNetworking.send(InitializePackets.FL_SYNC, buffer);
-            } else {
+                if (this.getTargetEntity() != null) {
+                    buffer.writeInt(this.getTargetEntity().getId());
+                } else {
+                    buffer.writeInt(-1);
+                }
+                ClientPlayNetworking.send(InitializePackets.TARGET_ENTITY_SYNC, buffer);
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //Flavor text while being controlled by the SkinWalker
+            if (this.hasBeenCaptured() && !this.isBeingCaptured()) {
+                SkinWalkerCapturedFlavorText.tickFlavorText(this.player);
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //Client side stuff for level 0 -> 1 and 1 -> 2 transitions
+            if (this.isTeleporting) {
+                ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+                this.isTeleporting = false;
+
+                //Turn off the lights
+                client.player.playSound(ModSounds.LIGHTS_OUT, SoundCategory.AMBIENT, 1, 1);
+                SPBRevampedClient.getCutsceneManager().blackScreen.showBlackScreen(80, false, false);
+
+                //PlaySound after black screen is over
+                executorService.schedule(() -> {
+                    client.player.playSound(ModSounds.LIGHTS_ON, SoundCategory.AMBIENT, 1, 1);
+                    executorService.shutdown();
+                }, 4000, TimeUnit.MILLISECONDS);
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //Flashlight
+            if (Keybinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen && !this.hasBeenCaptured && !this.isBeingCaptured) {
+                player.playSound(ModSounds.FLASHLIGHT_CLICK, 1, 1);
+                if (player.getWorld().getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                    this.setFlashLightOn(!this.isFlashLightOn());
+
+                    if (!this.player.isSpectator()) {
+                        PacketByteBuf buffer = PacketByteBufs.create();
+                        buffer.writeBoolean(this.isFlashLightOn());
+                        ClientPlayNetworking.send(InitializePackets.FL_SYNC, buffer);
+                    }
+                } else {
+                    this.setFlashLightOn(false);
+                    player.sendMessage(Text.literal("Your flashlight got wet. ").append(Text.literal("It no longer works").formatted(Formatting.RED)), true);
+                }
+            }
+
+            if (this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
                 this.setFlashLightOn(false);
-                player.sendMessage(Text.literal("Your flashlight got wet. ").append(Text.literal("It no longer works").formatted(Formatting.RED)), true);
             }
-        }
 
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ////AMBIENCE////
-        RegistryKey<World> level = this.player.getWorld().getRegistryKey();
-        WorldEvents events = InitializeComponents.EVENTS.get(this.player.getWorld());
+            ////AMBIENCE////
+            RegistryKey<World> level = this.player.getWorld().getRegistryKey();
+            WorldEvents events = InitializeComponents.EVENTS.get(this.player.getWorld());
 
-        if((level == BackroomsLevels.LEVEL1_WORLD_KEY || level == BackroomsLevels.LEVEL2_WORLD_KEY) && !client.getSoundManager().isPlaying(DeepAmbience)){
-            DeepAmbience = new AmbientSoundInstance(this.player);
-            client.getSoundManager().play(DeepAmbience);
-        }
-
-        if(level == BackroomsLevels.LEVEL2_WORLD_KEY && !client.getSoundManager().isPlaying(WaterPipeAmbience) && !client.getSoundManager().isPlaying(GasPipeAmbience)){
-            WaterPipeAmbience = new WaterPipeSoundInstance(this.player);
-            GasPipeAmbience = new GasPipeSoundInstance(this.player);
-
-            client.getSoundManager().play(WaterPipeAmbience);
-            client.getSoundManager().play(GasPipeAmbience);
-        }
-
-        if(level == BackroomsLevels.POOLROOMS_WORLD_KEY && events.isNoon() && !client.getSoundManager().isPlaying(PoolroomsNoonAmbience)){
-            PoolroomsNoonAmbience = new PoolroomsNoonAmbienceSoundInstance(this.player);
-            client.getSoundManager().play(PoolroomsNoonAmbience);
-        } else if(level == BackroomsLevels.POOLROOMS_WORLD_KEY && !events.isNoon() && !client.getSoundManager().isPlaying(PoolroomsSunsetAmbience)) {
-            PoolroomsSunsetAmbience = new PoolroomsSunsetAmbienceSoundInstance(this.player);
-            client.getSoundManager().play(PoolroomsSunsetAmbience);
-        }
-
-
-        //Level0 Cutscene
-        if(this.player.isInsideWall() && this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene){
-            suffocationTimer++;
-            if (suffocationTimer >= 40) {
-                this.setDoingCutscene(true);
-                suffocationTimer = 0;
+            if ((level == BackroomsLevels.LEVEL1_WORLD_KEY || level == BackroomsLevels.LEVEL2_WORLD_KEY) && !client.getSoundManager().isPlaying(DeepAmbience)) {
+                DeepAmbience = new AmbientSoundInstance(this.player);
+                client.getSoundManager().play(DeepAmbience);
             }
+
+            if (level == BackroomsLevels.LEVEL2_WORLD_KEY && !client.getSoundManager().isPlaying(WaterPipeAmbience) && !client.getSoundManager().isPlaying(GasPipeAmbience)) {
+                WaterPipeAmbience = new WaterPipeSoundInstance(this.player);
+                GasPipeAmbience = new GasPipeSoundInstance(this.player);
+
+                client.getSoundManager().play(WaterPipeAmbience);
+                client.getSoundManager().play(GasPipeAmbience);
+            }
+
+            if (level == BackroomsLevels.POOLROOMS_WORLD_KEY && events.isNoon() && !client.getSoundManager().isPlaying(PoolroomsNoonAmbience)) {
+                PoolroomsNoonAmbience = new PoolroomsNoonAmbienceSoundInstance(this.player);
+                client.getSoundManager().play(PoolroomsNoonAmbience);
+            } else if (level == BackroomsLevels.POOLROOMS_WORLD_KEY && !events.isNoon() && !client.getSoundManager().isPlaying(PoolroomsSunsetAmbience)) {
+                PoolroomsSunsetAmbience = new PoolroomsSunsetAmbienceSoundInstance(this.player);
+                client.getSoundManager().play(PoolroomsSunsetAmbience);
+            }
+
+            System.out.println(events.isLevel1Blackout());
+            if(events.isLevel1Blackout() && !client.getSoundManager().isPlaying(SmilerAmbience)){
+                SmilerAmbience = new SmilerAmbienceSoundInstance(this.player);
+                client.getSoundManager().play(SmilerAmbience);
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //Level0 Cutscene
+            if (this.player.isInsideWall() && this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene) {
+                suffocationTimer++;
+                if (suffocationTimer >= 40) {
+                    this.setDoingCutscene(true);
+                    suffocationTimer = 0;
+                }
+            }
+
         }
     }
 
     @Override
     public void serverTick() {
         getPrevSettings();
+
+        //Damage if glitched enough from smilers
+        if(this.shouldInflictGlitchDamage){
+            this.player.damage(ModDamageTypes.of(this.player.getWorld(), ModDamageTypes.SMILER), 1.0f);
+        }
+
+        //Is speaking
+        if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid()) && BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid()) == this.prevSpeakingTime) {
+            if(this.isSpeaking()) {
+                this.speakingBuffer--;
+                if (this.speakingBuffer <= 0) {
+                    this.setSpeaking(false);
+                    this.speakingBuffer = 80;
+                }
+            }
+        } else {
+            this.speakingBuffer = 80;
+        }
 
         //Cast him to the Backrooms
         if(this.player.isInsideWall()) {
@@ -437,8 +633,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
         }
 
-//        System.out.println(this.visibilityTimer);
-//        System.out.println(this.isVisibleToEntity());
+        if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid())) {
+            this.prevSpeakingTime = BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid());
+        }
 
         shouldSync();
     }

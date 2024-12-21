@@ -28,6 +28,6 @@ public class Level0Flicker implements AbstractEvent {
 
     @Override
     public int duration() {
-        return 100;
+        return 200;
     }
 }

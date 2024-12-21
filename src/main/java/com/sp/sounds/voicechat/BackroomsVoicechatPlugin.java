@@ -25,8 +25,7 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
     public static VoicechatServerApi voicechatApi;
     private ConcurrentHashMap<UUID, OpusDecoder> decoders;
     public static Vector<short[]> randomSpeakingList;
-    private short[] totalSoundData;
-    private int ticks = 0;
+    public static ConcurrentHashMap<UUID, Float> speakingTime;
 
 
 
@@ -38,65 +37,39 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
     @Override
     public void initialize(VoicechatApi api) {
         decoders = new ConcurrentHashMap<>();
+        speakingTime = new ConcurrentHashMap<>();
         randomSpeakingList = new Vector<>();
     }
 
     @Override
     public void registerEvents(EventRegistration registration) {
-//        registration.registerEvent(OpenALSoundEvent.class, this::SkinWalkerVoicesPitchDown);
-//        registration.registerEvent(MicrophonePacketEvent.class, this::recordPlayersTalking);
-        registration.registerEvent(MicrophonePacketEvent.class, this::updateVisibility);
+        registration.registerEvent(MicrophonePacketEvent.class, this::updateVisibilityAndTalkTime);
         registration.registerEvent(VoicechatServerStoppedEvent.class, this::onServerStop);
         registration.registerEvent(PlayerDisconnectedEvent.class, this::playerDisconnect);
+        registration.registerEvent(PlayerConnectedEvent.class, this::playerConnect);
         registration.registerEvent(VoicechatServerStartedEvent.class, this::onServerStart);
     }
+
 
     private void onServerStart(VoicechatServerStartedEvent voicechatServerStartedEvent) {
         voicechatApi = voicechatServerStartedEvent.getVoicechat();
     }
 
+    private void playerConnect(PlayerConnectedEvent playerConnectedEvent) {
+        speakingTime.put(playerConnectedEvent.getConnection().getPlayer().getUuid(), 0.0f);
+    }
+
     private void playerDisconnect(PlayerDisconnectedEvent playerDisconnectedEvent) {
         this.removePlayerDecoder(playerDisconnectedEvent.getPlayerUuid());
+        speakingTime.remove(playerDisconnectedEvent.getPlayerUuid());
     }
 
     private void onServerStop(VoicechatServerStoppedEvent voicechatServerStoppedEvent) {
         decoders.forEach((key, value) -> this.removePlayerDecoder(key));
-        ticks = 0;
-        this.totalSoundData = null;
+        speakingTime.clear();
     }
 
-//    private void SkinWalkerVoicesPitchDown(OpenALSoundEvent openALSoundEvent) {
-//        MinecraftClient client = MinecraftClient.getInstance();
-//
-//        if(client.player != null) {
-//            if (client.player.getWorld() != null){
-//
-//                UUID channelID = openALSoundEvent.getChannelId();
-//                if(channelID != null){
-//
-//                    List<SkinWalkerEntity> skinWalkerList = client.player.getWorld().getEntitiesByClass(SkinWalkerEntity.class, client.player.getBoundingBox().expand(100), EntityPredicates.VALID_LIVING_ENTITY);
-//                    if(!skinWalkerList.isEmpty()){
-//
-//                        for(SkinWalkerEntity skinWalker : skinWalkerList){
-//                            if(skinWalker.getUuid().equals(channelID)){
-//                                AL10.alSourcei(openALSoundEvent.getSource(), 53248, 53251);
-//                                AL10.alSourcef(openALSoundEvent.getSource(), 4131, 0.5f);
-//                                AL10.alSourcef(openALSoundEvent.getSource(), AL10.AL_PITCH, 0.65f);
-//                            }
-//                        }
-//
-//                    }
-//
-//                }
-//
-//
-//            }
-//        }
-//
-//
-//    }
-
-    private void updateVisibility(MicrophonePacketEvent microphonePacketEvent) {
+    private void updateVisibilityAndTalkTime(MicrophonePacketEvent microphonePacketEvent) {
         VoicechatConnection senderConnection = microphonePacketEvent.getSenderConnection();
         if(senderConnection != null) {
 
@@ -104,76 +77,46 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
                 return;
             }
             PlayerComponent component = InitializeComponents.PLAYER.get(player);
-
-            if(!component.isVisibleToEntity()) {
+            if(!component.shouldBeMuted()){
+                //Get the data
                 if (!decoders.containsKey(player.getUuid())) {
                     decoders.put(player.getUuid(), microphonePacketEvent.getVoicechat().createDecoder());
                 }
                 OpusDecoder decoder = decoders.get(player.getUuid());
-
                 short[] data = decoder.decode(microphonePacketEvent.getPacket().getOpusEncodedData());
-                double volume = Utils.dbToPerc(Utils.getHighestAudioLevel(data));
 
-                if (volume >= 0.8) {
-                    component.setVisibleToEntity(true);
+
+                if(data.length > 0){
+                    component.setSpeaking(true);
+
+                    //Update talk time
+                    if(!speakingTime.containsKey(player.getUuid())){
+                        speakingTime.put(player.getUuid(), 0.0f);
+                    }
+
+                    speakingTime.put(player.getUuid(), speakingTime.get(player.getUuid()) + 0.0001f);
+//                    System.out.println(speakingTime.get(player.getUuid()));
+
+                    //Update entity visibility
+                    if(!component.isVisibleToEntity()) {
+                        double volume = Utils.dbToPerc(Utils.getHighestAudioLevel(data));
+
+                        if (volume >= 0.8) {
+                            component.setVisibleToEntity(true);
+                        }
+                    }
                 }
+            } else {
+                microphonePacketEvent.cancel();
             }
         }
     }
 
-//    private void recordPlayersTalking(MicrophonePacketEvent microphonePacketEvent) {
-//        VoicechatConnection senderConnection = microphonePacketEvent.getSenderConnection();
-//        if(senderConnection != null) {
-//
-//            if(!(senderConnection.getPlayer().getPlayer() instanceof PlayerEntity player)){
-//                return;
-//            }
-//            ticks++;
-//
-//            byte[] encodedData = microphonePacketEvent.getPacket().getOpusEncodedData();
-//
-//            if(encodedData.length > 0 && ticks < 100) {
-//                if(!decoders.containsKey(player.getUuid())){
-//                    decoders.put(player.getUuid(), microphonePacketEvent.getVoicechat().createDecoder());
-//                }
-//                OpusDecoder decoder = decoders.get(player.getUuid());
-//
-//                short[] data = decoder.decode(microphonePacketEvent.getPacket().getOpusEncodedData());
-//
-//                if(this.totalSoundData == null){
-//                    this.totalSoundData = data;
-//                }
-//                else {
-//                    short[] result = new short[this.totalSoundData.length + data.length];
-//                    System.arraycopy(this.totalSoundData, 0, result, 0, this.totalSoundData.length);
-//                    System.arraycopy(data, 0, result, this.totalSoundData.length, data.length);
-//                    this.totalSoundData = result;
-//                }
-//
-//            } else {
-//                decoders.get(player.getUuid()).resetState();
-//
-//                if (ticks >= 100){
-//                    Random random = Random.create();
-////                    if(random.nextBetween(1, 1) == 1) {
-//                        if (randomSpeakingList.size() < 20) {
-//                            randomSpeakingList.add(this.totalSoundData);
-//                        } else {
-//                            randomSpeakingList.set(random.nextBetween(0, randomSpeakingList.size() - 1), this.totalSoundData);
-//                        }
-////                    }
-//                }
-//                ticks = 0;
-//                this.totalSoundData = null;
-//            }
-//        }
-//
-//
-//
-//    }
-
     private void removePlayerDecoder(UUID uuid){
-        decoders.get(uuid).close();
+        OpusDecoder decoder = decoders.get(uuid);
+            if(decoder != null){
+                decoder.close();
+            }
         decoders.remove(uuid);
     }
 

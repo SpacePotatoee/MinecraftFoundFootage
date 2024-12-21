@@ -10,3 +10,7 @@ accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/
 accessible field net/minecraft/world/chunk/Chunk blockEntityNbts Ljava/util/Map;
 accessible field net/minecraft/entity/ai/goal/MeleeAttackGoal lastUpdateTime J
 accessible field net/minecraft/entity/ai/goal/MeleeAttackGoal path Lnet/minecraft/entity/ai/pathing/Path;
+accessible field net/minecraft/client/render/WorldRenderer frustum Lnet/minecraft/client/render/Frustum;
+accessible field net/minecraft/client/render/Frustum frustumIntersection Lorg/joml/FrustumIntersection;
+accessible field net/minecraft/client/sound/SoundSystem sounds Lcom/google/common/collect/Multimap;
+accessible field net/minecraft/client/sound/SoundManager soundSystem Lnet/minecraft/client/sound/SoundSystem;

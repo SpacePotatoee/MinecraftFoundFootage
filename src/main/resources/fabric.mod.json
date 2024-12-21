@@ -37,7 +37,8 @@
 		"cardinal-components": [
 			"spb-revamped:player",
 			"spb-revamped:events",
-			"spb-revamped:skw"
+			"spb-revamped:skw",
+			"spb-revamped:smi"
 		],
 		"modmenu": {
 			"links": {

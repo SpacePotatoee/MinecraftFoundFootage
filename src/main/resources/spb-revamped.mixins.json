@@ -8,6 +8,7 @@
     "EntityMixin",
     "LevelPropertiesMixin",
     "PlayerEntityMixin",
+    "ServerPlayerEntityMixin",
     "StructureBlockEntityMixin",
     "cutscene.PathAccessor",
     "lightshadows.IndirectLightRendererMixin",
@@ -16,7 +17,8 @@
     "lightshadows.InstancedPointLightRendererMixin",
     "lightshadows.LightRendererMixin",
     "lightshadows.VeilShadersMixin",
-    "respawnsystem.PlayerManagerMixin"
+    "respawnsystem.PlayerManagerMixin",
+    "skinstolen.ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -30,6 +32,7 @@
     "GameRendererMixin",
     "InGameHudMixin",
     "ItemEntityRendererMixin",
+    "LivingEntityRendererMixin",
     "MinecraftClientMixin",
     "PlayerEntityRendererMixin",
     "WorldRendererAccessor",
@@ -42,6 +45,9 @@
     "renderlayer.WorldRendererMixin",
     "respawnsystem.DeathScreenMixin",
     "respawnsystem.LivingEntityRendererMixin",
+    "skinstolen.ChatScreenMixin",
+    "skinstolen.GameMenuScreenMixin",
+    "skinstolen.MinecraftClientMixin",
     "uniform.ShaderProgramMixin",
     "uniform.VertexBufferUniformMixin",
     "uniform.WorldRendererUniformMixin"
