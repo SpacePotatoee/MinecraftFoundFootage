@@ -10,4 +10,7 @@ public class VeilShadersMixin {
 
     @Shadow
     public static final Identifier LIGHT_POINT = new Identifier("spbrevamped", "point");
+
+    @Shadow
+    public static final Identifier LIGHT_AREA = new Identifier("spbrevamped", "area");
 }

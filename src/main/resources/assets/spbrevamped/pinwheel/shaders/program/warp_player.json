@@ -2,6 +2,7 @@
   "fragment": "spb-revamped:warp_player",
   "vertex": "spb-revamped:warp_player",
   "definitions": [
-    "WARP"
+    "WARP",
+    "DISABLE_VANILLA_ENTITY_LIGHT"
   ]
 }

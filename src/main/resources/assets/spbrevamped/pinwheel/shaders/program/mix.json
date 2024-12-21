@@ -1,0 +1,20 @@
+{
+  "vertex": "veil:blit_screen",
+  "fragment": "spbrevamped:mix",
+  "textures": {
+    "CompatibilitySampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque",
+      "sampler": 0
+    },
+    "AlbedoSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque",
+      "sampler": 1
+    },
+    "LightSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque_light"
+    }
+  }
+}

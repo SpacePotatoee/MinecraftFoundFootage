@@ -7,11 +7,11 @@ import com.sp.init.ModBlocks;
 import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
-import com.sp.render.PointLightWithShadow;
 import com.sp.sounds.FluorescentLightSoundInstance;
 import com.sp.init.ModSounds;
 import com.sp.init.BackroomsLevels;
 import foundry.veil.api.client.render.VeilRenderSystem;
+import foundry.veil.api.client.render.deferred.light.PointLight;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -29,7 +29,7 @@ public class FluorescentLightBlockEntity extends BlockEntity {
     private Random random = Random.create();
     private java.util.Random random1 = new java.util.Random();
     private boolean playingSound;
-    public PointLightWithShadow pointLight;
+    public PointLight pointLight;
     private boolean prevOn;
     private final int randInt;
     private int ticks = 0;
@@ -155,13 +155,12 @@ public class FluorescentLightBlockEntity extends BlockEntity {
                             }
 
                             if (this.pointLight == null) {
-                                this.pointLight = new PointLightWithShadow();
+                                this.pointLight = new PointLight();
                                 VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(this.pointLight
-                                        .setShouldRenderShadows(true)
                                         .setRadius(13f)
-                                        .setColor(255, 240, 130)
+                                        .setColor((float) 255 /255, (float) 240 /255, (float) 130 /255)
                                         .setPosition(position.x, position.y - 1, position.z)
-                                        .setBrightness(0.003f)
+                                        .setBrightness(1.0f)
                                 );
                             }
                         } else {

@@ -4,6 +4,7 @@
 #include spb-revamped:shadows
 #include spb-revamped:common
 #include veil:camera
+#include veil:material
 
 in vec3 lightPos;
 in vec3 lightColor;
@@ -16,6 +17,7 @@ uniform sampler2D DiffuseDepthSampler;
 uniform sampler2D ShadowSampler;
 uniform sampler2D RNoiseDir;
 uniform sampler2D LightSampler;
+uniform usampler2D MatSampler;
 
 
 uniform mat4 viewMatrix;
@@ -36,21 +38,33 @@ float getSign(float num){
     }
 }
 
-vec4 setColor(vec4 albedoColor, vec3 normalVS, vec3 offset, float light){
+float specialClamp(float a, float b, float c){
+    if(c > b){
+        return b;
+    }
+    else if(c < a){
+        return a;
+    }
+
+    return c;
+}
+
+vec4 setColor(vec4 albedoColor, vec3 normalVS, vec3 offset, float light) {
     vec3 lightDirection = (VeilCamera.ViewMat * vec4(normalize(offset), 0.0)).xyz;
-    float diffuse = clamp(0.0, 1.0, dot(normalVS, lightDirection));
+    float diffuse = specialClamp(0.0, 1.0, dot(normalVS, lightDirection));
     diffuse = (diffuse + MINECRAFT_AMBIENT_LIGHT) / (1.0 + MINECRAFT_AMBIENT_LIGHT);
     diffuse *= attenuate_no_cusp(length(offset), radius);
 
     float reflectivity = 0.1;
     vec3 diffuseColor = diffuse * lightColor;
-    return vec4(albedoColor.rgb * diffuseColor * (1.0 - reflectivity) + diffuseColor * reflectivity, albedoColor.a) * (light);
+    return vec4((albedoColor.rgb * diffuseColor * (1.0 - reflectivity) + diffuseColor * reflectivity) * light, albedoColor.a);
 }
 
 void main() {
     vec2 screenUv = gl_FragCoord.xy / ScreenSize;
 
     vec4 albedoColor = texture(AlbedoSampler, screenUv);
+
     if(albedoColor.a == 0.0) {
         discard;
     }
@@ -67,27 +81,29 @@ void main() {
     mat3 TBN = mat3(tangent, bitangent, worldNormal);
     TBN = transpose(TBN);
 
-    if(abs(length(offset)) > radius){
+    uint material = texture(MatSampler, screenUv).g;
+    if(pos.y > 25.6 || pos.y < 19.5){
+        fragColor = setColor(albedoColor, normalVS, offset, 1.0);
         return;
     }
 
-    if(abs(length(offset)) < 0.5){
+    //If the pixel isn't in range, there's no point in doing any calculations
+    if(abs(length(offset)) > radius){
         fragColor = setColor(albedoColor, normalVS, offset, 1.0);
         return;
     }
 
     float light = 0.0;
-    float rayOffset = (0.3 * worldNormal.g) + (0.01 * worldNormal.r) + (0.01 * worldNormal.b);
-    float steps;
+    float steps = 0.0;
     vec3 offsetPos = vec3(pos.x + (0.009 * worldNormal.r), pos.y + (0.009 * worldNormal.g), pos.z + (0.009 * worldNormal.b));
 
-    for(int i = 0; i < 2; i++){
-        vec3 normalRayOffset = vec3((hash22(screenUv * (i+1) * 453.346) * 2.0 - 1.0) * 0.02, 0.0);
+    for (int i = 0; i < 2; i++){
+        vec3 normalRayOffset = vec3((hash22(screenUv * (i + 1) * 453.346) * 2.0 - 1.0) * 0.02, 0.0);
         normalRayOffset = (normalRayOffset * TBN) + offsetPos;
 
-        bool hit = ddaRayMarch(offset, normalRayOffset, viewMatrix, orthographMatrix, ShadowSampler);
+        bool hit = ddaRayMarch(offset, offsetPos, viewMatrix, orthographMatrix, ShadowSampler);
 
-        if(hit == false){
+        if (hit == false){
             light += 1.0;
         }
         steps++;

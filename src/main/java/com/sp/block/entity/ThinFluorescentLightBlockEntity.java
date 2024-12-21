@@ -8,7 +8,6 @@ import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.ModSounds;
-import com.sp.render.PointLightWithShadow;
 import com.sp.sounds.ThinFluorescentLightSoundInstance;
 import com.sp.init.BackroomsLevels;
 import foundry.veil.api.client.render.VeilRenderSystem;
@@ -28,7 +27,7 @@ import static com.sp.block.custom.ThinFluorescentLightBlock.*;
 public class ThinFluorescentLightBlockEntity extends BlockEntity {
     BlockState currentState;
     private boolean playingSound;
-    public PointLightWithShadow pointLight;
+    public PointLight pointLight;
     private boolean prevOn;
     private final int randInt;
     private int ticks = 0;
@@ -98,6 +97,8 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                             world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.BLACKOUT, true));
                             this.setPlayingSound(false);
                         }
+                    } else {
+                        world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.BLACKOUT, false));
                     }
 
                     if (events.isLevel1Flicker() && !state.get(ThinFluorescentLightBlock.BLACKOUT)) {
@@ -144,9 +145,8 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                             }
 
                             if (pointLight == null) {
-                                pointLight = new PointLightWithShadow();
+                                pointLight = new PointLight();
                                 VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(pointLight
-                                        .setShouldRenderShadows(false)
                                         .setRadius(18f)
                                         .setColor(255, 255, 255)
                                         .setBrightness(0.0024f)
