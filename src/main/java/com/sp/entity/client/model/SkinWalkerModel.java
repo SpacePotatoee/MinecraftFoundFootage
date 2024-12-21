@@ -1,11 +1,10 @@
-package com.sp.entity.client;
+package com.sp.entity.client.model;
 
 import com.sp.SPBRevamped;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.SkinWalkerComponent;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.ik.model.GeckoLib.GeoModelAccessor;
-import foundry.veil.api.client.necromancer.Skin;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -17,11 +16,9 @@ public class SkinWalkerModel extends GeoModel<SkinWalkerEntity> {
 	private final Identifier DEFAULT_MODEL = new Identifier(SPBRevamped.MOD_ID, "geo/entity/skin_walker_default.geo.json");
 	private final Identifier FINAL_MODEL = new Identifier(SPBRevamped.MOD_ID, "geo/entity/skin_walker_final_default.geo.json");
 
-	private final Identifier PLACEHOLDER_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/placeholder.png");
+	private final Identifier PLACEHOLDER_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/skinwalker/placeholder.png");
 
 	private final Identifier ANIMATION = new Identifier(SPBRevamped.MOD_ID, "animations/entity/skinwalker.animation.json");
-
-	private final Identifier HEAD_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/final_form_head_texture.png");
 
 	@Override
 	public void setCustomAnimations(SkinWalkerEntity animatable, long instanceId, AnimationState<SkinWalkerEntity> animationState) {
@@ -36,17 +33,9 @@ public class SkinWalkerModel extends GeoModel<SkinWalkerEntity> {
 	@Override
 	public Identifier getModelResource(SkinWalkerEntity animatable) {
 		SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(animatable);
-//		if(animatable.getWorld().isRaining())		{
-//			return DEFAULT_MODEL;
-//		} else {
-//			return FINAL_MODEL;
-//		}
-
-//		return FINAL_MODEL;
 
 		if(!component.isInTrueForm()) {
 			MinecraftClient client = MinecraftClient.getInstance();
-
 			if (client.world != null) {
 				AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) client.world.getPlayerByUuid(component.getTargetPlayerUUID());
 				if (player != null) {

@@ -17,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.List;
 import java.util.UUID;
 
-public class SkinWalkerComponent implements AutoSyncedComponent, ClientTickingComponent, ServerTickingComponent {
+public class SkinWalkerComponent implements AutoSyncedComponent {
     private final SkinWalkerEntity entity;
     private PlayerEntity followTarget;
     private boolean isChasing;
@@ -29,6 +29,7 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ClientTickingCo
     private boolean currentlyActingNatural;
     private boolean isSneaking;
     private boolean beginReveal;
+    private boolean beginRelease;
     private boolean isNoticing;
     private int suspicion;
     private BlockPos lastKnownTargetLocation;
@@ -59,6 +60,7 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ClientTickingCo
         this.currentlyActingNatural = false;
         this.shouldLookAtTarget = true;
         this.beginReveal = false;
+        this.beginRelease = false;
         this.isNoticing = false;
         this.followTarget = null;
         this.isChasing = false;
@@ -109,6 +111,9 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ClientTickingCo
     public boolean shouldBeginReveal() {return beginReveal;}
     public void setBeginReveal(boolean beginReveal) {this.beginReveal = beginReveal; this.sync();}
 
+    public boolean shouldBeginRelease() {return beginRelease;}
+    public void setShouldBeginRelease(boolean beginRelease) {this.beginRelease = beginRelease; this.sync();}
+
     public UUID getTargetPlayerUUID() {return this.targetPlayerUUID;}
     public void setTargetPlayerUUID(UUID targetPlayerUUID) {this.targetPlayerUUID = targetPlayerUUID; sync();}
 
@@ -131,14 +136,6 @@ public class SkinWalkerComponent implements AutoSyncedComponent, ClientTickingCo
         tag.putBoolean("isChasing", this.isChasing);
         tag.putBoolean("trueForm", this.trueForm);
         tag.putBoolean("beginReveal", this.beginReveal);
-    }
-
-    @Override
-    public void clientTick() {
-    }
-
-    @Override
-    public void serverTick() {
     }
 
 

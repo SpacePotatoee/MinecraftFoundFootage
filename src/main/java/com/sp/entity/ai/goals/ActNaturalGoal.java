@@ -57,7 +57,7 @@ public class ActNaturalGoal extends Goal {
             }
             ///////////////////////
             if (this.randomAction == null) {
-                this.randomAction = random.nextBetween(5, 5);
+                this.randomAction = random.nextBetween(1, 5);
             }
             this.component.setCurrentlyActingNatural(true);
             switch (this.randomAction) {

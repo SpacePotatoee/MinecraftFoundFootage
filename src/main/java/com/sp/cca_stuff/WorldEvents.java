@@ -1,5 +1,12 @@
 package com.sp.cca_stuff;
 
+import com.sp.Keybinds;
+import com.sp.SPBRevamped;
+import com.sp.entity.custom.SkinWalkerEntity;
+import com.sp.entity.custom.SmilerEntity;
+import com.sp.init.ModEntities;
+import com.sp.init.ModSounds;
+import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.world.events.AbstractEvent;
 import com.sp.world.events.level0.Level0Blackout;
 import com.sp.world.events.level0.Level0Flicker;
@@ -16,12 +23,21 @@ import com.sp.world.events.poolrooms.PoolroomsSunset;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.ai.TargetPredicate;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent {
@@ -81,6 +97,15 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     private int ticks;
     private int delay;
 
+    private UUID nullUUID = UUID.randomUUID();
+    private UUID activeSkinwalkerTarget;
+    private UUID prevActiveSkinwalkerTarget;
+    private SkinWalkerEntity activeSkinWalkerEntity;
+
+    private boolean done;
+    private int tick;
+    private int smilerSpawnDelay;
+
 
     public WorldEvents(World world){
         this.world = world;
@@ -103,7 +128,13 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.eventActive = false;
         this.ticks = 0;
         this.delay = 0;
+        this.activeSkinwalkerTarget = nullUUID;
+
+        this.done = false;
+        this.smilerSpawnDelay = 80;
     }
+
+
 
     public boolean isEventActive() {
         return eventActive;
@@ -189,6 +220,17 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.noon = noon;
     }
 
+    public PlayerEntity getActiveSkinwalkerTarget() {
+        if(this.activeSkinwalkerTarget == null || this.activeSkinwalkerTarget.equals(nullUUID)){
+            return null;
+        }
+        return this.world.getPlayerByUuid(this.activeSkinwalkerTarget);
+    }
+    public void setActiveSkinwalkerTarget(UUID uuid) {
+        this.activeSkinwalkerTarget = uuid;
+        this.sync();
+    }
+
     public void sync(){
         InitializeComponents.EVENTS.sync(this.world);
     }
@@ -210,6 +252,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.inLevel1 = tag.getBoolean("inLevel1");
         this.inLevel2 = tag.getBoolean("inLevel2");
         this.inPoolRooms = tag.getBoolean("inPoolRooms");
+        this.activeSkinwalkerTarget = tag.getUuid("activeSkinwalkerTarget");
     }
 
     @Override
@@ -229,6 +272,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         tag.putBoolean("inLevel1", this.inLevel1);
         tag.putBoolean("inLevel2", this.inLevel2);
         tag.putBoolean("inPoolRooms", this.inPoolRooms);
+        tag.putUuid("activeSkinwalkerTarget", this.activeSkinwalkerTarget);
     }
 
     @Override
@@ -246,11 +290,14 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
             //Only tick for the current Dimension instead of all of them
             if (this.world.getRegistryKey() == client.world.getRegistryKey()){
                 ticks++;
-                delay++;
+//                delay++;
                 checkDimension(client);
 
+
+                //Tick the currently active event and choose a random one every min and a half
                 if (!eventActive) {
-                    if (delay >= 1200) {
+                    //delay >= 1800
+                    if (Keybinds.toggleEvent.wasPressed()) {
                         if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty()) {
                             int currentDimension = getCurrentDimension();
 
@@ -306,33 +353,194 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                         activeEvent.ticks(ticks, this.world);
                     }
                 }
+
+
+
+                //Start Looking for a player to take and take them when they're not talking and can't be seen
+//                if(this.getIntercomCount() > 2) {
+                if(!done) {
+                    //Thank you https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
+                    Map.Entry<UUID, Float> min = null;
+                    for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
+                        if (min == null || min.getValue() > entry.getValue()) {
+                            min = entry;
+
+                        }
+                    }
+
+                    if (min != null) {
+                        PlayerEntity target = this.world.getPlayerByUuid(min.getKey());
+                        if (target != null && target.isAlive() && !target.getUuid().equals(this.prevActiveSkinwalkerTarget)) {
+                            this.setActiveSkinwalkerTarget(target.getUuid());
+                            this.prevActiveSkinwalkerTarget = target.getUuid();
+                        }
+                    }
+
+                    if (Keybinds.toggleEvent.wasPressed()) {
+                        if (this.getActiveSkinwalkerTarget() != null) {
+                            PlayerEntity target = this.getActiveSkinwalkerTarget();
+                            PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
+
+                            if (!targetComponent.isSpeaking()) {
+
+                                List<PlayerEntity> playerEntityList = target.getWorld().getPlayers(
+                                        TargetPredicate.DEFAULT
+                                                .ignoreDistanceScalingFactor()
+                                                .ignoreVisibility()
+                                                .setBaseMaxDistance(50)
+                                                .setPredicate(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test),
+                                        target,
+                                        target.getBoundingBox().expand(50));
+
+                                boolean seen = false;
+                                for (PlayerEntity player : playerEntityList) {
+                                    if (player != target) {
+                                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+                                        if (playerComponent.canSeeActiveSkinWalkerTarget()) {
+                                            seen = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!seen) {
+                                    //Take em
+                                    SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(this.world);
+                                    if (skinWalkerEntity != null) {
+
+                                        skinWalkerEntity.refreshPositionAndAngles((double) target.getX(), (double) target.getY(), (double) target.getZ(), target.getYaw(), target.getPitch());
+                                        skinWalkerEntity.setVelocity(target.getVelocity());
+                                        this.world.spawnEntity(skinWalkerEntity);
+                                        this.activeSkinWalkerEntity = skinWalkerEntity;
+
+                                        targetComponent.setBeingCaptured(true);
+                                        targetComponent.setHasBeenCaptured(true);
+                                        targetComponent.setShouldBeMuted(true);
+                                        targetComponent.sync();
+
+                                        ((ServerPlayerEntity) target).changeGameMode(GameMode.SPECTATOR);
+                                        ((ServerPlayerEntity) target).setCameraEntity(skinWalkerEntity);
+                                        this.done = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if(this.activeSkinWalkerEntity != null){
+                    SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(this.activeSkinWalkerEntity);
+                    if(component.shouldBeginRelease()){
+                        PlayerComponent targetComponent = InitializeComponents.PLAYER.get(this.getActiveSkinwalkerTarget());
+                        ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
+                        tick++;
+
+                        if(this.tick == 1) {
+                            this.setLevel0Flicker(true);
+                        }
+
+                        if(this.tick == 80) {
+                            this.setLevel0Flicker(false);
+                            this.setLevel0On(false);
+
+                            targetComponent.setBeingReleased(true);
+                            targetComponent.sync();
+
+                            SPBRevamped.sendPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
+
+                            target.changeGameMode(GameMode.ADVENTURE);
+                            target.setCameraEntity(target);
+
+                            for(PlayerEntity player : this.world.getPlayers()){
+                                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+                                playerComponent.setFlashLightOn(false);
+                                playerComponent.sync();
+                            }
+                            this.activeSkinWalkerEntity.discard();
+                        }
+
+                        if(this.tick == 105) {
+                            this.setLevel0On(true);
+                            targetComponent.setBeingReleased(false);
+                            targetComponent.setHasBeenCaptured(false);
+                            targetComponent.setShouldBeMuted(false);
+                            targetComponent.sync();
+                            this.activeSkinWalkerEntity = null;
+                        }
+                    }
+                }
+
+
+
+                //Spawn Level 1 Smilers
+                if(this.isLevel1Blackout() && this.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+                    List<? extends PlayerEntity> playerList = this.world.getPlayers();
+
+                    this.smilerSpawnDelay--;
+                    if (this.smilerSpawnDelay <= 0) {
+                        for (PlayerEntity player : playerList) {
+                            int rand = player.getRandom().nextBetween(1, 10);
+
+                            if (rand == 1) {
+                                SmilerEntity smiler = ModEntities.SMILER_ENTITY.create(this.world);
+                                if (smiler != null) {
+                                    BlockPos.Mutable mutable = new BlockPos.Mutable();
+                                    float randomAngle = random.nextFloat() * 360.0f;
+                                    Vec3d spawnPos = new Vec3d(0, 0, 15).rotateY(randomAngle).add(player.getPos());
+                                    if(!this.world.getBlockState(mutable.set(spawnPos.x, spawnPos.y, spawnPos.z)).blocksMovement()) {
+                                        smiler.refreshPositionAndAngles(Math.floor(spawnPos.x) + 0.5f, spawnPos.y, Math.floor(spawnPos.z) + 0.5f, 0.0f, 0.0f);
+                                        this.world.spawnEntity(smiler);
+                                        this.smilerSpawnDelay = 80;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+//                if(this.getActiveSkinwalkerTarget() != null) {
+//                    if(this.activeSkinWalkerEntity == null || this.activeSkinWalkerEntity.isRemoved() || !this.activeSkinWalkerEntity.isAlive()) {
+//                        PlayerComponent component = InitializeComponents.PLAYER.get(this.getActiveSkinwalkerTarget());
+//                        if(component.hasBeenCaptured()) {
+//                            component.setHasBeenCaptured(false);
+//                            component.sync();
+//                        }
+//
+//                        if(!component.isBeingReleased()) {
+//                            this.activeSkinwalkerTarget = nullUUID;
+//                        }
+//                    }
+//                } else {
+//                    this.activeSkinwalkerTarget = nullUUID;
+//                }
+
             }
         }
         shouldSync();
     }
 
-    private void registerEvents(){
+    private void registerEvents() {
         level0EventList = new ArrayList<>();
-//            level0EventList.add(Level0Blackout::new);
-            level0EventList.add(Level0Flicker::new);
-//            level0EventList.add(Level0IntercomBasic::new);
-//            level0EventList.add(Level0Music::new);
+//        level0EventList.add(Level0Blackout::new);
+        level0EventList.add(Level0Flicker::new);
+        level0EventList.add(Level0IntercomBasic::new);
+        level0EventList.add(Level0Music::new);
 
 
         level1EventList = new ArrayList<>();
-//            level1EventList.add(Level1Blackout::new);
-            level1EventList.add(Level1Flicker::new);
-            level1EventList.add(Level1Ambience::new);
+        level1EventList.add(Level1Blackout::new);
+//        level1EventList.add(Level1Flicker::new);
+//        level1EventList.add(Level1Ambience::new);
 
 
         level2EventList = new ArrayList<>();
-            level2EventList.add(Level2Ambience::new);
-            level2EventList.add(Level2Warp::new);
+        level2EventList.add(Level2Ambience::new);
+        level2EventList.add(Level2Warp::new);
 
 
         poolroomsEventList = new ArrayList<>();
-            poolroomsEventList.add(PoolroomsAmbience::new);
-            poolroomsEventList.add(PoolroomsSunset::new);
+        poolroomsEventList.add(PoolroomsAmbience::new);
+        poolroomsEventList.add(PoolroomsSunset::new);
     }
 
     private void shouldSync() {

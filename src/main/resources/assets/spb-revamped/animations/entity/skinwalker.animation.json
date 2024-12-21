@@ -2,7 +2,7 @@
 	"format_version": "1.8.0",
 	"animations": {
 		"transition": {
-			"loop": "hold_on_last_frame",
+			"loop": "play_once",
 			"animation_length": 16,
 			"bones": {
 				"head": {

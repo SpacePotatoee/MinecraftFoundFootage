@@ -222,7 +222,7 @@ public class MowzieGeoBone extends GeoBone implements BoneAccessor /* only the i
             if (dot > 0.9999999) {
                 q = new Quaternionf();
             } else {
-                q = new Quaternionf().rotateTo(new Vector3f(0,0,1), desiredDir).normalize();
+                q = new Quaternionf().rotateTo(startingDir, desiredDir).normalize();
             }
             xformOverride.rotate(q);
         }

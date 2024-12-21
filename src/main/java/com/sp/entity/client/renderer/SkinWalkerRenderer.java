@@ -1,15 +1,18 @@
-package com.sp.entity.client;
+package com.sp.entity.client.renderer;
 
 import com.sp.SPBRevamped;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.SkinWalkerComponent;
 import com.sp.entity.client.debug.IKDebugRenderLayer;
+import com.sp.entity.client.model.SkinWalkerModel;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.ik.model.GeckoLib.GeoModelAccessor;
 import com.sp.entity.ik.model.GeckoLib.MowzieGeoBone;
 import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import com.sp.render.physics.PhysicsPoint;
 import com.sp.render.physics.PhysicsStick;
+import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,9 +21,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.cache.object.GeoCube;
+import software.bernie.geckolib.cache.object.GeoQuad;
+import software.bernie.geckolib.cache.object.GeoVertex;
 import software.bernie.geckolib.renderer.DynamicGeoEntityRenderer;
 import software.bernie.geckolib.util.RenderUtils;
 
@@ -30,9 +35,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntity> {
-    private final Identifier SPIDER_LEGS_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/skinwalker_legs_texture.png");
-    private final Identifier PLACEHOLDER_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/placeholder.png");
-    private final Identifier HEAD_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/final_form_head_texture.png");
+    private SkinWalkerEntity skinWalkerEntity;
+    private final Identifier SPIDER_LEGS_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/skinwalker/skinwalker_legs_texture.png");
+    private final Identifier HEAD_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/skinwalker/final_form_head_texture.png");
+    private final Identifier EYES_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/skinwalker/skinwalker_eyes.png");
     private Double prevWorldX;
     private Double prevWorldY;
     private Double prevWorldZ;
@@ -69,44 +75,72 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 
     @Override
     public void render(SkinWalkerEntity entity, float entityYaw, float partialTick, MatrixStack poseStack, VertexConsumerProvider bufferSource, int packedLight) {
-
+        if(this.skinWalkerEntity == null){
+            this.skinWalkerEntity = entity;
+        }
         float speed = entity.limbAnimator.getSpeed(partialTick);
         float pos = entity.limbAnimator.getPos(partialTick);
 
         if (speed > 1.0F) {
             speed = 1.0F;
         }
-
+//
         float h = MathHelper.lerpAngleDegrees(partialTick, entity.prevBodyYaw, entity.bodyYaw);
         float j = MathHelper.lerpAngleDegrees(partialTick, entity.prevHeadYaw, entity.headYaw);
         float yaw = j- h;
 
         float pitch = MathHelper.lerp(partialTick, entity.prevPitch, entity.getPitch());
-
-//        Vec3d vec3d = this.getPositionOffset(entity, partialTick);
-//        double e = entity.getY() + vec3d.getY();
-//        poseStack.push();
-//        poseStack.translate(0, e, 0);
-//        poseStack.pop();
-
+//
+////        Vec3d vec3d = this.getPositionOffset(entity, partialTick);
+////        double e = entity.getY() + vec3d.getY();
+////        poseStack.push();
+////        poseStack.translate(0, e, 0);
+////        poseStack.pop();
+//
         float animationProgress = this.getAnimationProgress(entity, partialTick);
         this.animateModel(entity, bufferSource, poseStack, pos, speed, animationProgress, -yaw, -pitch, partialTick);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-        entity.getModelPositions(entity, new GeoModelAccessor(this.model));
+        if(InitializeComponents.SKIN_WALKER.get(entity).isInTrueForm()) {
+            entity.getModelPositions(entity, new GeoModelAccessor(this.model));
+        }
     }
 
     @Override
-    protected @Nullable Identifier getTextureOverrideForBone(GeoBone bone, SkinWalkerEntity animatable, float partialTick) {
+    protected Identifier getTextureOverrideForBone(GeoBone bone, SkinWalkerEntity animatable, float partialTick) {
         SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(animatable);
+        String name = bone.getName();
         if(component.isInTrueForm()) {
-            if (spiderLegBones.contains(bone.getName())) {
+            if (spiderLegBones.contains(name)) {
                 return SPIDER_LEGS_TEXTURE;
-            } else if (bone.getName().equals("head") || bone.getName().equals("headwear")) {
+            }
+            else if (name.equals("head") || name.equals("headwear")) {
                 return HEAD_TEXTURE;
             }
         }
 
         return null;
+    }
+
+    @Override
+    protected boolean boneRenderOverride(MatrixStack poseStack, GeoBone bone, VertexConsumerProvider bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(skinWalkerEntity);
+
+        if(component.isInTrueForm()) {
+            if (bone.getName().equals("headwear")) {
+                VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderLayer.getEyes(EYES_TEXTURE));
+
+                if (bone.isHidden())
+                    return false;
+
+                for (GeoCube cube : bone.getCubes()) {
+                    poseStack.push();
+                    renderCube(poseStack, cube, vertexConsumer, 15728640, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+                    poseStack.pop();
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void animateModel(SkinWalkerEntity entity, VertexConsumerProvider vertexConsumers, MatrixStack matrices, float limbPos, float limbSpeed, float animationProgress, float yaw, float pitch, float partialTicks) {
@@ -318,6 +352,35 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
             return new Vec3d(0, -0.125, 0);
         }
         return super.getPositionOffset(entity, tickDelta);
+    }
+
+    @Override
+    public void createVerticesOfQuad(GeoQuad quad, Matrix4f poseState, Vector3f normal, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        if (this.textureOverride == null) {
+            super.createVerticesOfQuad(quad, poseState, normal, buffer, packedLight, packedOverlay, red, green,
+                    blue, alpha);
+
+            return;
+        }
+
+        IntIntPair boneTextureSize = computeTextureSize(this.textureOverride);
+        IntIntPair entityTextureSize = IntIntImmutablePair.of(64, 64);
+
+        if (boneTextureSize == null) {
+            super.createVerticesOfQuad(quad, poseState, normal, buffer, packedLight, packedOverlay, red, green,
+                    blue, alpha);
+
+            return;
+        }
+
+        for (GeoVertex vertex : quad.vertices()) {
+            Vector4f vector4f = poseState.transform(new Vector4f(vertex.position().x(), vertex.position().y(), vertex.position().z(), 1.0f));
+            float texU = (vertex.texU() * entityTextureSize.firstInt()) / boneTextureSize.firstInt();
+            float texV = (vertex.texV() * entityTextureSize.secondInt()) / boneTextureSize.secondInt();
+
+            buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, texU, texV,
+                    packedOverlay, packedLight, normal.x(), normal.y(), normal.z());
+        }
     }
 
     @Override

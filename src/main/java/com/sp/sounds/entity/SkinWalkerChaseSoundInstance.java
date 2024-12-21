@@ -1,4 +1,4 @@
-package com.sp.sounds;
+package com.sp.sounds.entity;
 
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.SkinWalkerComponent;

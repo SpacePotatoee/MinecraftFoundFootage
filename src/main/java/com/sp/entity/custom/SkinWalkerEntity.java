@@ -7,23 +7,11 @@ import com.sp.cca_stuff.WorldEvents;
 import com.sp.entity.ai.SlightlyBetterMobNavigation;
 import com.sp.entity.ai.goals.*;
 import com.sp.entity.ik.components.IKAnimatable;
-import com.sp.entity.ik.components.IKLegComponent;
 import com.sp.entity.ik.components.IKModelComponent;
-import com.sp.entity.ik.parts.Segment;
-import com.sp.entity.ik.parts.ik_chains.TargetReachingIKChain;
-import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import com.sp.init.ModSounds;
-import com.sp.sounds.SkinWalkerChaseSoundInstance;
-import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
-import de.maxhenkel.voicechat.api.VoicechatServerApi;
-import de.maxhenkel.voicechat.api.audiochannel.AudioPlayer;
-import de.maxhenkel.voicechat.api.audiochannel.LocationalAudioChannel;
-import de.maxhenkel.voicechat.plugins.impl.EntityImpl;
-import de.maxhenkel.voicechat.plugins.impl.ServerLevelImpl;
+import com.sp.sounds.entity.SkinWalkerChaseSoundInstance;
 import foundry.veil.api.client.util.Easings;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -37,22 +25,21 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import software.bernie.example.registry.SoundRegistry;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.constant.DefaultAnimations;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.Animation;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.util.ClientUtils;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
@@ -66,24 +53,23 @@ import java.util.concurrent.TimeUnit;
 public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAnimatable, IKAnimatable<SkinWalkerEntity> {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     public static final RawAnimation TRANSITION = RawAnimation.begin().then("transition", Animation.LoopType.PLAY_ONCE);
-    private final UUID targetPlayerID;
     public SkinWalkerComponent component;
     public List<IKModelComponent<SkinWalkerEntity>> components = new ArrayList<>();
     private final int maxSuspicion;
     private Entity prevTarget;
     private int ticks;
+    private int trueFormTime;
 
     private SoundInstance chaseSoundInstance;
 
 
     public SkinWalkerEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
-        this.targetPlayerID = this.getRandomPlayer(world);
         this.navigation = new SlightlyBetterMobNavigation(this, world);
         this.lookControl = new SkinWalkerLookControl(this);
         this.component = InitializeComponents.SKIN_WALKER.get(this);
-        component.setTargetPlayerUUID(this.targetPlayerID);
-        component.setSneaking(false);
+        this.component.setTargetPlayerUUID(this.getTargetPlayer(world));
+        this.component.setSneaking(false);
         this.maxSuspicion = 900 + (300 * (world.getPlayers().size() - 1));
 
         this.setUpLimbs();
@@ -94,7 +80,12 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
     }
 
 
-    private UUID getRandomPlayer(World world) {
+    private UUID getTargetPlayer(World world) {
+        WorldEvents events = InitializeComponents.EVENTS.get(world);
+        if(events.getActiveSkinwalkerTarget() != null){
+            return events.getActiveSkinwalkerTarget().getUuid();
+        }
+
         List<? extends PlayerEntity> players = world.getPlayers();
         int rand;
         if(players.size() <= 1){
@@ -127,7 +118,11 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
     @Override
     public void tick() {
-        this.setInvulnerable(true);
+        if(this.component.isInTrueForm()) {
+            this.setInvulnerable(true);
+        } else {
+            this.setInvulnerable(false);
+        }
 
         if(this.getWorld().isClient && this.component.isInTrueForm()){
             this.tickComponentsServer(this);
@@ -148,7 +143,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
             if(!this.component.isInTrueForm() && !this.component.shouldBeginReveal()) {
                 //3600
-                if (this.age >= 100 || this.component.getSuspicion() > this.maxSuspicion) {
+                if (this.age >= 600 || this.component.getSuspicion() > this.maxSuspicion) {
                     this.component.setBeginReveal(true);
                 }
 
@@ -159,99 +154,93 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
                 }
             }
 
-            if(this.component.shouldBeginReveal()){
-                if(this.prevTarget == null){
-                    if(this.getTarget() != null)
-                        this.prevTarget = this.getTarget();
+            if(this.component.isInTrueForm() && !this.component.shouldBeginRelease()){
+                this.trueFormTime++;
+                if(this.trueFormTime >= 300){
+                    this.component.setShouldBeginRelease(true);
                 }
-
-                this.setTarget(null);
-                WorldEvents events = InitializeComponents.EVENTS.get(this.getWorld());
-                ticks++;
-                this.getNavigation().stop();
-
-                if(this.ticks ==  110){
-                    events.setLevel0Flicker(true);
-                }
-
-                if(this.ticks == 195){
-                    events.setLevel0Flicker(false);
-                    events.setLevel0On(false);
-                    this.teleportAway();
-                }
-
-                if(this.ticks >= 220){
-                    events.setLevel0On(true);
-                    this.component.setBeginReveal(false);
-                    this.component.setTrueForm(true);
-
-                    if(this.prevTarget != null) {
-                        this.beginTargeting((PlayerEntity) this.prevTarget);
-                        this.prevTarget = null;
-                    }
-                }
-
             }
 
-//            if(this.component.isInTrueForm()){
-//                this.playRandomPlayerSounds();
-//            }
+
+            if(this.component.shouldBeginReveal()) {
+                this.tickReveal();
+            }
+
         }
 
         super.tick();
+    }
+
+    @Override
+    protected @Nullable SoundEvent getAmbientSound() {
+        return super.getAmbientSound();
+    }
+
+    public void tickReveal() {
+        if(this.prevTarget == null){
+            if(this.getTarget() != null)
+                this.prevTarget = this.getTarget();
+        }
+
+        this.setTarget(null);
+        WorldEvents events = InitializeComponents.EVENTS.get(this.getWorld());
+        ticks++;
+        this.getNavigation().stop();
+
+        if(this.ticks == 9){
+            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK, SoundCategory.HOSTILE, 1.0f, 1.0f);
+        }
+
+        if(this.ticks == 39){
+            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK_LONG, SoundCategory.HOSTILE, 1.0f, 1.0f);
+        }
+
+        if(this.ticks == 99){
+            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_REVEAL, SoundCategory.HOSTILE, 1.0f, 1.0f);
+        }
+
+        if(this.ticks ==  110){
+            events.setLevel0Flicker(true);
+        }
+
+        if(this.ticks == 195){
+            events.setLevel0Flicker(false);
+            events.setLevel0On(false);
+
+            for(PlayerEntity player : this.getWorld().getPlayers()){
+                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+                playerComponent.setFlashLightOn(false);
+                playerComponent.sync();
+            }
+            this.teleportAway();
+        }
+
+        if(this.ticks >= 220){
+            events.setLevel0On(true);
+            this.component.setBeginReveal(false);
+            this.component.setTrueForm(true);
+
+            if(this.prevTarget != null) {
+                this.beginTargeting((PlayerEntity) this.prevTarget);
+                this.prevTarget = null;
+            }
+        }
     }
 
     private void teleportAway(){
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         Vec3d pos = this.getPos();
 
-        double distance = 35;
+        double distance = 20;
         double speed = 50;
 
         for(double i = 0; i < 360; i += 0.5) {
-            mutable.set(pos.getX() + (Math.sin(Math.toRadians(i) * speed) * distance), pos.getY(), pos.getZ() + (Math.cos(Math.toRadians(i) * speed) * distance));
+            mutable.set(pos.getX() + Math.floor(Math.sin(Math.toRadians(i) * speed) * distance), pos.getY(), pos.getZ() + Math.floor(Math.cos(Math.toRadians(i) * speed) * distance));
             if(!this.getWorld().getBlockState(mutable).blocksMovement()) {
                 this.teleport(mutable.getX(), this.getY(), mutable.getZ());
             }
         }
     }
-
-//    private void playRandomPlayerSounds() {
-//        if(this.getServer() != null){
-//            if(this.serverLevel == null){
-//                this.serverLevel = new ServerLevelImpl(this.getServer().getWorld(this.getWorld().getRegistryKey()));
-//            }
-//
-//            if(!this.serverLevel.getServerLevel().equals(this.getServer().getWorld(this.getWorld().getRegistryKey()))){
-//                this.serverLevel = new ServerLevelImpl(this.getServer().getWorld(this.getWorld().getRegistryKey()));
-//            }
-//
-//            VoicechatServerApi api = BackroomsVoicechatPlugin.voicechatApi;
-//
-//            if (api != null) {
-//                if(BackroomsVoicechatPlugin.randomSpeakingList.size() > 2) {
-//                    short[] data = BackroomsVoicechatPlugin.randomSpeakingList.get(random.nextBetween(0, BackroomsVoicechatPlugin.randomSpeakingList.size() - 1));
-//
-//                    if(this.audioChannel == null){
-//                        this.audioChannel = api.createLocationalAudioChannel(this.getUuid(), this.serverLevel, api.createPosition(this.getX(), this.getY(), this.getZ()));
-//                    }
-//                    if(audioChannel != null) {
-//                        this.audioChannel.updateLocation(api.createPosition(this.getX(), this.getY(), this.getZ()));
-//
-//                        if (this.audioPlayer == null) {
-//                            this.audioPlayer = api.createAudioPlayer(this.audioChannel, api.createEncoder(), data);
-//                        }
-//
-//                        if (!this.audioPlayer.isPlaying()) {
-//                            this.audioPlayer = api.createAudioPlayer(this.audioChannel, api.createEncoder(), data);
-//                            this.audioPlayer.startPlaying();
-//                        }
-//                    }
-//                }
-//            }
-//
-//        }
-//    }
 
     private void updateLookAtSuspicion() {
         HashSet<PlayerEntity> otherPlayers = new HashSet<>(this.getWorld().getPlayers());
@@ -317,6 +306,13 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
     }
 
     @Override
+    public void onRemoved() {
+        if(this.chaseSoundInstance != null){
+            MinecraftClient.getInstance().getSoundManager().stop(this.chaseSoundInstance);
+        }
+    }
+
+    @Override
     public boolean damage(DamageSource source, float amount) {
         boolean bl = super.damage(source, amount);
         if (this.getWorld().isClient) {
@@ -369,14 +365,6 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
             }
             else {
                 return null;
-            }
-        }).setSoundKeyframeHandler(event -> {
-            MinecraftClient client = MinecraftClient.getInstance();
-
-            switch (event.getKeyframeData().getSound()) {
-                case "bone_crack": client.getSoundManager().play(new PositionedSoundInstance(ModSounds.SKINWALKER_BONE_CRACK, SoundCategory.HOSTILE, 10.0f, 1.0f, Random.create(), this.getX(), this.getY(), this.getZ())); break;
-                case "bone_crack_long": client.getSoundManager().play(new PositionedSoundInstance(ModSounds.SKINWALKER_BONE_CRACK_LONG, SoundCategory.HOSTILE, 10.0f, 1.0f, Random.create(), this.getX(), this.getY(), this.getZ())); break;
-                case "reveal": client.getSoundManager().play(new PositionedSoundInstance(ModSounds.SKINWALKER_REVEAL, SoundCategory.HOSTILE, 10.0f, 1.0f, Random.create(), this.getX(), this.getY(), this.getZ())); break;
             }
         }));
     }
