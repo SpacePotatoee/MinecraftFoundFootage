@@ -21,6 +21,7 @@ public class RenderLayerMixin {
         list.add(RenderLayers.getCeilingTile());
         list.add(RenderLayers.getCarpet());
         list.add(RenderLayers.getWoodenCrateLayer());
+        list.add(RenderLayers.getPoolroomsSky());
         return list;
     }
 

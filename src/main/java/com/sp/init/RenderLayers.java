@@ -4,12 +4,22 @@ import com.sp.SPBRevamped;
 import com.sp.render.ShadowMapRenderer;
 import foundry.veil.api.client.render.VeilRenderBridge;
 import foundry.veil.api.client.render.VeilRenderSystem;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;
+import net.minecraft.client.util.Window;
 import net.minecraft.util.Identifier;
 
+import static com.sp.SPBRevampedClient.getSunsetTimer;
+
 public class RenderLayers extends RenderLayer {
+    private static final MinecraftClient client = MinecraftClient.getInstance();
+
+
     private static final RenderPhase.ShaderProgram LIGHT_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/fluorescent_light"));
     private static final RenderPhase.ShaderProgram WINDOW = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/window"));
+
 
     private static final RenderPhase.ShaderProgram CEILING_TILE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/ceilingtile/ceilingtile"));
     private static final RenderPhase.ShaderProgram CHAIN_FENCE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/chainfence/chainfence"));
@@ -21,6 +31,10 @@ public class RenderLayers extends RenderLayer {
     private static final Identifier shadowSolid = new Identifier(SPBRevamped.MOD_ID, "shadowmap/rendertype_solid");
     private static final Identifier normalCarpet = new Identifier(SPBRevamped.MOD_ID, "pbr/carpet/carpet");
     public static final RenderPhase.ShaderProgram CARPET_PROGRAM = new RenderPhase.ShaderProgram(RenderLayers::getCarpetProgram);
+
+
+    private static final Identifier POOLROOMS_SKY_SHADER = new Identifier(SPBRevamped.MOD_ID, "sky");
+    public static final RenderPhase.ShaderProgram SKY_PROGRAM = new RenderPhase.ShaderProgram(RenderLayers::getSkyProgram);
 
     public static final RenderLayer FLUORESCENT_LIGHT = RenderLayer.of(
             "fluorescent_light",
@@ -44,6 +58,18 @@ public class RenderLayers extends RenderLayer {
             RenderLayer.MultiPhaseParameters.builder()
                     .program(WINDOW)
                     .build(false)
+    );
+
+    private static final RenderLayer POOLROOMS_SKY = RenderLayer.of(
+            "sky",
+            VertexFormats.POSITION,
+            VertexFormat.DrawMode.QUADS,
+            256,
+            false,
+            false,
+            RenderLayer.MultiPhaseParameters.builder()
+                    .program(SKY_PROGRAM)
+                    .build(true)
     );
 
     private static final RenderLayer CONCRETE_LAYER = RenderLayer.of(
@@ -146,8 +172,26 @@ public class RenderLayers extends RenderLayer {
         return shader.toShaderInstance();
     }
 
+    private static net.minecraft.client.gl.ShaderProgram getSkyProgram() {
+        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(POOLROOMS_SKY_SHADER);
+        if (shader == null) {
+            return null;
+        }
+        Window window = client.getWindow();
+        if(client.world != null) {
+            shader.setVector("ScreenSize", window.getWidth(), window.getHeight());
+            shader.setFloat("sunsetTimer", getSunsetTimer(client.world));
+        }
+
+        return shader.toShaderInstance();
+    }
+
     public static RenderLayer getConcreteLayer() {
         return CONCRETE_LAYER;
+    }
+
+    public static RenderLayer getPoolroomsSky() {
+        return POOLROOMS_SKY;
     }
 
     public static RenderLayer getCeilingTile() {

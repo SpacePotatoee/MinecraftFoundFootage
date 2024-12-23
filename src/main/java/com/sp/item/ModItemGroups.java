@@ -75,7 +75,7 @@ public class ModItemGroups {
                         entries.add(ModBlocks.Rug1);
                         entries.add(ModBlocks.Rug2);
 
-
+                        entries.add(ModBlocks.PoolroomsSkyBlock);
                         entries.add(ModBlocks.PoolTiles);
                         entries.add(ModBlocks.PoolTileWall);
                         entries.add(ModBlocks.PoolTileSlope);

@@ -109,7 +109,7 @@ void main() {
         uv = uv/2.0 + 0.5;
         fragColor *= viginette+0.3;
     }else {
-        if(youCantEscape == 0){
+        if(youCantEscape == 0) {
             fragColor = (blur2 + blur3);
         } else {
             vec2 uv2 = vec2(uv.x + octave(uv.y + GameTime * 2000.0) * 0.01, uv.y);
@@ -124,15 +124,15 @@ void main() {
             fragColor = vec4(red, green, blue, 1.0);
         }
 
-        if(Jumpscare == 1){
+        if(Jumpscare == 1) {
             fragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
-            if(CreepyFace1 == 1){
+            if(CreepyFace1 == 1) {
                 fragColor = texture(CreepyFace1Image, texCoord);
             }
 
-            if(CreepyFace2 == 1){
-                fragColor = texture(CreepyFace2Image, texCoord + Rand * 0.01);
+            if(CreepyFace2 == 1) {
+                fragColor = texture(CreepyFace2Image, texCoord + Rand * 0.01) + Rand.x;
             }
         }
 

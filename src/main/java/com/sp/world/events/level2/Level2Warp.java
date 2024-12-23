@@ -33,6 +33,6 @@ public class Level2Warp implements AbstractEvent {
 
     @Override
     public int duration() {
-        return 100;
+        return 600;
     }
 }

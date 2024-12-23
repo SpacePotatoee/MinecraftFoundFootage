@@ -103,8 +103,8 @@ public class Level0ChunkGenerator extends ChunkGenerator {
 
                 if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000)) {
                     if(megaRooms != 1){
-                        exit = random.nextBetween(1,3);
-                        if(exit == 1){
+//                        exit = random.nextBetween(1,1);
+//                        if(exit == 1){
 
                             roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level0/stairwell_0");
                             structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
@@ -113,13 +113,13 @@ public class Level0ChunkGenerator extends ChunkGenerator {
                             if (optional.isPresent()) {
                                 optional.get().place(
                                         world,
-                                        mutable.set(x,4,z),
-                                        mutable.set(x,4,z),
+                                        mutable.set(x + 15,4,z + 15),
+                                        mutable.set(x + 15,4,z + 15),
                                         structurePlacementData, random, 2
                                 );
                             }
 
-                        }
+//                        }
                     }
                 }
 

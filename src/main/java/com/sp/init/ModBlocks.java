@@ -179,6 +179,9 @@ public class ModBlocks {
 
 
     //////Poolrooms Stuff//////
+    public static final Block PoolroomsSkyBlock = registerBlock("pool_sky",
+            new Block(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).solid().noBlockBreakParticles()));
+
     public static final Block PoolTiles = registerBlock("pool_tiles",
             new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
 

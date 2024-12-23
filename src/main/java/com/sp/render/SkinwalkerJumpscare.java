@@ -9,19 +9,15 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.client.sound.SoundSystem;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Identifier;
-
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public class SkinwalkerJumpscare {
     private static long startTime;
     private static boolean started = false;
-    private static Random random = new Random(13);
-    private static Random random2 = new Random(8767);
+    private static Random random = Random.create(13);
+    private static Random random2 = Random.create(8767);
 
     private static PositionedSoundInstance jumpScareSound;
 
@@ -47,7 +43,7 @@ public class SkinwalkerJumpscare {
 
         if(currentTime >= 12000) {
             program.setInt("CreepyFace2", 1);
-            program.setVector("Rand",  random.nextFloat(0.0f, 1.01f), random2.nextFloat(0.0f, 1.01f));
+            program.setVector("Rand",  random.nextFloat(), random2.nextFloat());
         }
 
         if(currentTime >= 14000) {

@@ -15,8 +15,8 @@ out float maxDistance;
 
 void main() {
     vec3 vertexPos = Position;
-    float Angle = NormalizedAngle * 6.28318530718;
-    vertexPos.z = clamp(vertexPos.z, min(cos(Angle), 0), 1);
+    float Angle = (NormalizedAngle * 0.00008);
+    vertexPos.z = clamp(vertexPos.z, min(cos(Angle), 0.0), 1.0);
     float angleTerm = sin(min(Angle, 1.57079633)) * Distance;
     vertexPos *= vec3(Size.x + angleTerm, Size.y + angleTerm, Distance);
 

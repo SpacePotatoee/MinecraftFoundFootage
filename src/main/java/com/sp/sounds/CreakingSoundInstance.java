@@ -1,7 +1,7 @@
-package com.sp.sounds.entity;
+package com.sp.sounds;
 
 import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.PlayerComponent;
+import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
 import net.minecraft.client.sound.MovingSoundInstance;
@@ -11,27 +11,24 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 
-public class SmilerGlitchSoundInstance extends MovingSoundInstance {
+public class CreakingSoundInstance extends MovingSoundInstance {
     private final PlayerEntity player;
-    private final PlayerComponent component;
 
-    public SmilerGlitchSoundInstance(PlayerEntity player) {
-        super(ModSounds.SMILER_GLITCH, SoundCategory.AMBIENT, SoundInstance.createRandom());
+    public CreakingSoundInstance(PlayerEntity player) {
+        super(ModSounds.LEVEL2_WARP_CREAKING_LOOP, SoundCategory.AMBIENT, SoundInstance.createRandom());
         this.player = player;
-        this.component = InitializeComponents.PLAYER.get(player);
         this.repeat = true;
         this.repeatDelay = 0;
-        this.volume = 1.0F;
+        this.volume = 0.5F;
         this.relative = true;
     }
 
     @Override
     public void tick() {
         RegistryKey<World> level = this.player.getWorld().getRegistryKey();
-        if((level != BackroomsLevels.LEVEL1_WORLD_KEY && level != BackroomsLevels.LEVEL2_WORLD_KEY) || this.player.isRemoved()){
+        WorldEvents events = InitializeComponents.EVENTS.get(this.player.getWorld());
+        if(level != BackroomsLevels.LEVEL2_WORLD_KEY || this.player.isRemoved() || !events.isLevel2Warp()){
             this.setDone();
         }
-
-        this.volume = this.component.getGlitchTimer() + 0.1f;
     }
 }

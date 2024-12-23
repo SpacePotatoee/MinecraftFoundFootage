@@ -125,9 +125,9 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
             double noise1 = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
             if (server != null) {
 
-                if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 5000)){
+                if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000)){
                     if(noise1 <= 0){
-                        exit = random.nextBetween(1,3);
+                        exit = random.nextBetween(1,1);
                         if(exit == 1){
 
                             roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level1/stairwell2_1");
@@ -137,8 +137,8 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
                             if (optional.isPresent()) {
                                 optional.get().place(
                                         world,
-                                        mutable.set(x,11,z),
-                                        mutable.set(x,11,z),
+                                        mutable.set(x + 16,11,z + 16),
+                                        mutable.set(x + 16,11,z + 16),
                                         structurePlacementData, random, 2
                                 );
                             }

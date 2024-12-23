@@ -28,6 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -48,6 +49,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     private boolean level0On;
     private boolean level0Flicker;
     private int intercomCount;
+    private int blackoutCount;
 
     //Level1
     private boolean level1Blackout;
@@ -127,7 +129,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.registered = false;
         this.eventActive = false;
         this.ticks = 0;
-        this.delay = 0;
+        this.delay = 1800;
         this.activeSkinwalkerTarget = nullUUID;
 
         this.done = false;
@@ -288,61 +290,96 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
         if(client.world != null && client.player != null) {
             //Only tick for the current Dimension instead of all of them
-            if (this.world.getRegistryKey() == client.world.getRegistryKey()){
+            if (this.world.getRegistryKey() == client.world.getRegistryKey() && Keybinds.toggleEvent != null) {
                 ticks++;
-//                delay++;
                 checkDimension(client);
 
 
                 //Tick the currently active event and choose a random one every min and a half
                 if (!eventActive) {
-                    //delay >= 1800
-                    if (Keybinds.toggleEvent.wasPressed()) {
+                    this.delay--;
+                    if (this.delay <= 0 || Keybinds.toggleEvent.wasPressed()) {
+                        this.delay = 0;
+                        boolean wasPressed = Keybinds.toggleEvent.wasPressed();
                         if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty()) {
                             int currentDimension = getCurrentDimension();
 
                             switch (currentDimension) {
                                 case 1: {
-                                    int index = random.nextBetween(0, level0EventList.size() - 1);
-                                    activeEvent = level0EventList.get(index).get();
+                                    if(wasPressed){
+                                        activeEvent = level0EventList.get(0).get();
+                                    } else {
+                                        int index = random.nextBetween(0, level0EventList.size() - 1);
+                                        activeEvent = level0EventList.get(index).get();
+
+                                        if (activeEvent instanceof Level0Blackout) {
+                                            this.blackoutCount++;
+                                            if (this.blackoutCount > 2) {
+                                                while (activeEvent instanceof Level0Blackout) {
+                                                    activeEvent = level0EventList.get(random.nextBetween(0, level0EventList.size() - 1)).get();
+                                                }
+                                            }
+                                        }
+
+                                    }
 
                                     activeEvent.init(this.world);
                                     setEventActive(true);
                                     ticks = 0;
+                                    this.delay = random.nextBetween(1200, 1800);
                                 }
                                 break;
                                 case 2: {
-                                    int index = random.nextBetween(0, level1EventList.size() - 1);
-                                    activeEvent = level1EventList.get(index).get();
+                                    if(wasPressed){
+                                        activeEvent = level1EventList.get(0).get();
+                                    } else {
+                                        int index = random.nextBetween(0, level1EventList.size() - 1);
+                                        activeEvent = level1EventList.get(index).get();
+                                    }
 
                                     activeEvent.init(this.world);
                                     setEventActive(true);
                                     ticks = 0;
+                                    this.delay = random.nextBetween(1200, 1800);
                                 }
                                 break;
                                 case 3: {
-                                    int index = random.nextBetween(0, level2EventList.size() - 1);
-                                    activeEvent = level2EventList.get(index).get();
+                                    if(wasPressed){
+                                        activeEvent = level2EventList.get(0).get();
+                                    } else {
+                                        int index = random.nextBetween(0, level2EventList.size() - 1);
+                                        activeEvent = level2EventList.get(index).get();
+                                    }
 
                                     activeEvent.init(this.world);
                                     setEventActive(true);
                                     ticks = 0;
+                                    this.delay = random.nextBetween(800, 1200);
                                 }
                                 break;
                                 case 4: {
-                                    int index = random.nextBetween(0, poolroomsEventList.size() - 1);
-                                    activeEvent = poolroomsEventList.get(index).get();
+                                    if(wasPressed){
+                                        activeEvent = poolroomsEventList.get(0).get();
+                                    } else {
+                                        int index = random.nextBetween(0, poolroomsEventList.size() - 1);
+                                        activeEvent = poolroomsEventList.get(index).get();
+                                    }
 
                                     activeEvent.init(this.world);
                                     setEventActive(true);
                                     ticks = 0;
+                                    this.delay = random.nextBetween(500, 800);
                                 }
                                 break;
-                                default:
-                                    return;
+                                default: {
+                                    if(this.world.getServer() != null && wasPressed) {
+                                        for(ServerWorld world : this.world.getServer().getWorlds()){
+                                            world.setTimeOfDay(18000);
+                                        }
+                                    }
+                                }
                             }
                         }
-                        delay = 0;
                     }
                 } else {
                     if (activeEvent.duration() <= ticks) {
@@ -358,7 +395,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
                 //Start Looking for a player to take and take them when they're not talking and can't be seen
 //                if(this.getIntercomCount() > 2) {
-                if(!done) {
+                if(!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                     //Thank you https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
                     Map.Entry<UUID, Float> min = null;
                     for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
@@ -521,26 +558,26 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
     private void registerEvents() {
         level0EventList = new ArrayList<>();
-//        level0EventList.add(Level0Blackout::new);
-        level0EventList.add(Level0Flicker::new);
         level0EventList.add(Level0IntercomBasic::new);
+        level0EventList.add(Level0Blackout::new);
+        level0EventList.add(Level0Flicker::new);
         level0EventList.add(Level0Music::new);
 
 
         level1EventList = new ArrayList<>();
         level1EventList.add(Level1Blackout::new);
-//        level1EventList.add(Level1Flicker::new);
-//        level1EventList.add(Level1Ambience::new);
+        level1EventList.add(Level1Flicker::new);
+        level1EventList.add(Level1Ambience::new);
 
 
         level2EventList = new ArrayList<>();
-        level2EventList.add(Level2Ambience::new);
         level2EventList.add(Level2Warp::new);
+        level2EventList.add(Level2Ambience::new);
 
 
         poolroomsEventList = new ArrayList<>();
-        poolroomsEventList.add(PoolroomsAmbience::new);
         poolroomsEventList.add(PoolroomsSunset::new);
+        poolroomsEventList.add(PoolroomsAmbience::new);
     }
 
     private void shouldSync() {

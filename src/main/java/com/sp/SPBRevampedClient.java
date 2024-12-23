@@ -110,8 +110,9 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WOODEN_CRATE, RenderLayers.getWoodenCrateLayer());
 
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.BottomTrim, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolroomsSkyBlock, RenderLayers.getPoolroomsSky());
 
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.BottomTrim, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText1, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText2, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText3, RenderLayer.getCutout());
@@ -556,7 +557,6 @@ public class SPBRevampedClient implements ClientModInitializer {
     }
 
     public static void sendGlitchDamagePacket(boolean shouldDamage) {
-        System.out.println("SENT PACKET TO: " + MinecraftClient.getInstance().player.getName().toString());
         PacketByteBuf buffer = PacketByteBufs.create();
         buffer.writeBoolean(shouldDamage);
         ClientPlayNetworking.send(InitializePackets.GLITCH_DAMAGE_SYNC, buffer);

@@ -212,7 +212,6 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
                 playerComponent.setFlashLightOn(false);
                 playerComponent.sync();
             }
-            this.teleportAway();
         }
 
         if(this.ticks >= 220){

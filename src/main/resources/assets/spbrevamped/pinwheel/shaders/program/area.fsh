@@ -53,6 +53,22 @@ AreaLightResult closestPointOnPlaneAndAngle(vec3 point, mat4 planeMatrix, vec2 p
     return AreaLightResult((inverse(planeMatrix) * vec4(localSpacePointOnPlane, 1.0)).xyz, angle);
 }
 
+vec4 setColor(vec4 albedoColor, vec3 normalVS, vec3 offset, float angle){
+    vec3 lightDirection = (VeilCamera.ViewMat * vec4(normalize(offset), 0.0)).xyz;
+    float diffuse = (dot(normalVS, lightDirection) + 1.0) * 0.5;
+    diffuse = (diffuse + MINECRAFT_AMBIENT_LIGHT) / (1.0 + MINECRAFT_AMBIENT_LIGHT);
+    diffuse *= attenuate_no_cusp(length(offset), maxDistance);
+    // angle falloff
+    float angleFalloff = clamp(angle, 0.0, maxAngle) / maxAngle;
+    angleFalloff = smoothstep(1.0, 0.0, angleFalloff);
+    diffuse *= angleFalloff;
+
+    float reflectivity = 0.1;
+    vec3 diffuseColor = diffuse * lightColor;
+
+    return vec4(albedoColor.rgb * diffuseColor * (1.0 - reflectivity) + diffuseColor * reflectivity, albedoColor.a);
+}
+
 void main() {
     vec2 screenUv = gl_FragCoord.xy / ScreenSize;
 
@@ -73,6 +89,11 @@ void main() {
     vec3 lightPos = areaLightInfo.position;
     float angle = areaLightInfo.angle;
     vec3 offset = lightPos - pos;
+
+    if(pos.y > 40.6 || pos.y < 20.5){
+        fragColor = setColor(albedoColor, normalVS, offset, angle);
+        return;
+    }
 
     //If the pixel isn't in range, there's no point in doing any calculations
     if(abs(length(offset)) > maxDistance) {
@@ -95,6 +116,6 @@ void main() {
         float reflectivity = 0.1;
         vec3 diffuseColor = diffuse * lightColor;
 
-        fragColor = vec4(albedoColor.rgb * diffuseColor * (1.0 - reflectivity) + diffuseColor * reflectivity, albedoColor.a);
+        fragColor = setColor(albedoColor, normalVS, offset, angle);
     }
 }

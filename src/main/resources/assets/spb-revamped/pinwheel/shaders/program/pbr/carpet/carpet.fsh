@@ -23,7 +23,7 @@ in vec3 Pos;
 in mat3 TBN;
 
 const int MaxSteps = 200;
-const float ZOOM = 0.8;
+const float ZOOM = 0.75;
 
 void main() {
     vec2 faceUV = getAccurateUV(worldPos, normal);

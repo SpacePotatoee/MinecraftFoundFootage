@@ -62,8 +62,13 @@ public class SkinWalkerCapturedFlavorText {
                     player.sendMessage(Text.literal("Go ahead").formatted(Formatting.RED));
                 }
 
-                if(tick == 120){
+                if(tick == 135){
                     player.sendMessage(Text.literal("Try to call out to your friends (T)").formatted(Formatting.GOLD));
+
+                }
+
+                if(tick == 300){
+                    player.sendMessage(Text.literal("If it isn't already obvious your skin has been stolen. ").append("Don't be a jerk. Don't DM any of the other players").formatted(Formatting.RED));
                     shownTextTaunt = true;
                 }
             }

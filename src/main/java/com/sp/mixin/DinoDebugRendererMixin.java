@@ -1,6 +1,7 @@
 package com.sp.mixin;
 
 import com.sp.entity.ik.util.PrAnCommonClass;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Keyboard;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,10 +20,12 @@ public abstract class DinoDebugRendererMixin {
 
     @Inject(method = "processF3", at = @At("HEAD"), cancellable = true)
     private void onHandleDebugKeys(int keyCode, CallbackInfoReturnable<Boolean> cir) {
-        if (keyCode == L) {
-            PrAnCommonClass.shouldRenderDebugLegs = !PrAnCommonClass.shouldRenderDebugLegs;
-            this.debugLog(Text.translatable("debug.toggled_joint_debug.message"));
-            cir.setReturnValue(true);
+        if(FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            if (keyCode == L) {
+                PrAnCommonClass.shouldRenderDebugLegs = !PrAnCommonClass.shouldRenderDebugLegs;
+                this.debugLog(Text.translatable("debug.toggled_joint_debug.message"));
+                cir.setReturnValue(true);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.sp.mixin.lightshadows;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.sp.SPBRevampedClient;
 import com.sp.render.ShadowMapRenderer;
 import foundry.veil.api.client.render.deferred.light.renderer.LightRenderer;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
@@ -21,6 +22,11 @@ public class LightRendererMixin {
     @Inject(method = "applyShader", at = @At(value = "INVOKE", target = "Lfoundry/veil/api/client/render/shader/program/ShaderProgram;bind()V"), remap=false)
     private void setUniforms(CallbackInfo ci, @Local ShaderProgram shader){
         setShadowUniforms(shader);
+        if(SPBRevampedClient.getCutsceneManager().isPlaying) {
+            shader.setInt("CutsceneActive", 1);
+        } else {
+            shader.setInt("CutsceneActive", 0);
+        }
     }
 
     @Unique

@@ -25,6 +25,7 @@ uniform mat4 orthographMatrix;
 uniform vec3 lightAngled;
 uniform vec2 ScreenSize;
 uniform float GameTime;
+uniform int CutsceneActive;
 
 out vec4 fragColor;
 
@@ -81,8 +82,13 @@ void main() {
     mat3 TBN = mat3(tangent, bitangent, worldNormal);
     TBN = transpose(TBN);
 
+    float maxHeight = 40.6;
+    if(CutsceneActive == 1) {
+        maxHeight = 25.5;
+    }
+
     uint material = texture(MatSampler, screenUv).g;
-    if(pos.y > 25.6 || pos.y < 19.5){
+    if(pos.y > maxHeight || pos.y < -50.5 || lightPos.y < 20.5){
         fragColor = setColor(albedoColor, normalVS, offset, 1.0);
         return;
     }
@@ -98,10 +104,10 @@ void main() {
     vec3 offsetPos = vec3(pos.x + (0.009 * worldNormal.r), pos.y + (0.009 * worldNormal.g), pos.z + (0.009 * worldNormal.b));
 
     for (int i = 0; i < 2; i++){
-        vec3 normalRayOffset = vec3((hash22(screenUv * (i + 1) * 453.346) * 2.0 - 1.0) * 0.02, 0.0);
+        vec3 normalRayOffset = vec3((hash22(screenUv * (i+1) * 453.346) * 2.0 - 1.0) * 0.005 * length(offset), 0.0);
         normalRayOffset = (normalRayOffset * TBN) + offsetPos;
 
-        bool hit = ddaRayMarch(offset, offsetPos, viewMatrix, orthographMatrix, ShadowSampler);
+        bool hit = ddaRayMarch(offset, normalRayOffset, viewMatrix, orthographMatrix, ShadowSampler);
 
         if (hit == false){
             light += 1.0;

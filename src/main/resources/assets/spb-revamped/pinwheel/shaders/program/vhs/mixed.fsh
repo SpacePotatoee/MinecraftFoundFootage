@@ -20,15 +20,11 @@ uniform sampler2D TransparentCompatSampler;
 uniform sampler2D OpaqueCompatSampler;
 uniform usampler2D TransparentMatSampler;
 uniform usampler2D OpaqueMatSampler;
-uniform sampler2D CloudNoise1;
-uniform sampler2D CloudNoise2;
 
 uniform mat4 viewMatrix;
 uniform mat4 orthographMatrix;
 uniform vec3 lightAngle;
 uniform int ShadowToggle;
-uniform float GameTime;
-uniform float sunsetTimer;
 
 
 in vec2 texCoord;
@@ -63,12 +59,7 @@ void main(){
     }
 
     if(compat.a > 0.0 || compat2.a > 0.0){
-        if(Mat == 15 || Mat2 == 15){
-            color = getSky(texCoord, sunsetTimer, GameTime, CloudNoise1, CloudNoise2);
-        }
-        else{
-            color = compat + compat2;
-        }
+        color = compat + compat2;
     }
 
     fragColor = color;

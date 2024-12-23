@@ -33,6 +33,6 @@ public class Level1Blackout implements AbstractEvent {
 
     @Override
     public int duration() {
-        return 1200;
+        return 600;
     }
 }

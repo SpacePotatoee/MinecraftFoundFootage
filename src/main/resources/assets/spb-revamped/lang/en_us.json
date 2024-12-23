@@ -73,5 +73,10 @@
   "spb-revamped.midnightconfig.disableHud": "Hide your Hud (Except your hand)",
 
   "death.attack.acid": "%1$s burned in Acid!",
-  "death.attack.smiler": "%1$s was killed by a Smiler!"
+  "death.attack.smiler": "%1$s was killed by a Smiler!",
+
+  "spb-revamped.keybinds": "SPB-Revamped",
+  "key.spb-revamped.toggle_flashlight": "Toggle Flashlight",
+  "key.spb-revamped.zoom": "Zoom",
+  "key.spb-revamped.toggle_event": "Toggle Event"
 }
