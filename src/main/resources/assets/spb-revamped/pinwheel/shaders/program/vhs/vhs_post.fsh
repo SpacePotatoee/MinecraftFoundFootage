@@ -69,10 +69,10 @@ void main() {
 
     //Motion Blur
     vec4 blur3 = vec4(0.0);
-    const float kernalSize3 = 3.0;
+    const float kernalSize3 = 5.0;
     const float coeff3 = 1.0 / (kernalSize3 * kernalSize3);
     for(float x = -1.0; x <= 1.0; x += coeff3){
-        blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(Velocity.x * x, Velocity.y * x) * 0.05) * 0.5;
+        blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(Velocity.x * x, Velocity.y * x) * 0.1) * 0.5;
     }
 
     //TV OVERLAY

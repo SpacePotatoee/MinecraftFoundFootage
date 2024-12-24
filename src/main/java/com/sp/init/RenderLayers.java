@@ -29,6 +29,8 @@ public class RenderLayers extends RenderLayer {
 
 
     private static final Identifier shadowSolid = new Identifier(SPBRevamped.MOD_ID, "shadowmap/rendertype_solid");
+
+
     private static final Identifier normalCarpet = new Identifier(SPBRevamped.MOD_ID, "pbr/carpet/carpet");
     public static final RenderPhase.ShaderProgram CARPET_PROGRAM = new RenderPhase.ShaderProgram(RenderLayers::getCarpetProgram);
 
@@ -45,18 +47,6 @@ public class RenderLayers extends RenderLayer {
             false,
             RenderLayer.MultiPhaseParameters.builder()
                     .program(LIGHT_SHADER)
-                    .build(false)
-    );
-
-    public static final RenderLayer POOLROOMS_WINDOW = RenderLayer.of(
-            "window",
-            VertexFormats.POSITION,
-            VertexFormat.DrawMode.QUADS,
-            256,
-            false,
-            false,
-            RenderLayer.MultiPhaseParameters.builder()
-                    .program(WINDOW)
                     .build(false)
     );
 

@@ -88,7 +88,7 @@ void main() {
     }
 
     uint material = texture(MatSampler, screenUv).g;
-    if(pos.y > maxHeight || pos.y < -50.5 || lightPos.y < 20.5){
+    if(pos.y > maxHeight || pos.y < -19.5 || lightPos.y < 20.5){
         fragColor = setColor(albedoColor, normalVS, offset, 1.0);
         return;
     }

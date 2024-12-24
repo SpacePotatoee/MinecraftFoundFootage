@@ -26,7 +26,7 @@ vec3 viewToScreenSpace(vec3 viewPos){
     return ndcPos * 0.5 + 0.5;
 }
 
-const int QUALITY = 20;
+const int QUALITY = 10;
 
 void main() {
     float depthSample = texture(DiffuseDepthSampler, texCoord).r;
@@ -71,7 +71,7 @@ void main() {
 
         }
         occlusion /= QUALITY;
-        fragColor = vec4(vec3(1.0 - occlusion), 1.0);
+        fragColor = vec4(vec3(1.0 - occlusion * 1), 1.0);
 //        fragColor = vec4(randDir * TBN, 1.0);
     }else {
         fragColor = vec4(1.0);

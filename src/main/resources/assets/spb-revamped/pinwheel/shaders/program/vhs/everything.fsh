@@ -69,7 +69,7 @@ void main() {
 
 		if (!(compat.a > 0.0) && !(compat2.a > 0.0)){
 			if (TogglePuddles == 1){
-				color = getPuddles(color, texCoord, normal, DiffuseSampler0, TransparentDepthSampler, NoiseTexture, NoiseTexture2);
+				color = getPuddles(color, texCoord, vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), DiffuseSampler0, TransparentDepthSampler, NoiseTexture, NoiseTexture2);
 			}
 		}
 

@@ -74,13 +74,13 @@ vec4 getReflection(vec4 fragColor, vec4 normal, vec3 viewPos, float jitterMult, 
     vec3 reflectedTexture = texture(DiffuseSampler0, projectedCoord).rgb;
     float Luminance = luminance(reflectedTexture);
 
-    vec2 dCoords = smoothstep(0.3, 0.5, abs(vec2(0.5) - projectedCoord));
+    vec2 dCoords = smoothstep(0.4, 0.5, abs(vec2(0.5) - projectedCoord));
 
-    float screenEdgefactor = clamp(1.0 - (dCoords.x + dCoords.y), 0.0, 1.0);
+    float screenEdgefactor = clamp(1.0f - (dCoords.x + dCoords.y), 0.0f, 1.0f);
 
     float ReflectionMultiplier = screenEdgefactor * (reflected.z);
 
-    if(Luminance >= 0.5){
+    if(Luminance >= 1){
         return mix(fragColor, mix(fragColor, vec4(reflectedTexture * 20, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0.0, 1.0));
     }
 

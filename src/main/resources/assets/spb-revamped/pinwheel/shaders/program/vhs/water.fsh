@@ -174,10 +174,7 @@ void main() {
 
         fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER);
 
-        float vertexDistance = fog_distance((worldPos - opaqueWorldPos) * 0.4, 0);
-        fragColor = linear_fog(fragColor, vertexDistance, 0, 10, vec4(0, 0.15, 0.2, 1.0));
-
-        fragColor = getReflection(fragColor, mix(normalSampler, normal, 0.05), waterDepth, texCoord, viewPos, color) * vec4(0.0, 1.2, 1.15, 1.0);
+        fragColor = getReflection(fragColor, mix(normalSampler, normal, 0.05), waterDepth, texCoord, viewPos, color) * vec4(vec3(0.0, 1, 1), 1.0);
 
 
         if (shadow >= 1.0){
@@ -189,8 +186,8 @@ void main() {
 
             vec3 reflectedView = reflect(viewDirFromUv(texCoord), normalize(normal.rgb));
             float specular = dot(reflectedView, normalize(lightAngled));
-            specular = pow(specular, 20.0);
-            specular *= 1.0;
+            specular = pow(specular, 100.0);
+            specular *= 5.0;
 
             if (specular > 0.0){
                 fragColor += specular;

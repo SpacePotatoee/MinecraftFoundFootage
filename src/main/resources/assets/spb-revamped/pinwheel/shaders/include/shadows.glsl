@@ -95,7 +95,7 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, mat4 view
     //raymarch
     for (int i = 0; i <= 250; i++){
         vec3 rp = ro + rd * dist;
-        dist += 0.1;
+        dist += 0.4;
 
         if (dist > worldDepth){
             break;
@@ -111,8 +111,8 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, mat4 view
             brightness += 0.001;
         }
 
-        if (brightness >= 1.5){
-            brightness = 1.5;
+        if (brightness >= 0.3){
+            brightness = 0.3;
             break;
         }
 

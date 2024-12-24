@@ -11,7 +11,7 @@ out vec4 fragColor;
 
 void main() {
 	vec4 color = texture(DiffuseSampler0, texCoord);
-	vec4 highlights = blur(7.0, 0.002, HighlightsSampler, texCoord);
+	vec4 highlights = blur(5.0, 0.002, HighlightsSampler, texCoord);
 
 	fragColor = color + highlights;
 }

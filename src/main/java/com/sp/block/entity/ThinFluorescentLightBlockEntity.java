@@ -88,7 +88,7 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                     }
                 } else {
                     if (state.get(ThinFluorescentLightBlock.COPY)) {
-                        world.setBlockState(pos, ModBlocks.ThinFluorescentLight.getDefaultState().with(ThinFluorescentLightBlock.COPY, false));
+                        world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.COPY, false));
                     }
 
                     //Turn off if Blackout Event is active

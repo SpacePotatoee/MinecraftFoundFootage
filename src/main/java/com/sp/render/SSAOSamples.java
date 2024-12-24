@@ -10,7 +10,7 @@ import org.joml.Vector3f;
  */
 public class SSAOSamples {
     private static final int MaxSamples = 50;
-    private static final float radius = 1.0f;
+    private static final float radius = 0.5f;
     private static Vector3f[] Samples;
 
     public static Vector3f[] getSSAOSamples(){
