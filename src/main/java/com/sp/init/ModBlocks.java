@@ -180,13 +180,13 @@ public class ModBlocks {
 
     //////Poolrooms Stuff//////
     public static final Block PoolroomsSkyBlock = registerBlock("pool_sky",
-            new Block(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).solid().noBlockBreakParticles()));
+            new PoolroomsSkyBlock(FabricBlockSettings.copyOf(Blocks.GLASS).nonOpaque().hardness(-1f).noBlockBreakParticles().collidable(true)));
 
     public static final Block PoolTiles = registerBlock("pool_tiles",
             new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
 
     public static final Block PoolTileWall = registerBlock("pool_tile_wall",
-            new PoolTileWall(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles().lightLevel(0)));
+            new PoolTileWall(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
 
     public static final Block Window = registerBlock("window",
             new WindowBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).nonOpaque().noBlockBreakParticles()));

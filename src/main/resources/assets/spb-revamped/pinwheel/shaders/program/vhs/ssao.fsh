@@ -3,6 +3,7 @@
 
 uniform sampler2D DiffuseSampler0;
 uniform sampler2D DiffuseDepthSampler;
+uniform usampler2D OpaqueMatSampler;
 
 uniform sampler2D NormalSampler;
 uniform sampler2D DepthSampler;
@@ -36,7 +37,9 @@ void main() {
     vec3 viewPos = viewPosFromDepth(depth, texCoord);
     vec3 normal = normalize(texture(NormalSampler, texCoord).rgb);
 
-    if(depthSample < 1.0){
+    uint material = texture2D(OpaqueMatSampler, texCoord).r;
+
+    if(depthSample < 1.0 && material != 15){
         vec3 randDir = normalize(vec3(texture(RNoiseDir, texCoord * 100.0).rgb));
         vec3 tangent = normalize(cross(normal, normalize(randDir)));
         vec3 bitangent = normalize(cross(normal, tangent));

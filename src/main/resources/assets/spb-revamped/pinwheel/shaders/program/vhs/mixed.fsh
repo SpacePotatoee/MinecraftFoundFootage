@@ -25,6 +25,7 @@ uniform mat4 viewMatrix;
 uniform mat4 orthographMatrix;
 uniform vec3 lightAngle;
 uniform int ShadowToggle;
+uniform float sunsetTimer;
 
 
 in vec2 texCoord;

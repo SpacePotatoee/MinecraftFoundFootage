@@ -61,7 +61,7 @@ public class RenderLayers extends RenderLayer {
     );
 
     private static final RenderLayer POOLROOMS_SKY = RenderLayer.of(
-            "sky",
+            "poolrooms_sky",
             VertexFormats.POSITION,
             VertexFormat.DrawMode.QUADS,
             256,
