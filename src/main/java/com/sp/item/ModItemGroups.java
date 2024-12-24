@@ -21,6 +21,7 @@ public class ModItemGroups {
                         entries.add(ModBlocks.WallBlock);
                         entries.add(ModBlocks.WallBlock2);
                         entries.add(ModBlocks.CeilingTile);
+                        entries.add(ModBlocks.GhostCeilingTile);
                         entries.add(ModBlocks.CarpetBlock);
 
                         entries.add(ModBlocks.FluorescentLight);

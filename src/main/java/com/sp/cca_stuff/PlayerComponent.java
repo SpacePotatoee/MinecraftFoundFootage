@@ -623,6 +623,13 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.readyForPoolrooms = false;
             }
         }
+        //Poolrooms -> Level 0
+        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY && this.player.getWorld().getLightLevel(this.player.getBlockPos()) == 0 && this.player.getPos().y < 60 && this.player.getPos().y > 52){
+            this.player.fallDistance = 0;
+            ServerWorld level0 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL0_WORLD_KEY);
+            TeleportTarget target = new TeleportTarget(new Vec3d(0.5, 26, 0.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
+            FabricDimensions.teleport(this.player, level0, target);
+        }
 
 
         //Update Entity Visibility
@@ -657,6 +664,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid())) {
             this.prevSpeakingTime = BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid());
         }
+
+
 
         shouldSync();
     }

@@ -106,6 +106,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CHAINFENCE, RenderLayers.getChainFence());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CeilingTile, RenderLayers.getCeilingTile());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.GhostCeilingTile, RenderLayers.getCeilingTile());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CarpetBlock, RenderLayers.getCarpet());
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WOODEN_CRATE, RenderLayers.getWoodenCrateLayer());
@@ -135,7 +136,6 @@ public class SPBRevampedClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTileSlope, RenderLayer.getCutout());
 
         BlockEntityRendererFactories.register(ModBlockEntities.FLUORESCENT_LIGHT_BLOCK_ENTITY, FluorescentLightBlockEntityRenderer::new);
-        BlockEntityRendererFactories.register(ModBlockEntities.WINDOW_BLOCK_ENTITY, PoolroomsWindowBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(ModBlockEntities.THIN_FLUORESCENT_LIGHT_BLOCK_ENTITY, ThinFluorescentLightBlockEntityRenderer::new);
 
         EntityRendererRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerRenderer::new);

@@ -2,6 +2,7 @@ package com.sp.init;
 
 import com.sp.SPBRevamped;
 import com.sp.block.custom.*;
+import com.sp.block.custom.CarpetBlock;
 import com.sp.block.custom.WallBlock;
 import com.sp.block.custom.pipes.*;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -26,14 +27,17 @@ public class ModBlocks {
 
 
     public static final Block CarpetBlock = registerBlock("carpet_block",
-            new Block(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).solid().noBlockBreakParticles()));
+            new CarpetBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).solid().noBlockBreakParticles()));
 
     public static final Block CeilingTile = registerBlock("ceiling_tile",
             new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles()));
 
+    public static final Block GhostCeilingTile = registerBlock("ghost_ceiling_tile",
+            new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles().collidable(false)));
+
 
     public static final Block FluorescentLight = registerBlock("fluorescent_light",
-            new FluorescentLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).luminance(state -> 15).hardness(-1f).noBlockBreakParticles()));
+            new FluorescentLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles()));
 
 
     public static final Block WallArrow1 = registerBlock("arrow1",
@@ -84,7 +88,7 @@ public class ModBlocks {
 
     //////Level 2 and 3 Stuff//////
     public static final Block ThinFluorescentLight = registerBlock("thin_fluorescent_light",
-            new ThinFluorescentLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).luminance(state -> 15).hardness(-1f).noBlockBreakParticles()));
+            new ThinFluorescentLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles()));
 
     public static final Block BottomTrim = registerBlock("bottom_trim",
             new BottomTrim(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).collidable(false).nonOpaque().noBlockBreakParticles()));

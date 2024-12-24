@@ -3,6 +3,7 @@ package com.sp.world.generation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.sp.SPBRevamped;
+import com.sp.init.ModBlocks;
 import com.sp.world.generation.maze_generator.Level0MazeGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -73,6 +74,17 @@ public class Level0ChunkGenerator extends ChunkGenerator {
 
             //Spawn Point
             if((float) chunk.getPos().x == 0 && (float) chunk.getPos().z  == 0){
+                for(int i = 0; i < 16; i++) {
+                    for(int j = 0; j < 16; j++){
+                        if(i == 0 && j == 0){
+                            world.setBlockState(mutable.set(i, 25, j), ModBlocks.GhostCeilingTile.getDefaultState(), 16);
+                        } else {
+                            world.setBlockState(mutable.set(i, 25, j), ModBlocks.CeilingTile.getDefaultState(), 16);
+                        }
+                    }
+                }
+                world.setBlockState(mutable.set(0, 25, 0), ModBlocks.GhostCeilingTile.getDefaultState(), 16);
+
                 roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level0/megaroom1");
                 structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
                 optional = structureTemplateManager.getTemplate(roomIdentifier);

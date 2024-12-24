@@ -15,6 +15,7 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
@@ -89,10 +90,53 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
                 poolroomsMazeGenerator.setup(world);
             }
 
-        } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0){
-            if (server != null) {
-                PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
-                poolroomsMazeGenerator.setup(world);
+        } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
+
+            if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000)){
+                int exit = random.nextBetween(0,5);
+
+                if(exit == 0){
+                    roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "poolrooms/poolrooms_exit");
+                    optional = structureTemplateManager.getTemplate(roomIdentifier);
+
+                    optional.ifPresent(structureTemplate -> structureTemplate.place(
+                            world,
+                            mutable.set(x - 24, 18, z - 24),
+                            mutable.set(x - 24, 18, z - 24),
+                            structurePlacementData,
+                            random,
+                            2
+                    ));
+
+                    roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "poolrooms/poolrooms_exit2");
+                    optional = structureTemplateManager.getTemplate(roomIdentifier);
+
+                    optional.ifPresent(structureTemplate -> structureTemplate.place(
+                            world,
+                            mutable.set(x - 32, 39, z + 17),
+                            mutable.set(x - 32, 39, z + 17),
+                            structurePlacementData,
+                            random,
+                            2
+                    ));
+
+                    if (server != null) {
+                        PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
+                        poolroomsMazeGenerator.setup(world);
+                    }
+
+                } else {
+                    if (server != null) {
+                        PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
+                        poolroomsMazeGenerator.setup(world);
+                    }
+                }
+
+            }else {
+                if (server != null) {
+                    PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
+                    poolroomsMazeGenerator.setup(world);
+                }
             }
         }
 

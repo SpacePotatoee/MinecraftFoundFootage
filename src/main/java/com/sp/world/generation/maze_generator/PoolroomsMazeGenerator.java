@@ -72,7 +72,7 @@ public class PoolroomsMazeGenerator {
 
         BlockPos structurePos = mutable.set(randX + ((this.size - 1) * randX) + this.originX, 18, randY + ((this.size - 1) * randY) + this.originY);
 
-        if(optional.isPresent()){
+        if(optional.isPresent() && world.getBlockState(mutable.set(structurePos.getX(), 18, structurePos.getZ())) != Blocks.PURPLE_WOOL.getDefaultState()){
             optional.get().place(world, structurePos, structurePos, structurePlacementData, random, 2);
         }
 
@@ -80,7 +80,7 @@ public class PoolroomsMazeGenerator {
         this.createMegaRoomList(megaRoomList);
 
 
-        while(!megaRoomList.isEmpty()){
+        while(!megaRoomList.isEmpty()) {
             int ind = random.nextBetween(0, megaRoomList.size() - 1);
             String currentMegaRoom = megaRoomList.get(ind);
             int xx = Integer.parseInt(currentMegaRoom.substring(0, 2));
