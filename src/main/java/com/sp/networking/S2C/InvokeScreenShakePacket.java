@@ -16,7 +16,7 @@ public class InvokeScreenShakePacket {
         boolean inverted = buf.readBoolean();
 
         client.execute(()->{
-            SPBRevampedClient.getCameraShake().setCameraShake(duration, intensity, easing, inverted);
+//            SPBRevampedClient.getCameraShake().setCameraShake(duration, intensity, easing, inverted);
         });
     }
 

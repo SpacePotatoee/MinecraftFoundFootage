@@ -58,7 +58,7 @@ public abstract class GameRendererMixin {
         if (player != null) {
             CutsceneManager cutsceneManager = SPBRevampedClient.getCutsceneManager();
 
-            if(ConfigStuff.enableCameraRoll && !cutsceneManager.isPlaying && client.getCameraEntity() == player) {
+            if(ConfigStuff.enableRealCamera && !cutsceneManager.isPlaying && client.getCameraEntity() == player) {
                 matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(CameraRoll.doCameraRoll(player, tickDelta)));
             }
             else if(cutsceneManager.isPlaying){

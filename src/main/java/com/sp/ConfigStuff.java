@@ -12,7 +12,7 @@ public class ConfigStuff extends MidnightConfig {
     public static boolean enableVhsEffect = true;
 
     @Entry(category = CAMERA)
-    public static boolean enableCameraRoll = true;
+    public static boolean enableRealCamera = true;
 
     @Entry(category = CAMERA, isSlider = true, min = 0, max = 10)
     public static float lookRollMultiplier = 7.0f;

@@ -1,6 +1,7 @@
 package com.sp.render.camera;
 
 import com.sp.ConfigStuff;
+import com.sp.SPBRevampedClient;
 import com.sp.util.MathStuff;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec2f;
@@ -28,6 +29,6 @@ public class CameraRoll {
 
             prevYaw = yaw;
         }
-        return spinRoll + strafeRoll;
+        return spinRoll + strafeRoll + SPBRevampedClient.getCameraShake().getCameraZRot();
     }
 }

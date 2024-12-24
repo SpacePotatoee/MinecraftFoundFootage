@@ -118,7 +118,7 @@ public class CutsceneManager {
                 ConfigStuff.lightRenderDistance = 1000;
                 this.startTime = System.currentTimeMillis();
                 this.isPlaying = true;
-                SPBRevampedClient.getCameraShake().setCameraShake(MathStuff.millisecToTick(this.duration), 1, Easings.Easing.linear, true);
+//                SPBRevampedClient.getCameraShake().setCameraShake(MathStuff.millisecToTick(this.duration), 1, Easings.Easing.linear, true);
                 client.getSoundManager().play(new EntityTrackingSoundInstance(ModSounds.FALLING, SoundCategory.AMBIENT, 1.0f, 1.0f, client.cameraEntity, Random.newSeed()));
             }
             float timer = (float) (System.currentTimeMillis() - this.startTime) / this.duration;
