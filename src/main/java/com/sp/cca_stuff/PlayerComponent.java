@@ -512,7 +512,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             if (this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
                 suffocationTimer++;
                 if (suffocationTimer == 1) {
-                    this.player.getWorld().playSoundFromEntity(null, this.player, ModSounds.GLITCH, SoundCategory.AMBIENT, 1.0f, 1.0f);
+                    SPBRevamped.sendPlaySoundPacket((ServerPlayerEntity) this.player, ModSounds.GLITCH, 1.0f, 1.0f);
                     this.playingGlitchSound = true;
                 }
 

@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BackroomsVoicechatPlugin implements VoicechatPlugin {
     public static VoicechatServerApi voicechatApi;
     private ConcurrentHashMap<UUID, OpusDecoder> decoders;
-    public static Vector<short[]> randomSpeakingList;
     public static ConcurrentHashMap<UUID, Float> speakingTime;
 
 
@@ -38,7 +37,6 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
     public void initialize(VoicechatApi api) {
         decoders = new ConcurrentHashMap<>();
         speakingTime = new ConcurrentHashMap<>();
-        randomSpeakingList = new Vector<>();
     }
 
     @Override

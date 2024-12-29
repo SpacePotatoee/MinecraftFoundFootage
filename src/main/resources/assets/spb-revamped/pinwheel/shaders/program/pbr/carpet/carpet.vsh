@@ -31,7 +31,7 @@ void main() {
     VertexColor = Color;
     TexCoord0 = UV0;
     TexCoord2 = minecraft_sample_lightmap_coords(UV2);
-    LightmapColor = texture(Sampler2, TexCoord2);
+    LightmapColor = pow(texture(Sampler2, TexCoord2), vec4(3));
     normall = NormalMat * Normal;
 
     vec3 worldNormal = abs(viewToWorldSpaceDirection(normall));

@@ -1,0 +1,21 @@
+package com.sp.mixin;
+
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.world.ClientWorld;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
+@Mixin(LightmapTextureManager.class)
+public class BlueHueFixMixin {
+
+    @Redirect(method = {"update"}, at = @At(value = "INVOKE", target = "Lorg/joml/Vector3f;lerp(Lorg/joml/Vector3fc;F)Lorg/joml/Vector3f;", ordinal = 0))
+    private Vector3f fixBlueHue(Vector3f instance, Vector3fc other, float t, @Local ClientWorld clientWorld){
+        float f = clientWorld.getSkyBrightness(1.0F);
+        return new Vector3f(f, f, f + 0.2f).lerp(other, t);
+    }
+
+}

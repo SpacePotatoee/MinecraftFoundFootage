@@ -49,7 +49,7 @@ void main() {
     texCoord0 = UV0;
     texCoord2 = vec2(UV2 / 256.0);
     overlayColor = texelFetch(Sampler1, UV1, 0);
-    lightmapColor = texelFetch(Sampler2, UV2 / 16, 0);
+    lightmapColor = pow(texture(Sampler2, texCoord2), vec4(7));
     normal = NormalMat * Normal;
 
     #ifndef DISABLE_VANILLA_ENTITY_LIGHT

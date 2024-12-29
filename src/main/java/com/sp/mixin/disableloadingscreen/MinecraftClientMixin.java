@@ -41,7 +41,7 @@ public abstract class MinecraftClientMixin {
 
     }
 
-    @Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
+    //@Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
     private void dontSetThatScreen(Screen screen, CallbackInfo ci){
         ci.cancel();
 

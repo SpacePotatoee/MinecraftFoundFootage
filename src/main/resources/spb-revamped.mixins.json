@@ -26,6 +26,8 @@
     "defaultRequire": 1
   },
   "client": [
+    "AOFixMixin",
+    "BlueHueFixMixin",
     "CameraMixin",
     "DinoDebugRendererMixin",
     "EntityRenderDispatcherMixin",
