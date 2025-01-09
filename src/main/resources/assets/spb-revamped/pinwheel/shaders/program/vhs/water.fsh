@@ -59,7 +59,7 @@ vec2 rayMarch(vec3 dir, vec3 origin){
         posDepth = texture(WaterDepth, projectedCoords.xy).r;
 
         if (projectedCoords.x < 0.0 || projectedCoords.x > 1.0 || projectedCoords.y < 0.0 || projectedCoords.y > 1.0) {
-            return vec2(-1);
+            return vec2(-1.0);
         }
 
         dDepth = Pos.z - posDepth;
@@ -101,7 +101,7 @@ vec4 getReflection(vec4 fragColor, vec4 normal, float depth, vec2 texCoord, vec3
     vec3 reflected = normalize(reflect(normalize(viewPos), normalize(normal.rgb)));
     vec2 projectedCoord = rayMarch(reflected * max(rayStep, -viewPos.z), viewPos);
     //Out of the screen, if this isn't included reflections form weird artifacts
-    if(projectedCoord.x == -1){
+    if(projectedCoord.x == -1.0){
         return fragColor;
     }
     vec3 reflectedTexture = texture(DiffuseSampler0, projectedCoord).rgb;
@@ -111,7 +111,6 @@ vec4 getReflection(vec4 fragColor, vec4 normal, float depth, vec2 texCoord, vec3
     float screenEdgefactor = clamp(1.0f - (dCoords.x + dCoords.y), 0.0f, 1.0f);
 
     float ReflectionMultiplier = screenEdgefactor * (reflected.b);
-//    return vec4(reflected, 1.0);
     return mix(fragColor, mix(fragColor, vec4(reflectedTexture, 1.0) * clamp(0.0, 1.0, -ReflectionMultiplier), -ReflectionMultiplier), clamp(REFLECTIVITY, 0.0, 1.0));
 }
 
@@ -189,7 +188,6 @@ void main() {
             lightangle.y = - lightangle.y;
 
             vec3 view = -VeilCamera.IViewMat[2].xyz;
-            //            view.z = -view.z;
 
             vec3 reflectedView = reflect(viewDirFromUv(texCoord), normalize(normal.rgb));
             float specular = dot(reflectedView, normalize(getLightAngle(viewMatrix)));

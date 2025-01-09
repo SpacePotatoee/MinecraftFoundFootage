@@ -20,7 +20,7 @@ uniform sampler2D LightSampler;
 uniform usampler2D MatSampler;
 
 
-uniform mat4 level0ViewMatrix;
+uniform mat4 viewMatrix;
 uniform mat4 orthographMatrix;
 uniform vec3 lightAngled;
 uniform vec2 ScreenSize;
@@ -65,7 +65,7 @@ void main() {
     vec3 worldNormal = viewToWorldSpaceDirection(normalVS);
     vec3 offset = lightPos - pos;
 
-    if(ShouldRender == 1){
+//    if(ShouldRender == 0){
         vec3 tangent = normalize(cross(worldNormal, normalize(vec3(1.0))));
         vec3 bitangent = normalize(cross(worldNormal, tangent));
 
@@ -73,7 +73,6 @@ void main() {
         TBN = transpose(TBN);
 
         //If the pixel isn't in range, there's no point in doing any calculations
-        uint material = texture(MatSampler, screenUv).g;
         if(abs(length(offset)) > radius || pos.y > 40.6 || pos.y < -19.5 || lightPos.y < 20.5){
             fragColor = setColor(albedoColor, normalVS, offset, 1.0);
             return;
@@ -88,7 +87,7 @@ void main() {
             vec3 normalRayOffset = vec3((hash22(screenUv * (i+1) * 453.346) * 2.0 - 1.0) * 0.01, 0.0);
             normalRayOffset = (normalRayOffset * TBN) + offsetPos;
 
-            bool hit = ddaRayMarch(offset, normalRayOffset, level0ViewMatrix, orthographMatrix, ShadowSampler);
+            bool hit = ddaRayMarch(offset, normalRayOffset, viewMatrix, orthographMatrix, ShadowSampler);
 
             if (hit == false){
                 light += 1.0;
@@ -97,9 +96,9 @@ void main() {
         }
         light = light / steps;
         fragColor = setColor(albedoColor, normalVS, offset, light);
-    } else {
-        fragColor = setColor(albedoColor, normalVS, offset, 1.0);
-    }
+//    } else {
+//        fragColor = setColor(albedoColor, normalVS, offset, 1.0);
+//    }
 
 
 }

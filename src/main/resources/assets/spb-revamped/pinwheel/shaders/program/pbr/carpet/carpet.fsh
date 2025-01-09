@@ -28,12 +28,11 @@ void main() {
     vec3 dir = Pos;
     vec3 worldNormal = abs(viewToWorldSpaceDirection(normal));
 
-    vec4 color = vec4(0);
-    vec4 normalMap = vec4(0);
-    vec4 aoMap = vec4(0);
-    float dist = 0;
-    vec3 pos = vec3(0);
-    vec3 texCoords = vec3(0);
+    vec4 color = vec4(0.0);
+    vec4 normalMap = vec4(0.0);
+    float dist = 0.0;
+    vec3 pos = vec3(0.0);
+    vec3 texCoords = vec3(0.0);
     float heightMapDepth = 0.0;
     for(int i = 1; i <= MaxSteps; i++){
         pos = worldPos + dir * dist;

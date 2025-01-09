@@ -54,16 +54,16 @@ vec3 getLightAngle(mat4 viewMatrix){
 }
 
 const mat4 ditherMap = mat4(
-    0, 8, 2, 10,
-    12, 4, 14, 6,
-    3, 11, 1, 9,
-    15, 7, 13, 5
+    0.0,  8.0,  2.0,  10.0,
+    12.0, 4.0,  14.0, 6.0,
+    3.0,  11.0, 1.0,  9.0,
+    15.0, 7.0,  13.0, 5.0
 );
 
 float dither(vec2 texCoord, vec2 ScreenSize, float spread){
     vec2 pos = texCoord * ScreenSize * spread;
     float value = ditherMap[int(mod(pos.x, 4))][int(mod(pos.y, 4))];
-    return value * 1/16 - 0.5;
+    return value * 1.0/16.0 - 0.5;
 }
 
 vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, vec2 ScreenSize, mat4 viewMatrix, mat4 orthographMatrix, sampler2D NoiseTex, sampler2D ShadowSampler, sampler2D ditherSample, float sunsetTimer){
@@ -106,8 +106,8 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, vec2 Scre
 
     //VOLUMETRIC LIGHT
     vec3 ro = VeilCamera.CameraPosition;
-    vec3 rd = normalize(viewToPlayerSpace(viewPos) + dither(texCoord, ScreenSize, 1));
-    float maxDist = 80;
+    vec3 rd = normalize(viewToPlayerSpace(viewPos) + dither(texCoord, ScreenSize, 1.0));
+    float maxDist = 80.0;
     float dist = 0.0;
     float brightness = 0.0;
 

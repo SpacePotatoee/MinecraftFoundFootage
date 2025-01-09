@@ -107,11 +107,11 @@ void main() {
     float angle = areaLightInfo.angle;
     vec3 offset = lightPos - pos;
 
-//    if(dot(offset, worldNormal) < 0.0) {
-//        vec4 color = setColor(albedoColor, normalVS, offset, angle);
-//        fragColor = mix(vec4(0,0,0,1), color, 0.5);
-//        return;
-//    }
+    if(dot(offset, worldNormal) < 0.0) {
+        vec4 color = setColor(albedoColor, normalVS, offset, angle);
+        fragColor = vec4(0.0,0.0,0.0,1);
+        return;
+    }
 
     if(pos.y > 40.6 || pos.y < 20.5) {
         fragColor = setColor(albedoColor, normalVS, offset, angle);
@@ -124,15 +124,15 @@ void main() {
         UvAspectFix.x *=  ScreenSize.x / ScreenSize.y;
         lightPosScreenSpace.x *=  ScreenSize.x / ScreenSize.y;
         if(distance(lightPosScreenSpace, UvAspectFix) < 0.01) {
-            fragColor = vec4(1);
+            fragColor = vec4(1.0);
             return;
         }
     }
 
     //If the pixel isn't in range, there's no point in doing any calculations
-//    if(abs(length(offset)) > maxDistance) {
-//        return;
-//    }
+    if(abs(length(offset)) > maxDistance) {
+        return;
+    }
 
     vec3 offsetPos = vec3(pos.x + (0.01 * worldNormal.r), pos.y + (0.01 * worldNormal.g), pos.z + (0.01 * worldNormal.b));
 

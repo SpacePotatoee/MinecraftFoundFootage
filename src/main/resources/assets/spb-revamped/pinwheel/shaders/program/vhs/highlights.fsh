@@ -19,7 +19,7 @@ void main(){
 	vec4 color = texture(DiffuseSampler0, texCoord);
 
 
-    color = vec4(0, 0, 0, 1);
+    color = vec4(0.0, 0.0, 0.0, 1.0);
     float scale = 2.0;
     float offset = 0;
     for(int i = 0; i < 6; i++){

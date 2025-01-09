@@ -113,11 +113,11 @@ void main(){
             color = getShadow(color, texCoord, viewPos, normal, ScreenSize, viewMatrix, orthographMatrix, NoiseTex, ShadowSampler, ditherSample, sunsetTimer);
         }
     } else {
+        //Sun
         vec3 rd = viewDirFromUv(texCoord);
         vec3 lightAngled = getLightAngle(viewMatrix);
         color.rgb += (smoothstep(0.998, 1.0, dot(rd, lightAngled)) + smoothstep(0.7, 1.0, dot(rd, lightAngled)) * 0.6 ) * mix(vec3(1), vec3(0.9921, 0.3686, 0.3254) * 2.4, smoothstep(0.0, 1.0, sunsetTimer));
     }
-//
 
     if(compat.a > 0.0 || compat2.a > 0.0){
         color = compat + compat2;

@@ -21,12 +21,11 @@ in vec3 worldPos;
 in vec3 Pos;
 in mat3 TBN;
 
-const int MaxSteps = 200;
 
 void main() {
     vec2 faceUV = getAccurateUV(worldPos, normal);
 
-    vec4 color = texture(ColorMap, texCoord0 * 10) * vertexColor;
+    vec4 color = texture(Sampler0, texCoord0) * vertexColor;
     vec4 normalMap = (texture(NormalMap, faceUV) * 2.0 - 1.0);
     normalMap.g = -normalMap.g;
     normalMap.rgb *= TBN;

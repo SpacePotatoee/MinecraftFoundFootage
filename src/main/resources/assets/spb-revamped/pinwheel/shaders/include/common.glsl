@@ -53,14 +53,14 @@ const float weight2[9] = float[](
 );
 
 
-vec4 texelBlur(float kernalSize, sampler2D textureSampler) {
+vec4 texelBlur(int kernalSize, sampler2D textureSampler) {
     vec4 blur = vec4(0.0);
-    int size = int(kernalSize);
+    int size = kernalSize;
     float coeff = size * 2.0 + 1.0;
 
     for (int x = -size; x <= size; x++) {
         for (int y = -size; y <= size; y++) {
-            blur += (1/(coeff * coeff)) * texelFetch(textureSampler, ivec2(gl_FragCoord.x + x, gl_FragCoord.y + y), 0) * weight2[x + size] * weight2[y + size];
+            blur += (1.0/(coeff * coeff)) * texelFetch(textureSampler, ivec2(gl_FragCoord.x + x, gl_FragCoord.y + y), 0) * weight2[x + size] * weight2[y + size];
         }
     }
     return blur;

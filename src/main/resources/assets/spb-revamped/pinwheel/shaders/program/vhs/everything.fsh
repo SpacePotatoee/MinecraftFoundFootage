@@ -124,13 +124,7 @@ void main() {
 			color = handColor;
 		}
 
-		fragColor = color;
-
-
-
-//		fragColor.rgb = texture(DiffuseSampler2, mixed).rgb;
-//		fragColor.rgb = vec3(occ);
-//		fragColor.rgb = vec3(uv, 0.0);
+		fragColor = color
 	}else{
 		fragColor = vec4(0.0,0.0,0.0,1.0);
 	}

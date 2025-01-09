@@ -108,8 +108,8 @@ public class RenderLayers extends RenderLayer {
                     .program(CEILING_TILE_SHADER)
                     .texture(
                             RenderPhase.Textures.create()
-                                    .add(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, true, true)
-                                    .add(CEILING_TILE_NORMAL, true, true)
+                                    .add(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, false, true)
+                                    .add(CEILING_TILE_NORMAL, false, true)
                                     .build()
                     )
                     .build(true)
