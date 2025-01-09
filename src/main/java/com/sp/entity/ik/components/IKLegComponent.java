@@ -27,14 +27,18 @@ import java.util.List;
 
 public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extends IKChainComponent<C, E> {
     /// summon projectnublar:tyrannosaurus_rex ~ ~ ~ {NoAI:1b}
-    private final List<ServerLimb> endPoints;
+    private List<ServerLimb> endPoints;
     private List<Vec3d> bases;
-    private final LegSetting settings;
+    private List<LegSetting> settings;
     public double scale = 1;
     private int stillStandCounter = 0;
 
     @SafeVarargs
-    public IKLegComponent(LegSetting settings, List<ServerLimb> endpoints, C... limbs) {
+    public IKLegComponent(List<LegSetting> settings, List<ServerLimb> endpoints, C... limbs) {
+        this.init(settings, endpoints, limbs);
+    }
+
+    public void init(List<LegSetting> settings, List<ServerLimb> endpoints, C... limbs) {
         this.limbs.addAll(List.of(limbs));
         this.settings = settings;
         this.endPoints = endpoints;
@@ -42,6 +46,14 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
         Arrays.stream(limbs).forEach(
                 limb -> this.bases.add(new Vec3d(0,0,0))
         );
+    }
+
+    @SafeVarargs
+    public IKLegComponent(LegSetting settings, List<ServerLimb> endpoints, C... limbs) {
+        List<LegSetting> setting = new ArrayList<>();
+        endpoints.forEach(e -> setting.add(settings));
+
+        this.init(setting, endpoints, limbs);
     }
 
     private static boolean hasMovedOverLastTick(PathAwareEntity entity) {
@@ -136,19 +148,19 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
         for (int i = 0; i < this.endPoints.size(); i++) {
             ServerLimb limb = this.endPoints.get(i);
 
-            limb.tick(this, i, this.settings.movementSpeed);
+            limb.tick(this, i, this.settings.get(i).movementSpeed);
 
             Vec3d limbOffset = limb.baseOffset.multiply(this.getScale());
 
             if (hasMovedOverLastTick(entity)) {
-                limbOffset = limbOffset.add(0, 0, this.settings.stepInFront() * this.getScale());
+                limbOffset = limbOffset.add(0, 0, this.settings.get(i).stepInFront() * this.getScale());
             }
 
             limbOffset = limbOffset.rotateY((float) Math.toRadians(-entity.getBodyYaw()));
 
             Vec3d rotatedLimbOffset = limbOffset.add(pos);
 
-            BlockHitResult rayCastResult = rayCastToGround(rotatedLimbOffset, entity, this.settings.fluid());
+            BlockHitResult rayCastResult = rayCastToGround(rotatedLimbOffset, entity, this.settings.get(i).fluid());
 
             Vec3d rayCastHitPos = rayCastResult.getPos();
 
@@ -169,16 +181,16 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
     }
 
     private double getMaxLegFormTargetDistance(PathAwareEntity entity) {
-        if (this.stillStandCounter >= this.settings.standStillCounter() && hasMovedOverLastTick(entity)) {
+        if (this.stillStandCounter >= this.settings.get(0).standStillCounter() && hasMovedOverLastTick(entity)) {
             this.stillStandCounter = 0;
-        } else if (this.stillStandCounter < this.settings.standStillCounter()) {
+        } else if (this.stillStandCounter < this.settings.get(0).standStillCounter()) {
             this.stillStandCounter += 1;
         }
 
-        if (this.stillStandCounter == this.settings.standStillCounter()) {
-            return this.settings.maxStandingStillDistance() * this.getScale();
+        if (this.stillStandCounter == this.settings.get(0).standStillCounter()) {
+            return this.settings.get(0).maxStandingStillDistance() * this.getScale();
         } else {
-            return this.settings.maxDistance() * this.getScale();
+            return this.settings.get(0).maxDistance() * this.getScale();
         }
     }
 
@@ -190,7 +202,7 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
         return this.endPoints;
     }
 
-    public LegSetting getSettings() {
+    public List<LegSetting> getSettings() {
         return this.settings;
     }
 

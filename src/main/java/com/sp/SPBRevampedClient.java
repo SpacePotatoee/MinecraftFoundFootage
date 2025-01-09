@@ -3,7 +3,6 @@ package com.sp;
 import com.sp.entity.client.model.SmilerModel;
 import com.sp.entity.client.renderer.SkinWalkerRenderer;
 import com.sp.entity.client.renderer.SmilerRenderer;
-import com.sp.entity.custom.SmilerEntity;
 import com.sp.init.*;
 import com.sp.block.renderer.*;
 import com.sp.cca_stuff.InitializeComponents;
@@ -17,7 +16,6 @@ import com.sp.render.camera.CutsceneManager;
 import com.sp.render.gui.TitleText;
 import com.sp.render.physics.PhysicsPoint;
 import com.sp.render.physics.PhysicsStick;
-import com.sp.sounds.entity.SmilerGlitchSoundInstance;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
 import com.sp.init.BackroomsLevels;
@@ -41,7 +39,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.render.*;
@@ -51,7 +48,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -99,7 +95,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         InitializePackets.registerS2CPackets();
 
-        Keybinds.inizializeKeyBinds();
+        Keybinds.initializeKeyBinds();
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayers.getConcreteLayer());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Bricks, RenderLayers.getBricksLayer());

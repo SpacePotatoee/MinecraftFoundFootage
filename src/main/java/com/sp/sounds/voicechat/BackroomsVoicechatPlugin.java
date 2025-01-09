@@ -16,18 +16,17 @@ import net.minecraft.util.math.random.Random;
 import org.lwjgl.openal.AL10;
 
 
-import java.util.List;
-import java.util.UUID;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BackroomsVoicechatPlugin implements VoicechatPlugin {
     public static VoicechatServerApi voicechatApi;
     private ConcurrentHashMap<UUID, OpusDecoder> decoders;
-    public static Vector<short[]> randomSpeakingList;
     public static ConcurrentHashMap<UUID, Float> speakingTime;
 
-
+    public static Map<UUID, Vector<short[]>> randomSpeakingList;
+    private static Map<UUID, short[]> totalSoundData;
+    private static Map<UUID, Integer> ticks;
 
     @Override
     public String getPluginId() {
@@ -38,18 +37,90 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
     public void initialize(VoicechatApi api) {
         decoders = new ConcurrentHashMap<>();
         speakingTime = new ConcurrentHashMap<>();
-        randomSpeakingList = new Vector<>();
+        randomSpeakingList = new HashMap<>();
+        ticks = new HashMap<>();
+        totalSoundData = new HashMap<>();
     }
 
     @Override
     public void registerEvents(EventRegistration registration) {
-        registration.registerEvent(MicrophonePacketEvent.class, this::updateVisibilityAndTalkTime);
+        registration.registerEvent(MicrophonePacketEvent.class, this::recordPlayersTalking);
+        //registration.registerEvent(MicrophonePacketEvent.class, this::updateVisibilityAndTalkTime, 0);
         registration.registerEvent(VoicechatServerStoppedEvent.class, this::onServerStop);
         registration.registerEvent(PlayerDisconnectedEvent.class, this::playerDisconnect);
         registration.registerEvent(PlayerConnectedEvent.class, this::playerConnect);
         registration.registerEvent(VoicechatServerStartedEvent.class, this::onServerStart);
     }
 
+    private void recordPlayersTalking(MicrophonePacketEvent microphonePacketEvent) {
+        VoicechatConnection senderConnection = microphonePacketEvent.getSenderConnection();
+        if (senderConnection == null) {
+            return;
+        }
+
+        if (!(senderConnection.getPlayer().getPlayer() instanceof PlayerEntity player)) {
+            return;
+        }
+
+        if (ticks.containsKey(player.getUuid())) {
+            ticks.put(player.getUuid(), ticks.get(player.getUuid()) + 1);
+        } else {
+            ticks.put(player.getUuid(), 0);
+        }
+
+        byte[] encodedData = microphonePacketEvent.getPacket().getOpusEncodedData();
+
+        if (!decoders.containsKey(player.getUuid())) {
+            decoders.put(player.getUuid(), microphonePacketEvent.getVoicechat().createDecoder());
+        }
+
+        OpusDecoder decoder = decoders.get(player.getUuid());
+
+        short[] data = decoder.decode(encodedData);
+
+
+        short[] totalData;
+        if (totalSoundData.containsKey(player.getUuid())) {
+            totalData = totalSoundData.get(player.getUuid());
+        } else {
+            totalData = new short[0];
+        }
+
+        short[] result = new short[totalData.length + data.length];
+        System.arraycopy(totalData, 0, result, 0, totalData.length);
+        System.arraycopy(data, 0, result, totalData.length, data.length);
+        totalData = result;
+        totalSoundData.put(player.getUuid(), totalData);
+
+        decoders.get(player.getUuid()).resetState();
+
+        System.out.println(encodedData.length);
+        if (encodedData.length != 0) {
+            return;
+        }
+
+        if (!(ticks.get(player.getUuid()) > 100)) {
+            Random random = Random.create();
+
+            Vector<short[]> soundList = new Vector<>();
+
+            if (randomSpeakingList.containsKey(player.getUuid())) {
+                soundList = randomSpeakingList.getOrDefault(player.getUuid(), new Vector<>());
+            }
+
+            if (soundList.size() < 20) {
+                soundList.add(totalSoundData.get(player.getUuid()));
+            } else {
+                soundList.set(random.nextBetween(0, randomSpeakingList.size() - 1), totalSoundData.get(player.getUuid()));
+            }
+
+            System.out.println("Adding to random speaking list");
+            randomSpeakingList.put(player.getUuid(), soundList);
+        }
+
+        ticks.put(player.getUuid(), 0);
+        totalSoundData.remove(player.getUuid());
+    }
 
     private void onServerStart(VoicechatServerStartedEvent voicechatServerStartedEvent) {
         voicechatApi = voicechatServerStartedEvent.getVoicechat();
@@ -70,6 +141,7 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
     }
 
     private void updateVisibilityAndTalkTime(MicrophonePacketEvent microphonePacketEvent) {
+        /*
         VoicechatConnection senderConnection = microphonePacketEvent.getSenderConnection();
         if(senderConnection != null) {
 
@@ -85,7 +157,6 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
                 OpusDecoder decoder = decoders.get(player.getUuid());
                 short[] data = decoder.decode(microphonePacketEvent.getPacket().getOpusEncodedData());
 
-
                 if(data.length > 0){
                     component.setSpeaking(true);
 
@@ -95,7 +166,6 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
                     }
 
                     speakingTime.put(player.getUuid(), speakingTime.get(player.getUuid()) + 0.0001f);
-//                    System.out.println(speakingTime.get(player.getUuid()));
 
                     //Update entity visibility
                     if(!component.isVisibleToEntity()) {
@@ -106,10 +176,13 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
                         }
                     }
                 }
+
+                decoder.resetState();
             } else {
-                microphonePacketEvent.cancel();
+                //microphonePacketEvent.cancel();
             }
         }
+         */
     }
 
     private void removePlayerDecoder(UUID uuid){
