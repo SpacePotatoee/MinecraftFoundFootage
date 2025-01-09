@@ -25,7 +25,7 @@ vec3 BloomLod(float scale, vec2 offset){
 
 void main() {
 	vec4 color = texture(DiffuseSampler0, texCoord);
-	vec4 highlights = texture(HighlightsSampler, uv);
+	vec4 highlights = texture(HighlightsSampler, texCoord);
 
 //	color = vec4(0, 0, 0, 1);
 	float scale = 2.0;
