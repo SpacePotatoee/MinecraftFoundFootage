@@ -6,9 +6,8 @@
 #include spb-revamped:accurateuv
 
 uniform sampler2D Sampler0;
+uniform sampler2D Sampler1;
 uniform sampler2D ColorMap;
-uniform sampler2D HeightMap;
-uniform sampler2D AoMap;
 uniform sampler2D NormalMap;
 
 uniform vec4 ColorModulator;
@@ -27,7 +26,7 @@ const int MaxSteps = 200;
 void main() {
     vec2 faceUV = getAccurateUV(worldPos, normal);
 
-    vec4 color = texture(Sampler0, texCoord0) * vertexColor;
+    vec4 color = texture(ColorMap, texCoord0 * 10) * vertexColor;
     vec4 normalMap = (texture(NormalMap, faceUV) * 2.0 - 1.0);
     normalMap.g = -normalMap.g;
     normalMap.rgb *= TBN;
