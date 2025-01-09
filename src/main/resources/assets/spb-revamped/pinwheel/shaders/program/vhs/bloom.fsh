@@ -25,9 +25,9 @@ vec3 BloomLod(float scale, vec2 offset){
 
 void main() {
 	vec4 color = texture(DiffuseSampler0, texCoord);
-	vec4 highlights = texture(HighlightsSampler, texCoord);
+//	vec4 highlights = texture(HighlightsSampler, texCoord);
 
-//	color = vec4(0, 0, 0, 1);
+	vec4 highlights = vec4(0.0);
 	float scale = 2.0;
 	float offset = 0;
 	for(int i = 0; i < 6; i++) {
@@ -36,14 +36,6 @@ void main() {
 		offset = (1.0 - (1.0/ scale));
 		scale *= 2.0;
 	}
-//	highlights /= 8.0;
-//	color.rgb += BloomLod(4.0, vec2(0.5, 0.0));
-//	color.rgb += BloomLod(8.0, vec2(0.75, 0.0));
-//	color.rgb += BloomLod(16.0, vec2(0.875, 0.0));
-//	color.rgb += BloomLod(32.0, vec2(0.9375, 0.0));
-//	color.rgb += BloomLod(64.0, vec2(0.96875, 0.0));
-//	color.rgb += BloomLod(128.0, vec2(0.984375, 0.0));
-//	color.rgb += BloomLod(128.0, vec2(0.984375, 0.0));
 
 
 	fragColor = color + highlights;
