@@ -12,6 +12,7 @@ out vec3 lightColor;
 out vec2 size;
 out float maxAngle;
 out float maxDistance;
+out vec3 lightWorldPosition;
 
 void main() {
     vec3 vertexPos = Position;
@@ -27,6 +28,7 @@ void main() {
     lightPos = inverse(rotationMatrix) * lightPos;
     vertexPos = inverse(rotationMatrix) * vertexPos;
     vertexPos += lightPos;
+    lightWorldPosition = lightPos;
     gl_Position = VeilCamera.ProjMat * VeilCamera.ViewMat * vec4(vertexPos - VeilCamera.CameraPosition, 1.0);
 
     lightMat = LightMatrix;

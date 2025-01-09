@@ -13,6 +13,10 @@
     "RNoiseDir": {
       "type": "location",
       "location": "spb-revamped:textures/shaders/rnoisedir.png"
+    },
+    "FogTexture": {
+      "type": "location",
+      "location": "spb-revamped:textures/shaders/super_noise.png"
     }
   }
 }

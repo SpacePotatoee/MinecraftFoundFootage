@@ -4,30 +4,37 @@
 #include veil:light
 #include spb-revamped:shadows
 #include spb-revamped:common
+#include spb-revamped:puddles
 #include veil:camera
+
+#define OFFSET vec2(0.1965249, 0.6546237)
 
 in mat4 lightMat;
 in vec3 lightColor;
 in vec2 size;
 in float maxAngle;
 in float maxDistance;
+in vec3 lightWorldPosition;
 
 uniform sampler2D AlbedoSampler;
 uniform sampler2D NormalSampler;
 uniform sampler2D DiffuseDepthSampler;
 uniform sampler2D ShadowSampler;
+uniform sampler2D FogTexture;
 
 uniform mat4 viewMatrix;
 uniform mat4 orthographMatrix;
-uniform vec3 lightAngled;
 uniform vec2 ScreenSize;
+uniform float gameTime;
 
 out vec4 fragColor;
+
+
 
 // acos approximation
 // faster and also doesn't flicker weirdly
 float sacos( float x ){
-    float y = abs( clamp(x,-1.0,1.0) );
+    float y = abs( specialClamp2(x,-1.0,1.0) );
     float z = (-0.168577*y + 1.56723) * sqrt(1.0 - y);
     return mix( 0.5*3.1415927, z, sign(x) );
 }
@@ -59,7 +66,7 @@ vec4 setColor(vec4 albedoColor, vec3 normalVS, vec3 offset, float angle){
     diffuse = (diffuse + MINECRAFT_AMBIENT_LIGHT) / (1.0 + MINECRAFT_AMBIENT_LIGHT);
     diffuse *= attenuate_no_cusp(length(offset), maxDistance);
     // angle falloff
-    float angleFalloff = clamp(angle, 0.0, maxAngle) / maxAngle;
+    float angleFalloff = specialClamp2(angle, 0.0, maxAngle) / maxAngle;
     angleFalloff = smoothstep(1.0, 0.0, angleFalloff);
     diffuse *= angleFalloff;
 
@@ -67,6 +74,16 @@ vec4 setColor(vec4 albedoColor, vec3 normalVS, vec3 offset, float angle){
     vec3 diffuseColor = diffuse * lightColor;
 
     return vec4(albedoColor.rgb * diffuseColor * (1.0 - reflectivity) + diffuseColor * reflectivity, albedoColor.a);
+}
+
+float noise3D(vec3 p){
+    float z = p.z;
+    vec2 z1 = (floor(z) * OFFSET + p.xz)/5.0;
+    vec2 z2 = ((floor(z) + 1.0) * OFFSET + p.xz)/5.0;
+    float n1 = texture(FogTexture, z1 + gameTime * 100.0).r;
+    float n2 = texture(FogTexture, z2 + gameTime * 100.0).r;
+    float ratio = fract(z);
+    return mix(n1, n2, ratio);
 }
 
 void main() {
@@ -90,32 +107,105 @@ void main() {
     float angle = areaLightInfo.angle;
     vec3 offset = lightPos - pos;
 
-    if(pos.y > 40.6 || pos.y < 20.5){
+//    if(dot(offset, worldNormal) < 0.0) {
+//        vec4 color = setColor(albedoColor, normalVS, offset, angle);
+//        fragColor = mix(vec4(0,0,0,1), color, 0.5);
+//        return;
+//    }
+
+    if(pos.y > 40.6 || pos.y < 20.5) {
         fragColor = setColor(albedoColor, normalVS, offset, angle);
         return;
+    }
+
+    vec2 lightPosScreenSpace = worldToScreenSpace(lightWorldPosition).xy;
+    if(!(lightPosScreenSpace.x < 0.0 && lightPosScreenSpace.x > 1.0 && lightPosScreenSpace.y < 0.0 && lightPosScreenSpace.y > 1.0)) {
+        vec2 UvAspectFix = screenUv;
+        UvAspectFix.x *=  ScreenSize.x / ScreenSize.y;
+        lightPosScreenSpace.x *=  ScreenSize.x / ScreenSize.y;
+        if(distance(lightPosScreenSpace, UvAspectFix) < 0.01) {
+            fragColor = vec4(1);
+            return;
+        }
     }
 
     //If the pixel isn't in range, there's no point in doing any calculations
-    if(abs(length(offset)) > maxDistance) {
-        return;
-    }
+//    if(abs(length(offset)) > maxDistance) {
+//        return;
+//    }
 
-    vec3 offsetPos = vec3(pos.x + (0.001 * worldNormal.r), pos.y + (0.001 * worldNormal.g), pos.z + (0.001 * worldNormal.b));
+    vec3 offsetPos = vec3(pos.x + (0.01 * worldNormal.r), pos.y + (0.01 * worldNormal.g), pos.z + (0.01 * worldNormal.b));
+
+    vec3 rayDir = viewDirFromUv(screenUv);
+    float dist = 0.0;
+//    bool hit = false;
+    float brightness = 0.0;
+//    for(int i = 0; i < 10500; i++) {
+//        vec3 rayPos = VeilCamera.CameraPosition + rayDir * dist;
+//
+//        AreaLightResult areaLightInfo = closestPointOnPlaneAndAngle(rayPos, lightMat, size);
+//        vec3 lightPos2 = areaLightInfo.position;
+//        float angle2 = areaLightInfo.angle;
+//        vec3 offset2 = lightPos2 - rayPos;
+//
+//        vec3 lightDirection = (VeilCamera.ViewMat * vec4(normalize(offset2), 0.0)).xyz;
+//        float diffuse = 0.5;
+//        diffuse = (diffuse + MINECRAFT_AMBIENT_LIGHT) / (1.0 + MINECRAFT_AMBIENT_LIGHT);
+//        diffuse *= attenuate_no_cusp(length(offset2), maxDistance);
+////        // angle falloff
+//        float angleFalloff = clamp(angle2, 0.0, maxAngle) / maxAngle;
+//        angleFalloff = smoothstep(1.0, 0.0, angleFalloff);
+//        diffuse *= angleFalloff;
+////        fragColor = vec4(vec3(diffuse), 1.0);
+//
+//        if(diffuse > 0.03) {
+//            float noise = noise3D(rayPos);
+//            brightness += 0.0009 * noise;
+//        }
+//
+//        if(brightness >= 0.5){
+//            break;
+//        }
+//
+//        vec3 playerSpace = rayPos - VeilCamera.CameraPosition;
+//        vec3 viewSpace = (VeilCamera.ViewMat * vec4(playerSpace, 1.0)).xyz;
+//        vec4 projectedCoords = VeilCamera.ProjMat * vec4(viewSpace, 1.0);
+//        projectedCoords.xyz /= projectedCoords.w;
+//        projectedCoords.xyz = projectedCoords.xyz * 0.5 + 0.5;
+//        float posDepth = texture(DiffuseDepthSampler, projectedCoords.xy).r;
+//
+//        if (projectedCoords.z > posDepth) {
+//            break;
+//        }
+//
+////        dist += (length(playerSpace + rayDir * 0.1) * 0.008);
+//        dist += 0.05;
+////        fragColor = vec4(vec3(dist), 1.0);
+//    }
     bool hit = ddaRayMarch(offset, offsetPos, viewMatrix, orthographMatrix, ShadowSampler);
 
     if(hit == false){
-        vec3 lightDirection = (VeilCamera.ViewMat * vec4(normalize(offset), 0.0)).xyz;
-        float diffuse = (dot(normalVS, lightDirection) + 1.0) * 0.5;
-        diffuse = (diffuse + MINECRAFT_AMBIENT_LIGHT) / (1.0 + MINECRAFT_AMBIENT_LIGHT);
-        diffuse *= attenuate_no_cusp(length(offset), maxDistance);
-        // angle falloff
-        float angleFalloff = clamp(angle, 0.0, maxAngle) / maxAngle;
-        angleFalloff = smoothstep(1.0, 0.0, angleFalloff);
-        diffuse *= angleFalloff;
-
-        float reflectivity = 0.1;
-        vec3 diffuseColor = diffuse * lightColor;
-
         fragColor = setColor(albedoColor, normalVS, offset, angle);
+//        fragColor.rgb = mix(fragColor.rgb,vec3(1.0), brightness);
+//        fragColor = mix(vec4(0), vec4(1), sin(gameTime * 1000));
+
+//        fragColor = vec4(vec3(texture(DiffuseDepthSampler, screenUv).r), 1.0);
     }
+//else {t
+//        vec3 lightDirection = (VeilCamera.ViewMat * vec4(normalize(offset), 0.0)).xyz;
+//        float diffuse = (dot(normalVS, lightDirection) + 1.0) * 0.5;
+//        diffuse = (diffuse + MINECRAFT_AMBIENT_LIGHT) / (1.0 + MINECRAFT_AMBIENT_LIGHT);
+//        diffuse *= attenuate_no_cusp(length(offset), maxDistance);
+//        // angle falloff
+//        float angleFalloff = clamp(angle, 0.0, maxAngle) / maxAngle;
+//        angleFalloff = smoothstep(1.0, 0.0, angleFalloff);
+//        diffuse *= angleFalloff;
+//
+//        float reflectivity = 0.1;
+//        vec3 diffuseColor = diffuse * lightColor;
+//
+//        fragColor = setColor(albedoColor, normalVS, offset, angle) * 0.15;
+//    }
+//    fragColor = vec4(UvAspectFix, 0.0, 1.0);
+
 }

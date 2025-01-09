@@ -1,5 +1,7 @@
 package com.sp.mixin;
 
+import foundry.veil.api.client.render.VeilRenderSystem;
+import foundry.veil.api.client.render.deferred.VeilDeferredRenderer;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModelRenderer;
@@ -14,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Arrays;
 import java.util.BitSet;
 
 
@@ -189,6 +192,16 @@ public abstract class AOFixMixin {
         }
 
         float worldBrightness = world.getBrightness(direction, shaded);
+
+        //Reinserting veil's "Disable Ambient Occlusion"
+        VeilDeferredRenderer deferredRenderer = VeilRenderSystem.renderer().getDeferredRenderer();
+        if (!deferredRenderer.getLightRenderer().isAmbientOcclusionEnabled()) {
+            Arrays.fill(this.brightness, 1.0F);
+        }
+
+        if (deferredRenderer.isEnabled() && deferredRenderer.getRendererState() != VeilDeferredRenderer.RendererState.DISABLED) {
+            return;
+        }
 
         for (int av = 0; av < this.brightness.length; av++) {
             this.brightness[av] = this.brightness[av] * worldBrightness;

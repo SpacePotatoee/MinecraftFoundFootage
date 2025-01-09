@@ -39,9 +39,9 @@ public class CameraShake {
             if (player != null) {
                 float playerSpeed = (player.horizontalSpeed - player.prevHorizontalSpeed) * 6;
 
-                this.traumaGoal = Math.max(0.75 * playerSpeed, 0.5);
-                this.noiseSpeedGoal = Math.max(0.2 * playerSpeed, 0.1);
-                this.amplitude = 3;
+                this.traumaGoal = Math.max(0.6 * playerSpeed, 0.5);
+                this.noiseSpeedGoal = Math.max(0.25 * playerSpeed, 0.1);
+                this.amplitude = 4;
 
                 this.trauma = Math.max(MathStuff.Lerp((float) this.trauma, (float) this.traumaGoal, 0.93f, frameDelta), 0.5);
                 this.noiseSpeed = Math.max(MathStuff.Lerp((float) this.noiseSpeed, (float) this.noiseSpeedGoal, 0.93f, frameDelta), 0.1);
