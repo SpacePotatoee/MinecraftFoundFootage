@@ -3,14 +3,15 @@
         {
             "type": "veil:blit",
             "shader": "spb-revamped:vhs/ssao",
-            "in": "veil:post",
+            "in": "minecraft:main",
             "out": "spb-revamped:ssao"
         },
         {
             "type": "veil:blit",
             "shader": "spb-revamped:vhs/mixed",
-            "in": "veil:post",
-            "out": "spb-revamped:mixed"
+            "in": "minecraft:main",
+            "out": "spb-revamped:mixed",
+            "clear": false
         },
         {
             "type": "veil:blit",
@@ -29,6 +30,12 @@
             "shader": "spb-revamped:vhs/highlights",
             "in": "spb-revamped:everything_prebloom",
             "out": "spb-revamped:highlights"
+        },
+        {
+            "type": "veil:blit",
+            "shader": "spb-revamped:vhs/highlight_blur",
+            "in": "spb-revamped:highlights",
+            "out": "spb-revamped:highlight_blur"
         },
         {
             "type": "veil:blit",
@@ -63,6 +70,10 @@
             "type": "location",
             "location": "spb-revamped:textures/shaders/rnoisedir.png"
         },
+        "ditherSample": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/dither.png"
+        },
         "NoiseTexture": {
             "type": "location",
             "location": "spb-revamped:textures/shaders/puddle_noise.png"
@@ -93,7 +104,12 @@
         },
         "HighlightsSampler": {
             "type": "framebuffer",
-            "name": "spb-revamped:highlights"
+            "name": "spb-revamped:highlight_blur"
+        },
+        "MixedSampler": {
+            "type": "framebuffer",
+            "name": "spb-revamped:mixed",
+            "sampler": 1
         },
         "DepthSampler": {
             "type": "framebuffer",

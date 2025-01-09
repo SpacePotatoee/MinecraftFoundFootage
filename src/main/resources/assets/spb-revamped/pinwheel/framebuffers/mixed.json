@@ -1,6 +1,18 @@
 {
   "depth": false,
-  "format": "RGBA8",
-  "autoClear": true,
-  "linear": true
+  "autoClear": false,
+  "color_buffers": [
+    {
+      "name": "MixedSampler",
+      "format": "RGBA8"
+    },
+    {
+      "name": "PrevSampler",
+      "format": "RGBA8"
+    },
+    {
+      "name": "Sun",
+      "format": "RGB8"
+    }
+  ]
 }
