@@ -45,7 +45,6 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
     @Override
     public void registerEvents(EventRegistration registration) {
         registration.registerEvent(MicrophonePacketEvent.class, this::recordPlayersTalking);
-        //registration.registerEvent(MicrophonePacketEvent.class, this::updateVisibilityAndTalkTime, 0);
         registration.registerEvent(VoicechatServerStoppedEvent.class, this::onServerStop);
         registration.registerEvent(PlayerDisconnectedEvent.class, this::playerDisconnect);
         registration.registerEvent(PlayerConnectedEvent.class, this::playerConnect);
@@ -70,36 +69,36 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
 
         byte[] encodedData = microphonePacketEvent.getPacket().getOpusEncodedData();
 
-        if (!decoders.containsKey(player.getUuid())) {
-            decoders.put(player.getUuid(), microphonePacketEvent.getVoicechat().createDecoder());
-        }
+        byte[] copyData = encodedData.clone();
 
-        OpusDecoder decoder = decoders.get(player.getUuid());
+        if (copyData.length != 0) {
+            if (!decoders.containsKey(player.getUuid())) {
+                decoders.put(player.getUuid(), microphonePacketEvent.getVoicechat().createDecoder());
+            }
 
-        short[] data = decoder.decode(encodedData);
+            OpusDecoder decoder = decoders.get(player.getUuid());
 
+            short[] data = decoder.decode(encodedData);
 
-        short[] totalData;
-        if (totalSoundData.containsKey(player.getUuid())) {
-            totalData = totalSoundData.get(player.getUuid());
-        } else {
-            totalData = new short[0];
-        }
+            short[] totalData;
+            if (totalSoundData.containsKey(player.getUuid())) {
+                totalData = totalSoundData.get(player.getUuid());
+            } else {
+                totalData = new short[0];
+            }
 
-        short[] result = new short[totalData.length + data.length];
-        System.arraycopy(totalData, 0, result, 0, totalData.length);
-        System.arraycopy(data, 0, result, totalData.length, data.length);
-        totalData = result;
-        totalSoundData.put(player.getUuid(), totalData);
+            short[] result = new short[totalData.length + data.length];
+            System.arraycopy(totalData, 0, result, 0, totalData.length);
+            System.arraycopy(data, 0, result, totalData.length, data.length);
+            totalData = result;
+            totalSoundData.put(player.getUuid(), totalData);
 
-        decoders.get(player.getUuid()).resetState();
-
-        System.out.println(encodedData.length);
-        if (encodedData.length != 0) {
             return;
         }
 
-        if (!(ticks.get(player.getUuid()) > 100)) {
+        decoders.get(player.getUuid()).resetState();
+
+        if (ticks.get(player.getUuid()) > 20  && ticks.get(player.getUuid()) < 100) {
             Random random = Random.create();
 
             Vector<short[]> soundList = new Vector<>();
