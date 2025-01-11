@@ -19,6 +19,52 @@ vec3 yuv2rgb(vec3 yuv){
     );
 }
 
+//Because for some reason clamp doesn't work on some GPUs
+float specialClamp(float a, float b, float c){
+    if(c > b){
+        return b;
+    }
+    else if(c < a){
+        return a;
+    }
+
+    return c;
+}
+
+float specialClamp2(float c, float a, float b){
+    if(c > b){
+        return b;
+    }
+    else if(c < a){
+        return a;
+    }
+
+    return c;
+}
+
+const mat3 weight = mat3(
+    0.0778,	0.1233,	0.0778,
+    0.1233,	0.1953,	0.1233,
+    0.0778,	0.1233,	0.0778
+);
+
+const float weight2[9] = float[](
+    0.0002,	0.0060,	0.0606,	0.2417,	0.3829,	0.2417,	0.0606,	0.0060,	0.0002
+);
+
+
+vec4 texelBlur(int kernalSize, sampler2D textureSampler) {
+    vec4 blur = vec4(0.0);
+    int size = kernalSize;
+    float coeff = size * 2.0 + 1.0;
+
+    for (int x = -size; x <= size; x++) {
+        for (int y = -size; y <= size; y++) {
+            blur += (1.0/(coeff * coeff)) * texelFetch(textureSampler, ivec2(gl_FragCoord.x + x, gl_FragCoord.y + y), 0) * weight2[x + size] * weight2[y + size];
+        }
+    }
+    return blur;
+}
 
 vec4 blur(float kernalSize, float offset, sampler2D textureSampler, vec2 texCoord){
     vec4 blur = vec4(0.0);
@@ -133,4 +179,47 @@ vec2 hash2d(vec2 p){
 
 float octave(float x){
     return mod(sin(x * 2.0) * sin(x * 4.0) * sin(x * 32.0), 1.0);
+}
+
+//https://github.com/ComplementaryDevelopment/ComplementaryReimagined/blob/e47b8cf55562bcfacee930fb26ee77978e6035d7/shaders/lib/util/reprojection.glsl
+vec2 Reproject(vec3 pos, vec3 prevCameraPos, mat4 previousModelView, mat4 previousProjection) {
+    pos = pos * 2.0 - 1.0;
+
+    vec4 viewPosPrev = VeilCamera.IProjMat * vec4(pos, 1.0);
+    viewPosPrev /= viewPosPrev.w;
+    viewPosPrev = VeilCamera.IViewMat * viewPosPrev;
+
+    vec3 cameraOffset = VeilCamera.CameraPosition - VeilCamera.CameraPosition;
+
+    vec4 previousPosition = viewPosPrev + vec4(cameraOffset, 0.0);
+    previousPosition = previousModelView * previousPosition;
+    previousPosition = previousProjection * previousPosition;
+    return previousPosition.xy / previousPosition.w * 0.5 + 0.5;
+//        return vec2(previousPosition.xy);
+}
+
+vec2 getVelocity(vec3 pos, vec3 prevCameraPos, mat4 previousModelView, mat4 previousProjection){
+    vec2 prevCoord = Reproject(pos, prevCameraPos, previousModelView, previousProjection);
+    return pos.xy - prevCoord;
+}
+
+
+//Coordinate space transformations
+//https://shaderlabs.org/mw/images/5/5a/Space_conversion_cheat_sheet.png
+
+vec3 projectAndDivide(mat4 projMat, vec3 position){
+    vec4 homogeneousPos = projMat * vec4(position, 1.0);
+    return homogeneousPos.xyz / homogeneousPos.w;
+}
+
+vec3 projectAndDivideDir(mat4 projMat, vec3 position){
+    vec4 homogeneousPos = projMat * vec4(position, 0.0);
+    return homogeneousPos.xyz / homogeneousPos.w;
+}
+
+vec3 worldToScreenSpace(vec3 worldPos) {
+    vec3 feetPlayerPos = worldPos - VeilCamera.CameraPosition;
+    vec3 viewPos = (VeilCamera.ViewMat * vec4(feetPlayerPos, 1.0)).xyz;
+    vec3 ndcPos = projectAndDivide(VeilCamera.ProjMat, viewPos);
+    return ndcPos * 0.5 + 0.5;
 }

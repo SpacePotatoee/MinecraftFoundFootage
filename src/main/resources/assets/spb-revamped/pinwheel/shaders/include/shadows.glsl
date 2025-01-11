@@ -47,14 +47,32 @@ vec3 getShadowCoords(vec3 playerSpace, mat4 viewMatrix, mat4 orthographMatrix){
     return shadowScreenSpace;
 }
 
-vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, mat4 viewMatrix, mat4 orthographMatrix, sampler2D NoiseTex, sampler2D ShadowSampler, float sunsetTimer){
+vec3 getLightAngle(mat4 viewMatrix){
+    vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
+    lightangle.y = -lightangle.y;
+    return lightangle;
+}
+
+const mat4 ditherMap = mat4(
+    0.0,  8.0,  2.0,  10.0,
+    12.0, 4.0,  14.0, 6.0,
+    3.0,  11.0, 1.0,  9.0,
+    15.0, 7.0,  13.0, 5.0
+);
+
+float dither(vec2 texCoord, vec2 ScreenSize, float spread){
+    vec2 pos = texCoord * ScreenSize * spread;
+    float value = ditherMap[int(mod(pos.x, 4))][int(mod(pos.y, 4))];
+    return value * 1.0/16.0 - 0.5;
+}
+
+vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, vec2 ScreenSize, mat4 viewMatrix, mat4 orthographMatrix, sampler2D NoiseTex, sampler2D ShadowSampler, sampler2D ditherSample, float sunsetTimer){
     float worldDepth = length(viewPos);
     vec4 color = incolor;
     //SHADOWS
     vec3 LIGHT_COLOR = mix(vec3(1.0), vec3(0.9411, 0.8156, 0.5803), smoothstep(0.0, 1.0, sunsetTimer));
     color.rgb = pow(color.rgb, vec3(2.2));
-    vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
-    lightangle.y = -lightangle.y;
+    vec3 lightangle = getLightAngle(viewMatrix);
 
     float lightDir = dot(normalize(lightangle), viewToWorldSpaceDirection(normal.rgb));
 
@@ -88,14 +106,15 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, mat4 view
 
     //VOLUMETRIC LIGHT
     vec3 ro = VeilCamera.CameraPosition;
-    vec3 rd = normalize(viewToPlayerSpace(viewPos));
+    vec3 rd = normalize(viewToPlayerSpace(viewPos) + dither(texCoord, ScreenSize, 1.0));
+    float maxDist = 80.0;
     float dist = 0.0;
     float brightness = 0.0;
 
     //raymarch
-    for (int i = 0; i <= 250; i++){
+    for (int i = 0; i <= 150; i++) {
         vec3 rp = ro + rd * dist;
-        dist += 0.4;
+
 
         if (dist > worldDepth){
             break;
@@ -108,17 +127,22 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, mat4 view
 
 
         if (shadowDepth < shadowSampler){
-            brightness += 0.001;
+            brightness += 0.002;
+            dist += 0.01;
+        } else {
+            dist += 0.2;
         }
 
-        if (brightness >= 0.3){
-            brightness = 0.3;
+        if (brightness >= 0.2) {
+            brightness = 0.2;
             break;
         }
 
     }
 
-    color.rgb += (brightness * LIGHT_COLOR);
+    vec3 light = (brightness * LIGHT_COLOR);
+
+    color.rgb += light;
 
     color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
 

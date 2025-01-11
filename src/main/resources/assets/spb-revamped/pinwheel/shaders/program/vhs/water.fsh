@@ -22,6 +22,8 @@ uniform sampler2D NormalSampler;
 uniform sampler2D OpaqueNormalSampler;
 uniform sampler2D ShadowSampler;
 uniform sampler2D MinecraftMain;
+
+
 uniform float GameTime;
 uniform int OverWorld;
 uniform mat4 viewMatrix;
@@ -41,71 +43,75 @@ return (color.r + color.g + color.b) / 3.0;
 }
 
 vec2 rayMarch(vec3 dir, vec3 origin){
-float posDepth = 0.0;
-float dDepth = 0.0;
-vec3 Pos = origin;
-vec4 projectedCoords = vec4(0.0);
+    float posDepth = 0.0;
+    float dDepth = 0.0;
+    vec3 Pos = origin;
+    vec4 projectedCoords = vec4(0.0);
 
-dir = dir * rayStep;
+    dir = dir * rayStep;
 
-for(int i = 0; i <= maxSteps; i++){
-Pos += dir;
+    for(int i = 0; i <= maxSteps; i++){
+        Pos += dir;
 
-projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
-projectedCoords.xyz /= projectedCoords.w;
-projectedCoords = projectedCoords * 0.5 + 0.5;
-posDepth = texture(WaterDepth, projectedCoords.xy).r;
+        projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
+        projectedCoords.xyz /= projectedCoords.w;
+        projectedCoords = projectedCoords * 0.5 + 0.5;
+        posDepth = texture(WaterDepth, projectedCoords.xy).r;
 
-if (projectedCoords.x < 0.0 || projectedCoords.x > 1.0 || projectedCoords.y < 0.0 || projectedCoords.y > 1.0) break;
+        if (projectedCoords.x < 0.0 || projectedCoords.x > 1.0 || projectedCoords.y < 0.0 || projectedCoords.y > 1.0) {
+            return vec2(-1.0);
+        }
 
-dDepth = Pos.z - posDepth;
-//Hit
-if (projectedCoords.z > posDepth){
-//        float check = smoothstep(0, 1.0, );
-if((projectedCoords.z - posDepth) > 0.0008){
-continue;
-}
+        dDepth = Pos.z - posDepth;
+        //Hit
+        if (projectedCoords.z > posDepth){
+            if((projectedCoords.z - posDepth) > 0.0008){
+                continue;
+            }
 
-//Binary Search
-for (int j = 0; j <= BinSearchSteps; j++){
-projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
-projectedCoords.xyz /= projectedCoords.w;
-projectedCoords = projectedCoords * 0.5 + 0.5;
-posDepth = texture(WaterDepth, projectedCoords.xy).r;
+            //Binary Search
+            for (int j = 0; j <= BinSearchSteps; j++){
+                projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
+                projectedCoords.xyz /= projectedCoords.w;
+                projectedCoords = projectedCoords * 0.5 + 0.5;
+                posDepth = texture(WaterDepth, projectedCoords.xy).r;
 
-dDepth = projectedCoords.z - posDepth;
-dir *= 0.5;
-if (dDepth > 0.0){
-Pos += dir;
-}
-else{
-Pos -= dir;
-}
-}
+                dDepth = projectedCoords.z - posDepth;
+                dir *= 0.5;
+                if (dDepth > 0.0){
+                    Pos += dir;
+                }
+                else{
+                    Pos -= dir;
+                }
+            }
 
-projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
-projectedCoords.xyz /= projectedCoords.w;
-projectedCoords = projectedCoords * 0.5 + 0.5;
-posDepth = texture(WaterDepth, projectedCoords.xy).r;
-return projectedCoords.xy;
-}
+            projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
+            projectedCoords.xyz /= projectedCoords.w;
+            projectedCoords = projectedCoords * 0.5 + 0.5;
+            posDepth = texture(WaterDepth, projectedCoords.xy).r;
+            return projectedCoords.xy;
+        }
 
-}
-return projectedCoords.xy;
+    }
+    return projectedCoords.xy;
 }
 
 vec4 getReflection(vec4 fragColor, vec4 normal, float depth, vec2 texCoord, vec3 viewPos, vec2 refraction){
     vec3 reflected = normalize(reflect(normalize(viewPos), normalize(normal.rgb)));
     vec2 projectedCoord = rayMarch(reflected * max(rayStep, -viewPos.z), viewPos);
+    //Out of the screen, if this isn't included reflections form weird artifacts
+    if(projectedCoord.x == -1.0){
+        return fragColor;
+    }
     vec3 reflectedTexture = texture(DiffuseSampler0, projectedCoord).rgb;
 
     vec2 dCoords = smoothstep(0.4, 0.55, abs(vec2(0.5) - projectedCoord));
 
     float screenEdgefactor = clamp(1.0f - (dCoords.x + dCoords.y), 0.0f, 1.0f);
 
-    float ReflectionMultiplier = screenEdgefactor * (reflected.z);
-
-    return mix(fragColor, mix(fragColor, vec4(reflectedTexture, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0.0, 1.0));
+    float ReflectionMultiplier = screenEdgefactor * (reflected.b);
+    return mix(fragColor, mix(fragColor, vec4(reflectedTexture, 1.0) * clamp(0.0, 1.0, -ReflectionMultiplier), -ReflectionMultiplier), clamp(REFLECTIVITY, 0.0, 1.0));
 }
 
 vec4 getCaustics(vec2 color, vec3 opaqueWorldPos){
@@ -152,9 +158,9 @@ void main() {
         color2 = texture(WaterTexture, worldPos.xz * 0.05 - vec2(0.0, GameTime * 50.0)).rg - 0.5;
         color = color + color2;
 
-        normal = texture(NormalTexture, worldPos.xz * 0.1 + vec2(GameTime * 50.0));
-        normal2 = texture(NormalTexture, worldPos.xz * 0.1 - vec2(0, GameTime * 50.0));
-        normal2 += texture(NormalTexture, worldPos.xz * 0.1 - vec2(- GameTime * 103.235456, GameTime * 50.0));
+        normal = texture(NormalTexture, worldPos.xz * 0.2 + vec2(GameTime * 50.0));
+        normal2 = texture(NormalTexture, worldPos.xz * 0.2 - vec2(0, GameTime * 50.0));
+        normal2 += texture(NormalTexture, worldPos.xz * 0.2 - vec2(- GameTime * 103.235456, GameTime * 50.0));
         normal = (normal + normal2) / 3.0;
         normal = vec4(normal.r, normal.b, normal.g, normal.a) * 2.0 - 1.0;
 
@@ -174,7 +180,7 @@ void main() {
 
         fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER);
 
-        fragColor = getReflection(fragColor, mix(normalSampler, normal, 0.05), waterDepth, texCoord, viewPos, color) * vec4(vec3(0.0, 1, 1), 1.0);
+        fragColor = getReflection(fragColor, mix(vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), normal, 0.02), waterDepth, texCoord, viewPos, color) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
 
 
         if (shadow >= 1.0){
@@ -182,10 +188,9 @@ void main() {
             lightangle.y = - lightangle.y;
 
             vec3 view = -VeilCamera.IViewMat[2].xyz;
-            //            view.z = -view.z;
 
             vec3 reflectedView = reflect(viewDirFromUv(texCoord), normalize(normal.rgb));
-            float specular = dot(reflectedView, normalize(lightAngled));
+            float specular = dot(reflectedView, normalize(getLightAngle(viewMatrix)));
             specular = pow(specular, 100.0);
             specular *= 5.0;
 

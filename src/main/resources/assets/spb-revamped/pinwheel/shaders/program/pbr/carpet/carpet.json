@@ -3,8 +3,7 @@
   "geometry": "spb-revamped:pbr/carpet/carpet",
   "fragment": "spb-revamped:pbr/carpet/carpet",
   "textures": {
-    "ColorMap": "spb-revamped:textures/block/carpet_block.png",
-    "AoMap": "spb-revamped:textures/shaders/carpet/carpet_ao.png",
+    "ColorMap": "spb-revamped:textures/shaders/carpet/carpet_color.png",
     "NormalMap": "spb-revamped:textures/shaders/carpet/carpet_normal.png"
   }
 }

@@ -43,13 +43,13 @@ void main() {
     vec3 B = normalize((VeilCamera.ViewMat * vec4(biTangent, 0.0)).xyz);
     vec3 N = normall[1];
 
-    TBN = mat3(
-        T.x, B.x, N.x,
-        T.y, B.y, N.y,
-        T.z, B.z, N.z
-    );
-//    TBN = mat3(T, B, N);
-//    TBN = transpose(TBN);
+//    TBN = mat3(
+//        T.x, B.x, N.x,
+//        T.y, B.y, N.y,
+//        T.z, B.z, N.z
+//    );
+    TBN = mat3(T, B, N);
+    TBN = transpose(TBN);
 
 
     gl_Position = ProjMat * ModelViewMat * gl_in[0].gl_Position;

@@ -1,6 +1,7 @@
 package com.sp.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -16,6 +17,10 @@ public class PlayerEntityRendererMixin {
 
     @Inject(method = "setModelPose", at = @At("TAIL"))
     private void shouldRender(AbstractClientPlayerEntity player, CallbackInfo ci, @Local PlayerEntityModel<AbstractClientPlayerEntity> playerEntityModel){
+        if(SPBRevampedClient.getCutsceneManager().isPlaying) {
+            playerEntityModel.setVisible(false);
+        }
+
         PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
         if (!playerComponent.isShouldRender()) {
             playerEntityModel.setVisible(false);

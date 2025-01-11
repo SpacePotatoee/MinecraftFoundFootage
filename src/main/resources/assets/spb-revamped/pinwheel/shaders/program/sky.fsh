@@ -21,7 +21,7 @@ void main() {
     vec2 screenUv = gl_FragCoord.xy / ScreenSize;
     vec4 color = getSky(screenUv, sunsetTimer, GameTime, CloudNoise1, CloudNoise2);
 
-    fragAlbedo = vec4(color.rgb + 0.1, 1.0);
+    fragAlbedo = vec4(color.rgb, 1.0);
     fragNormal = vec4(normal.rgb, 1.0);
     fragMaterial = ivec4(15, 0, 0, 1);
     fragLightSampler = vec4(1.0);

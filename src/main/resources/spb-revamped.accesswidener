@@ -14,3 +14,19 @@ accessible field net/minecraft/client/render/WorldRenderer frustum Lnet/minecraf
 accessible field net/minecraft/client/render/Frustum frustumIntersection Lorg/joml/FrustumIntersection;
 accessible field net/minecraft/client/sound/SoundSystem sounds Lcom/google/common/collect/Multimap;
 accessible field net/minecraft/client/sound/SoundManager soundSystem Lnet/minecraft/client/sound/SoundSystem;
+accessible class net/minecraft/client/render/block/BlockModelRenderer$NeighborData
+accessible class net/minecraft/client/render/block/BlockModelRenderer$BrightnessCache
+accessible class net/minecraft/client/render/block/BlockModelRenderer$Translation
+accessible field net/minecraft/client/render/block/BlockModelRenderer$NeighborData faces [Lnet/minecraft/util/math/Direction;
+accessible field net/minecraft/client/render/block/BlockModelRenderer BRIGHTNESS_CACHE Ljava/lang/ThreadLocal;
+accessible field net/minecraft/client/render/block/BlockModelRenderer$NeighborData nonCubicWeight Z
+accessible field net/minecraft/client/render/block/BlockModelRenderer$NeighborData field_4192 [Lnet/minecraft/client/render/block/BlockModelRenderer$NeighborOrientation;
+accessible field net/minecraft/client/render/block/BlockModelRenderer$NeighborData field_4185 [Lnet/minecraft/client/render/block/BlockModelRenderer$NeighborOrientation;
+accessible field net/minecraft/client/render/block/BlockModelRenderer$NeighborData field_4180 [Lnet/minecraft/client/render/block/BlockModelRenderer$NeighborOrientation;
+accessible field net/minecraft/client/render/block/BlockModelRenderer$NeighborData field_4188 [Lnet/minecraft/client/render/block/BlockModelRenderer$NeighborOrientation;
+accessible field net/minecraft/client/render/block/BlockModelRenderer$Translation firstCorner I
+accessible field net/minecraft/client/render/block/BlockModelRenderer$Translation secondCorner I
+accessible field net/minecraft/client/render/block/BlockModelRenderer$Translation thirdCorner I
+accessible field net/minecraft/client/render/block/BlockModelRenderer$Translation fourthCorner I
+accessible field net/minecraft/client/render/block/BlockModelRenderer$NeighborOrientation shape I
+accessible class net/fabricmc/fabric/impl/client/indigo/renderer/aocalc/AoFace

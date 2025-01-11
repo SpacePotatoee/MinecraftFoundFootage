@@ -48,6 +48,7 @@ vec4 Viginette(vec2 uv){
 
 void main() {
     vec2 uv = BarrelDistortionCoordinates(texCoord);
+//    vec2 uv = texCoord;
     vec4 Distortion = texture(DiffuseSampler0, uv);
     vec4 viginette = Viginette(uv);
 
@@ -72,7 +73,7 @@ void main() {
     const float kernalSize3 = 5.0;
     const float coeff3 = 1.0 / (kernalSize3 * kernalSize3);
     for(float x = -1.0; x <= 1.0; x += coeff3){
-        blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(Velocity.x * x, Velocity.y * x) * 0.1) * 0.5;
+        blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(Velocity.x * x, Velocity.y * x) * 0.05) * 0.5;
     }
 
     //TV OVERLAY
@@ -110,7 +111,7 @@ void main() {
         fragColor *= viginette+0.3;
     }else {
         if(youCantEscape == 0) {
-            fragColor = (blur2 + blur3);
+            fragColor = blur3;
         } else {
             vec2 uv2 = vec2(uv.x + octave(uv.y + GameTime * 2000.0) * 0.01, uv.y);
 
@@ -138,7 +139,7 @@ void main() {
 
         //VHS POSST EFFECTS
         fragColor.rgb = rgb2yuv(fragColor.rgb);
-        fragColor.rgb += (fragColor.rgb * vec3((hash12(uv * 260.23535 + GameTime * 70.0) + hash12(uv * 737.36346 + GameTime * 100.0)) * 2.0 - 1.0)) * 0.2;
+        fragColor.rgb += (fragColor.rgb * vec3((hash12(uv * 260.23535 + GameTime * 70.0) + hash12(uv * 737.36346 + GameTime * 100.0)) * 2.0 - 1.0)) * 0.05;
         fragColor.r += step(0.99994, (hash12(uv * 260.23535 + GameTime * 70.0))) * 10.0;
         vec2 vhsNoise = texture(VhsNoise, vec2(uv.x - GameTime * 3000.0, uv.y + GameTime * 5000.0)).gb * 0.1;
         fragColor.gb += vec2(vhsNoise.x * 0.9, vhsNoise.y * 0.9) * 0.2;

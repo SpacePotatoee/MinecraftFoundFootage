@@ -6,9 +6,8 @@
 #include spb-revamped:accurateuv
 
 uniform sampler2D Sampler0;
+uniform sampler2D Sampler1;
 uniform sampler2D ColorMap;
-uniform sampler2D HeightMap;
-uniform sampler2D AoMap;
 uniform sampler2D NormalMap;
 
 uniform vec4 ColorModulator;
@@ -22,7 +21,6 @@ in vec3 worldPos;
 in vec3 Pos;
 in mat3 TBN;
 
-const int MaxSteps = 200;
 
 void main() {
     vec2 faceUV = getAccurateUV(worldPos, normal);

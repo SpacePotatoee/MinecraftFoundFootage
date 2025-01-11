@@ -5,16 +5,21 @@ import com.sp.render.ShadowMapRenderer;
 import foundry.veil.api.client.render.VeilRenderBridge;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.Window;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 
 import static com.sp.SPBRevampedClient.getSunsetTimer;
 
 public class RenderLayers extends RenderLayer {
     private static final MinecraftClient client = MinecraftClient.getInstance();
+
+    //PBR material identifiers
+    private static final Identifier CARPET_COLOR = new Identifier(SPBRevamped.MOD_ID, "textures/shaders/carpet/carpet_color.png");
+    private static final Identifier CARPET_NORMAL = new Identifier(SPBRevamped.MOD_ID, "textures/shaders/carpet/carpet_normal.png");
+    private static final Identifier CARPET_DISPLACEMENT = new Identifier(SPBRevamped.MOD_ID, "textures/shaders/carpet/carpet_displacement.png");
+
+    private static final Identifier CEILING_TILE_NORMAL = new Identifier(SPBRevamped.MOD_ID, "textures/shaders/ceilingtile/ceiling_tile_normal.png");
 
 
     private static final RenderPhase.ShaderProgram LIGHT_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/fluorescent_light"));
@@ -26,6 +31,7 @@ public class RenderLayers extends RenderLayer {
     private static final RenderPhase.ShaderProgram BRICK_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/bricks/bricks"));
     private static final RenderPhase.ShaderProgram WOODEN_CRATE = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/crate/crate"));
     private static final RenderPhase.ShaderProgram CONCRETE = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/concrete/concrete"));
+    private static final RenderPhase.ShaderProgram CEILING_LIGHT_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "ceiling_light"));
 
 
     private static final Identifier shadowSolid = new Identifier(SPBRevamped.MOD_ID, "shadowmap/rendertype_solid");
@@ -62,6 +68,20 @@ public class RenderLayers extends RenderLayer {
                     .build(true)
     );
 
+    private static final RenderLayer CEILING_LIGHT = RenderLayer.of(
+            "ceiling_light",
+            VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
+            VertexFormat.DrawMode.QUADS,
+            2097152,
+            false,
+            false,
+            RenderLayer.MultiPhaseParameters.builder()
+                    .lightmap(ENABLE_LIGHTMAP)
+                    .program(CEILING_LIGHT_SHADER)
+                    .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
+                    .build(true)
+    );
+
     private static final RenderLayer CONCRETE_LAYER = RenderLayer.of(
             "concrete",
             VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
@@ -86,7 +106,12 @@ public class RenderLayers extends RenderLayer {
             RenderLayer.MultiPhaseParameters.builder()
                     .lightmap(ENABLE_LIGHTMAP)
                     .program(CEILING_TILE_SHADER)
-                    .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
+                    .texture(
+                            RenderPhase.Textures.create()
+                                    .add(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, false, true)
+                                    .add(CEILING_TILE_NORMAL, false, true)
+                                    .build()
+                    )
                     .build(true)
     );
 
@@ -94,13 +119,20 @@ public class RenderLayers extends RenderLayer {
             "carpet",
             VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
             VertexFormat.DrawMode.QUADS,
-            2097152,
+            1536,
             false,
             false,
             RenderLayer.MultiPhaseParameters.builder()
                     .lightmap(ENABLE_LIGHTMAP)
                     .program(CARPET_PROGRAM)
-                    .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
+                    .texture(
+                            RenderPhase.Textures.create()
+                                    .add(CARPET_DISPLACEMENT, true, true)
+                                    .add(CARPET_COLOR, true, true)
+                                    .add(CEILING_TILE_NORMAL, false, false)
+                                    .add(CARPET_NORMAL, true, true)
+                                    .build()
+                    )
                     .build(true)
     );
 
@@ -167,10 +199,9 @@ public class RenderLayers extends RenderLayer {
         if (shader == null) {
             return null;
         }
-        Window window = client.getWindow();
+
         if(client.world != null) {
-            shader.setVector("ScreenSize", window.getWidth(), window.getHeight());
-            shader.setFloat("sunsetTimer", getSunsetTimer(client.world));
+//            SPBRevampedClient.setLightAngle(shader, client.world, false);
         }
 
         return shader.toShaderInstance();
@@ -178,6 +209,10 @@ public class RenderLayers extends RenderLayer {
 
     public static RenderLayer getConcreteLayer() {
         return CONCRETE_LAYER;
+    }
+
+    public static RenderLayer getCeilingLightLayer() {
+        return CEILING_LIGHT;
     }
 
     public static RenderLayer getPoolroomsSky() {

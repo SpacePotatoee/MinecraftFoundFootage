@@ -1,5 +1,6 @@
 package com.sp;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.entity.client.model.SmilerModel;
 import com.sp.entity.client.renderer.SkinWalkerRenderer;
 import com.sp.entity.client.renderer.SmilerRenderer;
@@ -26,6 +27,7 @@ import foundry.veil.api.client.render.deferred.light.renderer.LightRenderer;
 import foundry.veil.api.client.render.post.PostPipeline;
 import foundry.veil.api.client.render.post.PostProcessingManager;
 import foundry.veil.api.client.render.shader.definition.ShaderPreDefinitions;
+import foundry.veil.api.client.render.shader.program.MutableUniformAccess;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
 import foundry.veil.api.client.util.Easings;
 import foundry.veil.api.event.VeilRenderLevelStageEvent.Stage;
@@ -51,6 +53,8 @@ import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.*;
@@ -72,6 +76,7 @@ public class SPBRevampedClient implements ClientModInitializer {
     private static final Identifier GLITCH_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/glitch");
 
     float prevYaw2;
+    Vec3d prevCameraPosition = Vec3d.ZERO;
     float prevPitch2;
 
     public static boolean zoom = false;
@@ -80,17 +85,24 @@ public class SPBRevampedClient implements ClientModInitializer {
     static boolean playedZoomIn = false;
     static boolean playedZoomOut = true;
     static boolean inBackrooms = false;
-    Camera camera;
+    public static Camera camera;
 
     public static TickTimer tickTimer = new TickTimer();
     public static TickTimer SunsetTimer = new TickTimer();
     public static boolean blackScreen;
     public static boolean youCantEscape;
 
-    Random random = Random.create();
+    public static Matrix4fc prevViewMat = RenderSystem.getModelViewMatrix();
+    public static Matrix4fc prevProjMat = RenderSystem.getProjectionMatrix();
+
+    private static final Random random = Random.create();
+    private static final Random random2 = Random.create(34563264);
 
     @Override
     public void onInitializeClient() {
+        ResourcePackManager resourcePackManager = MinecraftClient.getInstance().getResourcePackManager();
+        resourcePackManager.enable("veil:deferred");
+
         HudRenderCallback.EVENT.register(new TitleText());
 
         InitializePackets.registerS2CPackets();
@@ -99,6 +111,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayers.getConcreteLayer());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Bricks, RenderLayers.getBricksLayer());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CEILINGLIGHT, RenderLayers.getCeilingLightLayer());
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CHAINFENCE, RenderLayers.getChainFence());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CeilingTile, RenderLayers.getCeilingTile());
@@ -169,8 +182,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }
             }
 
-            ResourcePackManager resourcePackManager = client.getResourcePackManager();
-            resourcePackManager.enable("veil:deferred");
+
 
 
             //Flashlight
@@ -247,13 +259,14 @@ public class SPBRevampedClient implements ClientModInitializer {
                 float pitch = player.getPitch();
                 float yawRotAmount = yaw - prevYaw2;
                 float pitchRotAmount = pitch - prevPitch2;
+                Vec2f Velocity = new Vec2f(MathHelper.cos((float) Math.toRadians(yawRotAmount + 90.0f)), MathHelper.sin((float) Math.toRadians(pitchRotAmount)));
 
                 if (VHS_POST.equals(name)) {
                     ShaderProgram shaderProgram = context.getShader(POST_VHS);
                     if (shaderProgram != null) {
                         if(client.getCameraEntity() == player) {
                             if (!getCutsceneManager().isPlaying) {
-                                shaderProgram.setVector("Velocity", MathHelper.cos((float) Math.toRadians(yawRotAmount + 90.0f)), MathHelper.sin((float) Math.toRadians(pitchRotAmount)));
+                                shaderProgram.setVector("Velocity", Velocity.x, Velocity.y);
                             } else {
                                 shaderProgram.setVector("Velocity", 0, 0);
                             }
@@ -302,16 +315,14 @@ public class SPBRevampedClient implements ClientModInitializer {
                         } else {
                             shaderProgram.setInt("TogglePuddles", 0);
                         }
-
-                        shaderProgram.setFloat("sunsetTimer", getSunsetTimer(client.world));
                         shaderProgram.setVectorI("resolution", client.getFramebuffer().viewportWidth, client.getFramebuffer().viewportHeight);
                     }
 
                     shaderProgram = context.getShader(MIXED_SHADER);
                     if (shaderProgram != null) {
-                        if(this.camera != null) {
-                            setShadowUniforms(shaderProgram, client.world);
-                        }
+
+                        shaderProgram.setVector("prevCameraPos", prevCameraPosition.toVector3f());
+                        shaderProgram.setVector("Rand", random.nextFloat() * 2.0f - 1.0f, random2.nextFloat() * 2.0f - 1.0f);
 
                         if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
                             shaderProgram.setInt("ShadowToggle", 1);
@@ -319,14 +330,11 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("ShadowToggle", 0);
                         }
 
-                        shaderProgram.setFloat("sunsetTimer", getSunsetTimer(client.world));
-
                     }
 
                     shaderProgram = context.getShader(WATER_SHADER);
                     if (shaderProgram != null) {
                         if (this.camera != null) {
-                            setShadowUniforms(shaderProgram, client.world);
                         }
                         if (inBackrooms) {
                             shaderProgram.setInt("OverWorld", 0);
@@ -353,6 +361,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }
                 prevYaw2 = yaw;
                 prevPitch2 = pitch;
+                prevCameraPosition = player.getClientCameraPosVec(MinecraftClient.getInstance().getTickDelta());
             }
         }));
 
@@ -481,17 +490,26 @@ public class SPBRevampedClient implements ClientModInitializer {
         return zoomed;
     }
 
-    public void setShadowUniforms(ShaderProgram shaderProgram, World world) {
+    public static void setShadowUniforms(MutableUniformAccess access, World world) {
+        Matrix4f level0ViewMat = ShadowMapRenderer.createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, true).peek().getPositionMatrix();
+        Matrix4f viewMat = ShadowMapRenderer.createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, world, true).peek().getPositionMatrix();
+
+        access.setMatrix("level0ViewMatrix", level0ViewMat);
+        access.setMatrix("viewMatrix", viewMat);
+
+        access.setMatrix("orthographMatrix", ShadowMapRenderer.createProjMat());
+    }
+
+    public static void setLightAngle(MutableUniformAccess access, World world){
         Matrix4f shadowModelView = new Matrix4f();
         shadowModelView.identity();
-        ShadowMapRenderer.rotateShadowModelView(shadowModelView, world);
+            ShadowMapRenderer.rotateShadowModelView(shadowModelView);
+            ShadowMapRenderer.rotateShadowModelView(shadowModelView, world);
         Vector4f lightPosition = new Vector4f(0.0f, 0.0f, 1.0f, 0.0f);
         lightPosition.mul(shadowModelView.invert());
 
         Vector3f shadowLightDirection = new Vector3f(lightPosition.x(), lightPosition.y(), lightPosition.z());
-        shaderProgram.setMatrix("viewMatrix", ShadowMapRenderer.createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, world, true).peek().getPositionMatrix());
-        shaderProgram.setMatrix("orthographMatrix", ShadowMapRenderer.createProjMat());
-        shaderProgram.setVector("lightAngled", shadowLightDirection);
+        access.setVector("lightAngled", shadowLightDirection);
     }
 
     public static float getWarpTimer(World world){

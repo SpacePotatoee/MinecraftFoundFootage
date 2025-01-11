@@ -4,10 +4,12 @@
 #include spb-revamped:puddles
 #include spb-revamped:sky
 #include spb-revamped:common
+#include spb-revamped:shadows
 
 #define OFFSET vec2(0.1965249, 0.6546237)
 
 uniform sampler2D DiffuseSampler0;
+uniform sampler2D DiffuseSampler2;
 uniform sampler2D DepthSampler;
 uniform sampler2D TransparentDepthSampler;
 uniform sampler2D NormalSampler;
@@ -25,6 +27,8 @@ uniform usampler2D OpaqueMatSampler;
 uniform sampler2D CloudNoise1;
 uniform sampler2D CloudNoise2;
 
+uniform mat4 viewMatrix;
+uniform vec2 ScreenSize;
 uniform vec2 Velocity;
 uniform ivec2 resolution;
 uniform int FogToggle;
@@ -113,12 +117,14 @@ void main() {
 			color.rgb = mix(color.rgb, FOG_COLOR.rgb, fog);
 		}
 
-			color.rgb = blend(color, water);
+		color.rgb = blend(color, water);
+
 
 		if (handDepth < 1.0){
 			color = handColor;
 		}
-			fragColor = color;
+
+		fragColor = color;
 	}else{
 		fragColor = vec4(0.0,0.0,0.0,1.0);
 	}
