@@ -44,11 +44,48 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
 
     @Override
     public void registerEvents(EventRegistration registration) {
+        registration.registerEvent(OpenALSoundEvent.class, this::SkinWalkerVoicesPitchDown);
         registration.registerEvent(MicrophonePacketEvent.class, this::recordPlayersTalking);
         registration.registerEvent(VoicechatServerStoppedEvent.class, this::onServerStop);
         registration.registerEvent(PlayerDisconnectedEvent.class, this::playerDisconnect);
         registration.registerEvent(PlayerConnectedEvent.class, this::playerConnect);
         registration.registerEvent(VoicechatServerStartedEvent.class, this::onServerStart);
+    }
+
+    private void SkinWalkerVoicesPitchDown(OpenALSoundEvent openALSoundEvent) {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        if (client.player == null) {
+            return;
+        }
+
+        if (client.player.getWorld() == null) {
+            return;
+        }
+
+        UUID channelID = openALSoundEvent.getChannelId();
+
+        if (channelID == null) {
+            return;
+        }
+
+        List<SkinWalkerEntity> skinWalkerList = client.player.getWorld().getEntitiesByClass(SkinWalkerEntity.class, client.player.getBoundingBox().expand(100), EntityPredicates.VALID_LIVING_ENTITY);
+
+        if (skinWalkerList.isEmpty()) {
+            return;
+        }
+
+        for (SkinWalkerEntity skinWalker : skinWalkerList) {
+            if (!skinWalker.getUuid().equals(channelID)) {
+                continue;
+            }
+
+            AL10.alSourcef(openALSoundEvent.getSource(), 4131, 0.9f);
+            if (skinWalker.component.isInTrueForm()) {
+                AL10.alSourcei(openALSoundEvent.getSource(), 53248, 53251);
+                AL10.alSourcef(openALSoundEvent.getSource(), AL10.AL_PITCH, 0.8f);
+            }
+        }
     }
 
     private void recordPlayersTalking(MicrophonePacketEvent microphonePacketEvent) {
@@ -98,7 +135,7 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
 
         decoders.get(player.getUuid()).resetState();
 
-        if (ticks.get(player.getUuid()) > 20  && ticks.get(player.getUuid()) < 100) {
+        if (ticks.get(player.getUuid()) > 40  && ticks.get(player.getUuid()) < 200) {
             Random random = Random.create();
 
             Vector<short[]> soundList = new Vector<>();

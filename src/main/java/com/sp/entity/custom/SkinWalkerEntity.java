@@ -62,9 +62,6 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
     private Entity prevTarget;
     private int ticks;
     private int trueFormTime;
-    public ServerLevelImpl serverLevel = null;
-    public LocationalAudioChannel audioChannel;
-    public AudioPlayer audioPlayer;
 
     private SoundInstance chaseSoundInstance;
 
@@ -118,6 +115,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         this.targetSelector.add(2, new SkinWalkerActiveTarget(this));
         this.targetSelector.add(1, new FinalFormActiveTargetGoal(this));
 
+        this.goalSelector.add(4, new SpeakGoal(this));
         this.goalSelector.add(3, new FollowClosestPlayerGoal(this, 5, 15, 1.0f));
         this.goalSelector.add(3, new ActNaturalGoal(this));
         this.goalSelector.add(2, new FinalFormIdleGoal(this, 60, 60));
@@ -171,71 +169,11 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
             if (this.component.shouldBeginReveal()) {
                 this.tickReveal();
             }
-
-            if (!this.component.isInTrueForm()){
-                this.playRandomPlayerSounds();
-            }
         }
 
         super.tick();
     }
 
-    private void playRandomPlayerSounds() {
-        if (this.getServer() == null) {
-            return;
-        }
-
-        if (this.serverLevel == null) {
-            this.serverLevel = new ServerLevelImpl(this.getServer().getWorld(this.getWorld().getRegistryKey()));
-        }
-
-        if (!this.serverLevel.getServerLevel().equals(this.getServer().getWorld(this.getWorld().getRegistryKey()))) {
-            this.serverLevel = new ServerLevelImpl(this.getServer().getWorld(this.getWorld().getRegistryKey()));
-        }
-
-        VoicechatServerApi api = BackroomsVoicechatPlugin.voicechatApi;
-
-        if (api == null) {
-            return;
-        }
-
-        if (BackroomsVoicechatPlugin.randomSpeakingList.isEmpty()) {
-            return;
-        }
-
-        if (!BackroomsVoicechatPlugin.randomSpeakingList.containsKey(this.component.getTargetPlayerUUID())) {
-            return;
-        }
-
-        if (BackroomsVoicechatPlugin.randomSpeakingList.get(this.component.getTargetPlayerUUID()) == null) {
-            return;
-        }
-
-        if (BackroomsVoicechatPlugin.randomSpeakingList.get(this.component.getTargetPlayerUUID()).isEmpty()) {
-            return;
-        }
-
-        short[] data = BackroomsVoicechatPlugin.randomSpeakingList.get(this.component.getTargetPlayerUUID()).get(random.nextBetween(0, BackroomsVoicechatPlugin.randomSpeakingList.get(this.component.getTargetPlayerUUID()).size() - 1));
-
-        if (this.audioChannel == null) {
-            this.audioChannel = api.createLocationalAudioChannel(this.getUuid(), this.serverLevel, api.createPosition(this.getX(), this.getY(), this.getZ()));
-        }
-
-        if (this.audioChannel == null) {
-            return;
-        }
-
-        this.audioChannel.updateLocation(api.createPosition(this.getX(), this.getY(), this.getZ()));
-
-        if (this.audioPlayer == null) {
-            this.audioPlayer = api.createAudioPlayer(this.audioChannel, api.createEncoder(), data);
-        }
-
-        if (!this.audioPlayer.isPlaying()) {
-            this.audioPlayer = api.createAudioPlayer(this.audioChannel, api.createEncoder(), data);
-            this.audioPlayer.startPlaying();
-        }
-    }
 
     @Override
     protected @Nullable SoundEvent getAmbientSound() {
