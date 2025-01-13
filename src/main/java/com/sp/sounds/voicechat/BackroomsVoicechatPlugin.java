@@ -9,7 +9,6 @@ import de.maxhenkel.voicechat.api.events.*;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.random.Random;
@@ -98,6 +97,7 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
             return;
         }
 
+
         if (ticks.containsKey(player.getUuid())) {
             ticks.put(player.getUuid(), ticks.get(player.getUuid()) + 1);
         } else {
@@ -116,6 +116,30 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
             OpusDecoder decoder = decoders.get(player.getUuid());
 
             short[] data = decoder.decode(encodedData);
+
+            PlayerComponent component = InitializeComponents.PLAYER.get(player);
+            if(!component.shouldBeMuted()){
+                component.setSpeaking(true);
+
+                //Update talk time
+                if (!speakingTime.containsKey(player.getUuid())) {
+                    speakingTime.put(player.getUuid(), 0.0f);
+                }
+
+                speakingTime.put(player.getUuid(), speakingTime.get(player.getUuid()) + 0.0001f);
+
+                //Update entity visibility
+                if (!component.isVisibleToEntity()) {
+                    double volume = Utils.dbToPerc(Utils.getHighestAudioLevel(data));
+
+                    if (volume >= 0.8) {
+                        component.setVisibleToEntity(true);
+                    }
+                }
+            } else {
+                microphonePacketEvent.cancel();
+                return;
+            }
 
             short[] totalData;
             if (totalSoundData.containsKey(player.getUuid())) {
@@ -174,51 +198,6 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
     private void onServerStop(VoicechatServerStoppedEvent voicechatServerStoppedEvent) {
         decoders.forEach((key, value) -> this.removePlayerDecoder(key));
         speakingTime.clear();
-    }
-
-    private void updateVisibilityAndTalkTime(MicrophonePacketEvent microphonePacketEvent) {
-        /*
-        VoicechatConnection senderConnection = microphonePacketEvent.getSenderConnection();
-        if(senderConnection != null) {
-
-            if (!(senderConnection.getPlayer().getPlayer() instanceof PlayerEntity player)) {
-                return;
-            }
-            PlayerComponent component = InitializeComponents.PLAYER.get(player);
-            if(!component.shouldBeMuted()){
-                //Get the data
-                if (!decoders.containsKey(player.getUuid())) {
-                    decoders.put(player.getUuid(), microphonePacketEvent.getVoicechat().createDecoder());
-                }
-                OpusDecoder decoder = decoders.get(player.getUuid());
-                short[] data = decoder.decode(microphonePacketEvent.getPacket().getOpusEncodedData());
-
-                if(data.length > 0){
-                    component.setSpeaking(true);
-
-                    //Update talk time
-                    if(!speakingTime.containsKey(player.getUuid())){
-                        speakingTime.put(player.getUuid(), 0.0f);
-                    }
-
-                    speakingTime.put(player.getUuid(), speakingTime.get(player.getUuid()) + 0.0001f);
-
-                    //Update entity visibility
-                    if(!component.isVisibleToEntity()) {
-                        double volume = Utils.dbToPerc(Utils.getHighestAudioLevel(data));
-
-                        if (volume >= 0.8) {
-                            component.setVisibleToEntity(true);
-                        }
-                    }
-                }
-
-                decoder.resetState();
-            } else {
-                //microphonePacketEvent.cancel();
-            }
-        }
-         */
     }
 
     private void removePlayerDecoder(UUID uuid){
