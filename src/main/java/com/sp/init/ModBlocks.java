@@ -1,6 +1,7 @@
 package com.sp.init;
 
 import com.sp.SPBRevamped;
+import com.sp.block.SprintBlockSoundGroup;
 import com.sp.block.custom.*;
 import com.sp.block.custom.CarpetBlock;
 import com.sp.block.custom.WallBlock;
@@ -20,17 +21,17 @@ public class ModBlocks {
 
     //////Level 1 Stuff//////
     public static final Block WallBlock = registerBlock("wall_block",
-            new WallBlock(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles()));
+            new WallBlock(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.WALL)));
 
     public static final Block WallBlock2 = registerBlock("wall_block_2",
-            new WallBlock(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles()));
+            new WallBlock(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.WALL)));
 
 
     public static final Block CarpetBlock = registerBlock("carpet_block",
-            new CarpetBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).solid().noBlockBreakParticles()));
+            new CarpetBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.CARPET)));
 
     public static final Block CeilingTile = registerBlock("ceiling_tile",
-            new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles()));
+            new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.CEILING_TILE)));
 
     public static final Block GhostCeilingTile = registerBlock("ghost_ceiling_tile",
             new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles().collidable(false)));
@@ -41,39 +42,39 @@ public class ModBlocks {
 
 
     public static final Block WallArrow1 = registerBlock("arrow1",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallArrow2 = registerBlock("arrow2",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallArrow3 = registerBlock("arrow3",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallArrow4 = registerBlock("arrow4",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
 
     public static final Block WallSmall1 = registerBlock("wall_small_1",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallSmall2 = registerBlock("wall_small_2",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallDrawingDoor = registerBlock("wall_drawing_door",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallDrawingWindow = registerBlock("wall_drawing_window",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block drawingMarker = registerBlock("drawing_marker",
             new DrawingMarker(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles()));
 
 
     public static final Block Rug1 = registerBlock("rug1",
-            new Rug(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new Rug(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block Rug2 = registerBlock("rug2",
-            new Rug(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new Rug(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block CHAINFENCE = registerBlock("chain_fence",
             new ChainFence(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).hardness(-1f).noBlockBreakParticles()));
@@ -91,7 +92,7 @@ public class ModBlocks {
             new ThinFluorescentLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles()));
 
     public static final Block BottomTrim = registerBlock("bottom_trim",
-            new BottomTrim(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).collidable(false).nonOpaque().noBlockBreakParticles()));
+            new BottomTrim(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).collidable(false).nonOpaque().noBlockBreakParticles().sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block ConcreteBlock1 = registerBlock("concrete1",
             new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
@@ -125,56 +126,56 @@ public class ModBlocks {
 
 
     public static final Block ThinPipe = registerBlock("thin_pipe",
-            new ThinPipe(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new ThinPipe(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block ThinPipeCorner = registerBlock("thin_pipe_corner",
-            new ThinPipeCorner(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new ThinPipeCorner(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block Pipe = registerBlock("pipe",
-            new Pipe(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque()));
+            new Pipe(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block PipeMiddle = registerBlock("pipe_middle",
-            new Pipe(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque()));
+            new Pipe(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block PipeCorner = registerBlock("pipe_corner",
-            new PipeCorner(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque()));
+            new PipeCorner(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block BigPipe = registerBlock("big_pipe",
-            new Pipe(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque()));
+            new Pipe(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block BigPipeMiddle = registerBlock("big_pipe_middle",
-            new Pipe(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque()));
+            new Pipe(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block SmallPipeSet = registerBlock("small_pipe_set",
-            new SmallPipeSet(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new SmallPipeSet(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
 
     public static final Block WallText1 = registerBlock("wall_text_1",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallText2 = registerBlock("wall_text_2",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallText3 = registerBlock("wall_text_3",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallText4 = registerBlock("wall_text_4",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallText5 = registerBlock("wall_text_5",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallText6 = registerBlock("wall_text_6",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallText7 = registerBlock("wall_text_7",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallText8 = registerBlock("wall_text_8",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block WallText99 = registerBlock("wall_text_99",
-            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false)));
+            new WallText(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().collidable(false).sounds(SprintBlockSoundGroup.SILENT)));
 
 
     public static final Block WOODEN_CRATE = registerBlock("wooden_crate",
@@ -184,7 +185,7 @@ public class ModBlocks {
 
     //////Poolrooms Stuff//////
     public static final Block PoolroomsSkyBlock = registerBlock("pool_sky",
-            new PoolroomsSkyBlock(FabricBlockSettings.copyOf(Blocks.GLASS).nonOpaque().hardness(-1f).noBlockBreakParticles().collidable(true)));
+            new GlassBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles().sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block PoolTiles = registerBlock("pool_tiles",
             new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
@@ -198,6 +199,9 @@ public class ModBlocks {
     public static final Block PoolTileSlope = registerBlock("slope",
             new PoolTileSlopeBlock(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque()));
 
+
+    public static final Block CEILINGLIGHT = registerBlock("ceiling_light",
+            new CeilingLight(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles()));
 
 
     private static Block registerBlock(String name, Block block) {

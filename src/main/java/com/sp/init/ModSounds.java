@@ -8,6 +8,8 @@ import net.minecraft.util.Identifier;
 
 public class ModSounds {
 
+    public static final SoundEvent SILENCE = registerSoundEvent("silence");
+
     public static final SoundEvent ZOOM_IN_SOUND = registerSoundEvent("zoomin");
     public static final SoundEvent ZOOM_OUT_SOUND = registerSoundEvent("zoomout");
     public static final SoundEvent FLASHLIGHT_CLICK = registerSoundEvent("flashlight_click");
@@ -79,6 +81,10 @@ public class ModSounds {
 
     public static final SoundEvent SMILER_AMBIENCE = registerSoundEvent("smiler_laugh");
     public static final SoundEvent SMILER_GLITCH = registerSoundEvent("smiler_glitch");
+
+
+    public static final SoundEvent CARPET_WALK = registerSoundEvent("carpet_walk");
+    public static final SoundEvent CARPET_RUN = registerSoundEvent("carpet_run");
 
 
     private static SoundEvent registerSoundEvent(String name) {

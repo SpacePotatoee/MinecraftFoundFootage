@@ -1,4 +1,9 @@
 {
+  "silence": {
+    "sounds": [
+      "spb-revamped:silence"
+    ]
+  },
   "zoomin": {
     "sounds": [
       "spb-revamped:zoomin"
@@ -287,6 +292,26 @@
   "smiler_glitch": {
     "sounds": [
       "spb-revamped:smiler/smiler_glitch"
+    ]
+  },
+  "carpet_run": {
+    "sounds": [
+      "spb-revamped:carpet/running/carpet_run_1",
+      "spb-revamped:carpet/running/carpet_run_2",
+      "spb-revamped:carpet/running/carpet_run_3",
+      "spb-revamped:carpet/running/carpet_run_4",
+      "spb-revamped:carpet/running/carpet_run_5",
+      "spb-revamped:carpet/running/carpet_run_6",
+      "spb-revamped:carpet/running/carpet_run_7"
+    ]
+  },
+  "carpet_walk": {
+    "sounds": [
+      "spb-revamped:carpet/walking/carpet_walk_1",
+      "spb-revamped:carpet/walking/carpet_walk_2",
+      "spb-revamped:carpet/walking/carpet_walk_3",
+      "spb-revamped:carpet/walking/carpet_walk_4",
+      "spb-revamped:carpet/walking/carpet_walk_5"
     ]
   }
 }
