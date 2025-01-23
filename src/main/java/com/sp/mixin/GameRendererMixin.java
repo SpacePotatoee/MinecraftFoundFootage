@@ -6,6 +6,7 @@ import com.sp.SPBRevampedClient;
 import com.sp.render.camera.CameraRoll;
 import com.sp.render.camera.CutsceneManager;
 import com.sp.render.ShadowMapRenderer;
+import com.sp.util.MathStuff;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
@@ -16,9 +17,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,14 +38,19 @@ public abstract class GameRendererMixin {
     @Unique
     private static final Identifier warpEntity = new Identifier("spbrevamped", "warp_player");
 
+    @Unique
+    private float smoothPitch = 0.0f;
+
+    @Unique
+    private float smoothYaw = 0.0f;
+
 
     @Shadow @Final private Camera camera;
     @Shadow @Final MinecraftClient client;
+
+
     @Shadow public abstract void setBlockOutlineEnabled(boolean blockOutlineEnabled);
-
-
     @Shadow public abstract void tick();
-
     @Shadow protected abstract void renderHand(MatrixStack matrices, Camera camera, float tickDelta);
 
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;tiltViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V"))
@@ -67,13 +70,28 @@ public abstract class GameRendererMixin {
         }
     }
 
-    //@Redirect(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lorg/joml/Matrix4f;)V"))
-    public void enableClipPlane(WorldRenderer instance, MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix){
-        if(SPBRevampedClient.getCutsceneManager().fall){
-            GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
+    @ModifyArg(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/RotationAxis;rotationDegrees(F)Lorg/joml/Quaternionf;", ordinal = 2))
+    private float smoothPitch(float deg) {
+        PlayerEntity player = this.client.player;
+
+        if(player != null && ConfigStuff.enableSmoothCamera){
+            this.smoothYaw = MathStuff.Lerp(this.smoothYaw, deg, ConfigStuff.cameraSmoothing, client.getLastFrameDuration());
+            return this.smoothYaw;
         }
-        this.client.worldRenderer.render(matrices, tickDelta, limitTime, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, projectionMatrix);
-        GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+
+        return deg;
+    }
+
+    @ModifyArg(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/RotationAxis;rotationDegrees(F)Lorg/joml/Quaternionf;", ordinal = 3))
+    private float smoothYaw(float deg){
+        PlayerEntity player = this.client.player;
+
+        if(player != null && ConfigStuff.enableSmoothCamera){
+            this.smoothPitch = MathStuff.Lerp(this.smoothPitch, deg, ConfigStuff.cameraSmoothing, client.getLastFrameDuration());
+            return this.smoothPitch;
+        }
+
+        return deg;
     }
 
 

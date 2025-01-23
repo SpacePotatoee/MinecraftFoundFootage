@@ -25,12 +25,15 @@ vec3 BloomLod(float scale, vec2 offset){
 
 void main() {
 	vec4 color = texture(DiffuseSampler0, texCoord);
-//	vec4 highlights = texture(HighlightsSampler, texCoord);
+
+	float chromAbb = 0.003 * abs(texCoord.x - 0.5);
+	color.r = texture(DiffuseSampler0, texCoord + chromAbb).r;
+	color.g = texture(DiffuseSampler0, texCoord - chromAbb).g;
 
 	vec4 highlights = vec4(0.0);
 	float scale = 2.0;
 	float offset = 0;
-	for(int i = 0; i < 6; i++) {
+	for(int i = 0; i < 5; i++) {
 		vec2 uv = (vec2(texCoord.x + offset * scale, texCoord.y)) / scale;
 		highlights += texture(HighlightsSampler, uv) * smoothstep(0.5, 0.1, float(i / 5));
 		offset = (1.0 - (1.0/ scale));

@@ -23,6 +23,11 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = CAMERA)
     public static boolean disableHud = false;
 
+    @Entry(category = CAMERA)
+    public static boolean enableSmoothCamera = true;
+
+    @Entry(category = CAMERA)
+    public static float cameraSmoothing = 0.95f;
 
     @Entry(category = WORLD, min = 10)
     public static int lightRenderDistance = 100;
