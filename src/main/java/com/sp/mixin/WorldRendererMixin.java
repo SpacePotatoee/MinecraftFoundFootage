@@ -1,5 +1,6 @@
 package com.sp.mixin;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.init.BackroomsLevels;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
@@ -14,8 +15,27 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static org.lwjgl.opengl.GL11C.*;
+
 @Mixin(WorldRenderer.class)
 public abstract class WorldRendererMixin {
+
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 9, shift = At.Shift.AFTER))
+    private void wireFrame(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci){
+        MinecraftClient client = MinecraftClient.getInstance();
+        if(client.wireFrame) {
+            RenderSystem.polygonMode(GL_FRONT, GL_LINE);
+        }
+    }
+
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;pop()V", ordinal = 3, shift = At.Shift.BEFORE))
+    private void wireFrame2(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci){
+        MinecraftClient client = MinecraftClient.getInstance();
+        if(client.wireFrame) {
+            RenderSystem.polygonMode(GL_FRONT, GL_FILL);
+        }
+    }
+
 
     @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true)
     public void renderSky(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback, CallbackInfo ci) {
