@@ -36,14 +36,14 @@ public abstract class ChunkStatusMixin {
             l1cg.generateMaze(chunkRegion, chunk, world.getStructureAccessor().forRegion(chunkRegion));
         }
 
-        if (generator instanceof Level0ChunkGenerator l1cg) {
+        if (generator instanceof Level0ChunkGenerator l0cg) {
             ChunkRegion chunkRegion = new ChunkRegion(world, chunks, targetStatus, 5);
-            l1cg.generateMaze(chunkRegion, chunk, world.getStructureAccessor().forRegion(chunkRegion));
+            l0cg.generateMaze(chunkRegion, chunk, world.getStructureAccessor().forRegion(chunkRegion));
         }
 
-        if (generator instanceof PoolroomsChunkGenerator l1cg) {
+        if (generator instanceof PoolroomsChunkGenerator prcg) {
             ChunkRegion chunkRegion = new ChunkRegion(world, chunks, targetStatus, 10);
-            l1cg.generateMaze(chunkRegion, chunk, world.getStructureAccessor().forRegion(chunkRegion));
+            prcg.generateMaze(chunkRegion, chunk, world.getStructureAccessor().forRegion(chunkRegion));
         }
 
     }

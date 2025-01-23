@@ -31,7 +31,7 @@ public class MathStuff {
     }
 
     public static int millisecToTick(long l){
-        return (int) ((l/1000) * 20);
+        return (int) (l * 0.02);
     }
 
     public static float randomFloat(float min, float max, Random random){
@@ -78,14 +78,6 @@ public class MathStuff {
         float f = MathHelper.subtractAngles(from, to);
         float g = MathHelper.clamp(f, -max, max);
         return from + g;
-    }
-
-    public static float lookAtEntityAroundYAxis(Vec3d position1, Vec3d position2) {
-        double d = position2.getX() - position1.getX();
-        double e = position2.getZ() - position1.getZ();
-        float h = -(float)(MathHelper.atan2(e, d) * 180.0F / (float)Math.PI) - 90.0F;
-
-        return h - 180.0F;
     }
 
 }

@@ -2,6 +2,7 @@ package com.sp.block.entity;
 
 import com.sp.ConfigStuff;
 import com.sp.SPBRevampedClient;
+import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.init.ModBlockEntities;
 import com.sp.init.ModBlocks;
 import com.sp.block.custom.ThinFluorescentLightBlock;
@@ -15,6 +16,7 @@ import foundry.veil.api.client.render.deferred.light.PointLight;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -31,6 +33,8 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
     private boolean prevOn;
     private final int randInt;
     private int ticks = 0;
+    private final MinecraftClient client;
+    private final Random random = Random.create();
 
     public ThinFluorescentLightBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.THIN_FLUORESCENT_LIGHT_BLOCK_ENTITY, pos, state);
@@ -39,6 +43,7 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
         this.currentState = state;
         this.playingSound = false;
         this.randInt = random.nextInt(1,8);
+        this.client = MinecraftClient.getInstance();
     }
 
     @Override
@@ -56,7 +61,6 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
 
     public void tick(World world, BlockPos pos, BlockState state) {
         if(world.getBlockState(pos).getBlock() == ModBlocks.ThinFluorescentLight) {
-            prevOn = world.getBlockState(pos).get(ThinFluorescentLightBlock.ON);
             Vec3d position = pos.toCenterPos();
             WorldEvents events = InitializeComponents.EVENTS.get(world);
             Random random = Random.create();
@@ -116,9 +120,7 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                     }
                 }
 
-                if (prevOn != state.get(ThinFluorescentLightBlock.ON)) {
-                    world.playSound(null, pos, ModSounds.LIGHT_BLINK, SoundCategory.AMBIENT, 0.2F, random1.nextFloat(0.9f, 1.1f));
-                }
+
             }else {
                 PlayerEntity player = MinecraftClient.getInstance().player;
                 if (player != null) {
@@ -132,6 +134,13 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
 
                     boolean withinDistance = pos.isWithinDistance(playerPos, distance);
                     if (withinDistance) {
+
+                        if(!state.get(ThinFluorescentLightBlock.COPY)) {
+                            if (prevOn != world.getBlockState(pos).get(ThinFluorescentLightBlock.ON)) {
+                                client.getSoundManager().play(new PositionedSoundInstance(ModSounds.LIGHT_BLINK, SoundCategory.AMBIENT, 0.2F, random1.nextFloat(0.9f, 1.1f), this.random, pos));
+                            }
+                        }
+
                         if (!state.get(ThinFluorescentLightBlock.COPY) && state.get(ThinFluorescentLightBlock.ON) && !state.get(ThinFluorescentLightBlock.BLACKOUT)) {
                             if (!this.isPlayingSound() && pos.isWithinDistance(playerPos, 15.0f) && !SPBRevampedClient.blackScreen) {
                                 MinecraftClient.getInstance().getSoundManager().play(new ThinFluorescentLightSoundInstance(this, player));
@@ -142,7 +151,6 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                                 this.pointLight = new PointLight();
                                 VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(pointLight
                                         .setRadius(18f)
-                                        .setColor(255, 255, 255)
                                         .setBrightness(0.0024f)
                                 );
                                 switch (state.get(FACE)) {
@@ -165,6 +173,25 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                                         this.pointLight.setPosition(position.x, position.y, position.z);
 
                                 }
+
+                                switch (world.getRegistryKey().getValue().toString()){
+                                    case "spb-revamped:poolrooms": {
+                                        this.pointLight
+                                                .setColor(200, 200, 255)
+                                                .setBrightness(0.0035f);
+                                    }
+                                    break;
+                                    case "spb-revamped:level0":{
+                                        this.pointLight
+                                                .setColor(200, 200, 255)
+                                                .setBrightness(0.005f);
+                                    }
+                                    break;
+                                    default:{
+                                        this.pointLight.setColor(255, 255, 255);
+                                    }
+                                }
+
                                 if (world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
                                     this.pointLight
                                             .setColor(200, 200, 255)
@@ -189,6 +216,7 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
             if (ticks > 100) {
                 ticks = 1;
             }
+            prevOn = world.getBlockState(pos).get(FluorescentLightBlock.ON);
         }
     }
 

@@ -3,17 +3,12 @@ package com.sp.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.VertexSorter;
 import com.sp.SPBRevamped;
-import com.sp.SPBRevampedClient;
 import com.sp.init.RenderLayers;
 import com.sp.mixin.WorldRendererAccessor;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.framebuffer.AdvancedFbo;
-import foundry.veil.api.client.util.Easings;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.Frustum;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
@@ -56,6 +51,7 @@ public class ShadowMapRenderer {
             accessor.invokeRenderLayer(RenderLayer.getCutout(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
             accessor.invokeRenderLayer(RenderLayer.getCutoutMipped(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
             accessor.invokeRenderLayer(RenderLayer.getSolid(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
+            accessor.invokeRenderLayer(RenderLayers.getPoolTileLayer(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
 
             if(client.world != null) {
                 VertexConsumerProvider.Immediate immediate = accessor.getBufferBuilders().getEntityVertexConsumers();
@@ -183,10 +179,7 @@ public class ShadowMapRenderer {
 
     //Global Light Rotation
     public static void rotateShadowModelView(Matrix4f shadowModelView, World world){
-        float MaxAngle = 120.0f;
-        float MinAngle = 85.0f;
-        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(Easings.Easing.easeInOutQuad.ease(SPBRevampedClient.getSunsetTimer(world)) * (MaxAngle - MinAngle) + MinAngle));
-        shadowModelView.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(4f));
+        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(PoolroomsDayCycle.getSunAngle()));
     }
 
     public static Matrix4f createProjMat(){

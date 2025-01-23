@@ -30,3 +30,4 @@ accessible field net/minecraft/client/render/block/BlockModelRenderer$Translatio
 accessible field net/minecraft/client/render/block/BlockModelRenderer$Translation fourthCorner I
 accessible field net/minecraft/client/render/block/BlockModelRenderer$NeighborOrientation shape I
 accessible class net/fabricmc/fabric/impl/client/indigo/renderer/aocalc/AoFace
+accessible class net/minecraft/client/render/WorldRenderer$RenderableChunks

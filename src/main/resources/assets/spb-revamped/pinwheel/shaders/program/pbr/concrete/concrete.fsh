@@ -30,7 +30,6 @@ void main() {
 
     vec4 color = vec4(0);
     vec4 normalMap = vec4(0);
-    vec4 aoMap = vec4(0);
     float dist = 0;
     vec3 pos = vec3(0);
     vec3 texCoords = vec3(0);
@@ -43,9 +42,7 @@ void main() {
         if(texCoords.z >= heightMapDepth){
             color = texture(ColorMap, vec2(texCoords.x, -texCoords.y) * 0.06) * vertexColor;
             normalMap = texture(NormalMap, vec2(texCoords.x, -texCoords.y) * 0.06) * 2.0 - 1.0;
-            aoMap = texture(AoMap, vec2(texCoords.x, -texCoords.y) * 0.06);
             normalMap.rgb *= TBN;
-            normalMap.r = normalMap.r;
             break;
         }
 
@@ -56,7 +53,7 @@ void main() {
     fragNormal = vec4(normalMap.rgb, 1.0);
     fragMaterial = ivec4(BLOCK_SOLID, 0, 0, 1);
     fragLightSampler = vec4(texCoord2, 0.0, 1.0);
-    fragLightMap = lightmapColor * (aoMap);
+    fragLightMap = lightmapColor;
 }
 
 

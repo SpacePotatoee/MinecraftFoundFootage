@@ -44,7 +44,7 @@ public class FluorescentLightSoundInstance extends MovingSoundInstance {
         if(world != null) {
             WorldEvents events = InitializeComponents.EVENTS.get(world);
             if (!this.entity.isRemoved() &&
-                this.entity.getPos().isWithinDistance(player.getPos(), 12.0f) &&
+                this.entity.getPos().isWithinDistance(player.getPos(), 16.0f) &&
                 !events.isLevel0Blackout() &&
                 ((FluorescentLightBlockEntity) entity).getCurrentState() == ModBlocks.FluorescentLight.getDefaultState().with(FluorescentLightBlock.ON, true) &&
                 !((FluorescentLightBlockEntity) entity).getCurrentState().get(FluorescentLightBlock.BLACKOUT) &&

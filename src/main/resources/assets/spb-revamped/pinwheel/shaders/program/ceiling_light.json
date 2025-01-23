@@ -1,0 +1,7 @@
+{
+  "fragment": "spb-revamped:ceiling_light",
+  "vertex": "spb-revamped:ceiling_light",
+  "definitions": [
+    "WARP"
+  ]
+}

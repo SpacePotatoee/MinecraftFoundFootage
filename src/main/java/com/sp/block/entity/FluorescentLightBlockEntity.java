@@ -149,7 +149,7 @@ public class FluorescentLightBlockEntity extends BlockEntity {
                         if (!state.get(FluorescentLightBlock.COPY) &&
                                 state.get(FluorescentLightBlock.ON) &&
                                 !state.get(FluorescentLightBlock.BLACKOUT)) {
-                            if (!this.isPlayingSound() && pos.isWithinDistance(playerPos, 12.0f) && !state.get(FluorescentLightBlock.BLACKOUT)  && !SPBRevampedClient.blackScreen) {
+                            if (!this.isPlayingSound() && pos.isWithinDistance(playerPos, 16.0f) && !state.get(FluorescentLightBlock.BLACKOUT)  && !SPBRevampedClient.blackScreen) {
                                 MinecraftClient.getInstance().getSoundManager().play(new FluorescentLightSoundInstance(this, player));
                                 this.setPlayingSound(true);
                             }
@@ -158,7 +158,7 @@ public class FluorescentLightBlockEntity extends BlockEntity {
                                 this.pointLight = new PointLight();
                                 VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(this.pointLight
                                         .setRadius(13f)
-                                        .setColor((float) 255 /255, (float) 240 /255, (float) 130 /255)
+                                        .setColor((float) 255 /255, (float) 240 /255, (float) 100 /255)
                                         .setPosition(position.x, position.y - 1, position.z)
                                         .setBrightness(1.0f)
                                 );

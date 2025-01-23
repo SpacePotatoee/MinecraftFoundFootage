@@ -121,14 +121,14 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
             if(!component.shouldBeMuted()){
                 component.setSpeaking(true);
 
-                //Update talk time
+                //Update the amount of time that the players are talking for the skinstealer to determine who to take
                 if (!speakingTime.containsKey(player.getUuid())) {
                     speakingTime.put(player.getUuid(), 0.0f);
                 }
 
                 speakingTime.put(player.getUuid(), speakingTime.get(player.getUuid()) + 0.0001f);
 
-                //Update entity visibility
+                //If the player is talking too loud, make them visible to the skinwalker
                 if (!component.isVisibleToEntity()) {
                     double volume = Utils.dbToPerc(Utils.getHighestAudioLevel(data));
 

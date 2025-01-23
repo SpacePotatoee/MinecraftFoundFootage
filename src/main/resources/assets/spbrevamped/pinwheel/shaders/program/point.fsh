@@ -65,7 +65,7 @@ void main() {
     vec3 worldNormal = viewToWorldSpaceDirection(normalVS);
     vec3 offset = lightPos - pos;
 
-//    if(ShouldRender == 0){
+    if(ShouldRender == 1){
         vec3 tangent = normalize(cross(worldNormal, normalize(vec3(1.0))));
         vec3 bitangent = normalize(cross(worldNormal, tangent));
 
@@ -96,9 +96,9 @@ void main() {
         }
         light = light / steps;
         fragColor = setColor(albedoColor, normalVS, offset, light);
-//    } else {
-//        fragColor = setColor(albedoColor, normalVS, offset, 1.0);
-//    }
+    } else {
+        fragColor = setColor(albedoColor, normalVS, offset, 1.0);
+    }
 
 
 }

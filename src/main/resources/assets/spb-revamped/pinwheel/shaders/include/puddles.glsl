@@ -7,7 +7,7 @@
 const float rayStep = 0.1;
 const int maxSteps = 100;
 const int BinSearchSteps = 10;
-const float SCALE = 0.75;
+const float SCALE = 0.8;
 
 vec3 hash(vec3 p){
     p = vec3( dot(p,vec3(127.1,311.7, -74.7)),
@@ -69,7 +69,7 @@ vec2 rayMarch(vec3 dir, vec3 origin, sampler2D DepthSampler){
 vec4 getReflection(vec4 fragColor, vec4 normal, vec3 viewPos, float jitterMult, sampler2D DiffuseSampler0, sampler2D DepthSampler){
     vec3 reflected = normalize(reflect(normalize(viewPos), normalize(normal.rgb)));
     vec3 worldSpace = viewToWorldSpace(viewPos);
-    vec3 jitter = hash(worldSpace) * jitterMult;
+    vec3 jitter = (hash(worldSpace) * 2.0 - 1.0) * jitterMult;
     vec2 projectedCoord = rayMarch(jitter + reflected * max(rayStep, -viewPos.z), viewPos, DepthSampler);
     vec3 reflectedTexture = texture(DiffuseSampler0, projectedCoord).rgb;
     float Luminance = luminance(reflectedTexture);

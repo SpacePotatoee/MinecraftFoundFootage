@@ -408,7 +408,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
             //Flashlight
             if (Keybinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen && !this.hasBeenCaptured && !this.isBeingCaptured) {
-                player.playSound(ModSounds.FLASHLIGHT_CLICK, 1, 1);
+                player.playSound(ModSounds.FLASHLIGHT_CLICK, 0.5f, 1);
                 if (player.getWorld().getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
                     this.setFlashLightOn(!this.isFlashLightOn());
 
