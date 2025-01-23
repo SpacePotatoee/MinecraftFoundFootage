@@ -9,15 +9,12 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 
-import static com.sp.SPBRevampedClient.getSunsetTimer;
-
 public class RenderLayers extends RenderLayer {
     private static final MinecraftClient client = MinecraftClient.getInstance();
 
     //PBR material identifiers
     private static final Identifier CARPET_COLOR = new Identifier(SPBRevamped.MOD_ID, "textures/shaders/carpet/carpet_color.png");
     private static final Identifier CARPET_NORMAL = new Identifier(SPBRevamped.MOD_ID, "textures/shaders/carpet/carpet_normal.png");
-    private static final Identifier CARPET_DISPLACEMENT = new Identifier(SPBRevamped.MOD_ID, "textures/shaders/carpet/carpet_displacement.png");
 
     private static final Identifier CEILING_TILE_NORMAL = new Identifier(SPBRevamped.MOD_ID, "textures/shaders/ceilingtile/ceiling_tile_normal.png");
 
@@ -39,6 +36,9 @@ public class RenderLayers extends RenderLayer {
 
     private static final Identifier normalCarpet = new Identifier(SPBRevamped.MOD_ID, "pbr/carpet/carpet");
     public static final RenderPhase.ShaderProgram CARPET_PROGRAM = new RenderPhase.ShaderProgram(RenderLayers::getCarpetProgram);
+
+    private static final Identifier normalPoolTile = new Identifier(SPBRevamped.MOD_ID, "pbr/pool_tiles/pool_tiles");
+    public static final RenderPhase.ShaderProgram POOL_TILE_PROGRAM = new RenderPhase.ShaderProgram(RenderLayers::getPoolTileProgram);
 
 
     private static final Identifier POOLROOMS_SKY_SHADER = new Identifier(SPBRevamped.MOD_ID, "sky");
@@ -127,10 +127,26 @@ public class RenderLayers extends RenderLayer {
                     .program(CARPET_PROGRAM)
                     .texture(
                             RenderPhase.Textures.create()
-                                    .add(CARPET_DISPLACEMENT, true, true)
-                                    .add(CARPET_COLOR, true, true)
-                                    .add(CEILING_TILE_NORMAL, false, false)
-                                    .add(CARPET_NORMAL, true, true)
+                                    .add(CARPET_COLOR, false, true)
+                                    .add(CARPET_NORMAL, false, true)
+                                    .build()
+                    )
+                    .build(true)
+    );
+
+    private static final RenderLayer POOL_TILE = RenderLayer.of(
+            "pool_tiles",
+            VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
+            VertexFormat.DrawMode.QUADS,
+            1536,
+            false,
+            false,
+            RenderLayer.MultiPhaseParameters.builder()
+                    .lightmap(ENABLE_LIGHTMAP)
+                    .program(POOL_TILE_PROGRAM)
+                    .texture(
+                            RenderPhase.Textures.create()
+                                    .add(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, false, true)
                                     .build()
                     )
                     .build(true)
@@ -140,7 +156,7 @@ public class RenderLayers extends RenderLayer {
             "chain_fence",
             VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
             VertexFormat.DrawMode.QUADS,
-            2097152,
+            1536,
             false,
             false,
             RenderLayer.MultiPhaseParameters.builder()
@@ -154,7 +170,7 @@ public class RenderLayers extends RenderLayer {
             "bricks",
             VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
             VertexFormat.DrawMode.QUADS,
-            2097152,
+            1536,
             false,
             false,
             RenderLayer.MultiPhaseParameters.builder()
@@ -168,7 +184,7 @@ public class RenderLayers extends RenderLayer {
             "crate",
             VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
             VertexFormat.DrawMode.QUADS,
-            2097152,
+            1536,
             false,
             false,
             RenderLayer.MultiPhaseParameters.builder()
@@ -207,12 +223,32 @@ public class RenderLayers extends RenderLayer {
         return shader.toShaderInstance();
     }
 
+    private static net.minecraft.client.gl.ShaderProgram getPoolTileProgram(){
+        if(ShadowMapRenderer.isRenderingShadowMap()) {
+            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(shadowSolid);
+            if (shader == null) {
+                return null;
+            }
+            return shader.toShaderInstance();
+        }
+        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(normalPoolTile);
+        if (shader == null) {
+            return null;
+        }
+
+        return shader.toShaderInstance();
+    }
+
     public static RenderLayer getConcreteLayer() {
         return CONCRETE_LAYER;
     }
 
     public static RenderLayer getCeilingLightLayer() {
         return CEILING_LIGHT;
+    }
+
+    public static RenderLayer getPoolTileLayer() {
+        return POOL_TILE;
     }
 
     public static RenderLayer getPoolroomsSky() {

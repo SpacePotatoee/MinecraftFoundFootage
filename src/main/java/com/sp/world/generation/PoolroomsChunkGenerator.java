@@ -48,6 +48,7 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
     );
     private final RegistryEntry<ChunkGeneratorSettings> settings;
     Random random = Random.create();
+    PerlinNoiseSampler noiseSampler = new PerlinNoiseSampler(random);
 
     public PoolroomsChunkGenerator(BiomeSource biomeSource, RegistryEntry<ChunkGeneratorSettings> settings) {
         super(biomeSource);
@@ -87,7 +88,7 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
 
             if(server != null){
                 PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
-                poolroomsMazeGenerator.setup(world);
+                poolroomsMazeGenerator.setup(world, true);
             }
 
         } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
@@ -119,23 +120,17 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
                             random,
                             2
                     ));
-
-                    if (server != null) {
-                        PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
-                        poolroomsMazeGenerator.setup(world);
-                    }
-
-                } else {
-                    if (server != null) {
-                        PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
-                        poolroomsMazeGenerator.setup(world);
-                    }
                 }
+            }
 
-            }else {
-                if (server != null) {
-                    PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
-                    poolroomsMazeGenerator.setup(world);
+
+            if (server != null) {
+                double noise = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
+                PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
+                if (noise > 0) {
+                    poolroomsMazeGenerator.setup(world, true);
+                } else {
+                    poolroomsMazeGenerator.setup(world, false);
                 }
             }
         }

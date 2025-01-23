@@ -44,7 +44,7 @@ public class PoolroomsMazeGenerator {
         this.levelDirectory = levelDirectory;
     }
 
-    public void setup(StructureWorldAccess world){
+    public void setup(StructureWorldAccess world, boolean sky){
         //Initial Random Mega Room
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         Random random = Random.create();
@@ -52,13 +52,17 @@ public class PoolroomsMazeGenerator {
         Identifier roomIdentifier = null;
         int w = random.nextBetween(1, 6);
         int p = random.nextBetween(1, 3);
+        String shouldSky = "";
+        if(!sky){
+            shouldSky = "_light";
+        }
 
-        if(w == 1) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x16_" + p);
-        else if (w == 2) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x24_" + p);
-        else if (w == 3) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x32_" + p);
-        else if (w == 4) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_24x24_" + p);
-        else if (w == 5) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_24x32_" + p);
-        else if (w == 6) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_32x32_" + p);
+        if(w == 1) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x16_" + p + shouldSky);
+        else if (w == 2) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x24_" + p + shouldSky);
+        else if (w == 3) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x32_" + p + shouldSky);
+        else if (w == 4) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_24x24_" + p + shouldSky);
+        else if (w == 5) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_24x32_" + p + shouldSky);
+        else if (w == 6) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_32x32_" + p + shouldSky);
 
         StructurePlacementData structurePlacementData = new StructurePlacementData();
         structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
@@ -88,11 +92,11 @@ public class PoolroomsMazeGenerator {
             p = random.nextBetween(1, 3);
             if (yy < xx){
                 structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.COUNTERCLOCKWISE_90).setIgnoreEntities(true);
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + yy + "x" + xx + "_" + p);
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + yy + "x" + xx + "_" + p + shouldSky);
             }
             else {
                 structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + xx + "x" + yy + "_" + p);
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + xx + "x" + yy + "_" + p + shouldSky);
             }
             roomWidth = xx;
             roomHeight = yy;
@@ -139,8 +143,13 @@ public class PoolroomsMazeGenerator {
         //Generate Maze
         for (int y = 0; y < this.rows; y++) {
             for (int x = 0; x < this.cols; x++) {
-                if(world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 18, y + ((this.size - 1) * y) + this.originY)) == Blocks.AIR.getDefaultState()) {
-                    grid[x][y] = new CellWDoor(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
+                int xPos = x + ((this.size - 1) * x) + this.originX;
+                int yPos = y + ((this.size - 1) * y) + this.originY;
+
+                if(world.getBlockState(mutable.set(xPos, 18, yPos)) == Blocks.AIR.getDefaultState()) {
+
+                    grid[x][y] = new CellWDoor(yPos, xPos, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
+
                 }
             }
         }
@@ -184,7 +193,7 @@ public class PoolroomsMazeGenerator {
         for (CellWDoor[] cell : grid){
             for(CellWDoor cells: cell){
                 if (cells != null) {
-                    cells.drawWalls(world, this.levelDirectory);
+                    cells.drawWalls(world, this.levelDirectory, sky);
                 }
             }
         }
@@ -360,4 +369,3 @@ public class PoolroomsMazeGenerator {
         megaRoomList.add("32x32");
     }
 }
-

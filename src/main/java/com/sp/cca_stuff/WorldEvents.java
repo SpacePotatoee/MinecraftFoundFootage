@@ -62,6 +62,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
     //Poolrooms
     private boolean sunsetTransition;
+    private float currentPoolroomsTime;
     private boolean noon;
 
     private boolean inLevel0;
@@ -121,6 +122,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.level2Warp = false;
         this.intercomCount = 0;
         this.sunsetTransition = false;
+        this.currentPoolroomsTime = 0.0f;
         this.noon = true;
         this.inLevel0 = false;
         this.inLevel1 = false;
@@ -215,6 +217,13 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.sunsetTransition = sunsetTransition;
     }
 
+    public float getCurrentPoolroomsTime() {
+        return currentPoolroomsTime;
+    }
+    public void setCurrentPoolroomsTime(float currentPoolroomsTime) {
+        this.currentPoolroomsTime = currentPoolroomsTime;
+    }
+
     public boolean isNoon() {
         return noon;
     }
@@ -248,6 +257,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.level2Flicker = tag.getBoolean("level2Flicker");
         this.level2Warp = tag.getBoolean("level2Warp");
         this.sunsetTransition = tag.getBoolean("sunsetTransition");
+        this.currentPoolroomsTime = tag.getFloat("currentPoolroomsTime");
         this.noon = tag.getBoolean("noon");
         this.intercomCount = tag.getInt("intercomCount");
         this.inLevel0 = tag.getBoolean("inLevel0");
@@ -268,6 +278,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         tag.putBoolean("level2Flicker", this.level2Flicker);
         tag.putBoolean("level2Warp", this.level2Warp);
         tag.putBoolean("sunsetTransition", this.sunsetTransition);
+        tag.putFloat("currentPoolroomsTime", this.currentPoolroomsTime);
         tag.putBoolean("noon", this.noon);
         tag.putInt("intercomCount", this.intercomCount);
         tag.putBoolean("inLevel0", this.inLevel0);
@@ -297,7 +308,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
                 //Tick the currently active event and choose a random one every min and a half
                 if (!eventActive) {
-                    this.delay--;
+//                    this.delay--;
                     if (this.delay <= 0 || Keybinds.toggleEvent.wasPressed()) {
                         this.delay = 0;
                         boolean wasPressed = Keybinds.toggleEvent.wasPressed();
@@ -577,7 +588,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
         poolroomsEventList = new ArrayList<>();
         poolroomsEventList.add(PoolroomsSunset::new);
-        poolroomsEventList.add(PoolroomsAmbience::new);
+//        poolroomsEventList.add(PoolroomsAmbience::new);
     }
 
     private void shouldSync() {

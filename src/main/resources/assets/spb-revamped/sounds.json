@@ -154,6 +154,11 @@
       "spb-revamped:poolrooms/sunset_transition"
     ]
   },
+  "midnight_transition": {
+    "sounds": [
+      "spb-revamped:poolrooms/midnight_transition"
+    ]
+  },
   "sunset_transition_end": {
     "sounds": [
       "spb-revamped:poolrooms/sunset_transition_end"

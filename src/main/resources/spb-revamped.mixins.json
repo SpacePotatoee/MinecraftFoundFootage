@@ -49,7 +49,6 @@
     "cutscene.MinecraftClientMixin",
     "disableloadingscreen.DownloadingTerrainScreenMixin",
     "disableloadingscreen.MinecraftClientMixin",
-    "poolroomsdaynightcycle.ClientWorldMixin",
     "renderlayer.RenderLayerMixin",
     "renderlayer.WorldRendererMixin",
     "respawnsystem.DeathScreenMixin",

@@ -62,6 +62,10 @@
         }
     },
     "textures": {
+        "Stars": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/stars.png"
+        },
         "NoiseTex": {
             "type": "location",
             "location": "spb-revamped:textures/shaders/rnoise.png"

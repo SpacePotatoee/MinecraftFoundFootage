@@ -17,41 +17,59 @@ uniform sampler2D UnderWaterBuffer;
 uniform sampler2D WaterTexture;
 uniform sampler2D CausticsTexture;
 uniform usampler2D MaterialSampler;
+uniform usampler2D OpaqueMaterialSampler;
 uniform sampler2D NormalTexture;
 uniform sampler2D NormalSampler;
 uniform sampler2D OpaqueNormalSampler;
 uniform sampler2D ShadowSampler;
 uniform sampler2D MinecraftMain;
 
-
+uniform vec2 ScreenSize;
 uniform float GameTime;
 uniform int OverWorld;
 uniform mat4 viewMatrix;
 uniform mat4 orthographMatrix;
-uniform vec3 lightAngled;
+uniform mat4 IShadowViewMatrix;
 
 in vec2 texCoord;
 out vec4 fragColor;
 
-const float rayStep = 0.05;
-const int maxSteps = 125;
-const int BinSearchSteps = 10;
+const float rayStep = 0.04;
+const int maxSteps = 175;
 
 
 float brightness(vec4 color){
-return (color.r + color.g + color.b) / 3.0;
+    return (color.r + color.g + color.b) / 3.0;
 }
 
-vec2 rayMarch(vec3 dir, vec3 origin){
+float blendOverlay(float base, float blend) {
+    return base<0.5?(2.0*base*blend):(1.0-2.0*(1.0-base)*(1.0-blend));
+}
+
+vec3 blendOverlay(vec3 base, vec3 blend) {
+    return vec3(blendOverlay(base.r,blend.r),blendOverlay(base.g,blend.g),blendOverlay(base.b,blend.b));
+}
+
+vec3 hash(vec3 p){
+    p = vec3( dot(p,vec3(127.1,311.7, -74.7)),
+    dot(p,vec3(269.5,183.3,246.1)),
+    dot(p,vec3(113.5,271.9,124.6)));
+
+    return fract(sin(p)*43758.5453123);
+}
+
+vec2 rayMarch(vec3 dir, vec3 origin, float ditherMult){
     float posDepth = 0.0;
     float dDepth = 0.0;
     vec3 Pos = origin;
+    float dist = 0.0;
     vec4 projectedCoords = vec4(0.0);
+    vec3 Direction = dir;
 
-    dir = dir * rayStep;
-
-    for(int i = 0; i <= maxSteps; i++){
-        Pos += dir;
+    for(int i = 0; i <= maxSteps; i++) {
+        dist += rayStep + smoothstep(0.0, 1.0, float(i) / maxSteps);
+        Pos = origin + Direction * dist;
+        Pos += dither(texCoord, ScreenSize, ditherMult) * ditherMult;
 
         projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
         projectedCoords.xyz /= projectedCoords.w;
@@ -65,41 +83,21 @@ vec2 rayMarch(vec3 dir, vec3 origin){
         dDepth = Pos.z - posDepth;
         //Hit
         if (projectedCoords.z > posDepth){
-            if((projectedCoords.z - posDepth) > 0.0008){
-                continue;
+            if((projectedCoords.z - posDepth) > 0.001){
+                return vec2(-1.0);
             }
-
-            //Binary Search
-            for (int j = 0; j <= BinSearchSteps; j++){
-                projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
-                projectedCoords.xyz /= projectedCoords.w;
-                projectedCoords = projectedCoords * 0.5 + 0.5;
-                posDepth = texture(WaterDepth, projectedCoords.xy).r;
-
-                dDepth = projectedCoords.z - posDepth;
-                dir *= 0.5;
-                if (dDepth > 0.0){
-                    Pos += dir;
-                }
-                else{
-                    Pos -= dir;
-                }
-            }
-
-            projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
-            projectedCoords.xyz /= projectedCoords.w;
-            projectedCoords = projectedCoords * 0.5 + 0.5;
-            posDepth = texture(WaterDepth, projectedCoords.xy).r;
             return projectedCoords.xy;
         }
+
 
     }
     return projectedCoords.xy;
 }
 
-vec4 getReflection(vec4 fragColor, vec4 normal, float depth, vec2 texCoord, vec3 viewPos, vec2 refraction){
+vec4 getReflection(vec4 fragColor, vec4 normal, float depth, vec2 texCoord, vec3 viewPos, float ditherMult){
     vec3 reflected = normalize(reflect(normalize(viewPos), normalize(normal.rgb)));
-    vec2 projectedCoord = rayMarch(reflected * max(rayStep, -viewPos.z), viewPos);
+    vec3 worldSpace = viewToWorldSpace(viewPos);
+    vec2 projectedCoord = rayMarch(reflected * max(rayStep, -viewPos.z), viewPos, ditherMult);
     //Out of the screen, if this isn't included reflections form weird artifacts
     if(projectedCoord.x == -1.0){
         return fragColor;
@@ -140,19 +138,39 @@ void main() {
     float handDepth = texture(HandDepth, texCoord).r;
     float waterDepth = texture(WaterDepth, texCoord).r;
     uint material = texture(MaterialSampler, texCoord).r;
+    uint opaqueMaterial = texture(OpaqueMaterialSampler, texCoord).r;
     vec4 normalSampler = texture(NormalSampler, texCoord);
+    vec4 opaqueNormalSampler = texture(OpaqueNormalSampler, texCoord);
     vec4 minecraftMain = texture(MinecraftMain, texCoord);
     float opaqueDepth = texture(OpaqueDepth, texCoord).r;
+
+    vec3 viewPos = viewPosFromDepth(waterDepth, texCoord);
 
     vec2 color = vec2(0.0);
     vec2 color2 = vec2(0.0);
 
     vec4 normal = vec4(0.0);
     vec4 normal2 = vec4(0.0);
-    if (isReflective > 0.0 && handDepth == 1.0 && isBlock(material)) {
-        vec3 viewPos = viewPosFromDepth(waterDepth, texCoord);
-        vec3 playerSpace = viewToPlayerSpace(viewPos);
+    if ((isReflective > 0.0 && isBlock(material)) || opaqueMaterial == 18) {
+        vec3 playerSpace = mat3(VeilCamera.IViewMat) * viewPos;
         vec3 worldPos = playerSpace + cameraPos;
+
+        vec3 opaqueViewPos = viewPosFromDepth(opaqueDepth, texCoord + color * REFRACTION_MULTIPLIER);
+        vec3 opaquePlayerSpace = mat3(VeilCamera.IViewMat) * opaqueViewPos;
+        vec3 opaqueWorldPos = opaquePlayerSpace + VeilCamera.CameraPosition;
+        vec3 shadowScreenSpace = getShadowCoords(opaquePlayerSpace, viewMatrix, orthographMatrix);
+        float shadowDepth = shadowScreenSpace.z;
+        float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
+        float shadow = step(shadowDepth, shadowSampler);
+
+        if(opaqueMaterial == 18 && !(isReflective > 0.0)){
+            float reflectionSize = 0.25;
+            //Only allow pixels closer to the center of the screen to cast reflections to boost performace
+            if(opaqueNormalSampler.b < 0.6 && texCoord.x > reflectionSize && texCoord.x < 1.0 - reflectionSize) {
+                fragColor = mix(getReflection(texture(DiffuseSampler0, texCoord), opaqueNormalSampler, waterDepth, texCoord, viewPos, 1.0) * 0.5, vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
+            }
+            return;
+        }
 
         color = texture(WaterTexture, worldPos.xz * 0.05 + vec2(GameTime * 50.0)).rg - 0.5;
         color2 = texture(WaterTexture, worldPos.xz * 0.05 - vec2(0.0, GameTime * 50.0)).rg - 0.5;
@@ -164,33 +182,17 @@ void main() {
         normal = (normal + normal2) / 3.0;
         normal = vec4(normal.r, normal.b, normal.g, normal.a) * 2.0 - 1.0;
 
-        vec3 shadowScreenSpace = getShadowCoords(playerSpace, viewMatrix, orthographMatrix);
-        float shadowDepth = shadowScreenSpace.z;
-        float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
-        float shadow = step(shadowDepth, shadowSampler);
-
-        vec3 opaqueViewPos = viewPosFromDepth(opaqueDepth, texCoord + color * REFRACTION_MULTIPLIER);
-        vec3 opaquePlayerSpace = viewToPlayerSpace(opaqueViewPos);
-        vec3 opaqueWorldPos = opaquePlayerSpace + VeilCamera.CameraPosition;
-        shadowScreenSpace = getShadowCoords(opaquePlayerSpace, viewMatrix, orthographMatrix);
-        shadowDepth = shadowScreenSpace.z;
-        shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
-        shadow = step(shadowDepth, shadowSampler);
-
 
         fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER);
 
-        fragColor = getReflection(fragColor, mix(vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), normal, 0.02), waterDepth, texCoord, viewPos, color) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
-
+        fragColor = getReflection(fragColor, mix(vec4(worldToViewSpaceDirection(normalize(vec3(0.0, 1.0,0.0))), 1.0), normal, 0.02), waterDepth, texCoord, viewPos, 0.0) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
 
         if (shadow >= 1.0){
             vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
             lightangle.y = - lightangle.y;
 
-            vec3 view = -VeilCamera.IViewMat[2].xyz;
-
             vec3 reflectedView = reflect(viewDirFromUv(texCoord), normalize(normal.rgb));
-            float specular = dot(reflectedView, normalize(getLightAngle(viewMatrix)));
+            float specular = dot(reflectedView, normalize(getLightAngle(IShadowViewMatrix)));
             specular = pow(specular, 100.0);
             specular *= 5.0;
 
@@ -203,10 +205,6 @@ void main() {
             vec4 caustics = getCaustics(color, opaqueWorldPos);
             fragColor += clamp(caustics, 0.0, 1.0) * 2.0;
         }
-
-
-
-
     }
 
 }

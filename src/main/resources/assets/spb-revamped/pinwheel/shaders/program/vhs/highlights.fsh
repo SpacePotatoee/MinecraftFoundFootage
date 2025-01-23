@@ -22,7 +22,7 @@ void main(){
     color = vec4(0.0, 0.0, 0.0, 1.0);
     float scale = 2.0;
     float offset = 0;
-    for(int i = 0; i < 6; i++){
+    for(int i = 0; i < 5; i++){
         color.rgb += BloomLod(scale, vec2(offset, 0.0));
         offset = (1.0 - (1.0/ scale));
         scale *= 2.0;

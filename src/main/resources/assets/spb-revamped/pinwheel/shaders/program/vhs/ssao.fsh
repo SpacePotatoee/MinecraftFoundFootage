@@ -40,7 +40,7 @@ void main() {
     uint material = texture2D(OpaqueMatSampler, texCoord).r;
 
     if(depthSample < 1.0 && material != 15){
-        vec3 randDir = normalize(vec3(texture(RNoiseDir, texCoord * 100.0).rgb));
+        vec3 randDir = normalize(vec3(texture(RNoiseDir, texCoord * 100.0).rgb * 2.0 - 1.0));
         vec3 tangent = normalize(cross(normal, normalize(randDir)));
         vec3 bitangent = normalize(cross(normal, tangent));
 
@@ -58,13 +58,13 @@ void main() {
             //To screen space
             vec3 screenSamplePos = viewToScreenSpace(worldSamplePos);
 
-            float sampleDepth = texture(DepthSampler, screenSamplePos.xy).r;
+            float sampleDepth = texture(DepthSampler, screenSamplePos.xy).r + 0.0001;
 
             vec3 viewPos2 = viewPosFromDepth(sampleDepth, screenSamplePos.xy);
             //            vec3 worldSamplePos2 = viewToWorldSpace(viewPos2);
 
-
-            if (screenSamplePos.z > sampleDepth){
+//&& (screenSamplePos.z - sampleDepth) < 0.0001
+            if (screenSamplePos.z > sampleDepth) {
                 float dist = smoothstep(0.0, 1.0, 1.0 / length(viewPos - viewPos2));
                 occlusion += 1.5 * dist;
             }

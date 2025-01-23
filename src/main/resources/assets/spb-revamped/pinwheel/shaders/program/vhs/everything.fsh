@@ -119,6 +119,10 @@ void main() {
 
 		color.rgb = blend(color, water);
 
+		if(compat.a > 0.0 || compat2.a > 0.0){
+			color = compat + compat2;
+		}
+
 
 		if (handDepth < 1.0){
 			color = handColor;

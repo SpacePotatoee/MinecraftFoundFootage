@@ -31,6 +31,11 @@
       "name": "veil:transparent",
       "sampler": 3
     },
+    "OpaqueMaterialSampler": {
+      "type": "framebuffer",
+      "name": "veil:opaque",
+      "sampler": 3
+    },
     "ShadowSampler": {
       "type": "framebuffer",
       "name": "spb-revamped:shadowmap:depth"

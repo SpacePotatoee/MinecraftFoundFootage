@@ -63,6 +63,7 @@ public class ModSounds {
     public static final SoundEvent POOLROOMS_DRIP1 = registerSoundEvent("poolrooms_drip1");
     public static final SoundEvent POOLROOMS_DRIP2 = registerSoundEvent("poolrooms_drip2");
     public static final SoundEvent SUNSET_TRANSITION = registerSoundEvent("sunset_transition");
+    public static final SoundEvent MIDNIGHT_TRANSITION = registerSoundEvent("midnight_transition");
     public static final SoundEvent SUNSET_TRANSITION_END = registerSoundEvent("sunset_transition_end");
 
 

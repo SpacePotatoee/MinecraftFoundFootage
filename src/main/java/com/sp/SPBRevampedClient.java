@@ -92,9 +92,6 @@ public class SPBRevampedClient implements ClientModInitializer {
     public static boolean blackScreen;
     public static boolean youCantEscape;
 
-    public static Matrix4fc prevViewMat = RenderSystem.getModelViewMatrix();
-    public static Matrix4fc prevProjMat = RenderSystem.getProjectionMatrix();
-
     private static final Random random = Random.create();
     private static final Random random2 = Random.create(34563264);
 
@@ -111,6 +108,8 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayers.getConcreteLayer());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Bricks, RenderLayers.getBricksLayer());
+
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTiles, RenderLayers.getPoolTileLayer());
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CHAINFENCE, RenderLayers.getChainFence());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CeilingTile, RenderLayers.getCeilingTile());
@@ -329,12 +328,12 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("ShadowToggle", 0);
                         }
 
+                        shaderProgram.setVector("shadowColor", PoolroomsDayCycle.getLightColor());
+
                     }
 
                     shaderProgram = context.getShader(WATER_SHADER);
                     if (shaderProgram != null) {
-                        if (this.camera != null) {
-                        }
                         if (inBackrooms) {
                             shaderProgram.setInt("OverWorld", 0);
                         } else {
@@ -368,6 +367,13 @@ public class SPBRevampedClient implements ClientModInitializer {
         ClientPlayConnectionEvents.JOIN.register(((handler,sender, client) -> {
             VeilDeferredRenderer renderer = VeilRenderSystem.renderer().getDeferredRenderer();
             renderer.reset();
+
+            //Just in case it become  unsynced
+            if(client.world != null){
+                WorldEvents events = InitializeComponents.EVENTS.get(client.world);
+                PoolroomsDayCycle.dayTime = events.getCurrentPoolroomsTime();
+            }
+
         }));
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
@@ -375,7 +381,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             if (player != null) {
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                 playerComponent.setFlashLightOn(false);
-                flashlightRenderer.flashLightList.clear();
+                flashlightRenderer.flashLightList2.clear();
             }
         }));
 
@@ -495,6 +501,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         access.setMatrix("level0ViewMatrix", level0ViewMat);
         access.setMatrix("viewMatrix", viewMat);
+        access.setMatrix("IShadowViewMatrix", viewMat.invert());
 
         access.setMatrix("orthographMatrix", ShadowMapRenderer.createProjMat());
     }
@@ -527,45 +534,6 @@ public class SPBRevampedClient implements ClientModInitializer {
         } else {
             tickTimer.setOnOrOff(false);
             return 0;
-        }
-    }
-
-    public static float getSunsetTimer(World world) {
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-        double seconds = 8.0;
-        int maxTicks = (int) (seconds * 20);
-
-        if(events.isSunsetTransition() && events.isNoon()){
-            SunsetTimer.setOnOrOff(true);
-
-            if(SunsetTimer.getCurrentTick() >= maxTicks){
-                SunsetTimer.setOnOrOff(false);
-                return 1.0f;
-            }
-            else{
-                return Math.min((float) SunsetTimer.getCurrentTick() / maxTicks, 1.0f);
-            }
-        }
-        else if(events.isSunsetTransition() && !events.isNoon()){
-            SunsetTimer.setOnOrOff(true);
-
-            if(SunsetTimer.getCurrentTick() >= maxTicks){
-                SunsetTimer.setOnOrOff(false);
-                return 0.0f;
-            }
-            else{
-                return Math.max(1.0f - ((float) SunsetTimer.getCurrentTick() / maxTicks), 0.0f);
-            }
-        }
-        else{
-            SunsetTimer.setOnOrOff(false);
-            SunsetTimer.resetToZero();
-            if(events.isNoon()){
-                return 0;
-            }
-            else {
-                return 1;
-            }
         }
     }
 

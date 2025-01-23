@@ -56,18 +56,6 @@ void main() {
     vec3 positionVS = viewPosFromDepthSample(depth, uv);
     float worldDepth = length(positionVS);
 
-    vec4 blur2 = vec4(0.0);
-//    const float kernalSize2 = 21.0;
-//    const float halfSize2 = 10.0;
-//    const float coeff2 = 1.0 / (kernalSize2 * kernalSize2);
-//    const vec2 dx2 = vec2(0.0002, 0.0);
-//    const vec2 dy2 = vec2(0.0, 0.0002);
-//    for(float x = -halfSize2; x<= halfSize2; x++){
-//        for(float y = -halfSize2; y<= halfSize2; y++){
-//            blur2 += (coeff2) * texture(DiffuseSampler0, uv + x * dx2 + y * dy2);
-//        }
-//    }
-
     //Motion Blur
     vec4 blur3 = vec4(0.0);
     const float kernalSize3 = 5.0;
@@ -80,7 +68,7 @@ void main() {
     if(uv.x < -0.05 || uv.x > 1.05 || uv.y < -0.05 || uv.y > 1.05){
 
         fragColor = vec4(vec3(0.1),1.0f);
-        fragColor *= viginette+0.4;
+        fragColor *= viginette;
 
     }
     else if(uv.y > 2.0*uv.x-uv.y && uv.x > 1.0 || uv.x > 2.0*uv.y-uv.x && uv.x < 0.0 ||  uv.y > -2.0*uv.x-uv.y+2.0 && uv.x < 0.0 || uv.y < -2.0*uv.x-uv.y+2.0 && uv.x > 1.0 ){
@@ -90,7 +78,7 @@ void main() {
         fragColor = vec4(vec3(disty),1.0f)-0.35;
 
         uv = uv/2.0 + 0.5;
-        fragColor *= viginette+0.3;
+        fragColor *= viginette;
     }
     else if(uv.x < 0 || uv.x > 1){
         uv = 2.0*uv-1.0;
@@ -99,7 +87,7 @@ void main() {
         fragColor = vec4(vec3(distx),1.0f)-0.35;
 
         uv = uv/2.0 + 0.5;
-        fragColor *= viginette+0.3;
+        fragColor *= viginette;
     }
     else if(uv.y < 0.0f || uv.y > 1.0f){
         uv = 2.0*uv-1;
@@ -108,10 +96,11 @@ void main() {
         fragColor = vec4(vec3(disty),1.0f)-0.35;
 
         uv = uv/2.0 + 0.5;
-        fragColor *= viginette+0.3;
+        fragColor *= viginette;
     }else {
         if(youCantEscape == 0) {
             fragColor = blur3;
+//            fragColor = texture(DiffuseSampler0, uv);
         } else {
             vec2 uv2 = vec2(uv.x + octave(uv.y + GameTime * 2000.0) * 0.01, uv.y);
 
