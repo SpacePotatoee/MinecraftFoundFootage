@@ -58,7 +58,8 @@
 		"java": ">=17",
 		"fabric-api": "*",
 		"fabric-key-binding-api-v1": "*",
-		"voicechat": ">=1.20.1-2.4.32"
+		"voicechat": ">=1.20.1-2.4.32",
+		"gecko-lib": ">=4.4.9"
 	},
 	"suggests": {
 		"mod-menu": "*"
