@@ -109,7 +109,7 @@ vec4 getPuddles(vec4 fragColor, vec2 texCoord, vec4 normal, sampler2D DiffuseSam
             color -= (1.0 - noise) * 0.1;
         }
         else if (noise.r < 0.8){
-            color = getReflection(color, normal, viewSpace, 1, DiffuseSampler0, DepthSampler);
+            color = getReflection(color, normal, viewSpace, 0.4, DiffuseSampler0, DepthSampler);
             color = mix(color, mainTexture, noise) - (noise * 0.02);
             color -= (1.0 - noise) * 0.1;
         }

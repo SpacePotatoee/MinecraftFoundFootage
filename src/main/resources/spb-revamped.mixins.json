@@ -12,6 +12,7 @@
     "PlaySprintSoundMixin",
     "ServerPlayerEntityMixin",
     "StructureBlockEntityMixin",
+    "VanillaLightRenderer",
     "arealightfix.AreaLightMixin",
     "arealightfix.AreaLightRendererMixin",
     "cutscene.PathAccessor",
@@ -29,7 +30,6 @@
   },
   "client": [
     "AOFixMixin",
-    "PoolroomsSkylightColor",
     "CameraMixin",
     "DinoDebugRendererMixin",
     "DisableJumpMixin",
@@ -42,6 +42,7 @@
     "LivingEntityRendererMixin",
     "MinecraftClientMixin",
     "PlayerEntityRendererMixin",
+    "PoolroomsSkylightColor",
     "RemoveBlockBreakParticlesMixin",
     "WorldRendererAccessor",
     "WorldRendererMixin",

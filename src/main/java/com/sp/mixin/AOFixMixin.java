@@ -191,20 +191,10 @@ public abstract class AOFixMixin {
             this.brightness[translation.fourthCorner] = aa;
         }
 
-        float worldBrightness = world.getBrightness(direction, shaded);
-
         //Reinserting veil's "Disable Ambient Occlusion"
         VeilDeferredRenderer deferredRenderer = VeilRenderSystem.renderer().getDeferredRenderer();
         if (!deferredRenderer.getLightRenderer().isAmbientOcclusionEnabled()) {
             Arrays.fill(this.brightness, 1.0F);
-        }
-
-        if (deferredRenderer.isEnabled() && deferredRenderer.getRendererState() != VeilDeferredRenderer.RendererState.DISABLED) {
-            return;
-        }
-
-        for (int av = 0; av < this.brightness.length; av++) {
-            this.brightness[av] = this.brightness[av] * worldBrightness;
         }
     }
 

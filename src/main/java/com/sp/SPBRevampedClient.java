@@ -140,7 +140,7 @@ public class SPBRevampedClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallDrawingWindow, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Rug1, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Rug2, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTileSlope, RenderLayer.getCutout());
+//        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTileSlope, RenderLayer.getCutout());
 
         BlockEntityRendererFactories.register(ModBlockEntities.FLUORESCENT_LIGHT_BLOCK_ENTITY, FluorescentLightBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(ModBlockEntities.THIN_FLUORESCENT_LIGHT_BLOCK_ENTITY, ThinFluorescentLightBlockEntityRenderer::new);
@@ -313,7 +313,8 @@ public class SPBRevampedClient implements ClientModInitializer {
                         } else {
                             shaderProgram.setInt("TogglePuddles", 0);
                         }
-                        shaderProgram.setVectorI("resolution", client.getFramebuffer().viewportWidth, client.getFramebuffer().viewportHeight);
+
+                        shaderProgram.setVector("shadowColor", PoolroomsDayCycle.getLightColor());
                     }
 
                     shaderProgram = context.getShader(MIXED_SHADER);
@@ -321,12 +322,6 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                         shaderProgram.setVector("prevCameraPos", prevCameraPosition.toVector3f());
                         shaderProgram.setVector("Rand", random.nextFloat() * 2.0f - 1.0f, random2.nextFloat() * 2.0f - 1.0f);
-
-                        if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                            shaderProgram.setInt("ShadowToggle", 1);
-                        } else {
-                            shaderProgram.setInt("ShadowToggle", 0);
-                        }
 
                         shaderProgram.setVector("shadowColor", PoolroomsDayCycle.getLightColor());
 
@@ -338,6 +333,16 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("OverWorld", 0);
                         } else {
                             shaderProgram.setInt("OverWorld", 1);
+                        }
+
+                        if(ConfigStuff.renderBlockReflections) {
+                            if(shaderProgram.getInt("blockReflections") == 0) {
+                                shaderProgram.setInt("blockReflections", 1);
+                            }
+                        } else {
+                            if(shaderProgram.getInt("blockReflections") == 1) {
+                                shaderProgram.setInt("blockReflections", 0);
+                            }
                         }
                     }
 
@@ -498,6 +503,12 @@ public class SPBRevampedClient implements ClientModInitializer {
     public static void setShadowUniforms(MutableUniformAccess access, World world) {
         Matrix4f level0ViewMat = ShadowMapRenderer.createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, true).peek().getPositionMatrix();
         Matrix4f viewMat = ShadowMapRenderer.createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, world, true).peek().getPositionMatrix();
+
+        if (world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+            access.setInt("ShadowToggle", 1);
+        } else {
+            access.setInt("ShadowToggle", 0);
+        }
 
         access.setMatrix("level0ViewMatrix", level0ViewMat);
         access.setMatrix("viewMatrix", viewMat);

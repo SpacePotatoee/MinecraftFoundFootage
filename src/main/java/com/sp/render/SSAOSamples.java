@@ -1,6 +1,7 @@
 package com.sp.render;
 
 import com.sp.util.MathStuff;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import org.joml.Vector3f;
 
@@ -35,8 +36,8 @@ public class SSAOSamples {
             list[i].normalize();
             list[i].mul(MathStuff.randomFloat(0f, radius, random));
 
-//            float scale = (float) i / MaxSamples;
-//            list[i].mul(MathHelper.lerp(scale, 0.0f, 1.0f));
+            float scale = (float) i / MaxSamples;
+            list[i].mul(MathHelper.lerp(scale, 0.0f, radius));
         }
         return list;
     }

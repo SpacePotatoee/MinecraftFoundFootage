@@ -146,6 +146,11 @@ public class PoolTileSlopeBlock extends Block implements Waterloggable {
     }
 
     @Override
+    public float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
+        return 1.0F;
+    }
+
+    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING, HALF, WATERLOGGED);
     }

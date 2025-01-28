@@ -31,7 +31,7 @@ vec3 getShadowCoords(vec4 normal, vec3 viewPos, mat4 viewMatrix, mat4 orthograph
     vec3 shadowNdcPos = homogenousPos.xyz / homogenousPos.w;
     vec3 distortedNdcSpace = distort(shadowNdcPos);
     vec3 shadowScreenSpace = distortedNdcSpace * 0.5 + 0.5;
-    shadowScreenSpace.z = shadowScreenSpace.z - 0.0002;
+    shadowScreenSpace.z = shadowScreenSpace.z;
 
     return shadowScreenSpace;
 }
@@ -69,7 +69,6 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, vec2 Scre
                 mat4 viewMatrix, mat4 IShadowViewMatrix, mat4 orthographMatrix,
                 sampler2D NoiseTex, sampler2D ShadowSampler, sampler2D ditherSample,
                 float sunsetTimer, vec3 shadowColor) {
-    float worldDepth = length(viewPos);
     vec4 color = incolor;
 
     //SHADOWS
@@ -78,41 +77,60 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, vec2 Scre
 
     float lightDir = dot(normalize(lightangle), viewToWorldSpaceDirection(normal.rgb));
 
-    if (lightDir > -0.1) {
-        vec3 shadowScreenSpace = getShadowCoords(normal, viewPos, viewMatrix, orthographMatrix);
+    if(sunsetTimer <= 0.32 || sunsetTimer >= 0.37) {
+        if (lightDir > -0.01) {
+            vec3 shadowScreenSpace = getShadowCoords(normal, viewPos, viewMatrix, orthographMatrix);
 
-        float shadowDepth = shadowScreenSpace.z;
-//        float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
+            float shadowDepth = shadowScreenSpace.z;
+    //        float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
 
-        float shadowSum = 0.0;
-        mat2 randRotation = randRotMat(texCoord, NoiseTex);
-        for (int x = - SHADOW_SAMPLES; x <= SHADOW_SAMPLES; x++){
-            for (int y = - SHADOW_SAMPLES; y <= SHADOW_SAMPLES; y++){
-                vec2 offset = randRotation * vec2(x, y) * 0.5;
-                float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy + offset).r;
+            float shadowSum = 0.0;
+            mat2 randRotation = randRotMat(texCoord, NoiseTex);
+            for (int x = - SHADOW_SAMPLES; x <= SHADOW_SAMPLES; x++){
+                for (int y = - SHADOW_SAMPLES; y <= SHADOW_SAMPLES; y++){
+                    vec2 offset = randRotation * vec2(x, y) * 0.5;
+                    float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy + offset).r;
 
-                if (shadowDepth < shadowSampler){
-                    shadowSum += 1.0;
+                    if (shadowDepth > shadowSampler){
+                        shadowSum += 1.0;
+                    }
                 }
             }
+
+            shadowSum /= pow(2.0 * SHADOW_SAMPLES + 1.0, 2.0);
+            color.rgb *= (clamp(1.0 - shadowSum, 1.0 - SHADOW_STRENGTH, 1.0));
+    //        color.rgb = (color.rgb * (1.0 - SHADOW_STRENGTH));
+    //        color.rgb *= step(shadowDepth, shadowSampler);
         }
-
-        shadowSum /= pow(2.0 * SHADOW_SAMPLES + 1.0, 2.0);
-        color.rgb *= (clamp(shadowSum, 1.0 - SHADOW_STRENGTH, 1.0));
-//        color.rgb *= step(shadowDepth, shadowSampler);
+        else {
+            color.rgb = (color.rgb * (SHADOW_STRENGTH));
+    //        color.rgb = vec3(0);
+        }
+    } else {
+        color.rgb = (color.rgb * (SHADOW_STRENGTH));
     }
-    else{
-        color.rgb = (color.rgb * (1.0 - SHADOW_STRENGTH));
-//        color.rgb = vec3(0);
-    }
+    color.rgb *= clamp((lightDir * 0.5 + 0.5), 0.2, 1.0);
 
 
-    //////////////////////////////////////////////////////////////////////////
+
+    color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
+
+    return color;
+}
+
+vec3 getVolumetricLight(vec4 incolor, vec2 texCoord, vec3 viewPos, vec2 ScreenSize,
+        mat4 viewMatrix, mat4 orthographMatrix, sampler2D ShadowSampler,
+        float sunsetTimer, vec3 shadowColor) {
+
+    float worldDepth = length(viewPos);
+    vec4 color = incolor;
+
+    color.rgb = pow(color.rgb, vec3(2.2));
 
     //VOLUMETRIC LIGHT
-    if(sunsetTimer < 0.35 || sunsetTimer > 0.6){
+    if(sunsetTimer < 0.35 || sunsetTimer > 0.6) {
         vec3 ro = VeilCamera.CameraPosition;
-        vec3 rd = normalize(viewToPlayerSpace(viewPos) + dither(texCoord, ScreenSize, 1.0) * 0.5);
+        vec3 rd = normalize(viewToPlayerSpace(viewPos) + dither(texCoord, ScreenSize, 0.9) * 0.5);
             //
         float maxDist = 80.0;
         float dist = 0.0;
@@ -134,7 +152,7 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, vec2 Scre
 
 
             if (shadowDepth < shadowSampler){
-                brightness += 0.001;
+                brightness += 0.0003;
                 dist += 0.01;
             } else {
                 dist += 0.2;
@@ -153,5 +171,5 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, vec2 Scre
 
     color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
 
-    return color;
+    return color.rgb;
 }

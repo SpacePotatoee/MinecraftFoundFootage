@@ -28,7 +28,7 @@ public class PoolroomsSunset implements AbstractEvent {
     public void reset(World world) {
         WorldEvents events = InitializeComponents.EVENTS.get(world);
 
-        events.setCurrentPoolroomsTime(events.getCurrentPoolroomsTime() == 1.0f ? 0.0f : events.getCurrentPoolroomsTime());
+        events.setCurrentPoolroomsTime(events.getCurrentPoolroomsTime() >= 1.0f ? 0.0f : events.getCurrentPoolroomsTime());
         events.setSunsetTransition(false);
         events.sync();
 

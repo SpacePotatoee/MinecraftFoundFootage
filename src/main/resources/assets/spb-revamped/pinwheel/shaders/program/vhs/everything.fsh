@@ -20,6 +20,7 @@ uniform sampler2D NoiseTexture;
 uniform sampler2D NoiseTexture2;
 uniform sampler2D FogTexture;
 
+uniform sampler2D ShadowSampler;
 uniform sampler2D TransparentCompatSampler;
 uniform sampler2D OpaqueCompatSampler;
 uniform usampler2D TransparentMatSampler;
@@ -28,14 +29,16 @@ uniform sampler2D CloudNoise1;
 uniform sampler2D CloudNoise2;
 
 uniform mat4 viewMatrix;
+uniform int ShadowToggle;
+uniform mat4 orthographMatrix;
 uniform vec2 ScreenSize;
 uniform vec2 Velocity;
-uniform ivec2 resolution;
 uniform int FogToggle;
 uniform int blackScreen;
 uniform int TogglePuddles;
 uniform float GameTime;
 uniform float sunsetTimer;
+uniform vec3 shadowColor;
 
 #define FOG_COLOR vec4(0.8, 0.8, 0.8, 1.0)
 
@@ -70,6 +73,7 @@ void main() {
 		vec4 normal = texture(NormalSampler, texCoord);
 		vec4 compat = texture(TransparentCompatSampler, texCoord);
 		vec4 compat2 = texture(OpaqueCompatSampler, texCoord);
+		uint Mat2 = texture(OpaqueMatSampler, texCoord).r;
 
 		if (!(compat.a > 0.0) && !(compat2.a > 0.0)){
 			if (TogglePuddles == 1){
@@ -118,6 +122,14 @@ void main() {
 		}
 
 		color.rgb = blend(color, water);
+
+		//Do this after the water
+		if(Mat2 != 15){
+			if(ShadowToggle == 1) {
+				color.rgb = getVolumetricLight(color, texCoord, viewPos, ScreenSize, viewMatrix, orthographMatrix, ShadowSampler, sunsetTimer, shadowColor);
+			}
+		}
+
 
 		if(compat.a > 0.0 || compat2.a > 0.0){
 			color = compat + compat2;

@@ -177,7 +177,7 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                                 switch (world.getRegistryKey().getValue().toString()){
                                     case "spb-revamped:poolrooms": {
                                         this.pointLight
-                                                .setColor(200, 200, 255)
+                                                .setColor(175, 175, 255)
                                                 .setBrightness(0.0035f);
                                     }
                                     break;

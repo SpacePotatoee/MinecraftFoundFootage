@@ -598,7 +598,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         else if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
             ServerWorld poolrooms = this.player.getWorld().getServer().getWorld(BackroomsLevels.POOLROOMS_WORLD_KEY);
 
-            if (Math.abs(this.player.getPos().getZ()) >= 2000) {
+            if (Math.abs(this.player.getPos().getZ()) >= 1000) {
                 this.level2Timer--;
                 if(level2Timer <= 0){
                     if (!this.isTeleporting() && !this.readyForPoolrooms) {

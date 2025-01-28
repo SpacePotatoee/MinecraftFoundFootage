@@ -30,6 +30,8 @@ uniform int OverWorld;
 uniform mat4 viewMatrix;
 uniform mat4 orthographMatrix;
 uniform mat4 IShadowViewMatrix;
+uniform float sunsetTimer;
+uniform int blockReflections;
 
 in vec2 texCoord;
 out vec4 fragColor;
@@ -52,10 +54,10 @@ vec3 blendOverlay(vec3 base, vec3 blend) {
 
 vec3 hash(vec3 p){
     p = vec3( dot(p,vec3(127.1,311.7, -74.7)),
-    dot(p,vec3(269.5,183.3,246.1)),
-    dot(p,vec3(113.5,271.9,124.6)));
+    dot(p,vec3(269.5,183.3,-246.1)),
+    dot(p,vec3(-113.5,271.9,124.6)));
 
-    return fract(sin(p)*43758.5453123);
+    return fract(sin(p)*438.5453123);
 }
 
 vec2 rayMarch(vec3 dir, vec3 origin, float ditherMult){
@@ -69,7 +71,6 @@ vec2 rayMarch(vec3 dir, vec3 origin, float ditherMult){
     for(int i = 0; i <= maxSteps; i++) {
         dist += rayStep + smoothstep(0.0, 1.0, float(i) / maxSteps);
         Pos = origin + Direction * dist;
-        Pos += dither(texCoord, ScreenSize, ditherMult) * ditherMult;
 
         projectedCoords = VeilCamera.ProjMat * vec4(Pos, 1.0);
         projectedCoords.xyz /= projectedCoords.w;
@@ -97,7 +98,8 @@ vec2 rayMarch(vec3 dir, vec3 origin, float ditherMult){
 vec4 getReflection(vec4 fragColor, vec4 normal, float depth, vec2 texCoord, vec3 viewPos, float ditherMult){
     vec3 reflected = normalize(reflect(normalize(viewPos), normalize(normal.rgb)));
     vec3 worldSpace = viewToWorldSpace(viewPos);
-    vec2 projectedCoord = rayMarch(reflected * max(rayStep, -viewPos.z), viewPos, ditherMult);
+    vec3 jitter = (hash(worldSpace) * 2.0 - 1.0) * ditherMult;
+    vec2 projectedCoord = rayMarch(jitter + reflected * max(rayStep, -viewPos.z), viewPos, ditherMult);
     //Out of the screen, if this isn't included reflections form weird artifacts
     if(projectedCoord.x == -1.0){
         return fragColor;
@@ -166,8 +168,12 @@ void main() {
         if(opaqueMaterial == 18 && !(isReflective > 0.0)){
             float reflectionSize = 0.25;
             //Only allow pixels closer to the center of the screen to cast reflections to boost performace
-            if(opaqueNormalSampler.b < 0.6 && texCoord.x > reflectionSize && texCoord.x < 1.0 - reflectionSize) {
-                fragColor = mix(getReflection(texture(DiffuseSampler0, texCoord), opaqueNormalSampler, waterDepth, texCoord, viewPos, 1.0) * 0.5, vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
+            if(blockReflections == 1) {
+                if(opaqueNormalSampler.b < 0.6 && texCoord.x > reflectionSize && texCoord.x < 1.0 - reflectionSize) {
+                    //Uncomment top and comment out bottom to see block reflection debug
+                    //fragColor = mix( vec4(1,0,0,1), vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
+                    fragColor = mix(getReflection(texture(DiffuseSampler0, texCoord), opaqueNormalSampler, waterDepth, texCoord, viewPos, 0.1) * 0.3, vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
+                }
             }
             return;
         }
@@ -188,22 +194,22 @@ void main() {
         fragColor = getReflection(fragColor, mix(vec4(worldToViewSpaceDirection(normalize(vec3(0.0, 1.0,0.0))), 1.0), normal, 0.02), waterDepth, texCoord, viewPos, 0.0) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
 
         if (shadow >= 1.0){
-            vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
-            lightangle.y = - lightangle.y;
+            if(sunsetTimer <= 0.27 || (sunsetTimer >= 0.46 && sunsetTimer <= 0.67) || sunsetTimer >= 0.70){
+                vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
+                lightangle.y = - lightangle.y;
 
-            vec3 reflectedView = reflect(viewDirFromUv(texCoord), normalize(normal.rgb));
-            float specular = dot(reflectedView, normalize(getLightAngle(IShadowViewMatrix)));
-            specular = pow(specular, 100.0);
-            specular *= 5.0;
+                vec3 reflectedView = reflect(viewDirFromUv(texCoord), normalize(normal.rgb));
+                float specular = dot(reflectedView, normalize(getLightAngle(IShadowViewMatrix)));
+                specular = pow(specular, 100.0);
+                specular *= 5.0;
 
-            if (specular > 0.0){
-                fragColor += specular;
+                if (specular > 0.0){
+                    fragColor += specular;
+                }
+
+                vec4 caustics = getCaustics(color, opaqueWorldPos);
+                fragColor += clamp(caustics, 0.0, 1.0) * 2.0;
             }
-        }
-
-        if (shadow >= 1.0){
-            vec4 caustics = getCaustics(color, opaqueWorldPos);
-            fragColor += clamp(caustics, 0.0, 1.0) * 2.0;
         }
     }
 
