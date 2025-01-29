@@ -36,8 +36,8 @@ public class SSAOSamples {
             list[i].normalize();
             list[i].mul(MathStuff.randomFloat(0f, radius, random));
 
-            float scale = (float) i / MaxSamples;
-            list[i].mul(MathHelper.lerp(scale, 0.0f, radius));
+//            float scale = (float) i / MaxSamples;
+//            list[i].mul(MathHelper.lerp(scale, 0.0f, radius));
         }
         return list;
     }

@@ -14,7 +14,6 @@ public class Level2Warp implements AbstractEvent {
     public void init(World world) {
         WorldEvents events = InitializeComponents.EVENTS.get(world);
         events.setLevel2Warp(true);
-        playSound(world, ModSounds.LEVEL2_WARP_CREAKING_LOOP);
     }
 
     @Override

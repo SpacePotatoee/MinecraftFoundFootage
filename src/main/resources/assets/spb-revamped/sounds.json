@@ -318,5 +318,30 @@
       "spb-revamped:carpet/walking/carpet_walk_4",
       "spb-revamped:carpet/walking/carpet_walk_5"
     ]
+  },
+  "concrete_run": {
+    "sounds": [
+      "spb-revamped:concrete/running/concrete_run_1",
+      "spb-revamped:concrete/running/concrete_run_2",
+      "spb-revamped:concrete/running/concrete_run_3",
+      "spb-revamped:concrete/running/concrete_run_4",
+      "spb-revamped:concrete/running/concrete_run_5",
+      "spb-revamped:concrete/running/concrete_run_6",
+      "spb-revamped:concrete/running/concrete_run_7",
+      "spb-revamped:concrete/running/concrete_run_8",
+      "spb-revamped:concrete/running/concrete_run_9",
+      "spb-revamped:concrete/running/concrete_run_10"
+    ]
+  },
+  "concrete_walk": {
+    "sounds": [
+      "spb-revamped:concrete/walking/concrete_walk_1",
+      "spb-revamped:concrete/walking/concrete_walk_2",
+      "spb-revamped:concrete/walking/concrete_walk_3",
+      "spb-revamped:concrete/walking/concrete_walk_4",
+      "spb-revamped:concrete/walking/concrete_walk_5",
+      "spb-revamped:concrete/walking/concrete_walk_6",
+      "spb-revamped:concrete/walking/concrete_walk_7"
+    ]
   }
 }

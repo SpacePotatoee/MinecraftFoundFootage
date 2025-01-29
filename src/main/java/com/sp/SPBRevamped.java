@@ -2,6 +2,7 @@ package com.sp;
 
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
+import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
 import com.sp.entity.ik.model.GeckoLib.MowzieModelFactory;

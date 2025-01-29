@@ -52,7 +52,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
 
 
 
-    public void generateMaze(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
+    public void generateMaze(StructureWorldAccess world, Chunk chunk) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
         Random random = Random.create();
@@ -64,13 +64,10 @@ public class Level0ChunkGenerator extends ChunkGenerator {
             StructureTemplateManager structureTemplateManager = world.getServer().getStructureTemplateManager();
             Optional<StructureTemplate> optional;
 
-            int megaRooms = random.nextBetween(1, 3);
-            int exit;
+            int megaRooms = random.nextBetween(1, 2);
 
             Identifier roomIdentifier;
             StructurePlacementData structurePlacementData = new StructurePlacementData();
-
-            //Spawn at level 4
 
             //Spawn Point
             if((float) chunk.getPos().x == 0 && (float) chunk.getPos().z  == 0){
@@ -267,7 +264,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
 
 
 
-    /* this method builds the shape of the terrain. it places stone everywhere, which will later be overwritten with grass, terracotta, snow, sand, etc
+    /* this method builds the shape of the terrain. it places stone everywhere, which will later be overwritten with grass, terracotta, snow, sand, etc.
          by the buildSurface method. it also is responsible for putting the water in oceans. it returns a CompletableFuture-- you'll likely want this to be delegated to worker threads. */
     @Override
     public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk) {
@@ -324,7 +321,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
     }
 
     /* the method that places grass, dirt, and other things on top of the world, as well as handling the bedrock and deepslate layers,
-    as well as a few other miscellaneous things. without this method, your world is just a blank stone (or whatever your default block is) canvas (plus any ores, etc) */
+    as well as a few other miscellaneous things. without this method, your world is just a blank stone (or whatever your default block is) canvas (plus any ores, etc.) */
     @Override
     public void buildSurface(ChunkRegion region, StructureAccessor structures, NoiseConfig noiseConfig, Chunk chunk) {
 

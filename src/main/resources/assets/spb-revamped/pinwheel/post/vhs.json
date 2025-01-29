@@ -158,7 +158,7 @@
         },
         "HandSampler": {
             "type": "framebuffer",
-            "name": "minecraft:main"
+            "name": "veil:first_person"
         },
         "HandDepth": {
             "type": "framebuffer",

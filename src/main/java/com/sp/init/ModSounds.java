@@ -87,6 +87,9 @@ public class ModSounds {
     public static final SoundEvent CARPET_WALK = registerSoundEvent("carpet_walk");
     public static final SoundEvent CARPET_RUN = registerSoundEvent("carpet_run");
 
+    public static final SoundEvent CONCRETE_WALK = registerSoundEvent("concrete_walk");
+    public static final SoundEvent CONCRETE_RUN = registerSoundEvent("concrete_run");
+
 
     private static SoundEvent registerSoundEvent(String name) {
         Identifier id = new Identifier(SPBRevamped.MOD_ID, name);

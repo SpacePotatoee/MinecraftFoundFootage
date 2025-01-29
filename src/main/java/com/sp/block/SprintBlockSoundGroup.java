@@ -30,6 +30,17 @@ public class SprintBlockSoundGroup extends BlockSoundGroup {
             ModSounds.CARPET_RUN
     );
 
+    public static final SprintBlockSoundGroup CONCRETE = new SprintBlockSoundGroup(
+            1.0f,
+            1.0f,
+            SoundEvents.BLOCK_STONE_BREAK,
+            ModSounds.CONCRETE_WALK,
+            SoundEvents.BLOCK_STONE_PLACE,
+            ModSounds.SILENCE,
+            ModSounds.CONCRETE_RUN,
+            ModSounds.CONCRETE_RUN
+    );
+
     public static final BlockSoundGroup WALL = new BlockSoundGroup(
             1.0f,
             1.0f,

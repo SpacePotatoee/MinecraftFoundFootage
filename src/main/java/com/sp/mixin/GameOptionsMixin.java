@@ -1,7 +1,7 @@
 package com.sp.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.sp.ConfigStuff;
+import com.sp.compat.modmenu.ConfigStuff;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.SimpleOption;
 import org.spongepowered.asm.mixin.Final;

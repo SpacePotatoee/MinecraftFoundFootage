@@ -1,9 +1,11 @@
 #include veil:deferred_utils
 #include veil:camera
+#include veil:material
 
 uniform sampler2D DiffuseSampler0;
 uniform sampler2D DiffuseDepthSampler;
 uniform usampler2D OpaqueMatSampler;
+uniform usampler2D TransparentMatSampler;
 
 uniform sampler2D NormalSampler;
 uniform sampler2D DepthSampler;
@@ -38,8 +40,9 @@ void main() {
     vec3 normal = normalize(texture(NormalSampler, texCoord).rgb);
 
     uint material = texture2D(OpaqueMatSampler, texCoord).r;
+    uint material2 = texture2D(TransparentMatSampler, texCoord).r;
 
-    if(depthSample < 1.0 && material != 15){
+    if(depthSample < 1.0 && material != 15 && !isEntity(material2)){
         vec3 randDir = normalize(vec3(texture(RNoiseDir, texCoord * 100.0).rgb * 2.0 - 1.0));
         vec3 tangent = normalize(cross(normal, normalize(randDir)));
         vec3 bitangent = normalize(cross(normal, tangent));

@@ -1,6 +1,6 @@
 package com.sp.mixin;
 
-import com.sp.ConfigStuff;
+import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.SPBRevampedClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import org.spongepowered.asm.mixin.Mixin;

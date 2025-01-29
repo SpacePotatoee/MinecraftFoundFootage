@@ -19,7 +19,7 @@ public class CreakingSoundInstance extends MovingSoundInstance {
         this.player = player;
         this.repeat = true;
         this.repeatDelay = 0;
-        this.volume = 0.5F;
+        this.volume = 0.9F;
         this.relative = true;
     }
 
@@ -27,8 +27,19 @@ public class CreakingSoundInstance extends MovingSoundInstance {
     public void tick() {
         RegistryKey<World> level = this.player.getWorld().getRegistryKey();
         WorldEvents events = InitializeComponents.EVENTS.get(this.player.getWorld());
-        if(level != BackroomsLevels.LEVEL2_WORLD_KEY || this.player.isRemoved() || !events.isLevel2Warp()){
-            this.setDone();
+        System.out.println(events.isLevel2Warp());
+        if(level != BackroomsLevels.LEVEL2_WORLD_KEY || this.player.isRemoved() || !events.isLevel2Warp()) {
+            if(!events.isLevel2Warp()){
+                this.volume -= 0.01f;
+            }else {
+                this.volume = 0.0f;
+                this.setDone();
+            }
+
+            if(this.volume <= 0.0f){
+                this.setDone();
+            }
+
         }
     }
 }

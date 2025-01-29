@@ -80,7 +80,7 @@ public class ModBlocks {
             new ChainFence(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).hardness(-1f).noBlockBreakParticles()));
 
     public static final Block NEWSTAIRS = registerBlock("new_stairs",
-            new NewStairs(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque()));
+            new NewStairs(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().sounds(SprintBlockSoundGroup.CONCRETE)));
 
     public static final Block Bricks = registerBlock("bricks",
             new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles()));
@@ -104,7 +104,7 @@ public class ModBlocks {
             new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
 
     public static final Block ConcreteBlock6 = registerBlock("concrete6",
-            new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
+            new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.CONCRETE)));
 
     public static final Block ConcreteBlock7 = registerBlock("concrete7",
             new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
@@ -188,7 +188,7 @@ public class ModBlocks {
             new GlassBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles().sounds(SprintBlockSoundGroup.SILENT)));
 
     public static final Block PoolTiles = registerBlock("pool_tiles",
-            new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
+            new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.CONCRETE)));
 
     public static final Block PoolTileWall = registerBlock("pool_tile_wall",
             new PoolTileWall(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
@@ -197,7 +197,7 @@ public class ModBlocks {
             new WindowBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).nonOpaque().noBlockBreakParticles()));
 
     public static final Block PoolTileSlope = registerBlock("slope",
-            new PoolTileSlopeBlock(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque()));
+            new PoolTileSlopeBlock(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().sounds(SprintBlockSoundGroup.CONCRETE)));
 
 
     public static final Block CEILINGLIGHT = registerBlock("ceiling_light",

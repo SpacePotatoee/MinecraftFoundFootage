@@ -1,6 +1,6 @@
 package com.sp.block.renderer;
 
-import com.sp.ConfigStuff;
+import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
 import com.sp.block.custom.ThinFluorescentLightBlock;

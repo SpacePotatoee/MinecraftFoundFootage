@@ -196,13 +196,13 @@ public class RenderLayers extends RenderLayer {
 
     private static net.minecraft.client.gl.ShaderProgram getCarpetProgram(){
         if(ShadowMapRenderer.isRenderingShadowMap()) {
-            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(shadowSolid);
+            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(shadowSolid);
             if (shader == null) {
                 return null;
             }
             return shader.toShaderInstance();
         }
-        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(normalCarpet);
+        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(normalCarpet);
         if (shader == null) {
             return null;
         }
@@ -211,7 +211,7 @@ public class RenderLayers extends RenderLayer {
     }
 
     private static net.minecraft.client.gl.ShaderProgram getSkyProgram() {
-        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(POOLROOMS_SKY_SHADER);
+        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(POOLROOMS_SKY_SHADER);
         if (shader == null) {
             return null;
         }
@@ -225,13 +225,13 @@ public class RenderLayers extends RenderLayer {
 
     private static net.minecraft.client.gl.ShaderProgram getPoolTileProgram(){
         if(ShadowMapRenderer.isRenderingShadowMap()) {
-            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(shadowSolid);
+            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(shadowSolid);
             if (shader == null) {
                 return null;
             }
             return shader.toShaderInstance();
         }
-        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(normalPoolTile);
+        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(normalPoolTile);
         if (shader == null) {
             return null;
         }

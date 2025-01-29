@@ -7,6 +7,7 @@
     "ChunkStatusMixin",
     "EntityMixin",
     "LevelPropertiesMixin",
+    "LivingEntityMixin",
     "MutableUniformAccessMixin",
     "PlayerEntityMixin",
     "PlaySprintSoundMixin",
@@ -23,7 +24,9 @@
     "lightshadows.LightRendererMixin",
     "lightshadows.VeilShadersMixin",
     "respawnsystem.PlayerManagerMixin",
-    "skinstolen.ServerPlayerEntityMixin"
+    "skinstolen.ServerPlayerEntityMixin",
+    "soundphysicsremasteredcompat.SFRReflectivityMixin",
+    "soundphysicsremasteredcompat.SoundTypesMixin"
   ],
   "injectors": {
     "defaultRequire": 1

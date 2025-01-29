@@ -1,4 +1,4 @@
-package com.sp;
+package com.sp.compat.modmenu;
 
 import eu.midnightdust.lib.config.MidnightConfig;
 

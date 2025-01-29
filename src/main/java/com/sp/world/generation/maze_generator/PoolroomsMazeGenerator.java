@@ -44,100 +44,107 @@ public class PoolroomsMazeGenerator {
         this.levelDirectory = levelDirectory;
     }
 
-    public void setup(StructureWorldAccess world, boolean sky){
-        //Initial Random Mega Room
+    public void setup(StructureWorldAccess world, boolean sky, boolean megaRooms) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         Random random = Random.create();
         StructureTemplateManager structureTemplateManager = world.getServer().getStructureTemplateManager();
         Identifier roomIdentifier = null;
-        int w = random.nextBetween(1, 6);
-        int p = random.nextBetween(1, 3);
-        String shouldSky = "";
-        if(!sky){
-            shouldSky = "_light";
-        }
-
-        if(w == 1) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x16_" + p + shouldSky);
-        else if (w == 2) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x24_" + p + shouldSky);
-        else if (w == 3) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x32_" + p + shouldSky);
-        else if (w == 4) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_24x24_" + p + shouldSky);
-        else if (w == 5) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_24x32_" + p + shouldSky);
-        else if (w == 6) roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_32x32_" + p + shouldSky);
-
-        StructurePlacementData structurePlacementData = new StructurePlacementData();
-        structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
-        Optional<StructureTemplate> optional = structureTemplateManager.getTemplate(roomIdentifier);
-
-        int roomWidth = Integer.parseInt(roomIdentifier.getPath().substring(19, 21));
-        int roomHeight = Integer.parseInt(roomIdentifier.getPath().substring(22, 24));
-
-        int randX = random.nextBetween(1, this.cols - (1 + ((int) roomWidth/this.size)));
-        int randY = random.nextBetween(1, this.rows - (1 + ((int) roomHeight/this.size)));
-
-        BlockPos structurePos = mutable.set(randX + ((this.size - 1) * randX) + this.originX, 18, randY + ((this.size - 1) * randY) + this.originY);
-
-        if(optional.isPresent() && world.getBlockState(mutable.set(structurePos.getX(), 18, structurePos.getZ())) != Blocks.PURPLE_WOOL.getDefaultState()){
-            optional.get().place(world, structurePos, structurePos, structurePlacementData, random, 2);
-        }
-
-        List<String> megaRoomList = new ArrayList<>();
-        this.createMegaRoomList(megaRoomList);
-
-
-        while(!megaRoomList.isEmpty()) {
-            int ind = random.nextBetween(0, megaRoomList.size() - 1);
-            String currentMegaRoom = megaRoomList.get(ind);
-            int xx = Integer.parseInt(currentMegaRoom.substring(0, 2));
-            int yy = Integer.parseInt(currentMegaRoom.substring(3, 5));
-            p = random.nextBetween(1, 3);
-            if (yy < xx){
-                structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.COUNTERCLOCKWISE_90).setIgnoreEntities(true);
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + yy + "x" + xx + "_" + p + shouldSky);
+        if(megaRooms) {
+            //Initial Random Mega Room
+            int w = random.nextBetween(1, 6);
+            int p = random.nextBetween(1, 3);
+            String shouldSky = "";
+            if (!sky) {
+                shouldSky = "_light";
             }
-            else {
-                structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + xx + "x" + yy + "_" + p + shouldSky);
+
+            if (w == 1)
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x16_" + p + shouldSky);
+            else if (w == 2)
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x24_" + p + shouldSky);
+            else if (w == 3)
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x32_" + p + shouldSky);
+            else if (w == 4)
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_24x24_" + p + shouldSky);
+            else if (w == 5)
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_24x32_" + p + shouldSky);
+            else if (w == 6)
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_32x32_" + p + shouldSky);
+
+            StructurePlacementData structurePlacementData = new StructurePlacementData();
+            structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
+            Optional<StructureTemplate> optional = structureTemplateManager.getTemplate(roomIdentifier);
+
+            int roomWidth = Integer.parseInt(roomIdentifier.getPath().substring(19, 21));
+            int roomHeight = Integer.parseInt(roomIdentifier.getPath().substring(22, 24));
+
+            int randX = random.nextBetween(1, this.cols - (1 + ((int) roomWidth / this.size)));
+            int randY = random.nextBetween(1, this.rows - (1 + ((int) roomHeight / this.size)));
+
+            BlockPos structurePos = mutable.set(randX + ((this.size - 1) * randX) + this.originX, 18, randY + ((this.size - 1) * randY) + this.originY);
+
+            if (optional.isPresent() && world.getBlockState(mutable.set(structurePos.getX(), 18, structurePos.getZ())) != Blocks.PURPLE_WOOL.getDefaultState()) {
+                optional.get().place(world, structurePos, structurePos, structurePlacementData, random, 2);
             }
-            roomWidth = xx;
-            roomHeight = yy;
 
 
-            boolean placed = false;
-            for (int ay = 1; ay < this.rows - (((int) roomHeight/this.size)); ay++) {
-                for (int ax = 1; ax < this.cols - (((int) roomWidth/this.size)); ax++) {
-                    if(!placed) {
-                        BlockPos StructurePos = mutable.set(ax + ((this.size - 1) * ax) + this.originX, 18, ay + ((this.size - 1) * ay) + this.originY);
+            //Fill area with more mega rooms randomly
+            List<String> megaRoomList = new ArrayList<>();
+            this.createMegaRoomList(megaRoomList);
 
-                        boolean clear = true;
-                        for (int ry = -1; ry <= roomHeight; ry++) {
-                            for (int bx = -1; bx <= roomWidth; bx++) {
-                                if(clear) {
-                                    if (world.getBlockState(new BlockPos(StructurePos.getX() + bx, 18, StructurePos.getZ() + ry)) == Blocks.PURPLE_WOOL.getDefaultState()) {
-                                        clear = false;
-                                        break;
+            while (!megaRoomList.isEmpty()) {
+                int ind = random.nextBetween(0, megaRoomList.size() - 1);
+                String currentMegaRoom = megaRoomList.get(ind);
+                int xx = Integer.parseInt(currentMegaRoom.substring(0, 2));
+                int yy = Integer.parseInt(currentMegaRoom.substring(3, 5));
+                p = random.nextBetween(1, 3);
+                if (yy < xx) {
+                    structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.COUNTERCLOCKWISE_90).setIgnoreEntities(true);
+                    roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + yy + "x" + xx + "_" + p + shouldSky);
+                } else {
+                    structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
+                    roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + xx + "x" + yy + "_" + p + shouldSky);
+                }
+                roomWidth = xx;
+                roomHeight = yy;
+
+
+                boolean placed = false;
+                for (int ay = 1; ay < this.rows - (((int) roomHeight / this.size)); ay++) {
+                    for (int ax = 1; ax < this.cols - (((int) roomWidth / this.size)); ax++) {
+                        if (!placed) {
+                            BlockPos StructurePos = mutable.set(ax + ((this.size - 1) * ax) + this.originX, 18, ay + ((this.size - 1) * ay) + this.originY);
+
+                            boolean clear = true;
+                            for (int ry = -1; ry <= roomHeight; ry++) {
+                                for (int bx = -1; bx <= roomWidth; bx++) {
+                                    if (clear) {
+                                        if (world.getBlockState(new BlockPos(StructurePos.getX() + bx, 18, StructurePos.getZ() + ry)) == Blocks.PURPLE_WOOL.getDefaultState()) {
+                                            clear = false;
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                        }
 
 
-                        if (clear) {
-                            optional = structureTemplateManager.getTemplate(roomIdentifier);
-                            if(optional.isPresent()){
-                                if(structurePlacementData.getRotation() == BlockRotation.COUNTERCLOCKWISE_90){
-                                    optional.get().place(world, new BlockPos(StructurePos.getX(), 18, StructurePos.getZ() + (roomHeight - 1)), new BlockPos(StructurePos.getX(), 19, StructurePos.getZ() + (roomWidth - 1)), structurePlacementData, random, 2);
+                            if (clear) {
+                                optional = structureTemplateManager.getTemplate(roomIdentifier);
+                                if (optional.isPresent()) {
+                                    if (structurePlacementData.getRotation() == BlockRotation.COUNTERCLOCKWISE_90) {
+                                        optional.get().place(world, new BlockPos(StructurePos.getX(), 18, StructurePos.getZ() + (roomHeight - 1)), new BlockPos(StructurePos.getX(), 19, StructurePos.getZ() + (roomWidth - 1)), structurePlacementData, random, 2);
+                                    } else {
+                                        optional.get().place(world, StructurePos, StructurePos, structurePlacementData, random, 2);
+                                    }
+                                    placed = true;
+                                    break;
                                 }
-                                else {
-                                    optional.get().place(world, StructurePos, StructurePos, structurePlacementData, random, 2);
-                                }
-                                placed = true;
-                                break;
                             }
                         }
                     }
                 }
+                megaRoomList.remove(ind);
             }
-            megaRoomList.remove(ind);
         }
 
         //Generate Maze

@@ -1,6 +1,6 @@
 package com.sp;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.client.model.SmilerModel;
 import com.sp.entity.client.renderer.SkinWalkerRenderer;
 import com.sp.entity.client.renderer.SmilerRenderer;
@@ -20,6 +20,7 @@ import com.sp.render.physics.PhysicsStick;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
 import com.sp.init.BackroomsLevels;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
 import foundry.veil.api.client.render.deferred.VeilDeferredRenderer;
@@ -88,12 +89,15 @@ public class SPBRevampedClient implements ClientModInitializer {
     public static Camera camera;
 
     public static TickTimer tickTimer = new TickTimer();
-    public static TickTimer SunsetTimer = new TickTimer();
     public static boolean blackScreen;
     public static boolean youCantEscape;
 
+    private static boolean shouldBeUnmuted = false;
+
     private static final Random random = Random.create();
     private static final Random random2 = Random.create(34563264);
+
+    public static boolean shoudlRenderWarp = false;
 
     @Override
     public void onInitializeClient() {
@@ -154,7 +158,7 @@ public class SPBRevampedClient implements ClientModInitializer {
         VeilEventPlatform.INSTANCE.onVeilRenderTypeStageRender((stage, levelRenderer, bufferSource, poseStack, projectionMatrix, renderTick, partialTicks, camera, frustum) -> {
             //Setting for later use
             if(camera != null){
-                this.camera = camera;
+                SPBRevampedClient.camera = camera;
             }
 
             MinecraftClient client = MinecraftClient.getInstance();
@@ -418,13 +422,22 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }
             }
 
+            if(cutsceneManager.isPlaying) {
+                if(!ClientManager.getPlayerStateManager().isMuted()) {
+                    shouldBeUnmuted = true;
+                    ClientManager.getPlayerStateManager().setMuted(true);
+                }
+            } else if(shouldBeUnmuted) {
+                ClientManager.getPlayerStateManager().setMuted(false);
+                shouldBeUnmuted = false;
+            }
+
             PlayerEntity playerClient = client.player;
             if(playerClient != null){
                 SimpleOption<Integer> fps =  MinecraftClient.getInstance().options.getMaxFps();
-                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(playerClient);
                 if (BackroomsLevels.isInBackrooms(playerClient.getWorld().getRegistryKey())){
                     setInBackrooms(true);
-                    //fps.setValue(30);
+//                    fps.setValue(30);
                 }else {
                     setInBackrooms(ConfigStuff.forceBackrooms);
                 }
@@ -517,19 +530,7 @@ public class SPBRevampedClient implements ClientModInitializer {
         access.setMatrix("orthographMatrix", ShadowMapRenderer.createProjMat());
     }
 
-    public static void setLightAngle(MutableUniformAccess access, World world){
-        Matrix4f shadowModelView = new Matrix4f();
-        shadowModelView.identity();
-            ShadowMapRenderer.rotateShadowModelView(shadowModelView);
-            ShadowMapRenderer.rotateShadowModelView(shadowModelView, world);
-        Vector4f lightPosition = new Vector4f(0.0f, 0.0f, 1.0f, 0.0f);
-        lightPosition.mul(shadowModelView.invert());
-
-        Vector3f shadowLightDirection = new Vector3f(lightPosition.x(), lightPosition.y(), lightPosition.z());
-        access.setVector("lightAngled", shadowLightDirection);
-    }
-
-    public static float getWarpTimer(World world){
+    public static float getWarpTimer(World world) {
         WorldEvents events = InitializeComponents.EVENTS.get(world);
 
         if (events.isLevel2Warp()) {

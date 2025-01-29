@@ -1,8 +1,6 @@
 package com.sp.mixin.uniform;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.sp.ConfigStuff;
 import com.sp.SPBRevampedClient;
 import com.sp.render.ShadowMapRenderer;
 import com.sp.util.uniformTest;

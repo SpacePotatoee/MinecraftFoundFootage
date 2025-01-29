@@ -16,8 +16,8 @@ uniform sampler2D OpaqueDepth;
 uniform sampler2D UnderWaterBuffer;
 uniform sampler2D WaterTexture;
 uniform sampler2D CausticsTexture;
-uniform usampler2D MaterialSampler;
-uniform usampler2D OpaqueMaterialSampler;
+uniform usampler2D TransparentMatSampler;
+uniform usampler2D OpaqueMatSampler;
 uniform sampler2D NormalTexture;
 uniform sampler2D NormalSampler;
 uniform sampler2D OpaqueNormalSampler;
@@ -139,8 +139,8 @@ void main() {
     float isReflective = texture(WaterFrameBuffer, texCoord).r;
     float handDepth = texture(HandDepth, texCoord).r;
     float waterDepth = texture(WaterDepth, texCoord).r;
-    uint material = texture(MaterialSampler, texCoord).r;
-    uint opaqueMaterial = texture(OpaqueMaterialSampler, texCoord).r;
+    uint material = texture(TransparentMatSampler, texCoord).r;
+    uint opaqueMaterial = texture(OpaqueMatSampler, texCoord).r;
     vec4 normalSampler = texture(NormalSampler, texCoord);
     vec4 opaqueNormalSampler = texture(OpaqueNormalSampler, texCoord);
     vec4 minecraftMain = texture(MinecraftMain, texCoord);
@@ -153,7 +153,7 @@ void main() {
 
     vec4 normal = vec4(0.0);
     vec4 normal2 = vec4(0.0);
-    if ((isReflective > 0.0 && isBlock(material)) || opaqueMaterial == 18) {
+    if ((isReflective > 0.0 || opaqueMaterial == 18) && isBlock(material)) {
         vec3 playerSpace = mat3(VeilCamera.IViewMat) * viewPos;
         vec3 worldPos = playerSpace + cameraPos;
 

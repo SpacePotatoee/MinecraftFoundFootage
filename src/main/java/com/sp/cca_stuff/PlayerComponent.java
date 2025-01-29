@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MovingSoundInstance;
+import net.minecraft.client.sound.SoundManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -292,6 +293,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         MinecraftClient client = MinecraftClient.getInstance();
 
         if(client.player != null && this.player == client.player) {
+            SoundManager soundManager = client.getSoundManager();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -317,9 +319,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.glitchTick = Math.min(this.glitchTick + 1, 80);
                 this.glitchTimer = Math.min((float) this.glitchTick / 80, 1.0f);
 
-                if(!client.getSoundManager().isPlaying(GlitchAmbience)) {
+                if(!soundManager.isPlaying(GlitchAmbience)) {
                     GlitchAmbience = new SmilerGlitchSoundInstance(this.player);
-                    client.getSoundManager().play(GlitchAmbience);
+                    soundManager.play(GlitchAmbience);
                 }
 
                 if(this.glitchTimer >= 0.25f){
@@ -335,8 +337,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.glitchTimer = Math.max((float) this.glitchTick / 80, 0.0f);
 
                 if(this.glitchTimer <= 0){
-                    if(client.getSoundManager().isPlaying(GlitchAmbience)) {
-                        client.getSoundManager().stop(GlitchAmbience);
+                    if(soundManager.isPlaying(GlitchAmbience)) {
+                        soundManager.stop(GlitchAmbience);
                     }
                 }
 
@@ -354,9 +356,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.glitchTick = Math.min(this.glitchTick + 1, 120);
                 this.glitchTimer = Math.min((float) this.glitchTick / 120, 1.0f);
 
-                if(!client.getSoundManager().isPlaying(GlitchAmbience)) {
+                if(!soundManager.isPlaying(GlitchAmbience)) {
                     GlitchAmbience = new SmilerGlitchSoundInstance(this.player);
-                    client.getSoundManager().play(GlitchAmbience);
+                    soundManager.play(GlitchAmbience);
                 }
             }
 
@@ -439,35 +441,35 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             RegistryKey<World> level = this.player.getWorld().getRegistryKey();
             WorldEvents events = InitializeComponents.EVENTS.get(this.player.getWorld());
 
-            if ((level == BackroomsLevels.LEVEL1_WORLD_KEY || level == BackroomsLevels.LEVEL2_WORLD_KEY) && !client.getSoundManager().isPlaying(DeepAmbience)) {
+            if ((level == BackroomsLevels.LEVEL1_WORLD_KEY || level == BackroomsLevels.LEVEL2_WORLD_KEY) && !soundManager.isPlaying(DeepAmbience)) {
                 DeepAmbience = new AmbientSoundInstance(this.player);
-                client.getSoundManager().play(DeepAmbience);
+                soundManager.play(DeepAmbience);
             }
 
-            if (level == BackroomsLevels.LEVEL2_WORLD_KEY && !client.getSoundManager().isPlaying(WaterPipeAmbience) && !client.getSoundManager().isPlaying(GasPipeAmbience)) {
+            if (level == BackroomsLevels.LEVEL2_WORLD_KEY && !soundManager.isPlaying(WaterPipeAmbience) && !soundManager.isPlaying(GasPipeAmbience)) {
                 WaterPipeAmbience = new WaterPipeSoundInstance(this.player);
                 GasPipeAmbience = new GasPipeSoundInstance(this.player);
 
-                client.getSoundManager().play(WaterPipeAmbience);
-                client.getSoundManager().play(GasPipeAmbience);
+                soundManager.play(WaterPipeAmbience);
+                soundManager.play(GasPipeAmbience);
             }
 
-            if (level == BackroomsLevels.LEVEL2_WORLD_KEY && !client.getSoundManager().isPlaying(WarpAmbience) && events.isLevel2Warp()) {
+            if (level == BackroomsLevels.LEVEL2_WORLD_KEY && !soundManager.isPlaying(WarpAmbience) && events.isLevel2Warp()) {
                 WarpAmbience = new CreakingSoundInstance(this.player);
-                client.getSoundManager().play(WarpAmbience);
+                soundManager.play(WarpAmbience);
             }
 
-            if (level == BackroomsLevels.POOLROOMS_WORLD_KEY && events.isNoon() && !client.getSoundManager().isPlaying(PoolroomsNoonAmbience)) {
+            if (level == BackroomsLevels.POOLROOMS_WORLD_KEY && events.isNoon() && !soundManager.isPlaying(PoolroomsNoonAmbience)) {
                 PoolroomsNoonAmbience = new PoolroomsNoonAmbienceSoundInstance(this.player);
-                client.getSoundManager().play(PoolroomsNoonAmbience);
-            } else if (level == BackroomsLevels.POOLROOMS_WORLD_KEY && !events.isNoon() && !client.getSoundManager().isPlaying(PoolroomsSunsetAmbience)) {
+                soundManager.play(PoolroomsNoonAmbience);
+            } else if (level == BackroomsLevels.POOLROOMS_WORLD_KEY && !events.isNoon() && !soundManager.isPlaying(PoolroomsSunsetAmbience)) {
                 PoolroomsSunsetAmbience = new PoolroomsSunsetAmbienceSoundInstance(this.player);
-                client.getSoundManager().play(PoolroomsSunsetAmbience);
+                soundManager.play(PoolroomsSunsetAmbience);
             }
 
-            if(events.isLevel1Blackout() && !client.getSoundManager().isPlaying(SmilerAmbience)){
+            if(events.isLevel1Blackout() && !soundManager.isPlaying(SmilerAmbience)){
                 SmilerAmbience = new SmilerAmbienceSoundInstance(this.player);
-                client.getSoundManager().play(SmilerAmbience);
+                soundManager.play(SmilerAmbience);
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -554,16 +556,17 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                         }
                     }
                 }
-                if (this.readyForLevel1) {
-                    for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                        if(players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                            TeleportTarget target = new TeleportTarget(calculateLevel1TeleportCoords(players), players.getVelocity(), players.getYaw(), players.getPitch());
-                            FabricDimensions.teleport(players, level1, target);
-                        }
-                    }
-                    this.readyForLevel1 = false;
-                }
             } else {
+                this.readyForLevel1 = false;
+            }
+
+            if (this.readyForLevel1) {
+                for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
+                    if(players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+                        TeleportTarget target = new TeleportTarget(calculateLevel1TeleportCoords(players), players.getVelocity(), players.getYaw(), players.getPitch());
+                        FabricDimensions.teleport(players, level1, target);
+                    }
+                }
                 this.readyForLevel1 = false;
             }
 
@@ -602,18 +605,12 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.level2Timer--;
                 if(level2Timer <= 0){
                     if (!this.isTeleporting() && !this.readyForPoolrooms) {
-                        for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                            if (players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-                                startLevel2Teleport(players);
-                            }
-                        }
+                            startLevel2Teleport(this.player);
                     }
                     if (this.readyForPoolrooms) {
-                        for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                            if(players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-                                TeleportTarget target = new TeleportTarget(new Vec3d(16, 106, 16), Vec3d.ZERO, players.getYaw(), players.getPitch());
-                                FabricDimensions.teleport(players, poolrooms, target);
-                            }
+                        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+                            TeleportTarget target = new TeleportTarget(new Vec3d(16, 106, 16), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
+                            FabricDimensions.teleport(this.player, poolrooms, target);
                         }
                         this.readyForPoolrooms = false;
                     }
@@ -623,6 +620,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.readyForPoolrooms = false;
             }
         }
+
         //Poolrooms -> Level 0
         if(this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY && this.player.getWorld().getLightLevel(this.player.getBlockPos()) == 0 && this.player.getPos().y < 60 && this.player.getPos().y > 52){
             this.player.fallDistance = 0;
@@ -701,6 +699,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                     case 2: this.readyForLevel2 = true; break;
                 }
                 playerComponent.setTeleporting(false);
+                playerComponent.sync();
                 executorService.shutdown();
             }, 2500, TimeUnit.MILLISECONDS);
         }

@@ -1,6 +1,6 @@
 package com.sp.render.camera;
 
-import com.sp.ConfigStuff;
+import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
@@ -104,14 +104,14 @@ public class CutsceneManager {
                 this.started = true;
             }
             float timer = (float) (System.currentTimeMillis() - this.startTime) / 2900;
-
+            client.options.hudHidden = true;
             if (timer >= 1.0) {
                 this.fall = true;
             }
         }
     }
 
-    private void Fall(){
+    private void Fall() {
         if(!this.backroomsBySP && this.fall) {
             if (!this.isPlaying) {
                 this.prevLightRenderDistance = ConfigStuff.lightRenderDistance;
@@ -133,6 +133,7 @@ public class CutsceneManager {
                 camera.refreshPositionAndAngles(3, 21, 1.5, 15, (float) 90);
                 ConfigStuff.lightRenderDistance = this.prevLightRenderDistance;
             } else {
+                client.options.hudHidden = true;
                 Vec3d newCameraPos = lerpedCameraPos(timer);
                 Vec3d newCameraRot = lerpedCameraRot(timer);
 
@@ -151,6 +152,7 @@ public class CutsceneManager {
                 this.blackScreen.showBlackScreen(40, true, false);
                 this.reset();
             } else {
+                client.options.hudHidden = true;
                 camera.refreshPositionAndAngles(3, 21, 1.5, 5, (float) 83);
                 this.cameraRotZ = 100;
                 client.cameraEntity = camera;

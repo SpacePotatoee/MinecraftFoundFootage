@@ -89,7 +89,7 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
 
 
 
-    public void generateMaze(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
+    public void generateMaze(StructureWorldAccess world, Chunk chunk) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
         int lights = random.nextBetween(1,6);

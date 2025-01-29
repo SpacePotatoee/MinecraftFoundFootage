@@ -1,6 +1,6 @@
 package com.sp.render.camera;
 
-import com.sp.ConfigStuff;
+import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.SPBRevampedClient;
 import com.sp.util.MathStuff;
 import net.minecraft.client.MinecraftClient;

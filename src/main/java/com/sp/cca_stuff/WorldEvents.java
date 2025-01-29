@@ -308,7 +308,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
                 //Tick the currently active event and choose a random one every min and a half
                 if (!eventActive) {
-//                    this.delay--;
+                    this.delay--;
                     if (this.delay <= 0 || Keybinds.toggleEvent.wasPressed()) {
                         this.delay = 0;
                         boolean wasPressed = Keybinds.toggleEvent.wasPressed();
@@ -405,26 +405,26 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
 
                 //Start Looking for a player to take and take them when they're not talking and can't be seen
-//                if(this.getIntercomCount() > 2) {
-                if(!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                    //Thank you https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
-                    Map.Entry<UUID, Float> min = null;
-                    for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
-                        if (min == null || min.getValue() > entry.getValue()) {
-                            min = entry;
+                if(this.getIntercomCount() > 2) {
+                    if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+                        //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
+                        Map.Entry<UUID, Float> min = null;
+                        for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
+                            if (min == null || min.getValue() > entry.getValue()) {
+                                min = entry;
 
+                            }
                         }
-                    }
 
-                    if (min != null) {
-                        PlayerEntity target = this.world.getPlayerByUuid(min.getKey());
-                        if (target != null && target.isAlive() && !target.getUuid().equals(this.prevActiveSkinwalkerTarget)) {
-                            this.setActiveSkinwalkerTarget(target.getUuid());
-                            this.prevActiveSkinwalkerTarget = target.getUuid();
+                        if (min != null) {
+                            PlayerEntity target = this.world.getPlayerByUuid(min.getKey());
+                            if (target != null && target.isAlive() && !target.getUuid().equals(this.prevActiveSkinwalkerTarget)) {
+                                this.setActiveSkinwalkerTarget(target.getUuid());
+                                this.prevActiveSkinwalkerTarget = target.getUuid();
+                            }
                         }
-                    }
 
-                    if (Keybinds.toggleEvent.wasPressed()) {
+//                    if (Keybinds.toggleEvent.wasPressed()) {
                         if (this.getActiveSkinwalkerTarget() != null) {
                             PlayerEntity target = this.getActiveSkinwalkerTarget();
                             PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
@@ -472,6 +472,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                 }
                             }
                         }
+//                    }
                     }
                 }
 
@@ -588,7 +589,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
         poolroomsEventList = new ArrayList<>();
         poolroomsEventList.add(PoolroomsSunset::new);
-//        poolroomsEventList.add(PoolroomsAmbience::new);
+        poolroomsEventList.add(PoolroomsAmbience::new);
     }
 
     private void shouldSync() {

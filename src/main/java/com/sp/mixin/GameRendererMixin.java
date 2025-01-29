@@ -1,6 +1,6 @@
 package com.sp.mixin;
 
-import com.sp.ConfigStuff;
+import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
 import com.sp.render.camera.CameraRoll;
@@ -8,6 +8,8 @@ import com.sp.render.camera.CutsceneManager;
 import com.sp.render.ShadowMapRenderer;
 import com.sp.util.MathStuff;
 import foundry.veil.api.client.render.VeilRenderSystem;
+import foundry.veil.api.client.render.VeilRenderer;
+import foundry.veil.api.client.render.deferred.VeilDeferredRenderer;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -17,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -52,6 +55,10 @@ public abstract class GameRendererMixin {
     @Shadow public abstract void setBlockOutlineEnabled(boolean blockOutlineEnabled);
     @Shadow public abstract void tick();
     @Shadow protected abstract void renderHand(MatrixStack matrices, Camera camera, float tickDelta);
+
+    @Shadow private static @Nullable ShaderProgram renderTypeEntityTranslucentProgram;
+
+    @Shadow public abstract void render(float tickDelta, long startTime, boolean tick);
 
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;tiltViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V"))
     public void renderWorld(float tickDelta, long limitTime, MatrixStack matrices, CallbackInfo ci){
@@ -109,7 +116,7 @@ public abstract class GameRendererMixin {
     }, at = @At("HEAD"), cancellable = true)
     private static void setSolidShader(CallbackInfoReturnable<ShaderProgram> cir) {
         if(ShadowMapRenderer.isRenderingShadowMap()) {
-            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(shadowSolid);
+            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(shadowSolid);
             if (shader == null) {
                 return;
             }
@@ -126,7 +133,7 @@ public abstract class GameRendererMixin {
     }, at = @At("TAIL"), cancellable = true)
     private static void setPlayerShader(CallbackInfoReturnable<ShaderProgram> cir) {
         if(ShadowMapRenderer.isRenderingShadowMap()) {
-            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(shadowEntity);
+            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(shadowEntity);
             if (shader == null) {
                 return;
             }
@@ -138,8 +145,9 @@ public abstract class GameRendererMixin {
             "getRenderTypeEntityTranslucentProgram"
     }, at = @At("TAIL"), cancellable = true)
     private static void setPlayerWarpShader(CallbackInfoReturnable<ShaderProgram> cir) {
-        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.setShader(warpEntity);
-        if (shader == null) {
+        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(warpEntity);
+        if (shader == null || !SPBRevampedClient.shoudlRenderWarp) {
+            cir.setReturnValue(renderTypeEntityTranslucentProgram);
             return;
         }
         cir.setReturnValue(shader.toShaderInstance());

@@ -57,7 +57,7 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
 
 
 
-    public void generateMaze(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
+    public void generateMaze(StructureWorldAccess world, Chunk chunk) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
 
@@ -88,7 +88,7 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
 
             if(server != null){
                 PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
-                poolroomsMazeGenerator.setup(world, true);
+                poolroomsMazeGenerator.setup(world, true, false);
             }
 
         } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
@@ -128,9 +128,9 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
                 double noise = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
                 PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
                 if (noise > 0) {
-                    poolroomsMazeGenerator.setup(world, true);
+                    poolroomsMazeGenerator.setup(world, true, true);
                 } else {
-                    poolroomsMazeGenerator.setup(world, false);
+                    poolroomsMazeGenerator.setup(world, false, true);
                 }
             }
         }

@@ -1,6 +1,6 @@
 package com.sp.block.entity;
 
-import com.sp.ConfigStuff;
+import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.SPBRevampedClient;
 import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.init.ModBlockEntities;

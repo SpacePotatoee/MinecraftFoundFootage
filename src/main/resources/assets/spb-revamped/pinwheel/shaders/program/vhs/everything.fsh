@@ -1,5 +1,6 @@
 #include veil:camera
 #include veil:blend
+#include veil:material
 #include veil:deferred_utils
 #include spb-revamped:puddles
 #include spb-revamped:sky
@@ -73,9 +74,10 @@ void main() {
 		vec4 normal = texture(NormalSampler, texCoord);
 		vec4 compat = texture(TransparentCompatSampler, texCoord);
 		vec4 compat2 = texture(OpaqueCompatSampler, texCoord);
-		uint Mat2 = texture(OpaqueMatSampler, texCoord).r;
+		uint OpaqueMat = texture(OpaqueMatSampler, texCoord).r;
+		uint TransparentMat = texture(TransparentMatSampler, texCoord).r;
 
-		if (!(compat.a > 0.0) && !(compat2.a > 0.0)){
+		if (!(compat.a > 0.0) && !(compat2.a > 0.0) && !isEntity(TransparentMat)){
 			if (TogglePuddles == 1){
 				color = getPuddles(color, texCoord, vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), DiffuseSampler0, TransparentDepthSampler, NoiseTexture, NoiseTexture2);
 			}
@@ -124,7 +126,7 @@ void main() {
 		color.rgb = blend(color, water);
 
 		//Do this after the water
-		if(Mat2 != 15){
+		if(OpaqueMat != 15){
 			if(ShadowToggle == 1) {
 				color.rgb = getVolumetricLight(color, texCoord, viewPos, ScreenSize, viewMatrix, orthographMatrix, ShadowSampler, sunsetTimer, shadowColor);
 			}
