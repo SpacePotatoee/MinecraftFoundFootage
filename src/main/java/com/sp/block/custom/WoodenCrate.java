@@ -26,11 +26,9 @@ public class WoodenCrate extends BlockWithEntity {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         } else {
-            if(world.getBlockState(pos.up()) == Blocks.AIR.getDefaultState()) {
-                BlockEntity blockEntity = world.getBlockEntity(pos);
-                if (blockEntity instanceof WoodenCrateBlockEntity) {
-                    player.openHandledScreen((WoodenCrateBlockEntity) blockEntity);
-                }
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof WoodenCrateBlockEntity) {
+                player.openHandledScreen((WoodenCrateBlockEntity) blockEntity);
             }
 
             return ActionResult.CONSUME;

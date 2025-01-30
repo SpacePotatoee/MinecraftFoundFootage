@@ -424,7 +424,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                             }
                         }
 
-//                    if (Keybinds.toggleEvent.wasPressed()) {
                         if (this.getActiveSkinwalkerTarget() != null) {
                             PlayerEntity target = this.getActiveSkinwalkerTarget();
                             PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
@@ -472,11 +471,10 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                 }
                             }
                         }
-//                    }
                     }
                 }
 
-                if(this.activeSkinWalkerEntity != null){
+                if(this.activeSkinWalkerEntity != null) {
                     SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(this.activeSkinWalkerEntity);
                     if(component.shouldBeginRelease()){
                         PlayerComponent targetComponent = InitializeComponents.PLAYER.get(this.getActiveSkinwalkerTarget());
@@ -545,23 +543,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                         }
                     }
                 }
-
-
-//                if(this.getActiveSkinwalkerTarget() != null) {
-//                    if(this.activeSkinWalkerEntity == null || this.activeSkinWalkerEntity.isRemoved() || !this.activeSkinWalkerEntity.isAlive()) {
-//                        PlayerComponent component = InitializeComponents.PLAYER.get(this.getActiveSkinwalkerTarget());
-//                        if(component.hasBeenCaptured()) {
-//                            component.setHasBeenCaptured(false);
-//                            component.sync();
-//                        }
-//
-//                        if(!component.isBeingReleased()) {
-//                            this.activeSkinwalkerTarget = nullUUID;
-//                        }
-//                    }
-//                } else {
-//                    this.activeSkinwalkerTarget = nullUUID;
-//                }
 
             }
         }

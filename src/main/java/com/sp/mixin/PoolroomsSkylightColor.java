@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class PoolroomsSkylightColor {
 
     //This is done so that the Darkrooms stay the same color instead of also changing with the day night cycle
-    @Redirect(method = {"update"}, at = @At(value = "INVOKE", target = "Lorg/joml/Vector3f;lerp(Lorg/joml/Vector3fc;F)Lorg/joml/Vector3f;", ordinal = 0))
+    @Redirect(method = {"update"}, at = @At(value = "INVOKE", target = "Lorg/joml/Vector3f;lerp(Lorg/joml/Vector3fc;F)Lorg/joml/Vector3f;", ordinal = 0), remap = false)
     private Vector3f fixBlueHue(Vector3f instance, Vector3fc other, float t, @Local ClientWorld clientWorld){
         float f = clientWorld.getSkyBrightness(1.0F);
         Vector3f baseColor = new Vector3f(f, f, f);

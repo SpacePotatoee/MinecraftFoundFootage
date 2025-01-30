@@ -57,15 +57,14 @@ public class ActNaturalGoal extends Goal {
             }
             ///////////////////////
             if (this.randomAction == null) {
-                this.randomAction = random.nextBetween(1, 5);
+                this.randomAction = random.nextBetween(1, 4);
             }
             this.component.setCurrentlyActingNatural(true);
             switch (this.randomAction) {
                 case 1: this.sneakTick(); break;
                 case 2: this.strafeTick();break;
-                case 3: this.punchPlayer(); break;
-                case 4: this.lookAndPunchTick(); break;
-                case 5: this.lookMultTick(); break;
+                case 3: this.lookAndPunchTick(); break;
+                case 4: this.lookMultTick(); break;
             }
         }
 

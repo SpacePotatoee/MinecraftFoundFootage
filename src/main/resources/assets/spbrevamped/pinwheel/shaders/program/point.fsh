@@ -73,7 +73,7 @@ void main() {
         TBN = transpose(TBN);
 
         //If the pixel isn't in range, there's no point in doing any calculations
-        if(abs(length(offset)) > radius || pos.y > 40.6 || pos.y < -19.5 || lightPos.y < 20.5){
+        if(abs(length(offset)) > radius - 2 || pos.y > 30.6 || pos.y < -19.5 || lightPos.y < 20.5){
             fragColor = setColor(albedoColor, normalVS, offset, 1.0);
             return;
         }
@@ -83,19 +83,14 @@ void main() {
         float steps = 0.0;
         vec3 offsetPos = vec3(pos.x + (0.009 * worldNormal.r), pos.y + (0.009 * worldNormal.g), pos.z + (0.009 * worldNormal.b));
 
-        for (int i = 0; i < 2; i++){
-            vec3 normalRayOffset = vec3((hash22(screenUv * (i+1) * 453.346) * 2.0 - 1.0) * 0.01, 0.0);
-            normalRayOffset = (normalRayOffset * TBN) + offsetPos;
+//        for (int i = 0; i < 1; i++) {
+        vec3 normalRayOffset = vec3((hash22(screenUv * 453.346) * 2.0 - 1.0) * 0.01, 0.0);
+        normalRayOffset = (normalRayOffset * TBN) + offsetPos;
 
-            bool hit = ddaRayMarch(offset, normalRayOffset, viewMatrix, orthographMatrix, ShadowSampler);
-
-            if (hit == false){
-                light += 1.0;
-            }
-            steps++;
+//        bool hit = ddaRayMarch(offset, normalRayOffset, viewMatrix, orthographMatrix, ShadowSampler);
+        if(!ddaRayMarch(offset, normalRayOffset, viewMatrix, orthographMatrix, ShadowSampler)){
+            fragColor = setColor(albedoColor, normalVS, offset, 1.0);
         }
-        light = light / steps;
-        fragColor = setColor(albedoColor, normalVS, offset, light);
     } else {
         fragColor = setColor(albedoColor, normalVS, offset, 1.0);
     }

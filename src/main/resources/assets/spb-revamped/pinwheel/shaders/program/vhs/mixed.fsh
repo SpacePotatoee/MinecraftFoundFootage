@@ -78,7 +78,7 @@ void main(){
     uint Mat = texture(TransparentMatSampler, texCoord).r;
     uint Mat2 = texture(OpaqueMatSampler, texCoord).r;
 
-    if(transparent.a > 0.0 && isBlock(Mat)){
+    if(transparent.a > 0.0 && isBlock(Mat)) {
         color = opaque;
     }
 
@@ -101,7 +101,8 @@ void main(){
     }
 
     if(compat.a > 0.0 || compat2.a > 0.0){
-        color = compat + compat2;
+        color += compat + compat2;
+        color.a = min(compat.a + compat2.a, 1.0);
     }
 
 

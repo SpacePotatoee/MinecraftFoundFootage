@@ -64,7 +64,7 @@ public class FlashlightRenderer {
 
                             for(AreaLight areaLights : areaLightList){
                                 Quaternionf currentRot = new Quaternionf().rotateXYZ((float) -Math.toRadians(player.getPitch(partialTicks)), (float) Math.toRadians(player.getYaw(partialTicks)), 0.0f);
-                                areaLights.getOrientation().slerp(currentRot, 0.02f);
+                                areaLights.getOrientation().slerp(currentRot, 0.35f * client.getLastFrameDuration());
                                 areaLights.setPosition(playerPos.getX(), playerPos.getY(), playerPos.getZ());
                             }
                         }

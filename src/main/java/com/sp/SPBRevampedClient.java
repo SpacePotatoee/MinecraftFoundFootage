@@ -101,8 +101,6 @@ public class SPBRevampedClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ResourcePackManager resourcePackManager = MinecraftClient.getInstance().getResourcePackManager();
-        resourcePackManager.enable("veil:deferred");
 
         HudRenderCallback.EVENT.register(new TitleText());
 
@@ -188,7 +186,9 @@ public class SPBRevampedClient implements ClientModInitializer {
 
 
             //Flashlight
-            flashlightRenderer.renderFlashlightForEveryPlayer(partialTicks);
+            if(stage == Stage.AFTER_LEVEL) {
+                flashlightRenderer.renderFlashlightForEveryPlayer(partialTicks);
+            }
 
 
             //Enable the VHS shader

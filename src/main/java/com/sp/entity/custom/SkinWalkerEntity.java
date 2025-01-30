@@ -72,7 +72,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         this.component = InitializeComponents.SKIN_WALKER.get(this);
         this.component.setTargetPlayerUUID(this.getTargetPlayer(world));
         this.component.setSneaking(false);
-        this.maxSuspicion = 900 + (300 * (world.getPlayers().size() - 1));
+        this.maxSuspicion = 1800 + (900 * (world.getPlayers().size() - 1));
 
         this.setUpLimbs();
     }
@@ -106,7 +106,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 1000F)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 1000.0F)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35);
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.31f);
     }
 
 
@@ -148,7 +148,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
             if (!this.component.isInTrueForm() && !this.component.shouldBeginReveal()) {
                 //3600
-                if (this.age >= 600 || this.component.getSuspicion() > this.maxSuspicion) {
+                if (this.age >= 20 || this.component.getSuspicion() > this.maxSuspicion) {
                     this.component.setBeginReveal(true);
                 }
 
@@ -161,7 +161,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
             if(this.component.isInTrueForm() && !this.component.shouldBeginRelease()){
                 this.trueFormTime++;
-                if(this.trueFormTime >= 300){
+                if(this.trueFormTime >= 1200){
                     this.component.setShouldBeginRelease(true);
                 }
             }
@@ -230,27 +230,27 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         }
     }
 
-    private void teleportAway(){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        Vec3d pos = this.getPos();
-
-        double distance = 20;
-        double speed = 50;
-
-        for(double i = 0; i < 360; i += 0.5) {
-            mutable.set(pos.getX() + Math.floor(Math.sin(Math.toRadians(i) * speed) * distance), pos.getY(), pos.getZ() + Math.floor(Math.cos(Math.toRadians(i) * speed) * distance));
-            if(!this.getWorld().getBlockState(mutable).blocksMovement()) {
-                this.teleport(mutable.getX(), this.getY(), mutable.getZ());
-            }
-        }
-    }
+//    private void teleportAway(){
+//        BlockPos.Mutable mutable = new BlockPos.Mutable();
+//        Vec3d pos = this.getPos();
+//
+//        double distance = 20;
+//        double speed = 50;
+//
+//        for(double i = 0; i < 360; i += 0.5) {
+//            mutable.set(pos.getX() + Math.floor(Math.sin(Math.toRadians(i) * speed) * distance), pos.getY(), pos.getZ() + Math.floor(Math.cos(Math.toRadians(i) * speed) * distance));
+//            if(!this.getWorld().getBlockState(mutable).blocksMovement()) {
+//                this.teleport(mutable.getX(), this.getY(), mutable.getZ());
+//            }
+//        }
+//    }
 
     private void updateLookAtSuspicion() {
         HashSet<PlayerEntity> otherPlayers = new HashSet<>(this.getWorld().getPlayers());
         List<PlayerEntity> players = this.getWorld().getPlayers(TargetPredicate.DEFAULT, this, new Box(this.getPos(), this.getPos().add(15, 15, 15)).offset(-7.5, -7.5, -7.5));
         players.forEach(otherPlayers::remove);
 
-        for (PlayerEntity player : players){
+        for (PlayerEntity player : players) {
             PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
             Entity targetEntity = playerComponent.getTargetEntity();
 

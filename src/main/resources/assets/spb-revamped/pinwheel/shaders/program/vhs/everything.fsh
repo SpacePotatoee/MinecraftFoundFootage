@@ -69,7 +69,11 @@ void main() {
 		vec4 color = texture(DiffuseSampler0, texCoord);
 		vec4 water = texture(WaterSampler, texCoord);
 		float depth = texture(DepthSampler, texCoord).r;
+		float transparentDepth = texture(TransparentDepthSampler, texCoord).r;
+
 		vec3 viewPos = viewPosFromDepth(depth, texCoord);
+		vec3 transparentViewPos = viewPosFromDepth(transparentDepth, texCoord);
+
 		float worldDepth = length(viewPos);
 		vec4 normal = texture(NormalSampler, texCoord);
 		vec4 compat = texture(TransparentCompatSampler, texCoord);
@@ -128,13 +132,14 @@ void main() {
 		//Do this after the water
 		if(OpaqueMat != 15){
 			if(ShadowToggle == 1) {
-				color.rgb = getVolumetricLight(color, texCoord, viewPos, ScreenSize, viewMatrix, orthographMatrix, ShadowSampler, sunsetTimer, shadowColor);
+				color.rgb = getVolumetricLight(color, texCoord, transparentViewPos, ScreenSize, viewMatrix, orthographMatrix, ShadowSampler, sunsetTimer, shadowColor);
 			}
 		}
 
 
 		if(compat.a > 0.0 || compat2.a > 0.0){
-			color = compat + compat2;
+			color += compat + compat2;
+			color.a = min(compat.a + compat2.a, 1.0);
 		}
 
 

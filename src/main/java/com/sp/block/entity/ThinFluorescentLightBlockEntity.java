@@ -135,13 +135,14 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                     boolean withinDistance = pos.isWithinDistance(playerPos, distance);
                     if (withinDistance) {
 
-                        if(!state.get(ThinFluorescentLightBlock.COPY)) {
+                        if(!state.get(ThinFluorescentLightBlock.COPY) && pos.isWithinDistance(playerPos, 15.0f)) {
                             if (prevOn != world.getBlockState(pos).get(ThinFluorescentLightBlock.ON)) {
                                 client.getSoundManager().play(new PositionedSoundInstance(ModSounds.LIGHT_BLINK, SoundCategory.AMBIENT, 0.2F, random1.nextFloat(0.9f, 1.1f), this.random, pos));
                             }
                         }
 
                         if (!state.get(ThinFluorescentLightBlock.COPY) && state.get(ThinFluorescentLightBlock.ON) && !state.get(ThinFluorescentLightBlock.BLACKOUT)) {
+
                             if (!this.isPlayingSound() && pos.isWithinDistance(playerPos, 15.0f) && !SPBRevampedClient.blackScreen) {
                                 MinecraftClient.getInstance().getSoundManager().play(new ThinFluorescentLightSoundInstance(this, player));
                                 this.setPlayingSound(true);

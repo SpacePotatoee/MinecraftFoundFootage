@@ -94,7 +94,7 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
         } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
 
             if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000)){
-                int exit = random.nextBetween(0,5);
+                int exit = random.nextBetween(0,4);
 
                 if(exit == 0){
                     roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "poolrooms/poolrooms_exit");
@@ -127,11 +127,7 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
             if (server != null) {
                 double noise = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
                 PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
-                if (noise > 0) {
-                    poolroomsMazeGenerator.setup(world, true, true);
-                } else {
-                    poolroomsMazeGenerator.setup(world, false, true);
-                }
+                poolroomsMazeGenerator.setup(world, noise > 0, true);
             }
         }
 

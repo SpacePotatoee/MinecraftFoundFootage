@@ -41,6 +41,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
@@ -63,6 +64,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private boolean readyForLevel1;
     private boolean readyForLevel2;
     private boolean readyForPoolrooms;
+    private ChunkPos currentTeleportChunkPos;
 
     private int suffocationTimer;
     private int level2Timer;
@@ -163,6 +165,18 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     }
     public void setTeleporting(boolean teleporting) {
         isTeleporting = teleporting;
+    }
+
+    public void setReadyForLevel1(boolean readyForLevel1) {
+        this.readyForLevel1 = readyForLevel1;
+    }
+
+    public void setReadyForLevel2(boolean readyForLevel2) {
+        this.readyForLevel2 = readyForLevel2;
+    }
+
+    public void setReadyForPoolrooms(boolean readyForPoolrooms) {
+        this.readyForPoolrooms = readyForPoolrooms;
     }
 
     public boolean isTeleportingToPoolrooms() {
@@ -390,9 +404,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //Client side stuff for level 0 -> 1 and 1 -> 2 transitions
-            if (this.isTeleporting) {
+            if (this.isTeleporting()) {
                 ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-                this.isTeleporting = false;
+                this.setTeleporting(false);
 
                 //Turn off the lights
                 client.player.playSound(ModSounds.LIGHTS_OUT, SoundCategory.AMBIENT, 1, 1);
@@ -548,7 +562,21 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
             ServerWorld level1 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL1_WORLD_KEY);
 
-            if (this.player.getPos().getY() <= 11 && this.player.isOnGround()) {
+            if (this.readyForLevel1) {
+                this.currentTeleportChunkPos = this.player.getChunkPos();
+                for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
+                    if(players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(players);
+                        playerComponent.setReadyForLevel1(false);
+
+                        TeleportTarget target = new TeleportTarget(calculateLevel1TeleportCoords(players), players.getVelocity(), players.getYaw(), players.getPitch());
+                        FabricDimensions.teleport(players, level1, target);
+                    }
+                }
+                this.currentTeleportChunkPos = null;
+            }
+
+            if (this.player.getPos().getY() <= 11 && this.player.isOnGround() && this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                 if (!this.isTeleporting() && !this.readyForLevel1) {
                     for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
                         if (players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
@@ -556,24 +584,26 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                         }
                     }
                 }
-            } else {
-                this.readyForLevel1 = false;
             }
-
-            if (this.readyForLevel1) {
-                for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                    if(players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                        TeleportTarget target = new TeleportTarget(calculateLevel1TeleportCoords(players), players.getVelocity(), players.getYaw(), players.getPitch());
-                        FabricDimensions.teleport(players, level1, target);
-                    }
-                }
-                this.readyForLevel1 = false;
-            }
-
         }
+
         //Level 1 -> Level 2
         else if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
             ServerWorld level2 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL2_WORLD_KEY);
+
+            if (this.readyForLevel2) {
+                this.currentTeleportChunkPos = this.player.getChunkPos();
+                for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
+                    if(players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(players);
+                        playerComponent.setReadyForLevel1(false);
+
+                        TeleportTarget target = new TeleportTarget(calculateLevel2TeleportCoords(players), players.getVelocity(), players.getYaw(), players.getPitch());
+                        FabricDimensions.teleport(players, level2, target);
+                    }
+                }
+                this.currentTeleportChunkPos = null;
+            }
 
             if (this.player.getPos().getY() <= 12.5 && this.player.isOnGround()) {
                 if (!this.isTeleporting() && !this.readyForLevel2) {
@@ -583,17 +613,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                         }
                     }
                 }
-                if (this.readyForLevel2) {
-                    for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                        if(players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                            TeleportTarget target = new TeleportTarget(calculateLevel2TeleportCoords(players), players.getVelocity(), players.getYaw(), players.getPitch());
-                            FabricDimensions.teleport(players, level2, target);
-                        }
-                    }
-                    this.readyForLevel2 = false;
-                }
-            } else {
-                this.readyForLevel2 = false;
             }
 
         }
@@ -695,11 +714,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
             executorService.schedule(() -> {
                 switch (destLevel){
-                    case 1: this.readyForLevel1 = true; break;
-                    case 2: this.readyForLevel2 = true; break;
+                    case 1: playerComponent.setReadyForLevel1(true); break;
+                    case 2: playerComponent.setReadyForLevel2(true); break;
                 }
                 playerComponent.setTeleporting(false);
-                playerComponent.sync();
                 executorService.shutdown();
             }, 2500, TimeUnit.MILLISECONDS);
         }
@@ -743,9 +761,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     }
 
     private Vec3d calculateLevel1TeleportCoords(PlayerEntity player){
-        if(this.player.getChunkPos().equals(player.getChunkPos())) {
-            int chunkX = this.player.getChunkPos().getStartX();
-            int chunkZ = this.player.getChunkPos().getStartZ();
+        if(this.currentTeleportChunkPos.x == player.getChunkPos().x && this.currentTeleportChunkPos.z == player.getChunkPos().z) {
+            int chunkX = this.currentTeleportChunkPos.getStartX();
+            int chunkZ = this.currentTeleportChunkPos.getStartZ();
 
             double playerX = player.getPos().x;
             double playerZ = player.getPos().z;
@@ -758,8 +776,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     private Vec3d calculateLevel2TeleportCoords(PlayerEntity player){
         if(this.player.getChunkPos().equals(player.getChunkPos())) {
-            int chunkX = this.player.getChunkPos().getStartX();
-            int chunkZ = this.player.getChunkPos().getStartZ();
+            int chunkX = this.currentTeleportChunkPos.getStartX();
+            int chunkZ = this.currentTeleportChunkPos.getStartZ();
 
             double playerX = player.getPos().x;
             double playerZ = player.getPos().z;
