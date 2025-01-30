@@ -10,12 +10,6 @@ import com.sp.entity.ik.components.IKAnimatable;
 import com.sp.entity.ik.components.IKModelComponent;
 import com.sp.init.ModSounds;
 import com.sp.sounds.entity.SkinWalkerChaseSoundInstance;
-import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
-import de.maxhenkel.voicechat.api.VoicechatServerApi;
-import de.maxhenkel.voicechat.api.audiochannel.AudioChannel;
-import de.maxhenkel.voicechat.api.audiochannel.AudioPlayer;
-import de.maxhenkel.voicechat.api.audiochannel.LocationalAudioChannel;
-import de.maxhenkel.voicechat.plugins.impl.ServerLevelImpl;
 import foundry.veil.api.client.util.Easings;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
@@ -32,7 +26,6 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -148,7 +141,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
             if (!this.component.isInTrueForm() && !this.component.shouldBeginReveal()) {
                 //3600
-                if (this.age >= 20 || this.component.getSuspicion() > this.maxSuspicion) {
+                if (this.age >= 1200 || this.component.getSuspicion() > this.maxSuspicion) {
                     this.component.setBeginReveal(true);
                 }
 
@@ -229,21 +222,6 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
             }
         }
     }
-
-//    private void teleportAway(){
-//        BlockPos.Mutable mutable = new BlockPos.Mutable();
-//        Vec3d pos = this.getPos();
-//
-//        double distance = 20;
-//        double speed = 50;
-//
-//        for(double i = 0; i < 360; i += 0.5) {
-//            mutable.set(pos.getX() + Math.floor(Math.sin(Math.toRadians(i) * speed) * distance), pos.getY(), pos.getZ() + Math.floor(Math.cos(Math.toRadians(i) * speed) * distance));
-//            if(!this.getWorld().getBlockState(mutable).blocksMovement()) {
-//                this.teleport(mutable.getX(), this.getY(), mutable.getZ());
-//            }
-//        }
-//    }
 
     private void updateLookAtSuspicion() {
         HashSet<PlayerEntity> otherPlayers = new HashSet<>(this.getWorld().getPlayers());
@@ -388,7 +366,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
     @SuppressWarnings("InnerClassMayBeStatic")
     public class SkinWalkerLookControl extends LookControl{
         private int maxLookAtTimer = 5;
-        private Easings.Easing easing = Easings.Easing.easeInOutCubic;
+        private final Easings.Easing easing = Easings.Easing.easeInOutCubic;
 
         public SkinWalkerLookControl(MobEntity entity) {
             super(entity);
