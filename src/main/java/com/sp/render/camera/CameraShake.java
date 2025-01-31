@@ -10,9 +10,9 @@ import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.math.random.Random;
 
 public class CameraShake {
-    private double trauma;
+    public double trauma;
     private double traumaGoal;
-    private double noiseSpeed;
+    public double noiseSpeed;
     private double noiseSpeedGoal;
     private double noiseY;
     private double amplitude;

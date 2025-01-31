@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.EntityTrackingSoundInstance;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -119,7 +120,7 @@ public class CutsceneManager {
                 this.startTime = System.currentTimeMillis();
                 this.isPlaying = true;
 //                SPBRevampedClient.getCameraShake().setCameraShake(MathStuff.millisecToTick(this.duration), 1, Easings.Easing.linear, true);
-                client.getSoundManager().play(new EntityTrackingSoundInstance(ModSounds.FALLING, SoundCategory.AMBIENT, 1.0f, 1.0f, client.cameraEntity, Random.newSeed()));
+                client.getSoundManager().play(PositionedSoundInstance.master(ModSounds.FALLING, 1.0f));
             }
             float timer = (float) (System.currentTimeMillis() - this.startTime) / this.duration;
             if (this.camera == null) {

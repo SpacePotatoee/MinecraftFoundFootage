@@ -66,7 +66,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private boolean readyForPoolrooms;
     private ChunkPos currentTeleportChunkPos;
 
-    private int suffocationTimer;
+    public int suffocationTimer;
     private int level2Timer;
     private boolean shouldDoStatic;
     private Timer staticTimer;
@@ -492,13 +492,13 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //Level0 Cutscene
-            if (this.player.isInsideWall() && this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene) {
-                suffocationTimer++;
-                if (suffocationTimer >= 40) {
-                    this.setDoingCutscene(true);
-                    suffocationTimer = 0;
-                }
-            }
+//            if (this.player.isInsideWall() && this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene) {
+//                suffocationTimer++;
+//                if (suffocationTimer >= 40) {
+//                    this.setDoingCutscene(true);
+//                    suffocationTimer = 0;
+//                }
+//            }
 
         }
     }
@@ -526,35 +526,56 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         }
 
         //Cast him to the Backrooms
-        if(this.player.isInsideWall()) {
-            if (this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
-                suffocationTimer++;
-                if (suffocationTimer == 1) {
-                    SPBRevamped.sendPlaySoundPacket((ServerPlayerEntity) this.player, ModSounds.GLITCH, 1.0f, 1.0f);
-                    this.playingGlitchSound = true;
-                }
-
-                if (suffocationTimer == 40) {
-                    RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
-                    ServerWorld backrooms = this.player.getWorld().getServer().getWorld(registryKey);
-                    if (backrooms == null) {
-                        return;
-                    }
-
-                    TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-                    FabricDimensions.teleport(this.player, backrooms, target);
-                    this.setDoingCutscene(true);
-                    this.sync();
-                    suffocationTimer = 0;
-                }
+//        if(this.player.isInsideWall()) {
+//            if (this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
+//                suffocationTimer++;
+//                if (suffocationTimer == 1) {
+//                    SPBRevamped.sendPlaySoundPacket((ServerPlayerEntity) this.player, ModSounds.GLITCH, 1.0f, 1.0f);
+//                    this.playingGlitchSound = true;
+//                }
+//
+//                if (suffocationTimer == 40) {
+//                    RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
+//                    ServerWorld backrooms = this.player.getWorld().getServer().getWorld(registryKey);
+//                    if (backrooms == null) {
+//                        return;
+//                    }
+//
+//                    TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
+//                    FabricDimensions.teleport(this.player, backrooms, target);
+//                    this.setDoingCutscene(true);
+//                    this.sync();
+//                    suffocationTimer = 0;
+//                }
+//            }
+//        } else {
+//            if (this.playingGlitchSound) {
+//                StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(new Identifier(SPBRevamped.MOD_ID, "glitch"), null);
+//                ((ServerPlayerEntity) this.player).networkHandler.sendPacket(stopSoundS2CPacket);
+//            }
+//            this.playingGlitchSound = false;
+//            suffocationTimer = 0;
+//        }
+        if(this.suffocationTimer == 40){
+            this.suffocationTimer = 0;
+            RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
+            ServerWorld backrooms = this.player.getWorld().getServer().getWorld(registryKey);
+            if (backrooms == null) {
+                return;
             }
-        } else {
-            if (this.playingGlitchSound) {
-                StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(new Identifier(SPBRevamped.MOD_ID, "glitch"), null);
-                ((ServerPlayerEntity) this.player).networkHandler.sendPacket(stopSoundS2CPacket);
-            }
-            this.playingGlitchSound = false;
-            suffocationTimer = 0;
+            System.out.println("WORKS2");
+
+            TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
+            System.out.println(FabricDimensions.teleport(this.player, backrooms, target));
+            System.out.println("WORKS3");
+            FabricDimensions.teleport(this.player, backrooms, target);
+
+            System.out.println("WORKS4");
+            this.setShouldNoClip(false);
+            this.setDoingCutscene(true);
+            this.sync();
+            StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(new Identifier(SPBRevamped.MOD_ID, "noescape"), null);
+            ((ServerPlayerEntity)this.player).networkHandler.sendPacket(stopSoundS2CPacket);
         }
 
 
@@ -735,7 +756,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             playerComponent.sync();
 
             //Shake the Camera of each player
-            SPBRevamped.sendCameraShakePacket((ServerPlayerEntity) players, 100, 1, Easings.Easing.linear, true);
+//            SPBRevamped.sendCameraShakePacket((ServerPlayerEntity) players, 100, 1, Easings.Easing.linear, true);
 
             //Then Noclip
             executorService.schedule(() -> {

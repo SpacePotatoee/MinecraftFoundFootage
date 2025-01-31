@@ -10,13 +10,12 @@ import net.minecraft.network.PacketByteBuf;
 public class InvokeScreenShakePacket {
 
     public static void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender){
-        int duration = buf.readInt();
-        float intensity = buf.readFloat();
-        Easings.Easing easing = buf.readEnumConstant(Easings.Easing.class);
-        boolean inverted = buf.readBoolean();
+        double speed = buf.readDouble();
+        double trauma = buf.readDouble();
 
         client.execute(()->{
-//            SPBRevampedClient.getCameraShake().setCameraShake(duration, intensity, easing, inverted);
+            SPBRevampedClient.getCameraShake().noiseSpeed = speed;
+            SPBRevampedClient.getCameraShake().trauma = trauma;
         });
     }
 

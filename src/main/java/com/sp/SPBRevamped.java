@@ -3,6 +3,7 @@ package com.sp;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.command.BlackScreenCommand;
+import com.sp.command.CastToTheBackroomsCommand;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
@@ -76,6 +77,7 @@ public class SPBRevamped implements ModInitializer {
 		MidnightConfig.init(MOD_ID, ConfigStuff.class);
 
 		CommandRegistrationCallback.EVENT.register(BlackScreenCommand::register);
+		CommandRegistrationCallback.EVENT.register(CastToTheBackroomsCommand::register);
 
 		// Thanks Bob Mowzie
 		GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());
@@ -128,12 +130,10 @@ public class SPBRevamped implements ModInitializer {
 		}));
 	}
 
-	public static void sendCameraShakePacket(ServerPlayerEntity player, int duration, float intensity, Easings.Easing easing, boolean inverted){
+	public static void sendCameraShakePacket(ServerPlayerEntity player, double speed, double trauma){
 		PacketByteBuf buffer = PacketByteBufs.create();
-		buffer.writeInt(duration);
-		buffer.writeFloat(intensity);
-		buffer.writeEnumConstant(easing);
-		buffer.writeBoolean(inverted);
+		buffer.writeDouble(speed);
+		buffer.writeDouble(trauma);
 		ServerPlayNetworking.send(player, InitializePackets.SCREEN_SHAKE, buffer);
 	}
 

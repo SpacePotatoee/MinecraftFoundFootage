@@ -99,10 +99,13 @@ public class ShadowMapRenderer {
 
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
-            frustum = new Frustum(shadowModelView.peek().getPositionMatrix(), shadowProjMat);
-            frustum.setPosition(cameraPos.x, cameraPos.y, cameraPos.z);
-            accessor.setFrustum(frustum);
-            accessor.invokeSetupTerrain(camera, frustum, false, false);
+            if(world.getRegistryKey() != World.OVERWORLD) {
+                frustum = new Frustum(shadowModelView.peek().getPositionMatrix(), shadowProjMat);
+                frustum.setPosition(cameraPos.x, cameraPos.y, cameraPos.z);
+                accessor.setFrustum(frustum);
+                accessor.invokeSetupTerrain(camera, frustum, false, false);
+            }
+
             accessor.invokeRenderLayer(RenderLayer.getCutout(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
             accessor.invokeRenderLayer(RenderLayer.getCutoutMipped(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
             accessor.invokeRenderLayer(RenderLayer.getSolid(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
