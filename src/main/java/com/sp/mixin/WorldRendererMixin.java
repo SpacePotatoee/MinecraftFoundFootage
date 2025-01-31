@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevampedClient;
 import com.sp.init.BackroomsLevels;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.sound.SoundInstance;
@@ -26,7 +27,7 @@ public abstract class WorldRendererMixin {
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 9, shift = At.Shift.AFTER))
     private void wireFrame(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci){
         MinecraftClient client = MinecraftClient.getInstance();
-        if(client.wireFrame) {
+        if(client.wireFrame && FabricLoader.getInstance().isDevelopmentEnvironment()) {
             RenderSystem.polygonMode(GL_FRONT, GL_LINE);
         }
     }
