@@ -337,7 +337,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                     activeEvent.init(this.world);
                                     setEventActive(true);
                                     ticks = 0;
-                                    this.delay = random.nextBetween(1200, 1800);
+                                    this.delay = random.nextBetween(1500, 2000);
                                 }
                                 break;
                                 case 2: {
@@ -405,7 +405,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
 
                 //Start Looking for a player to take and take them when they're not talking and can't be seen
-                if(this.getIntercomCount() > 2) {
+                if(this.getIntercomCount() > 3 || Keybinds.toggleEvent.wasPressed()) { //Last Resort
                     if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                         //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
                         Map.Entry<UUID, Float> min = null;

@@ -141,7 +141,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
             if (!this.component.isInTrueForm() && !this.component.shouldBeginReveal()) {
                 //3600
-                if (this.age >= 1200 || this.component.getSuspicion() > this.maxSuspicion) {
+                if (this.age >= 2400 || this.component.getSuspicion() > this.maxSuspicion) {
                     this.component.setBeginReveal(true);
                 }
 

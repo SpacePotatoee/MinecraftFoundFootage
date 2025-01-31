@@ -152,7 +152,7 @@ public class CutsceneManager {
                 this.blackScreen.showBlackScreen(40, true, false);
                 this.reset();
             } else {
-                client.options.hudHidden = true;
+                client.options.hudHidden = false;
                 camera.refreshPositionAndAngles(3, 21, 1.5, 5, (float) 83);
                 this.cameraRotZ = 100;
                 client.cameraEntity = camera;

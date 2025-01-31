@@ -29,14 +29,19 @@ public class Level0Music implements AbstractEvent {
             }
         }
         else{
-            int rand = random.nextBetween(1, 2);
-            if (rand == 1) {
-                playSoundWithRandLocation(world, ModSounds.INTERCOM_BASIC1, 25, 20);
+            if(events.getIntercomCount() == 2){
+                playSoundWithRandLocation(world, ModSounds.INTERCOM_REVERSED, 25, 20);
             } else {
-                playSoundWithRandLocation(world, ModSounds.INTERCOM_BASIC2, 25, 20);
+                int rand = random.nextBetween(1, 2);
+                if (rand == 1) {
+                    playSoundWithRandLocation(world, ModSounds.INTERCOM_BASIC1, 25, 20);
+                } else {
+                    playSoundWithRandLocation(world, ModSounds.INTERCOM_BASIC2, 25, 20);
+                }
             }
             duration = 200;
             events.addIntercomCount();
+
         }
     }
 
