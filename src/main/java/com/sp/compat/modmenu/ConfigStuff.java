@@ -5,7 +5,7 @@ import eu.midnightdust.lib.config.MidnightConfig;
 
 public class ConfigStuff extends MidnightConfig {
     public static final String CAMERA = "cameraStuff";
-    public static final String ADMIN = "adminStuff";
+//    public static final String ADMIN = "adminStuff";
     public static final String SHADERS = "shaders";
 
     @Entry(category = CAMERA)
@@ -37,13 +37,13 @@ public class ConfigStuff extends MidnightConfig {
     public static boolean renderBlockReflections = true;
 
 
-    @Entry(category = ADMIN)
-    public static boolean enableVanillaLighting = false;
-
-    @Entry(category = ADMIN)
-    public static boolean forceBackrooms = false;
-
-    @Entry(category = ADMIN)
-    public static boolean enable3rdPerson = false;
+//    @Entry(category = ADMIN)
+//    public static boolean enableVanillaLighting = false;
+//
+//    @Entry(category = ADMIN)
+//    public static boolean forceBackrooms = false;
+//
+//    @Entry(category = ADMIN)
+//    public static boolean enable3rdPerson = false;
 
 }

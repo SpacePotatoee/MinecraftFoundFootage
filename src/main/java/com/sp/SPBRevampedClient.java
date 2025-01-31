@@ -443,7 +443,8 @@ public class SPBRevampedClient implements ClientModInitializer {
                     setInBackrooms(true);
                     fps.setValue(30);
                 }else {
-                    setInBackrooms(ConfigStuff.forceBackrooms);
+                    setInBackrooms(false);
+//                    setInBackrooms(ConfigStuff.forceBackrooms);
                 }
 
                 if(client.world != null) {
@@ -452,7 +453,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
 
                     if (inBackrooms) {
-                        if (!ConfigStuff.enableVanillaLighting && client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                        if (client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
                             lightRenderer.disableVanillaLight();
                         } else {
                             lightRenderer.enableVanillaLight();
