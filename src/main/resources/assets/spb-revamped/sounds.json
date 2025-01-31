@@ -343,5 +343,10 @@
       "spb-revamped:concrete/walking/concrete_walk_6",
       "spb-revamped:concrete/walking/concrete_walk_7"
     ]
+  },
+  "snapsnap": {
+    "sounds": [
+      "spb-revamped:snapsnap"
+    ]
   }
 }

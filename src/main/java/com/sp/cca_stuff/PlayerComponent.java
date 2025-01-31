@@ -437,6 +437,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                     this.setFlashLightOn(false);
                     player.sendMessage(Text.literal("Your flashlight got wet. ").append(Text.literal("It no longer works").formatted(Formatting.RED)), true);
                 }
+            } else if(this.hasBeenCaptured && this.isBeingCaptured){
+                this.setFlashLightOn(false);
             }
 
             if (this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {

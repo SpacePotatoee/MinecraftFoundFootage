@@ -118,23 +118,27 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
             short[] data = decoder.decode(encodedData);
 
             PlayerComponent component = InitializeComponents.PLAYER.get(player);
-            if(!component.shouldBeMuted()){
+            if(!component.shouldBeMuted()) {
                 component.setSpeaking(true);
 
                 //Update the amount of time that the players are talking for the skinstealer to determine who to take
-                if (!speakingTime.containsKey(player.getUuid())) {
-                    speakingTime.put(player.getUuid(), 0.0f);
-                }
-
-                speakingTime.put(player.getUuid(), speakingTime.get(player.getUuid()) + 0.0001f);
-
-                //If the player is talking too loud, make them visible to the skinwalker
-                if (!component.isVisibleToEntity()) {
-                    double volume = Utils.dbToPerc(Utils.getHighestAudioLevel(data));
-
-                    if (volume >= 0.8) {
-                        component.setVisibleToEntity(true);
+                if(!player.isSpectator() && !player.isCreative()) {
+                    if (!speakingTime.containsKey(player.getUuid())) {
+                        speakingTime.put(player.getUuid(), 0.0f);
                     }
+
+                    speakingTime.put(player.getUuid(), speakingTime.get(player.getUuid()) + 0.0001f);
+
+                    //If the player is talking too loud, make them visible to the skinwalker
+                    if (!component.isVisibleToEntity()) {
+                        double volume = Utils.dbToPerc(Utils.getHighestAudioLevel(data));
+
+                        if (volume >= 0.8) {
+                            component.setVisibleToEntity(true);
+                        }
+                    }
+                } else if(!component.isBeingCaptured() && !component.hasBeenCaptured()) {
+                    speakingTime.remove(player.getUuid());
                 }
             } else {
                 microphonePacketEvent.cancel();

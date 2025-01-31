@@ -172,7 +172,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }
 
                 if(!cutsceneManager.fall) {
-                    if (clientWorld.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+                    if (clientWorld.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY || clientWorld.getRegistryKey() == World.OVERWORLD) {
                         if (stage == Stage.AFTER_SKY) {
                             if (camera != null) {
                                 ShadowMapRenderer.renderLevel0ShadowMap(camera, clientWorld);
@@ -181,7 +181,6 @@ public class SPBRevampedClient implements ClientModInitializer {
                     }
                 }
             }
-
 
 
 
@@ -236,6 +235,11 @@ public class SPBRevampedClient implements ClientModInitializer {
                             }
                         }
                     }
+
+                    if(!client.player.isSpectator() && !client.player.isCreative()){
+                        client.options.debugEnabled = false;
+                    }
+
                 }
             }
 
@@ -437,7 +441,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 SimpleOption<Integer> fps =  MinecraftClient.getInstance().options.getMaxFps();
                 if (BackroomsLevels.isInBackrooms(playerClient.getWorld().getRegistryKey())){
                     setInBackrooms(true);
-//                    fps.setValue(30);
+                    fps.setValue(30);
                 }else {
                     setInBackrooms(ConfigStuff.forceBackrooms);
                 }

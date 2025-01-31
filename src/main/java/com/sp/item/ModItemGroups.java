@@ -16,6 +16,7 @@ public class ModItemGroups {
             new Identifier(SPBRevamped.MOD_ID, "spbrevamped"),
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.spbrevamped"))
                     .icon(() -> new ItemStack(ModBlocks.WallBlock)).entries((displayContext, entries) -> {
+                        entries.add(ModBlocks.VoidBlock);
                         entries.add(ModBlocks.CEILINGLIGHT);
                         entries.add(ModItems.BACKSHROOM);
                         entries.add(ModItems.CANNED_FOOD);

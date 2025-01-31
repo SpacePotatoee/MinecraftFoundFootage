@@ -10,9 +10,8 @@ import foundry.veil.api.client.render.shader.program.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.player.PlayerEntity;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,10 +26,12 @@ public class LightRendererMixin {
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity player = client.player;
         if(player != null && client.world != null) {
-            if (SPBRevampedClient.getCutsceneManager().isPlaying || player.getWorld().getRegistryKey() != BackroomsLevels.LEVEL0_WORLD_KEY) {
+            RegistryKey<World> registryKey = player.getWorld().getRegistryKey();
+            if (SPBRevampedClient.getCutsceneManager().isPlaying || (registryKey != BackroomsLevels.LEVEL0_WORLD_KEY && registryKey != World.OVERWORLD)) {
                 shader.setInt("ShouldRender", 0);
             } else {
                 setShadowUniforms(shader);
+                shader.setInt("InOverWorld", registryKey == World.OVERWORLD ? 1 : 0);
                 shader.setInt("ShouldRender", 1);
             }
         }
@@ -40,15 +41,8 @@ public class LightRendererMixin {
     @Unique
     public void setShadowUniforms(foundry.veil.api.client.render.shader.program.ShaderProgram shaderProgram) {
         Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
-        Matrix4f shadowModelView = new Matrix4f();
-        shadowModelView.identity();
-        ShadowMapRenderer.rotateShadowModelView(shadowModelView);
-        Vector4f lightPosition = new Vector4f(0.0f, 0.0f, 1.0f, 0.0f);
-        lightPosition.mul(shadowModelView.invert());
 
-        Vector3f shadowLightDirection = new Vector3f(lightPosition.x(), lightPosition.y(), lightPosition.z());
         shaderProgram.setMatrix("viewMatrix", ShadowMapRenderer.createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, true).peek().getPositionMatrix());
         shaderProgram.setMatrix("orthographMatrix", ShadowMapRenderer.createProjMat());
-        shaderProgram.setVector("lightAngled", shadowLightDirection);
     }
 }

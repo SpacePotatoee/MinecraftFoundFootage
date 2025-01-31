@@ -2,6 +2,7 @@ package com.sp;
 
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
+import com.sp.command.BlackScreenCommand;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
@@ -22,6 +23,7 @@ import eu.midnightdust.lib.config.MidnightConfig;
 import foundry.veil.api.client.util.Easings;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -72,6 +74,8 @@ public class SPBRevamped implements ModInitializer {
 		ModBlockEntities.registerAllBlockEntities();
 		GeckoLib.initialize();
 		MidnightConfig.init(MOD_ID, ConfigStuff.class);
+
+		CommandRegistrationCallback.EVENT.register(BlackScreenCommand::register);
 
 		// Thanks Bob Mowzie
 		GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());

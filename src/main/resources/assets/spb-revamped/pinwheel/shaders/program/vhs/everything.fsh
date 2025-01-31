@@ -138,7 +138,9 @@ void main() {
 
 
 		if(compat.a > 0.0 || compat2.a > 0.0){
-			color += compat + compat2;
+			color.rgb = blend(color, compat);
+			color.rgb = blend(color, compat2);
+//			color = compat + compat2;
 			color.a = min(compat.a + compat2.a, 1.0);
 		}
 

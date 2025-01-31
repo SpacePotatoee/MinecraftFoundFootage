@@ -35,6 +35,7 @@
     "AOFixMixin",
     "CameraMixin",
     "DinoDebugRendererMixin",
+    "DisableF3Mixin",
     "DisableJumpMixin",
     "EntityRenderDispatcherMixin",
     "EntityRendererMixin",

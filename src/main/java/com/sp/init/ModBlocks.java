@@ -19,6 +19,9 @@ import net.minecraft.world.BlockView;
 
 public class ModBlocks {
 
+    public static final Block VoidBlock = registerBlock("void_block",
+            new Block(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
+
     //////Level 1 Stuff//////
     public static final Block WallBlock = registerBlock("wall_block",
             new WallBlock(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.WALL)));

@@ -21,11 +21,6 @@ public class SmilerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.opacity = 0.0f;
         this.tick = 20;
         this.randomTexture = 1;
-
-//        if(!smiler.getWorld().isClient) {
-//            this.randomTexture = 1;
-//            this.sync();
-//        }
     }
 
 

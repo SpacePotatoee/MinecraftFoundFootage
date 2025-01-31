@@ -24,6 +24,9 @@ public abstract class DeathScreenMixin extends Screen {
         super(title);
     }
 
+    @Unique private static boolean firstTimeDead = true;
+    @Unique private int delay = 0;
+
     @Unique
     private boolean isInBackrooms(){
         if(this.client.player != null){
@@ -41,6 +44,7 @@ public abstract class DeathScreenMixin extends Screen {
     private ButtonWidget.Builder disableRespawnButton(Text message, ButtonWidget.PressAction onPress){
         if(this.isInBackrooms()) {
             return new ButtonWidget.Builder(message, button -> {
+                firstTimeDead = false;
                 button.active = true;
             });
         }
@@ -53,6 +57,7 @@ public abstract class DeathScreenMixin extends Screen {
     private ButtonWidget.Builder disableTitleScreenButton(Text message, ButtonWidget.PressAction onPress){
         if(this.isInBackrooms()) {
             return new ButtonWidget.Builder(message, button -> {
+                firstTimeDead = false;
                 button.active = true;
             });
         }
@@ -65,9 +70,12 @@ public abstract class DeathScreenMixin extends Screen {
     private void youAreNotDoneYet(CallbackInfo ci){
         if(this.isInBackrooms()) {
             this.setButtonsActive(true);
-            if (this.ticksSinceDeath == 50) {
-                this.client.player.requestRespawn();
-                this.client.setScreen(null);
+            if (!firstTimeDead) {
+                delay++;
+                if(delay == 80) {
+                    this.client.player.requestRespawn();
+                    this.client.setScreen(null);
+                }
             }
         }
     }

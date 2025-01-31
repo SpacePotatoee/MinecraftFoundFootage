@@ -6,23 +6,10 @@
       "type": "framebuffer",
       "name": "spb-revamped:shadowmap:depth"
     },
-    "MatSampler": {
-      "type": "framebuffer",
-      "name": "veil:transparent",
-      "sampler": 3
-    },
-    "LightSampler": {
-      "type": "framebuffer",
-      "name": "spb-revamped:opaque_light"
-    },
     "OpaqueNormal": {
       "type": "framebuffer",
       "name": "veil:transparent",
       "sampler": 2
-    },
-    "RNoiseDir": {
-      "type": "location",
-      "location": "spb-revamped:textures/shaders/rnoisedir.png"
     }
   }
 }

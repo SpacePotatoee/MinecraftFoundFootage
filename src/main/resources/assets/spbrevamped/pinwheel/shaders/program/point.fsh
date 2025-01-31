@@ -9,27 +9,22 @@
 in vec3 lightPos;
 in vec3 lightColor;
 in float radius;
-in float shouldRenderShadows;
 
 uniform sampler2D AlbedoSampler;
 uniform sampler2D NormalSampler;
 uniform sampler2D DiffuseDepthSampler;
 uniform sampler2D ShadowSampler;
-uniform sampler2D RNoiseDir;
-uniform sampler2D LightSampler;
-uniform usampler2D MatSampler;
 
 
 uniform mat4 viewMatrix;
 uniform mat4 orthographMatrix;
-uniform vec3 lightAngled;
 uniform vec2 ScreenSize;
 uniform float GameTime;
 uniform int ShouldRender;
+uniform int InOverWorld;
 
 out vec4 fragColor;
 
-const int MaxShadowSoftness = 30;
 
 float getSign(float num){
     if(num >= 0.0){
@@ -65,30 +60,33 @@ void main() {
     vec3 worldNormal = viewToWorldSpaceDirection(normalVS);
     vec3 offset = lightPos - pos;
 
-    if(ShouldRender == 1){
+    if(ShouldRender == 1) {
         vec3 tangent = normalize(cross(worldNormal, normalize(vec3(1.0))));
         vec3 bitangent = normalize(cross(worldNormal, tangent));
 
         mat3 TBN = mat3(tangent, bitangent, worldNormal);
         TBN = transpose(TBN);
 
+        bool heightChecks = pos.y > 30.6 || pos.y < -19.5 || lightPos.y < 20.5;
+        if(InOverWorld == 1){
+            heightChecks = false;
+        }
+
         //If the pixel isn't in range, there's no point in doing any calculations
-        if(abs(length(offset)) > radius - 2 || pos.y > 30.6 || pos.y < -19.5 || lightPos.y < 20.5){
+        if(abs(length(offset)) > radius - 2 || heightChecks){
             fragColor = setColor(albedoColor, normalVS, offset, 1.0);
             return;
         }
 
 
-        float light = 0.0;
-        float steps = 0.0;
         vec3 offsetPos = vec3(pos.x + (0.009 * worldNormal.r), pos.y + (0.009 * worldNormal.g), pos.z + (0.009 * worldNormal.b));
 
 //        for (int i = 0; i < 1; i++) {
         vec3 normalRayOffset = vec3((hash22(screenUv * 453.346) * 2.0 - 1.0) * 0.01, 0.0);
         normalRayOffset = (normalRayOffset * TBN) + offsetPos;
 
-//        bool hit = ddaRayMarch(offset, normalRayOffset, viewMatrix, orthographMatrix, ShadowSampler);
-        if(!ddaRayMarch(offset, normalRayOffset, viewMatrix, orthographMatrix, ShadowSampler)){
+        bool hit = ddaRayMarch(offset, normalRayOffset, viewMatrix, orthographMatrix, ShadowSampler);
+        if(!hit){
             fragColor = setColor(albedoColor, normalVS, offset, 1.0);
         }
     } else {
