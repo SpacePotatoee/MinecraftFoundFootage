@@ -1,3 +1,6 @@
 {
-  "parent": "minecraft:block/cube_all"
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "spb-revamped:block/pbr/color/crate/wooden_crate"
+  }
 }

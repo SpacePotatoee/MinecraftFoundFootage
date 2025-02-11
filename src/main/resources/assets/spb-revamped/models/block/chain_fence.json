@@ -1,15 +1,18 @@
 {
+	"textures": {
+		"0": "spb-revamped:block/pbr/color/chainfence/chain_fence"
+	},
 	"elements": [
 		{
 			"from": [0, 0, 7.5],
 			"to": [16, 16, 8.5],
 			"faces": {
-				"north": {"texture": "#missing", "cullface": "north"},
-				"east": {"uv": [0, 0, 1, 16], "texture": "#missing", "cullface": "east"},
-				"south": {"texture": "#missing", "cullface": "south"},
-				"west": {"uv": [0, 0, 1, 16], "texture": "#missing", "cullface": "west"},
-				"up": {"uv": [0, 0, 16, 1], "texture": "#missing", "cullface": "up"},
-				"down": {"uv": [0, 0, 16, 1], "texture": "#missing", "cullface": "down"}
+				"north": {"texture": "#0", "cullface": "north"},
+				"east": {"uv": [0, 0, 1, 16], "texture": "#0", "cullface": "east"},
+				"south": {"texture": "#0", "cullface": "south"},
+				"west": {"uv": [0, 0, 1, 16], "texture": "#0", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 1], "texture": "#0", "cullface": "up"},
+				"down": {"uv": [0, 0, 16, 1], "texture": "#0", "cullface": "down"}
 			}
 		}
 	]

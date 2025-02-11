@@ -6,9 +6,7 @@
 uniform sampler2D Sampler0;
 uniform sampler2D HeightMap;
 uniform sampler2D ColorMap;
-uniform sampler2D AoMap;
 uniform sampler2D NormalMap;
-uniform sampler2D OpacityMap;
 
 uniform vec4 ColorModulator;
 
@@ -34,7 +32,6 @@ void main() {
 
     vec4 color = vec4(0);
     vec4 normalMap = vec4(0);
-    vec4 aoMap = vec4(0);
     float dist = 0;
     vec3 pos = vec3(0);
     vec3 texCoords = vec3(0);
@@ -50,9 +47,7 @@ void main() {
             normalMap.rgb *= TBN;
             normalMap.r = normalMap.r;
 
-            aoMap = texture(AoMap, vec2(texCoords.x, -texCoords.y) * ZOOM);
-            vec4 opacityMap = texture(OpacityMap, vec2(texCoords.x, -texCoords.y) * ZOOM);
-            if(opacityMap.r <= 0.04){
+            if(color.a <= 0.1){
                 discard;
             }
             break;
@@ -61,7 +56,7 @@ void main() {
         dist += 0.001;
     }
 
-    fragAlbedo = vec4(color.rgb * (aoMap.rgb), 1.0);
+    fragAlbedo = vec4(color.rgb, 1.0);
     fragNormal = vec4(normalMap.rgb, 1.0);
     fragMaterial = ivec4(BLOCK_SOLID, 0, 0, 1);
     fragLightSampler = vec4(texCoord2, 0.0, 1.0);

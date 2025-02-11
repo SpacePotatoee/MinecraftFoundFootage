@@ -8,6 +8,7 @@ layout(location = 1) in vec4 Color;
 layout(location = 2) in vec2 UV0;
 layout(location = 3) in ivec2 UV2;
 layout(location = 4) in vec3 Normal;
+layout(location = 6) in float BlockMaterial1;
 
 uniform sampler2D Sampler2;
 
@@ -22,6 +23,7 @@ out vec2 texCoord0;
 out vec2 texCoord2;
 out vec4 lightmapColor;
 out vec3 normal;
+out float blockMaterial;
 
 
 void main() {
@@ -50,4 +52,5 @@ void main() {
     texCoord2 = minecraft_sample_lightmap_coords(UV2);
     lightmapColor = pow(texture(Sampler2, texCoord2), vec4(3));
     normal = NormalMat * Normal;
+    blockMaterial = BlockMaterial1;
 }

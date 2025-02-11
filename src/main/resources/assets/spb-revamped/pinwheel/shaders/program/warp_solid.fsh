@@ -48,6 +48,7 @@ in vec2 texCoord0;
 in vec2 texCoord2;
 in vec4 lightmapColor;
 in vec3 normal;
+in float blockMaterial;
 
 void main() {
     vec4 color = texture(Sampler0, texCoord0) * vertexColor * ColorModulator;
@@ -55,9 +56,16 @@ void main() {
         discard;
     }
 
+    int Mat = BLOCK_SOLID;
+    if(blockMaterial != -1) {
+        Mat = int(blockMaterial);
+    }
+
+
+
     fragAlbedo = vec4(color.rgb, 1.0);
     fragNormal = vec4(normal, 1.0);
-    fragMaterial = ivec4(BLOCK_SOLID, 0, 0, 1);
+    fragMaterial = ivec4(Mat, 0, 0, 1);
     fragLightSampler = vec4(texCoord2, 0.0, 1.0);
     fragLightMap = lightmapColor;
 }
