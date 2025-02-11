@@ -14,6 +14,7 @@ import com.sp.networking.InitializePackets;
 import com.sp.render.*;
 import com.sp.render.camera.CameraShake;
 import com.sp.render.camera.CutsceneManager;
+import com.sp.render.gui.StaminaBar;
 import com.sp.render.gui.TitleText;
 import com.sp.render.physics.PhysicsPoint;
 import com.sp.render.physics.PhysicsStick;
@@ -50,7 +51,6 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -63,7 +63,7 @@ import org.joml.*;
 import java.lang.Math;
 import java.util.*;
 
-
+//-853 183 -270
 public class SPBRevampedClient implements ClientModInitializer {
     private static final CutsceneManager cutsceneManager = new CutsceneManager();
     private static final CameraShake cameraShake = new CameraShake();
@@ -103,6 +103,7 @@ public class SPBRevampedClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         HudRenderCallback.EVENT.register(new TitleText());
+        HudRenderCallback.EVENT.register(new StaminaBar());
 
         InitializePackets.registerS2CPackets();
 
@@ -111,7 +112,7 @@ public class SPBRevampedClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayers.getConcreteLayer());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Bricks, RenderLayers.getBricksLayer());
 
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTiles, RenderLayers.getPoolTileLayer());
+//        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTiles, RenderLayers.getPoolTileLayer());
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CHAINFENCE, RenderLayers.getChainFence());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CeilingTile, RenderLayers.getCeilingTile());
@@ -441,7 +442,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 SimpleOption<Integer> fps =  MinecraftClient.getInstance().options.getMaxFps();
                 if (BackroomsLevels.isInBackrooms(playerClient.getWorld().getRegistryKey())){
                     setInBackrooms(true);
-                    fps.setValue(30);
+//                    fps.setValue(30);
                 }else {
                     setInBackrooms(false);
 //                    setInBackrooms(ConfigStuff.forceBackrooms);

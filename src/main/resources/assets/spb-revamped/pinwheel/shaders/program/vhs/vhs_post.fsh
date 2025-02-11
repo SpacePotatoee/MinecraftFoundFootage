@@ -30,7 +30,7 @@ vec2 BarrelDistortionCoordinates(vec2 uv){
     vec2 pos = 2.0f * uv - 1.0f;
 
     float len = distance(pos, vec2(0.0f));
-    len = pow(len/2.0f, 1.0f);
+    len = pow(len/1.5f, 1.0f);
 
     pos = pos + pos * len * len;
 
@@ -65,39 +65,41 @@ void main() {
     }
 
     //TV OVERLAY
-    if(uv.x < -0.05 || uv.x > 1.05 || uv.y < -0.05 || uv.y > 1.05){
-
-        fragColor = vec4(vec3(0.1),1.0f);
-        fragColor *= viginette;
-
-    }
-    else if(uv.y > 2.0*uv.x-uv.y && uv.x > 1.0 || uv.x > 2.0*uv.y-uv.x && uv.x < 0.0 ||  uv.y > -2.0*uv.x-uv.y+2.0 && uv.x < 0.0 || uv.y < -2.0*uv.x-uv.y+2.0 && uv.x > 1.0 ){
-        uv = 2*uv-1;
-
-        float disty = abs(distance(uv.y, 0.0)-1.5);
-        fragColor = vec4(vec3(disty),1.0f)-0.35;
-
-        uv = uv/2.0 + 0.5;
-        fragColor *= viginette;
-    }
-    else if(uv.x < 0 || uv.x > 1){
-        uv = 2.0*uv-1.0;
-
-        float distx = abs(distance(uv.x, 0.0)-1.5);
-        fragColor = vec4(vec3(distx),1.0f)-0.35;
-
-        uv = uv/2.0 + 0.5;
-        fragColor *= viginette;
-    }
-    else if(uv.y < 0.0f || uv.y > 1.0f){
-        uv = 2.0*uv-1;
-
-        float disty = abs(distance(uv.y, 0.0)-1.5);
-        fragColor = vec4(vec3(disty),1.0f)-0.35;
-
-        uv = uv/2.0 + 0.5;
-        fragColor *= viginette;
-    }else {
+//    if(uv.x > 1.0 || uv.x < 0.0 || uv.y > 1.0 || uv.y < 0.0){
+//        fragColor = vec4(0);
+//    if(uv.x < -0.05 || uv.x > 1.05 || uv.y < -0.05 || uv.y > 1.05){
+//
+//        fragColor = vec4(vec3(0.1),1.0f);
+//        fragColor *= viginette;
+//
+//    }
+//    else if(uv.y > 2.0*uv.x-uv.y && uv.x > 1.0 || uv.x > 2.0*uv.y-uv.x && uv.x < 0.0 ||  uv.y > -2.0*uv.x-uv.y+2.0 && uv.x < 0.0 || uv.y < -2.0*uv.x-uv.y+2.0 && uv.x > 1.0 ){
+//        uv = 2*uv-1;
+//
+//        float disty = abs(distance(uv.y, 0.0)-1.5);
+//        fragColor = vec4(vec3(disty),1.0f)-0.35;
+//
+//        uv = uv/2.0 + 0.5;
+//        fragColor *= viginette;
+//    }
+//    else if(uv.x < 0 || uv.x > 1){
+//        uv = 2.0*uv-1.0;
+//
+//        float distx = abs(distance(uv.x, 0.0)-1.5);
+//        fragColor = vec4(vec3(distx),1.0f)-0.35;
+//
+//        uv = uv/2.0 + 0.5;
+//        fragColor *= viginette;
+//    }
+//    else if(uv.y < 0.0f || uv.y > 1.0f){
+//        uv = 2.0*uv-1;
+//
+//        float disty = abs(distance(uv.y, 0.0)-1.5);
+//        fragColor = vec4(vec3(disty),1.0f)-0.35;
+//
+//        uv = uv/2.0 + 0.5;
+//        fragColor *= viginette;
+//    }else {
         if(youCantEscape == 0) {
             fragColor = blur3;
 //            fragColor = texture(DiffuseSampler0, uv);
@@ -133,6 +135,6 @@ void main() {
         vec2 vhsNoise = texture(VhsNoise, vec2(uv.x - GameTime * 3000.0, uv.y + GameTime * 5000.0)).gb * 0.1;
         fragColor.gb += vec2(vhsNoise.x * 0.9, vhsNoise.y * 0.9) * 0.2;
         fragColor.rgb = yuv2rgb(fragColor.rgb);
-    }
+//    }
 }
 

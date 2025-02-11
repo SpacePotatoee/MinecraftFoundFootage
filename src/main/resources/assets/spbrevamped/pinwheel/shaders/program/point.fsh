@@ -73,7 +73,7 @@ void main() {
         }
 
         //If the pixel isn't in range, there's no point in doing any calculations
-        if(abs(length(offset)) > radius - 2 || heightChecks){
+        if(abs(length(offset)) > radius || heightChecks){
             fragColor = setColor(albedoColor, normalVS, offset, 1.0);
             return;
         }

@@ -30,3 +30,8 @@ accessible field net/minecraft/client/render/block/BlockModelRenderer$Translatio
 accessible field net/minecraft/client/render/block/BlockModelRenderer$Translation fourthCorner I
 accessible field net/minecraft/client/render/block/BlockModelRenderer$NeighborOrientation shape I
 accessible class net/minecraft/client/render/WorldRenderer$RenderableChunks
+accessible class net/minecraft/client/option/SimpleOption$Callbacks
+accessible class net/minecraft/client/render/VertexFormatElement$Type$SetupTask
+accessible class net/minecraft/client/render/VertexFormatElement$Type$ClearTask
+accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask
+accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask$RenderData
