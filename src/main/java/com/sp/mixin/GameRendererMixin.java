@@ -8,8 +8,6 @@ import com.sp.render.camera.CutsceneManager;
 import com.sp.render.ShadowMapRenderer;
 import com.sp.util.MathStuff;
 import foundry.veil.api.client.render.VeilRenderSystem;
-import foundry.veil.api.client.render.VeilRenderer;
-import foundry.veil.api.client.render.deferred.VeilDeferredRenderer;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -18,12 +16,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -101,9 +97,25 @@ public abstract class GameRendererMixin {
         return deg;
     }
 
+    @Overwrite
+    private void bobView(MatrixStack matrices, float tickDelta){
+        if (this.client.getCameraEntity() instanceof PlayerEntity) {
+            PlayerEntity playerEntity = (PlayerEntity)this.client.getCameraEntity();
+            float f = playerEntity.horizontalSpeed - playerEntity.prevHorizontalSpeed;
+            float g = -(playerEntity.horizontalSpeed + f * tickDelta);
+            float h = MathHelper.lerp(tickDelta, playerEntity.prevStrideDistance, playerEntity.strideDistance);
+            matrices.translate(MathHelper.sin(g * (float) Math.PI) * h * 0.5F, -Math.abs(MathHelper.cos(g * (float) Math.PI) * h), 0.0F);
+            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0F));
+            float multiplier = 5.0f;
+            if (ConfigStuff.enableRealCamera) {
+                multiplier = 10.0f;
+            }
+            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(g * (float) Math.PI - 0.2F) * h) * multiplier));
+        }
+    }
 
 
-    @Inject(method = "getFov", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
+    //@Inject(method = "getFov", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
     private void getFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
         if(SPBRevampedClient.isInBackrooms()){
             cir.setReturnValue(65.0);

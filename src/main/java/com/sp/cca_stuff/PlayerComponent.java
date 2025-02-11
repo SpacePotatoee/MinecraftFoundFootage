@@ -7,6 +7,7 @@ import com.sp.entity.client.SkinWalkerCapturedFlavorText;
 import com.sp.entity.custom.SmilerEntity;
 import com.sp.init.ModDamageTypes;
 import com.sp.init.ModSounds;
+import com.sp.util.mixinstuff.ServerPlayNetworkSprint;
 import com.sp.networking.InitializePackets;
 import com.sp.sounds.AmbientSoundInstance;
 import com.sp.sounds.CreakingSoundInstance;
@@ -19,10 +20,10 @@ import com.sp.sounds.pipes.WaterPipeSoundInstance;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.util.Timer;
 import com.sp.init.BackroomsLevels;
+import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
-import foundry.veil.api.client.util.Easings;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -30,6 +31,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -51,9 +54,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.sp.SPBRevamped.SLOW_SPEED_MODIFIER;
+
 @SuppressWarnings("DataFlowIssue")
 public class PlayerComponent implements AutoSyncedComponent, ClientTickingComponent, ServerTickingComponent {
     private final PlayerEntity player;
+
+    private int stamina;
+    private boolean tired;
+
+    private int scrollingInInventoryTime;
+
     private boolean flashLightOn;
     private boolean shouldRender;
     private boolean isDoingCutscene;
@@ -102,6 +113,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public boolean shouldInflictGlitchDamage;
 
     public PlayerComponent(PlayerEntity player){
+        this.stamina = 300;
+        this.tired = false;
+        this.scrollingInInventoryTime = 0;
         this.player = player;
         this.flashLightOn = false;
         this.shouldRender = true;
@@ -138,6 +152,26 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.glitchTick = 0;
     }
 
+    public int getStamina() {
+        return stamina;
+    }
+    public void setStamina(int stamina) {
+        this.stamina = stamina;
+    }
+
+    public boolean isTired() {
+        return tired;
+    }
+    public void setTired(boolean tired) {
+        this.tired = tired;
+    }
+
+    public int getScrollingInInventoryTime() {
+        return scrollingInInventoryTime;
+    }
+    public void setScrollingInInventoryTime(int scrollingInInventoryTime) {
+        this.scrollingInInventoryTime = scrollingInInventoryTime;
+    }
 
     public boolean isShouldRender() {
         return shouldRender;
@@ -264,6 +298,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     @Override
     public void readFromNbt(NbtCompound tag) {
+        this.stamina = tag.getInt("stamina");
         this.flashLightOn = tag.getBoolean("flashLightOn");
         this.shouldRender = tag.getBoolean("shouldRender");
         this.isDoingCutscene = tag.getBoolean("isDoingCutscene");
@@ -282,6 +317,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     @Override
     public void writeToNbt(NbtCompound tag) {
+        tag.putInt("stamina", this.stamina);
         tag.putBoolean("flashLightOn", this.flashLightOn);
         tag.putBoolean("shouldRender", this.shouldRender);
         tag.putBoolean("isDoingCutscene", this.isDoingCutscene);
@@ -506,6 +542,53 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     @Override
     public void serverTick() {
         getPrevSettings();
+
+        //Update Stamina
+        EntityAttributeInstance attributeInstance = this.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+        if(attributeInstance != null) {
+            int temp = this.stamina;
+            if(!this.player.isCreative() && !this.player.isSpectator()){
+                if(this.player.isSprinting()) {
+                    this.stamina--;
+                } else {
+                    this.stamina = Math.min(this.stamina + 1, 300);
+                }
+            } else {
+                this.stamina = 300;
+            }
+
+            if(this.stamina <= 0){
+                this.stamina = 0;
+                this.setTired(true);
+            }
+
+            if(this.isTired()){
+                this.player.setSprinting(false);
+                this.player.addExhaustion(0.05f);
+                if(this.stamina > 200){
+                    this.setTired(false);
+                }
+            } else if(!((ServerPlayNetworkSprint)((ServerPlayerEntity)this.player).networkHandler).getShouldStopSprinting()){
+                this.player.setSprinting(true);
+            }
+
+
+
+            if ((!player.isSneaking() && !player.isSprinting()) || this.isTired()) {
+                if(!attributeInstance.hasModifier(SLOW_SPEED_MODIFIER)) {
+                    attributeInstance.addTemporaryModifier(SLOW_SPEED_MODIFIER);
+                }
+
+            } else if(attributeInstance.hasModifier(SLOW_SPEED_MODIFIER)) {
+                attributeInstance.removeModifier(SLOW_SPEED_MODIFIER);
+            }
+
+            if(temp != this.stamina && this.stamina % 20 == 0){
+                //Only sync with the specific player since other players don't need to know your stamina
+                InitializeComponents.PLAYER.syncWith((ServerPlayerEntity) this.player, (ComponentProvider) this.player);
+            }
+
+        }
 
         //Damage if glitched enough from smilers
         if(this.shouldInflictGlitchDamage){
@@ -809,26 +892,5 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         } else {
             return new Vec3d(11.5, 29, 7.5);
         }
-    }
-
-    public float setSetStaticTimer() {
-        if(this.isShouldDoStatic()) {
-            if (this.staticTimer == null) {
-                this.staticTimer = new Timer(2000, Easings.Easing.easeOutCirc);
-                this.staticTimer.startTimer();
-            }
-
-            if(this.staticTimer.isDone()){
-                this.staticTimer = null;
-
-                PacketByteBuf buffer = PacketByteBufs.create();
-                ClientPlayNetworking.send(InitializePackets.STATIC_PACKET, buffer);
-                return 2.0f;
-            }
-
-            return this.staticTimer.getCurrentTime();
-        }
-
-        return 2.0f;
     }
 }
