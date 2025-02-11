@@ -1,34 +1,118 @@
 package com.sp.mixin.lightshadows;
 
+import foundry.veil.api.client.render.CullFrustum;
 import foundry.veil.api.client.render.deferred.light.IndirectLight;
 import foundry.veil.api.client.render.deferred.light.Light;
 import foundry.veil.api.client.render.deferred.light.renderer.IndirectLightRenderer;
-import foundry.veil.api.client.render.deferred.light.renderer.LightRenderer;
-import net.minecraft.client.gl.VertexBuffer;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.lwjgl.system.MemoryStack;
+import org.spongepowered.asm.mixin.*;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.List;
+
+import static org.lwjgl.opengl.GL15C.glBindBuffer;
+import static org.lwjgl.opengl.GL15C.glBufferSubData;
+import static org.lwjgl.opengl.GL40C.GL_DRAW_INDIRECT_BUFFER;
 
 @Mixin(value = IndirectLightRenderer.class, remap = false)
 public abstract class IndirectLightRendererMixin<T extends Light & IndirectLight<T>> {
+    @Shadow @Final protected int highResSize;
+    @Shadow @Final protected int lowResSize;
+    @Shadow @Final private int indirectVbo;
 
-    @Mutable
-    @Shadow @Final protected int lightSize;
+    @Shadow protected abstract boolean isVisible(T light, CullFrustum frustum);
 
-    //@Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lfoundry/veil/api/client/render/deferred/light/renderer/IndirectLightRenderer;lightSize:I"))
-    private void changeSize(IndirectLightRenderer instance, int value){
-        if(value == Float.BYTES * 7) {
-            this.lightSize = Float.BYTES * 8;
-        } else {
-            this.lightSize = value;
+    @Shadow protected abstract boolean shouldDrawHighResolution(T light, CullFrustum frustum);
+
+
+    /**
+     * {@link org.lwjgl.opengl.GL15C#glGetBufferSubData(int, long, IntBuffer)} was taking way too long to complete when getting called (causing a lot of lag). So commenting that out and using the very convenient second option VASTLY inscreases performance. No idea if the compute shader was needed though
+     */
+    @Overwrite
+    private int updateVisibility(List<T> lights, CullFrustum frustum) {
+//        if (this.sizeVbo != 0) {
+//            VeilRenderSystem.setShader(VeilShaders.LIGHT_INDIRECT_SPHERE);
+//            ShaderProgram shader = VeilRenderSystem.getShader();
+//            if (shader != null && shader.isCompute()) {
+//                try (MemoryStack stack = MemoryStack.stackPush()) {
+//                    VeilRenderSystem.bind("VeilLightInstanced", this.instancedBlock);
+//                    VeilRenderSystem.bind("VeilLightIndirect", this.indirectBlock);
+//
+//                    glBindBufferRange(GL_ATOMIC_COUNTER_BUFFER, 0, this.sizeVbo, 0, Integer.BYTES);
+//                    glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, stack.callocInt(1));
+//
+//                    shader.setInt("HighResSize", this.highResSize);
+//                    shader.setInt("LowResSize", this.lowResSize);
+//                    shader.setInt("LightSize", this.lightSize / Float.BYTES);
+//                    shader.setInt("PositionOffset", this.positionOffset);
+//                    shader.setInt("RangeOffset", this.rangeOffset);
+//
+//                    profiler.swap("setting up frustum planes");
+//                    Vector4fc[] planes = frustum.getPlanes();
+//                    float[] values = new float[4 * planes.length];
+//                    for (int i = 0; i < planes.length; i++) {
+//                        Vector4fc plane = planes[i];
+//                        values[i * 4] = plane.x();
+//                        values[i * 4 + 1] = plane.y();
+//                        values[i * 4 + 2] = plane.z();
+//                        values[i * 4 + 3] = plane.w();
+//                    }
+//                    shader.setFloats("FrustumPlanes", values);
+//
+//                    shader.bind();
+//
+//                    profiler.swap("dispatch compute");
+//                    glDispatchCompute(Math.min(lights.size(), VeilRenderSystem.maxComputeWorkGroupCountX()), 1, 1);
+//                    glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT);
+//
+//                    ShaderProgram.unbind();
+//
+//                    profiler.swap("Allocating");
+//                    IntBuffer counter = stack.mallocInt(1);
+//                    profiler.swap("Bind buffer 1");
+//                    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, this.sizeVbo);
+//                    profiler.swap("Sub data");
+//                    glGetBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0L, counter);
+//                    profiler.swap("Bind buffer 2");
+//                    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+//                    return counter.get(0);
+//                } finally {
+//                    profiler.swap("Unbind blocks");
+//                    VeilRenderSystem.unbind(this.instancedBlock);
+//                    VeilRenderSystem.unbind(this.indirectBlock);
+//                    profiler.swap("Bind buffer range");
+//                    glBindBufferRange(GL_ATOMIC_COUNTER_BUFFER, 0, 0, 0, Integer.BYTES);
+//                }
+//            }
+//        }
+
+        int count = 0;
+        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, this.indirectVbo);
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            ByteBuffer buffer = stack.malloc(this.lowResSize > 0 ? Integer.BYTES * 5 : Integer.BYTES);
+
+            int index = 0;
+            for (T light : lights) {
+                if (this.isVisible(light, frustum)) {
+                    if (this.lowResSize > 0) {
+                        boolean highRes = this.shouldDrawHighResolution(light, frustum);
+                        buffer.putInt(0, highRes ? this.highResSize : this.lowResSize);
+                        buffer.putInt(4, 1);
+                        buffer.putInt(8, !highRes ? this.highResSize : 0);
+                        buffer.putInt(12, 0);
+                        buffer.putInt(16, index);
+                        glBufferSubData(GL_DRAW_INDIRECT_BUFFER, count * Integer.BYTES * 5L, buffer);
+                    } else {
+                        buffer.putInt(0, index);
+                        glBufferSubData(GL_DRAW_INDIRECT_BUFFER, count * Integer.BYTES * 5L + 16, buffer);
+                    }
+                    count++;
+                }
+                index++;
+            }
         }
+        return count;
     }
 
 }
