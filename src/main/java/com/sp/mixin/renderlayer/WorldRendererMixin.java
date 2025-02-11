@@ -26,8 +26,8 @@ public abstract class WorldRendererMixin {
         this.renderLayer(RenderLayers.getChainFence(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
         this.renderLayer(RenderLayers.getWoodenCrateLayer(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
         this.renderLayer(RenderLayers.getPoolroomsSky(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
-        this.renderLayer(RenderLayers.getCeilingLightLayer(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
-        this.renderLayer(RenderLayers.getPoolTileLayer(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
+//        this.renderLayer(RenderLayers.getCeilingLightLayer(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
+//        this.renderLayer(RenderLayers.getPoolTileLayer(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
     }
 
 }

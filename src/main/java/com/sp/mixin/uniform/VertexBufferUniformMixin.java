@@ -2,7 +2,7 @@ package com.sp.mixin.uniform;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.sp.SPBRevampedClient;
-import com.sp.util.uniformTest;
+import com.sp.util.mixinstuff.uniformTest;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.VertexBuffer;

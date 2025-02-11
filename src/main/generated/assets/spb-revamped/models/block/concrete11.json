@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "all": "spb-revamped:block/concrete11"
+    "all": "spb-revamped:block/pbr/color/concrete/concrete11"
   },
   "elements": [
     {   "from": [ 0, 0, 0 ],

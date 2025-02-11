@@ -20,7 +20,6 @@ public class RenderLayers extends RenderLayer {
 
 
     private static final RenderPhase.ShaderProgram LIGHT_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/fluorescent_light"));
-    private static final RenderPhase.ShaderProgram WINDOW = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "light/window"));
 
 
     private static final RenderPhase.ShaderProgram CEILING_TILE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/ceilingtile/ceilingtile"));
@@ -28,7 +27,7 @@ public class RenderLayers extends RenderLayer {
     private static final RenderPhase.ShaderProgram BRICK_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/bricks/bricks"));
     private static final RenderPhase.ShaderProgram WOODEN_CRATE = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/crate/crate"));
     private static final RenderPhase.ShaderProgram CONCRETE = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/concrete/concrete"));
-    private static final RenderPhase.ShaderProgram CEILING_LIGHT_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "ceiling_light"));
+    private static final RenderPhase.ShaderProgram POOLROOMS_SKY_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "sky"));
 
 
     private static final Identifier shadowSolid = new Identifier(SPBRevamped.MOD_ID, "shadowmap/rendertype_solid");
@@ -36,13 +35,6 @@ public class RenderLayers extends RenderLayer {
 
     private static final Identifier normalCarpet = new Identifier(SPBRevamped.MOD_ID, "pbr/carpet/carpet");
     public static final RenderPhase.ShaderProgram CARPET_PROGRAM = new RenderPhase.ShaderProgram(RenderLayers::getCarpetProgram);
-
-    private static final Identifier normalPoolTile = new Identifier(SPBRevamped.MOD_ID, "pbr/pool_tiles/pool_tiles");
-    public static final RenderPhase.ShaderProgram POOL_TILE_PROGRAM = new RenderPhase.ShaderProgram(RenderLayers::getPoolTileProgram);
-
-
-    private static final Identifier POOLROOMS_SKY_SHADER = new Identifier(SPBRevamped.MOD_ID, "sky");
-    public static final RenderPhase.ShaderProgram SKY_PROGRAM = new RenderPhase.ShaderProgram(RenderLayers::getSkyProgram);
 
     public static final RenderLayer FLUORESCENT_LIGHT = RenderLayer.of(
             "fluorescent_light",
@@ -64,21 +56,7 @@ public class RenderLayers extends RenderLayer {
             false,
             false,
             RenderLayer.MultiPhaseParameters.builder()
-                    .program(SKY_PROGRAM)
-                    .build(true)
-    );
-
-    private static final RenderLayer CEILING_LIGHT = RenderLayer.of(
-            "ceiling_light",
-            VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
-            VertexFormat.DrawMode.QUADS,
-            2097152,
-            false,
-            false,
-            RenderLayer.MultiPhaseParameters.builder()
-                    .lightmap(ENABLE_LIGHTMAP)
-                    .program(CEILING_LIGHT_SHADER)
-                    .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
+                    .program(POOLROOMS_SKY_SHADER)
                     .build(true)
     );
 
@@ -129,24 +107,6 @@ public class RenderLayers extends RenderLayer {
                             RenderPhase.Textures.create()
                                     .add(CARPET_COLOR, false, true)
                                     .add(CARPET_NORMAL, false, true)
-                                    .build()
-                    )
-                    .build(true)
-    );
-
-    private static final RenderLayer POOL_TILE = RenderLayer.of(
-            "pool_tiles",
-            VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
-            VertexFormat.DrawMode.QUADS,
-            1536,
-            false,
-            false,
-            RenderLayer.MultiPhaseParameters.builder()
-                    .lightmap(ENABLE_LIGHTMAP)
-                    .program(POOL_TILE_PROGRAM)
-                    .texture(
-                            RenderPhase.Textures.create()
-                                    .add(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, false, true)
                                     .build()
                     )
                     .build(true)
@@ -210,46 +170,10 @@ public class RenderLayers extends RenderLayer {
         return shader.toShaderInstance();
     }
 
-    private static net.minecraft.client.gl.ShaderProgram getSkyProgram() {
-        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(POOLROOMS_SKY_SHADER);
-        if (shader == null) {
-            return null;
-        }
-
-        if(client.world != null) {
-//            SPBRevampedClient.setLightAngle(shader, client.world, false);
-        }
-
-        return shader.toShaderInstance();
-    }
-
-    private static net.minecraft.client.gl.ShaderProgram getPoolTileProgram(){
-        if(ShadowMapRenderer.isRenderingShadowMap()) {
-            foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(shadowSolid);
-            if (shader == null) {
-                return null;
-            }
-            return shader.toShaderInstance();
-        }
-        foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(normalPoolTile);
-        if (shader == null) {
-            return null;
-        }
-
-        return shader.toShaderInstance();
-    }
-
     public static RenderLayer getConcreteLayer() {
         return CONCRETE_LAYER;
     }
 
-    public static RenderLayer getCeilingLightLayer() {
-        return CEILING_LIGHT;
-    }
-
-    public static RenderLayer getPoolTileLayer() {
-        return POOL_TILE;
-    }
 
     public static RenderLayer getPoolroomsSky() {
         return POOLROOMS_SKY;

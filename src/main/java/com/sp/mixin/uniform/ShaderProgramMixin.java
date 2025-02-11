@@ -1,6 +1,6 @@
 package com.sp.mixin.uniform;
 
-import com.sp.util.uniformTest;
+import com.sp.util.mixinstuff.uniformTest;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.VertexFormat;
