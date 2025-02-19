@@ -97,6 +97,9 @@ public abstract class GameRendererMixin {
         return deg;
     }
 
+    /**
+     *
+     */
     @Overwrite
     private void bobView(MatrixStack matrices, float tickDelta){
         if (this.client.getCameraEntity() instanceof PlayerEntity) {

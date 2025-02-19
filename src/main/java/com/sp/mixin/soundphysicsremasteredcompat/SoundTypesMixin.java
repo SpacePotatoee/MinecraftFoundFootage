@@ -15,7 +15,7 @@ import java.util.Map;
 @Pseudo
 public class SoundTypesMixin {
 
-    @Inject(method = "<clinit>", at = @At(value = "INVOKE", target = "Ljava/util/Collections;unmodifiableMap(Ljava/util/Map;)Ljava/util/Map;", shift = At.Shift.BEFORE))
+    @Inject(method = "<clinit>", at = @At(value = "INVOKE", target = "Ljava/util/Collections;unmodifiableMap(Ljava/util/Map;)Ljava/util/Map;", shift = At.Shift.BEFORE), remap = false)
     private static void addMaps(CallbackInfo ci, @Local Map<BlockSoundGroup, String> names){
         names.put(SprintBlockSoundGroup.CARPET, "CARPET");
         names.put(SprintBlockSoundGroup.CONCRETE, "CONCRETE");

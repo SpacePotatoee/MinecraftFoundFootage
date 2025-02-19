@@ -19,7 +19,7 @@ public abstract class MinecraftClientMixin {
 
     @Shadow @Final public File runDirectory;
 
-    @ModifyArg(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;setPerspective(Lnet/minecraft/client/option/Perspective;)V"))
+    //@ModifyArg(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;setPerspective(Lnet/minecraft/client/option/Perspective;)V"))
     private Perspective disableF5(Perspective perspective){
         if(!SPBRevampedClient.isInBackrooms()){
             return perspective;

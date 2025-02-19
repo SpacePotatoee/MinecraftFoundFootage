@@ -308,7 +308,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
                 //Tick the currently active event and choose a random one every min and a half
                 if (!eventActive) {
-                    this.delay--;
+//                    this.delay--;
                     if (this.delay <= 0 || Keybinds.toggleEvent.wasPressed()) {
                         this.delay = 0;
                         boolean wasPressed = Keybinds.toggleEvent.wasPressed();
@@ -405,74 +405,74 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
 
                 //Start Looking for a player to take and take them when they're not talking and can't be seen
-                if(this.getIntercomCount() > 3 || Keybinds.toggleEvent.wasPressed()) { //Last Resort
-                    if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                        //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
-                        Map.Entry<UUID, Float> min = null;
-                        for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
-                            if (min == null || min.getValue() > entry.getValue()) {
-                                min = entry;
-
-                            }
-                        }
-
-                        if (min != null) {
-                            PlayerEntity target = this.world.getPlayerByUuid(min.getKey());
-                            if (target != null && target.isAlive() && !target.getUuid().equals(this.prevActiveSkinwalkerTarget)) {
-                                this.setActiveSkinwalkerTarget(target.getUuid());
-                                this.prevActiveSkinwalkerTarget = target.getUuid();
-                            }
-                        }
-
-                        if (this.getActiveSkinwalkerTarget() != null) {
-                            PlayerEntity target = this.getActiveSkinwalkerTarget();
-                            PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
-
-                            if (!targetComponent.isSpeaking()) {
-
-                                List<PlayerEntity> playerEntityList = target.getWorld().getPlayers(
-                                        TargetPredicate.DEFAULT
-                                                .ignoreDistanceScalingFactor()
-                                                .ignoreVisibility()
-                                                .setBaseMaxDistance(50)
-                                                .setPredicate(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test),
-                                        target,
-                                        target.getBoundingBox().expand(50));
-
-                                boolean seen = false;
-                                for (PlayerEntity player : playerEntityList) {
-                                    if (player != target) {
-                                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                                        if (playerComponent.canSeeActiveSkinWalkerTarget()) {
-                                            seen = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (!seen) {
-                                    //Take em
-                                    SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(this.world);
-                                    if (skinWalkerEntity != null) {
-
-                                        skinWalkerEntity.refreshPositionAndAngles((double) target.getX(), (double) target.getY(), (double) target.getZ(), target.getYaw(), target.getPitch());
-                                        skinWalkerEntity.setVelocity(target.getVelocity());
-                                        this.world.spawnEntity(skinWalkerEntity);
-                                        this.activeSkinWalkerEntity = skinWalkerEntity;
-
-                                        targetComponent.setBeingCaptured(true);
-                                        targetComponent.setHasBeenCaptured(true);
-                                        targetComponent.setShouldBeMuted(true);
-                                        targetComponent.sync();
-
-                                        ((ServerPlayerEntity) target).changeGameMode(GameMode.SPECTATOR);
-                                        ((ServerPlayerEntity) target).setCameraEntity(skinWalkerEntity);
-                                        this.done = true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+//                if(this.getIntercomCount() > 3 || Keybinds.toggleEvent.wasPressed()) { //Last Resort
+//                    if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+//                        //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
+//                        Map.Entry<UUID, Float> min = null;
+//                        for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
+//                            if (min == null || min.getValue() > entry.getValue()) {
+//                                min = entry;
+//
+//                            }
+//                        }
+//
+//                        if (min != null) {
+//                            PlayerEntity target = this.world.getPlayerByUuid(min.getKey());
+//                            if (target != null && target.isAlive() && !target.getUuid().equals(this.prevActiveSkinwalkerTarget)) {
+//                                this.setActiveSkinwalkerTarget(target.getUuid());
+//                                this.prevActiveSkinwalkerTarget = target.getUuid();
+//                            }
+//                        }
+//
+//                        if (this.getActiveSkinwalkerTarget() != null) {
+//                            PlayerEntity target = this.getActiveSkinwalkerTarget();
+//                            PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
+//
+//                            if (!targetComponent.isSpeaking()) {
+//
+//                                List<PlayerEntity> playerEntityList = target.getWorld().getPlayers(
+//                                        TargetPredicate.DEFAULT
+//                                                .ignoreDistanceScalingFactor()
+//                                                .ignoreVisibility()
+//                                                .setBaseMaxDistance(50)
+//                                                .setPredicate(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test),
+//                                        target,
+//                                        target.getBoundingBox().expand(50));
+//
+//                                boolean seen = false;
+//                                for (PlayerEntity player : playerEntityList) {
+//                                    if (player != target) {
+//                                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+//                                        if (playerComponent.canSeeActiveSkinWalkerTarget()) {
+//                                            seen = true;
+//                                            break;
+//                                        }
+//                                    }
+//                                }
+//                                if (!seen) {
+//                                    //Take em
+//                                    SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(this.world);
+//                                    if (skinWalkerEntity != null) {
+//
+//                                        skinWalkerEntity.refreshPositionAndAngles((double) target.getX(), (double) target.getY(), (double) target.getZ(), target.getYaw(), target.getPitch());
+//                                        skinWalkerEntity.setVelocity(target.getVelocity());
+//                                        this.world.spawnEntity(skinWalkerEntity);
+//                                        this.activeSkinWalkerEntity = skinWalkerEntity;
+//
+//                                        targetComponent.setBeingCaptured(true);
+//                                        targetComponent.setHasBeenCaptured(true);
+//                                        targetComponent.setShouldBeMuted(true);
+//                                        targetComponent.sync();
+//
+//                                        ((ServerPlayerEntity) target).changeGameMode(GameMode.SPECTATOR);
+//                                        ((ServerPlayerEntity) target).setCameraEntity(skinWalkerEntity);
+//                                        this.done = true;
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
 
                 if(this.activeSkinWalkerEntity != null) {
                     SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(this.activeSkinWalkerEntity);
