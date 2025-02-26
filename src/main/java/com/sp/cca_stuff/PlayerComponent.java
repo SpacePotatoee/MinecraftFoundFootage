@@ -662,6 +662,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 return;
             }
 
+            this.player.getInventory().clear();
+
             TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
             FabricDimensions.teleport(this.player, backrooms, target);
 
