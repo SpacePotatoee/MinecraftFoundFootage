@@ -119,10 +119,10 @@ public abstract class GameRendererMixin {
     }
 
 
-    //@Inject(method = "getFov", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
+    @Inject(method = "getFov", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
     private void getFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
         if(SPBRevampedClient.isInBackrooms()){
-            cir.setReturnValue(65.0);
+            cir.setReturnValue(85.0);
         }
 //        cir.setReturnValue(SPBRevampedClient.doCameraZoom(cir.getReturnValue(), this.client, camera.getFocusedEntity()));
     }
