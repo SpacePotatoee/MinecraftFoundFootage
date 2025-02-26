@@ -61,13 +61,18 @@ void main() {
         Mat = int(blockMaterial);
     }
 
+    vec4 LightmapColor = lightmapColor;
+    if(Mat == 19){
+        LightmapColor = vec4(1);
+        color = texture(Sampler0, texCoord0);
+    }
 
 
     fragAlbedo = vec4(color.rgb, 1.0);
     fragNormal = vec4(normal, 1.0);
     fragMaterial = ivec4(Mat, 0, 0, 1);
     fragLightSampler = vec4(texCoord2, 0.0, 1.0);
-    fragLightMap = lightmapColor;
+    fragLightMap = LightmapColor;
 }
 
 

@@ -134,7 +134,8 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
                         double volume = Utils.dbToPerc(Utils.getHighestAudioLevel(data));
 
                         if (volume >= 0.8) {
-                            component.setVisibleToEntity(true);
+                            component.setTalkingTooLoud(true);
+                            component.resetTalkingTooLoudTimer();
                         }
                     }
                 } else if(!component.isBeingCaptured() && !component.hasBeenCaptured()) {
@@ -191,24 +192,27 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
     }
 
     private void playerConnect(PlayerConnectedEvent playerConnectedEvent) {
-        speakingTime.put(playerConnectedEvent.getConnection().getPlayer().getUuid(), 0.0f);
+        PlayerEntity player = (PlayerEntity) playerConnectedEvent.getConnection().getPlayer().getPlayer();
+        if(!player.isSpectator() && !player.isCreative()) {
+            speakingTime.put(playerConnectedEvent.getConnection().getPlayer().getUuid(), 0.0f);
+        }
     }
 
     private void playerDisconnect(PlayerDisconnectedEvent playerDisconnectedEvent) {
-        this.removePlayerDecoder(playerDisconnectedEvent.getPlayerUuid());
-        speakingTime.remove(playerDisconnectedEvent.getPlayerUuid());
+        UUID playerUUID = playerDisconnectedEvent.getPlayerUuid();
+        this.removePlayerDecoder(playerUUID, decoders.get(playerUUID));
+        speakingTime.remove(playerUUID);
     }
 
     private void onServerStop(VoicechatServerStoppedEvent voicechatServerStoppedEvent) {
-        decoders.forEach((key, value) -> this.removePlayerDecoder(key));
+        decoders.forEach(this::removePlayerDecoder);
         speakingTime.clear();
     }
 
-    private void removePlayerDecoder(UUID uuid){
-        OpusDecoder decoder = decoders.get(uuid);
-            if(decoder != null){
-                decoder.close();
-            }
+    private void removePlayerDecoder(UUID uuid, OpusDecoder decoder){
+        if(decoder != null) {
+            decoder.close();
+        }
         decoders.remove(uuid);
     }
 

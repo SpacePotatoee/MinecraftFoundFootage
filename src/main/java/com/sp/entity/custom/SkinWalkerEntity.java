@@ -101,7 +101,8 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 1000F)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 1000.0F)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.31f);
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.30f)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 12.0f);
     }
 
 
@@ -110,6 +111,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         this.targetSelector.add(2, new SkinWalkerActiveTarget(this));
         this.targetSelector.add(1, new FinalFormActiveTargetGoal(this));
 
+        this.goalSelector.add(5, new FinalFormWanderGoal(this, 1.0));
         this.goalSelector.add(4, new SpeakGoal(this));
         this.goalSelector.add(3, new FollowClosestPlayerGoal(this, 5, 15, 1.0f));
         this.goalSelector.add(3, new ActNaturalGoal(this));
@@ -143,9 +145,9 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
             if (!this.component.isInTrueForm() && !this.component.shouldBeginReveal()) {
                 //3600
-//                if (this.age >= 2400 || this.component.getSuspicion() > this.maxSuspicion) {
-//                    this.component.setBeginReveal(true);
-//                }
+                if (this.age >= 2400 || this.component.getSuspicion() > this.maxSuspicion) {
+                    this.component.setBeginReveal(true);
+                }
 
                 this.updateLookAtSuspicion();
 

@@ -3,8 +3,7 @@
 	"texture_size": [512, 512],
 	"textures": {
 		"0": "spb-revamped:block/ceiling_tile_glitched",
-		"1": "spb-revamped:block/pbr/color/ceilingtile/ceiling_tile",
-		"particle": "spb-revamped:block/ceiling_tile"
+		"1": "spb-revamped:block/pbr/color/ceilingtile/ceiling_tile"
 	},
 	"elements": [
 		{

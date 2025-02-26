@@ -17,6 +17,7 @@ public class SkinWalkerModel extends GeoModel<SkinWalkerEntity> {
 	private final Identifier FINAL_MODEL = new Identifier(SPBRevamped.MOD_ID, "geo/entity/skin_walker_final_default.geo.json");
 
 	private final Identifier PLACEHOLDER_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/skinwalker/placeholder.png");
+	private final Identifier STEVE_TEXTURE = new Identifier("textures/entity/player/wide/steve.png");
 
 	private final Identifier ANIMATION = new Identifier(SPBRevamped.MOD_ID, "animations/entity/skinwalker.animation.json");
 

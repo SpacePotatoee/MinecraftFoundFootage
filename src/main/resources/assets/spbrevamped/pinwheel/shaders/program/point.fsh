@@ -81,7 +81,6 @@ void main() {
 
         vec3 offsetPos = vec3(pos.x + (0.009 * worldNormal.r), pos.y + (0.009 * worldNormal.g), pos.z + (0.009 * worldNormal.b));
 
-//        for (int i = 0; i < 1; i++) {
         vec3 normalRayOffset = vec3((hash22(screenUv * 453.346) * 2.0 - 1.0) * 0.01, 0.0);
         normalRayOffset = (normalRayOffset * TBN) + offsetPos;
 

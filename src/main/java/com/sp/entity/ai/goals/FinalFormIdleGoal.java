@@ -41,6 +41,16 @@ public class FinalFormIdleGoal extends Goal {
     }
 
     @Override
+    public void start() {
+        this.component.setIdle(true);
+    }
+
+    @Override
+    public void stop() {
+        this.component.setIdle(false);
+    }
+
+    @Override
     public void tick() {
         if(!this.entity.getWorld().isClient) {
             List<PlayerEntity> playerEntityList = this.entity.getWorld().getPlayers(

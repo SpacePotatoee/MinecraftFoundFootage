@@ -98,7 +98,8 @@ public abstract class GameRendererMixin {
     }
 
     /**
-     *
+     * @author
+     * @reason
      */
     @Overwrite
     private void bobView(MatrixStack matrices, float tickDelta){

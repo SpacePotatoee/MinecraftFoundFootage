@@ -18,6 +18,7 @@ public class ModItemGroups {
                     .icon(() -> new ItemStack(ModBlocks.WallBlock)).entries((displayContext, entries) -> {
                         entries.add(ModBlocks.VoidBlock);
                         entries.add(ModBlocks.CEILINGLIGHT);
+                        entries.add(ModBlocks.EmergencyLight);
                         entries.add(ModItems.BACKSHROOM);
                         entries.add(ModItems.CANNED_FOOD);
                         entries.add(ModBlocks.WallBlock);

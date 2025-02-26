@@ -27,6 +27,8 @@ public abstract class IndirectLightRendererMixin<T extends Light & IndirectLight
 
 
     /**
+     * @author
+     * @reason
      * {@link org.lwjgl.opengl.GL15C#glGetBufferSubData(int, long, IntBuffer)} was taking way too long to complete when getting called (causing a lot of lag). So commenting that out and using the very convenient second option VASTLY inscreases performance. No idea if the compute shader was needed though
      */
     @Overwrite

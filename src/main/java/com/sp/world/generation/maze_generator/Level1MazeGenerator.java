@@ -209,6 +209,11 @@ public class Level1MazeGenerator {
             Optional<StructureTemplate> optional;
 
             Identifier roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level1/pillars");
+
+            if(random.nextBetween(0, 8) == 0){
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level1/storage");
+            }
+
             StructurePlacementData structurePlacementData = new StructurePlacementData().setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
             optional = structureTemplateManager.getTemplate(roomIdentifier);
 

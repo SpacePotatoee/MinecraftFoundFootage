@@ -27,12 +27,13 @@ public class LightRendererMixin {
         PlayerEntity player = client.player;
         if(player != null && client.world != null) {
             RegistryKey<World> registryKey = player.getWorld().getRegistryKey();
-            if (SPBRevampedClient.getCutsceneManager().isPlaying || (registryKey != BackroomsLevels.LEVEL0_WORLD_KEY && registryKey != World.OVERWORLD)) {
-                shader.setInt("ShouldRender", 0);
-            } else {
+            if((registryKey == BackroomsLevels.LEVEL0_WORLD_KEY && !SPBRevampedClient.getCutsceneManager().isPlaying) || SPBRevampedClient.doingTest){
                 setShadowUniforms(shader);
                 shader.setInt("InOverWorld", registryKey == World.OVERWORLD ? 1 : 0);
                 shader.setInt("ShouldRender", 1);
+            } else {
+                shader.setInt("InOverWorld", registryKey == World.OVERWORLD ? 1 : 0);
+                shader.setInt("ShouldRender", 0);
             }
         }
         shader.setFloat("gameTime", RenderSystem.getShaderGameTime());

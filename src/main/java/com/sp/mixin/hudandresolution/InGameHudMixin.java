@@ -43,7 +43,7 @@ public class InGameHudMixin {
                     hotbarSlideTimer.startTimer();
                     hotbarHoldTimer.resetToZero();
                 } else {
-                    if(hotbarHoldTimer.getCurrentTick() >= 30){
+                    if(hotbarHoldTimer.getCurrentTick() >= 60){
                         hotbarSlideTimer.forward();
                     }
                 }
@@ -99,8 +99,8 @@ public class InGameHudMixin {
 
 
 
-    //@Inject(method = {"renderExperienceBar", "renderCrosshair"}, at = @At("HEAD"), cancellable = true)
-    private void hotbarFade2(CallbackInfo ci){
+    @Inject(method = {"renderExperienceBar", "renderCrosshair"}, at = @At("HEAD"), cancellable = true)
+    private void disable(CallbackInfo ci){
         ci.cancel();
     }
 

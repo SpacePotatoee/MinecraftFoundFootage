@@ -26,6 +26,7 @@
     "lightshadows.VeilShadersMixin",
     "respawnsystem.PlayerManagerMixin",
     "skinstolen.ServerPlayerEntityMixin",
+    "soundphysicsremasteredcompat.AllowedSoundsConfigMixin",
     "soundphysicsremasteredcompat.SFRReflectivityMixin",
     "soundphysicsremasteredcompat.SoundTypesMixin",
     "stamina.ContinuedSprintFix"
@@ -60,8 +61,8 @@
     "hudandresolution.InGameHudMixin",
     "hudandresolution.MonitorMixin",
     "hudandresolution.VideoOptionsScreenMixin",
-    "pbr.RebuildTaskMixin",
     "pbr.BufferBuilderMixin",
+    "pbr.RebuildTaskMixin",
     "pbr.VertexFormatsMixin",
     "renderlayer.RenderLayerMixin",
     "renderlayer.WorldRendererMixin",

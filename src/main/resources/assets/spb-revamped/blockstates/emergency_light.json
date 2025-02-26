@@ -1,0 +1,112 @@
+{
+  "variants": {
+    "red_light=true,face=ceiling,facing=east": {
+      "model": "spb-revamped:block/emergency_light",
+      "x": 180,
+      "y": 270
+    },
+    "red_light=true,face=ceiling,facing=north": {
+      "model": "spb-revamped:block/emergency_light",
+      "x": 180,
+      "y": 180
+    },
+    "red_light=true,face=ceiling,facing=south": {
+      "model": "spb-revamped:block/emergency_light",
+      "x": 180
+    },
+    "red_light=true,face=ceiling,facing=west": {
+      "model": "spb-revamped:block/emergency_light",
+      "x": 180,
+      "y": 90
+    },
+    "red_light=true,face=floor,facing=east": {
+      "model": "spb-revamped:block/emergency_light",
+      "y": 90
+    },
+    "red_light=true,face=floor,facing=north": {
+      "model": "spb-revamped:block/emergency_light"
+    },
+    "red_light=true,face=floor,facing=south": {
+      "model": "spb-revamped:block/emergency_light",
+      "y": 180
+    },
+    "red_light=true,face=floor,facing=west": {
+      "model": "spb-revamped:block/emergency_light",
+      "y": 270
+    },
+    "red_light=true,face=wall,facing=east": {
+      "model": "spb-revamped:block/emergency_light",
+      "x": 90,
+      "y": 90
+    },
+    "red_light=true,face=wall,facing=north": {
+      "model": "spb-revamped:block/emergency_light",
+      "x": 90
+    },
+    "red_light=true,face=wall,facing=south": {
+      "model": "spb-revamped:block/emergency_light",
+      "x": 90,
+      "y": 180
+    },
+    "red_light=true,face=wall,facing=west": {
+      "model": "spb-revamped:block/emergency_light",
+      "x": 90,
+      "y": 270
+    },
+
+    "red_light=false,face=ceiling,facing=east": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "x": 180,
+      "y": 270
+    },
+    "red_light=false,face=ceiling,facing=north": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "x": 180,
+      "y": 180
+    },
+    "red_light=false,face=ceiling,facing=south": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "x": 180
+    },
+    "red_light=false,face=ceiling,facing=west": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "x": 180,
+      "y": 90
+    },
+    "red_light=false,face=floor,facing=east": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "y": 90
+    },
+    "red_light=false,face=floor,facing=north": {
+      "model": "spb-revamped:block/emergency_light_white"
+    },
+    "red_light=false,face=floor,facing=south": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "y": 180
+    },
+    "red_light=false,face=floor,facing=west": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "y": 270
+    },
+    "red_light=false,face=wall,facing=east": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "x": 90,
+      "y": 90
+    },
+    "red_light=false,face=wall,facing=north": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "x": 90
+    },
+    "red_light=false,face=wall,facing=south": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "x": 90,
+      "y": 180
+    },
+    "red_light=false,face=wall,facing=west": {
+      "model": "spb-revamped:block/emergency_light_white",
+      "x": 90,
+      "y": 270
+    }
+
+  }
+}

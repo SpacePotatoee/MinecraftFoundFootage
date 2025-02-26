@@ -91,6 +91,9 @@ public class ModSounds {
     public static final SoundEvent CONCRETE_RUN = registerSoundEvent("concrete_run");
 
 
+    public static final SoundEvent EMERGENCY_LIGHT_ALARM = registerSoundEvent("emergency_light_alarm");
+//    public static final SoundEvent ENTERING_THE_BACKROOMS_ALARM = registerSoundEvent("entering_the_backrooms_alarm");
+
     private static SoundEvent registerSoundEvent(String name) {
         Identifier id = new Identifier(SPBRevamped.MOD_ID, name);
         return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));

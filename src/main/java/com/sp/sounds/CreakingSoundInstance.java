@@ -27,7 +27,6 @@ public class CreakingSoundInstance extends MovingSoundInstance {
     public void tick() {
         RegistryKey<World> level = this.player.getWorld().getRegistryKey();
         WorldEvents events = InitializeComponents.EVENTS.get(this.player.getWorld());
-        System.out.println(events.isLevel2Warp());
         if(level != BackroomsLevels.LEVEL2_WORLD_KEY || this.player.isRemoved() || !events.isLevel2Warp()) {
             if(!events.isLevel2Warp()){
                 this.volume -= 0.01f;

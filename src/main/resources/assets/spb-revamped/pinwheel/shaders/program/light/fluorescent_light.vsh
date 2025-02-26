@@ -29,7 +29,7 @@ void main() {
     float dist = viewToPlayerSpace(Position).z;
 
     #ifdef WARP
-        dist *= 0.02 * sin(warAngle * 200);
+        dist *= 0.03 * sin(warAngle * 200);
     #else
         dist *= 0;
     #endif

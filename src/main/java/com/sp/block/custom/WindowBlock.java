@@ -34,7 +34,6 @@ public class WindowBlock extends BlockWithEntity {
         BlockState blockState = ctx.getWorld().getBlockState(ctx.getBlockPos());
         if(ctx.getPlayer() != null){
             if(ctx.getPlayer().isSneaking()){
-                System.out.println(blockState.isOf(this));
                 if (blockState.isOf(this)) {
                     return blockState.with(point, Math.min(3, blockState.get(point) + 1)).with(pointActive, false);
                 } else {

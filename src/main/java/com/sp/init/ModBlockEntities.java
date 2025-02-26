@@ -16,6 +16,7 @@ public class ModBlockEntities {
     public static BlockEntityType<WoodenCrateBlockEntity> WOODEN_CRATE_BLOCK_ENTITY;
 
     public static BlockEntityType<CeilingLightBlockEntity> CEILING_LIGHT_BLOCK_ENTITY;
+    public static BlockEntityType<EmergencyLightBlockEntity> EMERGENCY_LIGHT_BLOCK_ENTITY;
 
 
     public static void registerAllBlockEntities(){
@@ -49,5 +50,10 @@ public class ModBlockEntities {
                 new Identifier(SPBRevamped.MOD_ID,"ceiling_light_block_entity"),
                 FabricBlockEntityTypeBuilder.create(CeilingLightBlockEntity::new,
                         ModBlocks.CEILINGLIGHT).build());
+
+        EMERGENCY_LIGHT_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
+                new Identifier(SPBRevamped.MOD_ID,"emergency_light_block_entity"),
+                FabricBlockEntityTypeBuilder.create(EmergencyLightBlockEntity::new,
+                        ModBlocks.EmergencyLight).build());
     }
 }

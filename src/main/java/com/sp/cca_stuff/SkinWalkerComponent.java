@@ -25,6 +25,7 @@ public class SkinWalkerComponent implements AutoSyncedComponent {
     private boolean shouldLookAtTarget;
     private boolean active;
     private boolean trueForm;
+    private boolean idle;
     private boolean shouldActNatural;
     private boolean currentlyActingNatural;
     private boolean isSneaking;
@@ -101,6 +102,13 @@ public class SkinWalkerComponent implements AutoSyncedComponent {
 
     public boolean isActive() {return this.active;}
     public void setActive(boolean active) {this.active = active;}
+
+    public boolean isIdle() {
+        return idle;
+    }
+    public void setIdle(boolean idle) {
+        this.idle = idle;
+    }
 
     public boolean isSneaking() {return this.isSneaking;}
     public void setSneaking(boolean sneaking) {this.isSneaking = sneaking; sync();}

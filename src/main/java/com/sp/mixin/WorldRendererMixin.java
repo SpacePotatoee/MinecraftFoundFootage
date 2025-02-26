@@ -1,16 +1,15 @@
 package com.sp.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevampedClient;
 import com.sp.init.BackroomsLevels;
+import com.sp.render.pbr.BlockIdMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.joml.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -50,7 +49,13 @@ public abstract class WorldRendererMixin {
             }
 
         }
+    }
 
+    @Inject(method = "render", at = @At("HEAD"))
+    private void initBlockIDs(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci){
+        if(!BlockIdMap.init) {
+            BlockIdMap.init();
+        }
     }
 
     @Inject(method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FDDD)V", at = @At("HEAD"), cancellable = true)

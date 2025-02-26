@@ -94,6 +94,9 @@ public class ModBlocks {
     public static final Block ThinFluorescentLight = registerBlock("thin_fluorescent_light",
             new ThinFluorescentLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles()));
 
+    public static final Block EmergencyLight = registerBlock("emergency_light",
+            new EmergencyLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles()));
+
     public static final Block BottomTrim = registerBlock("bottom_trim",
             new BottomTrim(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).collidable(false).nonOpaque().noBlockBreakParticles().sounds(SprintBlockSoundGroup.SILENT)));
 

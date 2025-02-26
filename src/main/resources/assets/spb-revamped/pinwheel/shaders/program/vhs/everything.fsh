@@ -26,6 +26,7 @@ uniform sampler2D TransparentCompatSampler;
 uniform sampler2D OpaqueCompatSampler;
 uniform usampler2D TransparentMatSampler;
 uniform usampler2D OpaqueMatSampler;
+uniform sampler2D OpaqueAlbedoSampler;
 uniform sampler2D CloudNoise1;
 uniform sampler2D CloudNoise2;
 
@@ -142,6 +143,18 @@ void main() {
 			color.rgb = blend(color, compat2);
 //			color = compat + compat2;
 			color.a = min(compat.a + compat2.a, 1.0);
+		}
+
+		//Emergency Light. Need this to get it to shine easier
+		if(OpaqueMat == 19){
+			vec4 testColor = texture(OpaqueAlbedoSampler, texCoord);
+//			color.rgb = testColor.rgb;
+			//If the color is pure white
+			if(testColor.r + testColor.g + testColor.b >= 3){
+				color = testColor;
+			} else if(testColor.r >= 1 && testColor.g + testColor.b <= 0) {
+				color = vec4(1.0, 0.0, 0.0, 1.0);
+			}
 		}
 
 

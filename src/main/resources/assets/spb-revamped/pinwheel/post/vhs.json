@@ -151,6 +151,11 @@
             "name": "veil:opaque",
             "sampler": 0
         },
+        "OpaqueAlbedoSampler": {
+            "type": "framebuffer",
+            "name": "veil:opaque",
+            "sampler": 1
+        },
         "OpaqueMatSampler": {
             "type": "framebuffer",
             "name": "veil:opaque",

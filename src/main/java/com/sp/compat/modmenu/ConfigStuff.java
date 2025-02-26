@@ -21,7 +21,7 @@ public class ConfigStuff extends MidnightConfig {
     public static boolean enableSmoothCamera = true;
 
     @Entry(category = VIDEO, isSlider = true, min = 0, max = 1)
-    public static float cameraSmoothing = 0.5f;
+    public static float cameraSmoothing = 0.7f;
 
 
     @Comment(category = VIDEO)

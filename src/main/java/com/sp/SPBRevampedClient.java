@@ -99,6 +99,9 @@ public class SPBRevampedClient implements ClientModInitializer {
 
     public static boolean shoudlRenderWarp = false;
 
+
+    public static boolean doingTest;
+
     @Override
     public void onInitializeClient() {
 
@@ -222,7 +225,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                                     playerComponent.setCanSeeActiveSkinWalkerTarget(true);
 
                                     PacketByteBuf buffer = PacketByteBufs.create();
-                                    buffer.writeBoolean(playerComponent.canSeeActiveSkinWalkerTarget());
+                                    buffer.writeBoolean(true);
                                     ClientPlayNetworking.send(InitializePackets.SEE_SKINWALKER_SYNC, buffer);
                                 }
                             } else {
@@ -230,7 +233,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                                     playerComponent.setCanSeeActiveSkinWalkerTarget(false);
 
                                     PacketByteBuf buffer = PacketByteBufs.create();
-                                    buffer.writeBoolean(playerComponent.canSeeActiveSkinWalkerTarget());
+                                    buffer.writeBoolean(false);
                                     ClientPlayNetworking.send(InitializePackets.SEE_SKINWALKER_SYNC, buffer);
                                 }
                             }
@@ -410,6 +413,9 @@ public class SPBRevampedClient implements ClientModInitializer {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) ->{
+            if(isInBackrooms()){
+                SPBRevampedClient.doingTest = false;
+            }
 
             Vector<PhysicsPoint> physicsPoints = PhysicsPoint.getAllInstances();
             if(!physicsPoints.isEmpty()){
@@ -439,14 +445,12 @@ public class SPBRevampedClient implements ClientModInitializer {
 
             PlayerEntity playerClient = client.player;
             if(playerClient != null){
-                SimpleOption<Integer> fps =  MinecraftClient.getInstance().options.getMaxFps();
-                if (BackroomsLevels.isInBackrooms(playerClient.getWorld().getRegistryKey())){
-                    setInBackrooms(true);
-//                    fps.setValue(30);
-                }else {
-                    setInBackrooms(false);
-//                    setInBackrooms(ConfigStuff.forceBackrooms);
-                }
+//                SimpleOption<Integer> fps =  MinecraftClient.getInstance().options.getMaxFps();
+                //                    fps.setValue(30);
+                //                    setInBackrooms(ConfigStuff.forceBackrooms);
+
+                //Main Set in Backrooms
+                setInBackrooms(BackroomsLevels.isInBackrooms(playerClient.getWorld().getRegistryKey()));
 
                 if(client.world != null) {
                     VeilRenderer renderer = VeilRenderSystem.renderer();

@@ -75,7 +75,7 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 
     @Override
     public void render(SkinWalkerEntity entity, float entityYaw, float partialTick, MatrixStack poseStack, VertexConsumerProvider bufferSource, int packedLight) {
-        if(this.skinWalkerEntity == null){
+        if(this.skinWalkerEntity == null || skinWalkerEntity.isRemoved()){
             this.skinWalkerEntity = entity;
         }
         float speed = entity.limbAnimator.getSpeed(partialTick);
@@ -84,19 +84,19 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
         if (speed > 1.0F) {
             speed = 1.0F;
         }
-//
+
         float h = MathHelper.lerpAngleDegrees(partialTick, entity.prevBodyYaw, entity.bodyYaw);
         float j = MathHelper.lerpAngleDegrees(partialTick, entity.prevHeadYaw, entity.headYaw);
         float yaw = j- h;
 
         float pitch = MathHelper.lerp(partialTick, entity.prevPitch, entity.getPitch());
-//
-////        Vec3d vec3d = this.getPositionOffset(entity, partialTick);
-////        double e = entity.getY() + vec3d.getY();
-////        poseStack.push();
-////        poseStack.translate(0, e, 0);
-////        poseStack.pop();
-//
+
+//        Vec3d vec3d = this.getPositionOffset(entity, partialTick);
+//        double e = entity.getY() + vec3d.getY();
+//        poseStack.push();
+//        poseStack.translate(0, e, 0);
+//        poseStack.pop();
+
         float animationProgress = this.getAnimationProgress(entity, partialTick);
         this.animateModel(entity, bufferSource, poseStack, pos, speed, animationProgress, -yaw, -pitch, partialTick);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);

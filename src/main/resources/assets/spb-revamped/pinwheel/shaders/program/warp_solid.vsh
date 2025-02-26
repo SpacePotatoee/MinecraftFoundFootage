@@ -36,7 +36,7 @@ void main() {
 
 
     #ifdef WARP
-    dist *= 0.02 * sin(warpAngle * 200.0);
+    dist *= 0.03 * sin(warpAngle * 200.0);
     #else
     dist *= 0;
     #endif

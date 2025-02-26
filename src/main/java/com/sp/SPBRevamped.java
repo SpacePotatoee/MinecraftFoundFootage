@@ -4,6 +4,7 @@ import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.command.BlackScreenCommand;
 import com.sp.command.CastToTheBackroomsCommand;
+import com.sp.command.SetDoingTestCommand;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
@@ -83,6 +84,7 @@ public class SPBRevamped implements ModInitializer {
 
 		CommandRegistrationCallback.EVENT.register(BlackScreenCommand::register);
 		CommandRegistrationCallback.EVENT.register(CastToTheBackroomsCommand::register);
+		CommandRegistrationCallback.EVENT.register(SetDoingTestCommand::register);
 
 		// Thanks Bob Mowzie
 		GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());
@@ -156,6 +158,12 @@ public class SPBRevamped implements ModInitializer {
 		buffer.writeFloat(volume);
 		buffer.writeFloat(pitch);
 		ServerPlayNetworking.send(player, InitializePackets.SOUND, buffer);
+	}
+
+	public static void sendDoTestPacket(ServerPlayerEntity player, boolean test){
+		PacketByteBuf buffer = PacketByteBufs.create();
+		buffer.writeBoolean(test);
+		ServerPlayNetworking.send(player, InitializePackets.DOTEST, buffer);
 	}
 
 }

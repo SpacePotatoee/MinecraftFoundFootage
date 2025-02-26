@@ -80,7 +80,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public int suffocationTimer;
     private int level2Timer;
     private boolean shouldDoStatic;
-    private Timer staticTimer;
 
     private boolean isBeingCaptured;
     private boolean hasBeenCaptured;
@@ -94,6 +93,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private boolean visibleToEntity;
     private int visibilityTimer;
     private int visibilityTimerCooldown;
+    private boolean talkingTooLoud;
+    private int talkingTooLoudTimer;
 
     MovingSoundInstance DeepAmbience;
     MovingSoundInstance GasPipeAmbience;
@@ -141,6 +142,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.visibleToEntity = false;
         this.visibilityTimer = 15;
         this.visibilityTimerCooldown = 0;
+
+        this.talkingTooLoud = false;
+        this.talkingTooLoudTimer = 20;
 
         this.suffocationTimer = 0;
         this.level2Timer = 200;
@@ -274,6 +278,17 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     public boolean isVisibleToEntity() {return visibleToEntity;}
     public void setVisibleToEntity(boolean visibleToEntity) {this.visibleToEntity = visibleToEntity;}
+
+    public boolean isTalkingTooLoud() {
+        return talkingTooLoud;
+    }
+    public void setTalkingTooLoud(boolean talkingTooLoud) {
+        this.talkingTooLoud = talkingTooLoud;
+    }
+
+    public void resetTalkingTooLoudTimer(){
+        this.talkingTooLoudTimer = 20;
+    }
 
     public boolean canSeeActiveSkinWalkerTarget() {return canSeeActiveSkinWalker;}
     public void setCanSeeActiveSkinWalkerTarget(boolean canSeeActiveSkinWalker) {this.canSeeActiveSkinWalker = canSeeActiveSkinWalker;}
@@ -646,14 +661,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             if (backrooms == null) {
                 return;
             }
-            System.out.println("WORKS2");
 
             TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-            System.out.println(FabricDimensions.teleport(this.player, backrooms, target));
-            System.out.println("WORKS3");
             FabricDimensions.teleport(this.player, backrooms, target);
 
-            System.out.println("WORKS4");
             this.setShouldNoClip(false);
             this.setDoingCutscene(true);
             this.sync();
@@ -756,6 +767,16 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
 
         //Update Entity Visibility
+        if(this.isTalkingTooLoud() && this.talkingTooLoudTimer >= 0){
+            this.setVisibleToEntity(true);
+            this.talkingTooLoudTimer--;
+        } else if(this.talkingTooLoudTimer <= 0){
+            this.setVisibleToEntity(false);
+            this.setTalkingTooLoud(false);
+            this.resetTalkingTooLoudTimer();
+        }
+
+
         if(!this.isVisibleToEntity()) {
             float speed = this.player.horizontalSpeed - this.player.prevHorizontalSpeed;
 
@@ -780,7 +801,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.visibilityTimerCooldown--;
             } else {
                 this.visibilityTimer = 15;
-                this.setVisibleToEntity(false);
+                if(!this.isTalkingTooLoud()) {
+                    this.setVisibleToEntity(false);
+                }
             }
         }
 

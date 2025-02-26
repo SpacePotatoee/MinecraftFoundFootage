@@ -53,7 +53,6 @@ public class MonitorMixin {
 
         for(VideoMode videoMode : this.videoModes){
             if((float) videoMode.getWidth() / videoMode.getHeight() == (float) 4/3 && videoMode.getRefreshRate() == maxRefreshRate){
-                System.out.println(videoMode.asString());
                 VhsAspectRatio.vhsAspectRatiosList.add(videoMode);
             }
         }

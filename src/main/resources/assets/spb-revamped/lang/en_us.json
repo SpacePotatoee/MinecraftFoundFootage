@@ -71,6 +71,7 @@
   "spb-revamped.midnightconfig.enableCameraRoll": "Enable Camera Roll",
   "spb-revamped.midnightconfig.enableSmoothCamera": "Enable Smooth Camera",
   "spb-revamped.midnightconfig.cameraSmoothing": "Camera Smoothing Multiplier",
+  "spb-revamped.midnightconfig.showHands": "Show Main Hand",
   "spb-revamped.midnightconfig.VhsAspectRatioComment": "If your monitor supports it, enable this and you will see different options in Minecraft's video settings for the fullscreen resolution. It gives a more \"VHS\" feel",
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Enable Only Vhs Aspect Ratios",
 
