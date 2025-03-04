@@ -43,8 +43,8 @@ public class SmilerEntity extends MobEntity {
     @Override
     public void tick() {
         if(!this.getWorld().isClient) {
-            if(!this.component.shouldDisappear() && this.getWorld().getClosestPlayer(this, 10) != null) {
-                List<? extends PlayerEntity> playerList = this.getWorld().getPlayers(TargetPredicate.createNonAttackable().setBaseMaxDistance(10).ignoreVisibility(), this, this.getBoundingBox().expand(10, 1, 10));
+            if(!this.component.shouldDisappear() && this.getWorld().getClosestPlayer(this, 15) != null) {
+                List<? extends PlayerEntity> playerList = this.getWorld().getPlayers(TargetPredicate.createNonAttackable().setBaseMaxDistance(15), this, this.getBoundingBox().expand(15, 1, 15));
 
                 for(PlayerEntity player : playerList) {
                     if (this.shouldDisappear(player)) {

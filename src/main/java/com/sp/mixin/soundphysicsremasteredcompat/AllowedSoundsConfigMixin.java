@@ -64,5 +64,7 @@ public class AllowedSoundsConfigMixin {
 
         map.put(ModSounds.POOLROOMS_AMBIENCE_NOON.getId().toString(), false);
         map.put(ModSounds.POOLROOMS_AMBIENCE_SUNSET.getId().toString(), false);
+
+        map.put(ModSounds.EMERGENCY_LIGHT_ALARM.getId().toString(), false);
     }
 }

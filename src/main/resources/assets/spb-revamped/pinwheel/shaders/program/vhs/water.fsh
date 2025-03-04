@@ -22,7 +22,7 @@ uniform sampler2D NormalTexture;
 uniform sampler2D NormalSampler;
 uniform sampler2D OpaqueNormalSampler;
 uniform sampler2D ShadowSampler;
-uniform sampler2D MinecraftMain;
+uniform sampler2D VanillaWater;
 
 uniform vec2 ScreenSize;
 uniform float GameTime;
@@ -143,7 +143,7 @@ void main() {
     uint opaqueMaterial = texture(OpaqueMatSampler, texCoord).r;
     vec4 normalSampler = texture(NormalSampler, texCoord);
     vec4 opaqueNormalSampler = texture(OpaqueNormalSampler, texCoord);
-    vec4 minecraftMain = texture(MinecraftMain, texCoord);
+    vec4 vanillaWater = texture(VanillaWater, texCoord);
     float opaqueDepth = texture(OpaqueDepth, texCoord).r;
 
     vec3 viewPos = viewPosFromDepth(waterDepth, texCoord);
@@ -154,63 +154,67 @@ void main() {
     vec4 normal = vec4(0.0);
     vec4 normal2 = vec4(0.0);
     if ((isReflective > 0.0 || opaqueMaterial == 18) && isBlock(material)) {
-        vec3 playerSpace = mat3(VeilCamera.IViewMat) * viewPos;
-        vec3 worldPos = playerSpace + cameraPos;
+        if(OverWorld != 1){
+            vec3 playerSpace = mat3(VeilCamera.IViewMat) * viewPos;
+            vec3 worldPos = playerSpace + cameraPos;
 
-        vec3 opaqueViewPos = viewPosFromDepth(opaqueDepth, texCoord + color * REFRACTION_MULTIPLIER);
-        vec3 opaquePlayerSpace = mat3(VeilCamera.IViewMat) * opaqueViewPos;
-        vec3 opaqueWorldPos = opaquePlayerSpace + VeilCamera.CameraPosition;
-        vec3 shadowScreenSpace = getShadowCoords(opaquePlayerSpace, viewMatrix, orthographMatrix);
-        float shadowDepth = shadowScreenSpace.z;
-        float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
-        float shadow = step(shadowDepth, shadowSampler);
+            vec3 opaqueViewPos = viewPosFromDepth(opaqueDepth, texCoord + color * REFRACTION_MULTIPLIER);
+            vec3 opaquePlayerSpace = mat3(VeilCamera.IViewMat) * opaqueViewPos;
+            vec3 opaqueWorldPos = opaquePlayerSpace + VeilCamera.CameraPosition;
+            vec3 shadowScreenSpace = getShadowCoords(opaquePlayerSpace, viewMatrix, orthographMatrix);
+            float shadowDepth = shadowScreenSpace.z;
+            float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
+            float shadow = step(shadowDepth, shadowSampler);
 
-        if(opaqueMaterial == 18 && !(isReflective > 0.0)){
-            float reflectionSize = 0.25;
-            //Only allow pixels closer to the center of the screen to cast reflections to boost performace
-            if(blockReflections == 1) {
-                if(opaqueNormalSampler.b < 0.6 && texCoord.x > reflectionSize && texCoord.x < 1.0 - reflectionSize) {
-                    //Uncomment top and comment out bottom to see block reflection debug
-                    //fragColor = mix( vec4(1,0,0,1), vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
-                    fragColor = mix(getReflection(texture(DiffuseSampler0, texCoord), opaqueNormalSampler, waterDepth, texCoord, viewPos, 0.1) * 0.3, vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
+            if(opaqueMaterial == 18 && !(isReflective > 0.0)){
+                float reflectionSize = 0.25;
+                //Only allow pixels closer to the center of the screen to cast reflections to boost performace
+                if(blockReflections == 1) {
+                    if(opaqueNormalSampler.b < 0.6 && texCoord.x > reflectionSize && texCoord.x < 1.0 - reflectionSize) {
+                        //Uncomment top and comment out bottom to see block reflection debug
+                        //fragColor = mix( vec4(1,0,0,1), vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
+                        fragColor = mix(getReflection(texture(DiffuseSampler0, texCoord), opaqueNormalSampler, waterDepth, texCoord, viewPos, 0.1) * 0.3, vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
+                    }
+                }
+                return;
+            }
+
+            color = texture(WaterTexture, worldPos.xz * 0.05 + vec2(GameTime * 50.0)).rg - 0.5;
+            color2 = texture(WaterTexture, worldPos.xz * 0.05 - vec2(0.0, GameTime * 50.0)).rg - 0.5;
+            color = color + color2;
+
+            normal = texture(NormalTexture, worldPos.xz * 0.2 + vec2(GameTime * 50.0));
+            normal2 = texture(NormalTexture, worldPos.xz * 0.2 - vec2(0, GameTime * 50.0));
+            normal2 += texture(NormalTexture, worldPos.xz * 0.2 - vec2(- GameTime * 103.235456, GameTime * 50.0));
+            normal = (normal + normal2) / 3.0;
+            normal = vec4(normal.r, normal.b, normal.g, normal.a) * 2.0 - 1.0;
+
+
+            fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER);
+
+            fragColor = getReflection(fragColor, mix(vec4(worldToViewSpaceDirection(normalize(vec3(0.0, 1.0,0.0))), 1.0), normal, 0.02), waterDepth, texCoord, viewPos, 0.0) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
+
+            if (shadow >= 1.0){
+                if(sunsetTimer <= 0.27 || (sunsetTimer >= 0.46 && sunsetTimer <= 0.67) || sunsetTimer >= 0.70){
+                    vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
+                    lightangle.y = - lightangle.y;
+
+                    vec3 reflectedView = reflect(viewDirFromUv(texCoord), normalize(normal.rgb));
+                    float specular = dot(reflectedView, normalize(getLightAngle(IShadowViewMatrix)));
+                    specular = pow(specular, 100.0);
+                    specular *= 5.0;
+
+                    if (specular > 0.0){
+                        fragColor += specular;
+                    }
+
+                    vec4 caustics = getCaustics(color, opaqueWorldPos);
+                    fragColor += clamp(caustics, 0.0, 1.0) * 2.0;
                 }
             }
-            return;
-        }
-
-        color = texture(WaterTexture, worldPos.xz * 0.05 + vec2(GameTime * 50.0)).rg - 0.5;
-        color2 = texture(WaterTexture, worldPos.xz * 0.05 - vec2(0.0, GameTime * 50.0)).rg - 0.5;
-        color = color + color2;
-
-        normal = texture(NormalTexture, worldPos.xz * 0.2 + vec2(GameTime * 50.0));
-        normal2 = texture(NormalTexture, worldPos.xz * 0.2 - vec2(0, GameTime * 50.0));
-        normal2 += texture(NormalTexture, worldPos.xz * 0.2 - vec2(- GameTime * 103.235456, GameTime * 50.0));
-        normal = (normal + normal2) / 3.0;
-        normal = vec4(normal.r, normal.b, normal.g, normal.a) * 2.0 - 1.0;
-
-
-        fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER);
-
-        fragColor = getReflection(fragColor, mix(vec4(worldToViewSpaceDirection(normalize(vec3(0.0, 1.0,0.0))), 1.0), normal, 0.02), waterDepth, texCoord, viewPos, 0.0) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
-
-        if (shadow >= 1.0){
-            if(sunsetTimer <= 0.27 || (sunsetTimer >= 0.46 && sunsetTimer <= 0.67) || sunsetTimer >= 0.70){
-                vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
-                lightangle.y = - lightangle.y;
-
-                vec3 reflectedView = reflect(viewDirFromUv(texCoord), normalize(normal.rgb));
-                float specular = dot(reflectedView, normalize(getLightAngle(IShadowViewMatrix)));
-                specular = pow(specular, 100.0);
-                specular *= 5.0;
-
-                if (specular > 0.0){
-                    fragColor += specular;
-                }
-
-                vec4 caustics = getCaustics(color, opaqueWorldPos);
-                fragColor += clamp(caustics, 0.0, 1.0) * 2.0;
-            }
+        } else {
+            fragColor = vanillaWater;
         }
     }
-
 }
+

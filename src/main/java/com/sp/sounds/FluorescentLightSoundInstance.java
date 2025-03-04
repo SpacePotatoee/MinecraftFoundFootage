@@ -19,7 +19,7 @@ public class FluorescentLightSoundInstance extends MovingSoundInstance {
     private PlayerEntity player;
 
     public FluorescentLightSoundInstance(BlockEntity entity, PlayerEntity player) {
-        super(ModSounds.FLUORESCENT_LIGHT_HUM, SoundCategory.AMBIENT, SoundInstance.createRandom());
+        super(ModSounds.FLUORESCENT_LIGHT_HUM, SoundCategory.BLOCKS, SoundInstance.createRandom());
         this.x = (float) entity.getPos().toCenterPos().x;
         this.y = (float) entity.getPos().toCenterPos().y - 0.5;
         this.z = (float) entity.getPos().toCenterPos().z;

@@ -26,9 +26,17 @@ public class Level2Warp implements AbstractEvent {
     }
 
     @Override
+    public void end(World world) {
+        WorldEvents events = InitializeComponents.EVENTS.get(world);
+        events.setLevel2Warp(false);
+        done = true;
+    }
+
+    @Override
     public boolean isDone() {
         return done;
     }
+
 
     @Override
     public int duration() {

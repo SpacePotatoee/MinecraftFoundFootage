@@ -7,7 +7,6 @@ import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.ModSounds;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,7 +18,7 @@ public class ThinFluorescentLightSoundInstance extends MovingSoundInstance {
     private PlayerEntity player;
 
     public ThinFluorescentLightSoundInstance(BlockEntity entity, PlayerEntity player) {
-        super(ModSounds.FLUORESCENT_LIGHT_HUM2, SoundCategory.AMBIENT, SoundInstance.createRandom());
+        super(ModSounds.FLUORESCENT_LIGHT_HUM2, SoundCategory.BLOCKS, SoundInstance.createRandom());
         this.x = (float) entity.getPos().toCenterPos().x;
         this.y = (float) entity.getPos().toCenterPos().y;
         this.z = (float) entity.getPos().toCenterPos().z;

@@ -14,6 +14,10 @@
       "type": "framebuffer",
       "name": "veil:transparent_final:depth"
     },
+    "VanillaWater": {
+      "type": "framebuffer",
+      "name": "veil:transparent_final"
+    },
     "OpaqueDepth": {
       "type": "framebuffer",
       "name": "veil:opaque:depth"

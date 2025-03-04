@@ -43,7 +43,7 @@ public class CastToTheBackroomsCommand {
                     SPBRevamped.sendCameraShakePacket(serverPlayer, 1.5, 2.5);
                     component.setShouldNoClip(true);
                     component.sync();
-                    SPBRevamped.sendPlaySoundPacket(serverPlayer, ModSounds.NO_ESCAPE, 1.0f, 1.0f);
+                    SPBRevamped.sendPersonalPlaySoundPacket(serverPlayer, ModSounds.NO_ESCAPE, 1.0f, 1.0f);
                     executorService.shutdown();
                 }, 10000, TimeUnit.MILLISECONDS);
 

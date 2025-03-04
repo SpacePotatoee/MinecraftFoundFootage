@@ -76,7 +76,7 @@ void main() {
 
         }
         occlusion /= QUALITY;
-        fragColor = vec4(vec3(1.0 - occlusion * 1.0), 1.0);
+        fragColor = vec4(vec3(1.0 - occlusion * 1.5), 1.0);
 //        fragColor = vec4(randDir * TBN, 1.0);
     } else {
         fragColor = vec4(1.0);

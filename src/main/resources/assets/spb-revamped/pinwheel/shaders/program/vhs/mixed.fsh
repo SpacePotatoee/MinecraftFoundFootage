@@ -31,7 +31,6 @@ uniform mat4 IShadowViewMatrix;
 uniform mat4 orthographMatrix;
 uniform int ShadowToggle;
 uniform float sunsetTimer;
-uniform vec3 prevCameraPos;
 uniform vec2 Rand;
 uniform vec2 ScreenSize;
 uniform vec3 shadowColor;
@@ -41,17 +40,6 @@ in vec2 texCoord;
 layout(location = 0) out vec4 fragColor;
 layout(location = 1) out vec4 prevSampler;
 layout(location = 2) out vec3 sun;
-
-ivec2 neighbourhoodOffsets[8] = ivec2[8](
-    ivec2(-1, -1),
-    ivec2( 0, -1),
-    ivec2( 1, -1),
-    ivec2(-1,  0),
-    ivec2( 1,  0),
-    ivec2(-1,  1),
-    ivec2( 0,  1),
-    ivec2( 1,  1)
-);
 
 float GetLuminance(vec3 color) {
     return dot(color, vec3(0.299, 0.587, 0.114));

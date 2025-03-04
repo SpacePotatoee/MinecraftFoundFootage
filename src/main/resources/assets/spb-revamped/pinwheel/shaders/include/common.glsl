@@ -74,11 +74,13 @@ vec4 blur(float kernalSize, float offset, sampler2D textureSampler, vec2 texCoor
     vec2 dy = vec2(0.0, offset);
 
     for (float x = -halfSize; x <= halfSize; x++) {
-        for (float y = -halfSize; y <= halfSize; y++) {
-            blur += (coeff * 0.5) * texture(textureSampler, texCoord + x * dx + y * dy);
-        }
+        blur += (coeff) * texture(textureSampler, texCoord + x * dx);
     }
-    return blur;
+
+    for (float y = -halfSize; y <= halfSize; y++) {
+        blur += (coeff) * texture(textureSampler, texCoord+ y * dy);
+    }
+    return blur * 2;
 }
 
 bool ddaRayMarch(vec3 offset, vec3 pos, mat4 viewMatrix, mat4 orthographMatrix, sampler2D ShadowSampler){

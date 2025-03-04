@@ -11,6 +11,7 @@ import foundry.veil.api.client.render.VeilRenderSystem;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
@@ -19,6 +20,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -43,8 +45,6 @@ public abstract class GameRendererMixin {
     @Unique
     private float smoothYaw = 0.0f;
 
-
-    @Shadow @Final private Camera camera;
     @Shadow @Final MinecraftClient client;
 
 
@@ -77,9 +77,11 @@ public abstract class GameRendererMixin {
     private float smoothPitch(float deg) {
         PlayerEntity player = this.client.player;
 
-        if(player != null && ConfigStuff.enableSmoothCamera){
+        if(player != null && ConfigStuff.enableSmoothCamera && client.options.getPerspective() == Perspective.FIRST_PERSON){
             this.smoothYaw = MathStuff.Lerp(this.smoothYaw, deg, ConfigStuff.cameraSmoothing, client.getLastFrameDuration());
             return this.smoothYaw;
+        } else {
+            this.smoothYaw = deg;
         }
 
         return deg;
@@ -89,9 +91,11 @@ public abstract class GameRendererMixin {
     private float smoothYaw(float deg){
         PlayerEntity player = this.client.player;
 
-        if(player != null && ConfigStuff.enableSmoothCamera){
+        if(player != null && ConfigStuff.enableSmoothCamera && client.options.getPerspective() == Perspective.FIRST_PERSON){
             this.smoothPitch = MathStuff.Lerp(this.smoothPitch, deg, ConfigStuff.cameraSmoothing, client.getLastFrameDuration());
             return this.smoothPitch;
+        } else {
+            this.smoothPitch = deg;
         }
 
         return deg;
@@ -119,13 +123,13 @@ public abstract class GameRendererMixin {
     }
 
 
-    @Inject(method = "getFov", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
-    private void getFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
-        if(SPBRevampedClient.isInBackrooms()){
-            cir.setReturnValue(85.0);
-        }
+    //@Inject(method = "getFov", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
+//    private void getFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
+//        if(SPBRevampedClient.isInBackrooms()){
+//            cir.setReturnValue(85.0);
+//        }
 //        cir.setReturnValue(SPBRevampedClient.doCameraZoom(cir.getReturnValue(), this.client, camera.getFocusedEntity()));
-    }
+//    }
 
 
     @Inject(method = {

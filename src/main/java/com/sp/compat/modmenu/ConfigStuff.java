@@ -53,6 +53,15 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = SHADERS)
     public static boolean renderBlockReflections = true;
 
+    @Comment(category = VIDEO)
+    public static Comment spacer3;
+
+    @Entry(category = SHADERS)
+    public static boolean motionBlur = true;
+
+    @Entry(category = SHADERS, isSlider = true, min = 0.1, max = 1, precision = 10)
+    public static float motionBlurStrength = 0.5f;
+
 
 //    @Entry(category = ADMIN)
 //    public static boolean enableVanillaLighting = false;

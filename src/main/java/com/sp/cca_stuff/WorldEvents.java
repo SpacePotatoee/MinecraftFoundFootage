@@ -1,6 +1,5 @@
 package com.sp.cca_stuff;
 
-import com.sp.Keybinds;
 import com.sp.SPBRevamped;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
@@ -28,7 +27,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -95,9 +93,10 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     private static List<Supplier<AbstractEvent>> level2EventList;
     private static List<Supplier<AbstractEvent>> poolroomsEventList;
     boolean registered;
+
     private AbstractEvent activeEvent;
     private boolean eventActive;
-    private int ticks;
+    public int ticks;
     private int delay;
 
     private UUID nullUUID = UUID.randomUUID();
@@ -147,6 +146,13 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     }
     public void setEventActive(boolean eventActive) {
         this.eventActive = eventActive;
+    }
+
+    public void setActiveEvent(AbstractEvent activeEvent) {
+        this.activeEvent = activeEvent;
+    }
+    public AbstractEvent getActiveEvent() {
+        return this.activeEvent;
     }
 
     public int getIntercomCount() {
@@ -210,6 +216,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     }
     public void setLevel2Warp(boolean level2Warp) {
         this.level2Warp = level2Warp;
+        this.sync();
     }
 
     public boolean isSunsetTransition() {
@@ -303,7 +310,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
         if(client.world != null && client.player != null) {
             //Only tick for the current Dimension instead of all of them
-            if (this.world.getRegistryKey() == client.world.getRegistryKey() && Keybinds.toggleEvent != null) {
+            if (this.world.getRegistryKey() == client.world.getRegistryKey()) {
                 ticks++;
                 checkDimension(client);
 
@@ -311,29 +318,23 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                 //Tick the currently active event and choose a random one every min and a half
                 if (!eventActive) {
                     this.delay--;
-                    if (this.delay <= 0 || Keybinds.toggleEvent.wasPressed()) {
+                    if (this.delay <= 0) {
                         this.delay = 0;
-                        boolean wasPressed = Keybinds.toggleEvent.wasPressed();
                         if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty()) {
                             int currentDimension = getCurrentDimension();
 
                             switch (currentDimension) {
                                 case 1: {
-                                    if(wasPressed){
-                                        activeEvent = level0EventList.get(0).get();
-                                    } else {
-                                        int index = random.nextBetween(0, level0EventList.size() - 1);
-                                        activeEvent = level0EventList.get(index).get();
+                                    int index = random.nextBetween(0, level0EventList.size() - 1);
+                                    activeEvent = level0EventList.get(index).get();
 
-                                        if (activeEvent instanceof Level0Blackout) {
-                                            this.blackoutCount++;
-                                            if (this.blackoutCount > 2) {
-                                                while (activeEvent instanceof Level0Blackout) {
-                                                    activeEvent = level0EventList.get(random.nextBetween(0, level0EventList.size() - 1)).get();
-                                                }
+                                    if (activeEvent instanceof Level0Blackout) {
+                                        this.blackoutCount++;
+                                        if (this.blackoutCount > 2) {
+                                            while (activeEvent instanceof Level0Blackout) {
+                                                activeEvent = level0EventList.get(random.nextBetween(0, level0EventList.size() - 1)).get();
                                             }
                                         }
-
                                     }
 
                                     activeEvent.init(this.world);
@@ -343,12 +344,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                 }
                                 break;
                                 case 2: {
-                                    if(wasPressed){
-                                        activeEvent = level1EventList.get(0).get();
-                                    } else {
-                                        int index = random.nextBetween(0, level1EventList.size() - 1);
-                                        activeEvent = level1EventList.get(index).get();
-                                    }
+                                    int index = random.nextBetween(0, level1EventList.size() - 1);
+                                    activeEvent = level1EventList.get(index).get();
 
                                     activeEvent.init(this.world);
                                     setEventActive(true);
@@ -357,12 +354,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                 }
                                 break;
                                 case 3: {
-                                    if(wasPressed){
-                                        activeEvent = level2EventList.get(0).get();
-                                    } else {
-                                        int index = random.nextBetween(0, level2EventList.size() - 1);
-                                        activeEvent = level2EventList.get(index).get();
-                                    }
+                                    int index = random.nextBetween(0, level2EventList.size() - 1);
+                                    activeEvent = level2EventList.get(index).get();
 
                                     activeEvent.init(this.world);
                                     setEventActive(true);
@@ -371,12 +364,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                 }
                                 break;
                                 case 4: {
-                                    if(wasPressed){
-                                        activeEvent = poolroomsEventList.get(0).get();
-                                    } else {
-                                        int index = random.nextBetween(0, poolroomsEventList.size() - 1);
-                                        activeEvent = poolroomsEventList.get(index).get();
-                                    }
+                                    int index = random.nextBetween(0, poolroomsEventList.size() - 1);
+                                    activeEvent = poolroomsEventList.get(index).get();
 
                                     activeEvent.init(this.world);
                                     setEventActive(true);
@@ -384,13 +373,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                     this.delay = random.nextBetween(800, 1000);
                                 }
                                 break;
-                                default: {
-                                    if(this.world.getServer() != null && wasPressed) {
-                                        for(ServerWorld world : this.world.getServer().getWorlds()){
-                                            world.setTimeOfDay(18000);
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
@@ -407,72 +389,74 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
 
                 //Start Looking for a player to take and take them when they're not talking and can't be seen
-                if(this.getIntercomCount() >= 3 || Keybinds.toggleEvent.wasPressed()) { //Last Resort
-                    if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                        //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
-                        Map.Entry<UUID, Float> min = null;
-                        for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
-                            if (min == null || min.getValue() > entry.getValue()) {
-                                min = entry;
+                if(world.getServer() != null) {
+                    if (this.getIntercomCount() >= 3 && !world.getServer().isSingleplayer()) {
+                        if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+                            //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
+                            Map.Entry<UUID, Float> min = null;
+                            for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
+                                if (min == null || min.getValue() > entry.getValue()) {
+                                    min = entry;
 
-                            }
-                        }
-
-                        if (min != null) {
-                            PlayerEntity target = this.world.getPlayerByUuid(min.getKey());
-                            if (target != null && target.isAlive()) {
-                                if(!target.getUuid().equals(this.prevActiveSkinwalkerTarget)) {
-                                    this.setActiveSkinwalkerTarget(target.getUuid());
-                                    this.prevActiveSkinwalkerTarget = target.getUuid();
-                                    this.activeTargetCooldown = 100;
                                 }
-                                this.activeTargetCooldown = Math.max(this.activeTargetCooldown - 1, 0);
                             }
-                        }
 
-                        if (this.getActiveSkinwalkerTarget() != null && this.activeTargetCooldown <= 0) {
-                            PlayerEntity target = this.getActiveSkinwalkerTarget();
-                            PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
+                            if (min != null) {
+                                PlayerEntity target = this.world.getPlayerByUuid(min.getKey());
+                                if (target != null && target.isAlive()) {
+                                    if (!target.getUuid().equals(this.prevActiveSkinwalkerTarget)) {
+                                        this.setActiveSkinwalkerTarget(target.getUuid());
+                                        this.prevActiveSkinwalkerTarget = target.getUuid();
+                                        this.activeTargetCooldown = 100;
+                                    }
+                                    this.activeTargetCooldown = Math.max(this.activeTargetCooldown - 1, 0);
+                                }
+                            }
 
-                            if (!targetComponent.isSpeaking()) {
+                            if (this.getActiveSkinwalkerTarget() != null && this.activeTargetCooldown <= 0) {
+                                PlayerEntity target = this.getActiveSkinwalkerTarget();
+                                PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
 
-                                List<PlayerEntity> playerEntityList = target.getWorld().getPlayers(
-                                        TargetPredicate.DEFAULT
-                                                .ignoreDistanceScalingFactor()
-                                                .ignoreVisibility()
-                                                .setBaseMaxDistance(50)
-                                                .setPredicate(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test),
-                                        target,
-                                        target.getBoundingBox().expand(50));
+                                if (!targetComponent.isSpeaking()) {
 
-                                boolean seen = false;
-                                for (PlayerEntity player : playerEntityList) {
-                                    if (player != target) {
-                                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                                        if (playerComponent.canSeeActiveSkinWalkerTarget()) {
-                                            seen = true;
-                                            break;
+                                    List<PlayerEntity> playerEntityList = target.getWorld().getPlayers(
+                                            TargetPredicate.DEFAULT
+                                                    .ignoreDistanceScalingFactor()
+                                                    .ignoreVisibility()
+                                                    .setBaseMaxDistance(50)
+                                                    .setPredicate(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test),
+                                            target,
+                                            target.getBoundingBox().expand(50));
+
+                                    boolean seen = false;
+                                    for (PlayerEntity player : playerEntityList) {
+                                        if (player != target) {
+                                            PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+                                            if (playerComponent.canSeeActiveSkinWalkerTarget()) {
+                                                seen = true;
+                                                break;
+                                            }
                                         }
                                     }
-                                }
-                                if (!seen) {
-                                    //Take em
-                                    SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(this.world);
-                                    if (skinWalkerEntity != null) {
+                                    if (!seen) {
+                                        //Take em
+                                        SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(this.world);
+                                        if (skinWalkerEntity != null) {
 
-                                        skinWalkerEntity.refreshPositionAndAngles((double) target.getX(), (double) target.getY(), (double) target.getZ(), target.getYaw(), target.getPitch());
-                                        skinWalkerEntity.setVelocity(target.getVelocity());
-                                        this.world.spawnEntity(skinWalkerEntity);
-                                        this.activeSkinWalkerEntity = skinWalkerEntity;
+                                            skinWalkerEntity.refreshPositionAndAngles((double) target.getX(), (double) target.getY(), (double) target.getZ(), target.getYaw(), target.getPitch());
+                                            skinWalkerEntity.setVelocity(target.getVelocity());
+                                            this.world.spawnEntity(skinWalkerEntity);
+                                            this.activeSkinWalkerEntity = skinWalkerEntity;
 
-                                        targetComponent.setBeingCaptured(true);
-                                        targetComponent.setHasBeenCaptured(true);
-                                        targetComponent.setShouldBeMuted(true);
-                                        targetComponent.sync();
+                                            targetComponent.setBeingCaptured(true);
+                                            targetComponent.setHasBeenCaptured(true);
+                                            targetComponent.setShouldBeMuted(true);
+                                            targetComponent.sync();
 
-                                        ((ServerPlayerEntity) target).changeGameMode(GameMode.SPECTATOR);
-                                        ((ServerPlayerEntity) target).setCameraEntity(skinWalkerEntity);
-                                        this.done = true;
+                                            ((ServerPlayerEntity) target).changeGameMode(GameMode.SPECTATOR);
+                                            ((ServerPlayerEntity) target).setCameraEntity(skinWalkerEntity);
+                                            this.done = true;
+                                        }
                                     }
                                 }
                             }
@@ -498,7 +482,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                             targetComponent.setBeingReleased(true);
                             targetComponent.sync();
 
-                            SPBRevamped.sendPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
+                            SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
 
                             target.changeGameMode(GameMode.ADVENTURE);
                             target.setCameraEntity(target);
@@ -720,4 +704,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
             }
         }
     }
+
+
 }

@@ -54,16 +54,13 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.*;
 
-import java.lang.Math;
 import java.util.*;
 
-//-853 183 -270
+
 public class SPBRevampedClient implements ClientModInitializer {
     private static final CutsceneManager cutsceneManager = new CutsceneManager();
     private static final CameraShake cameraShake = new CameraShake();
@@ -75,10 +72,6 @@ public class SPBRevampedClient implements ClientModInitializer {
     private static final Identifier WATER_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/water");
     private static final Identifier MIXED_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/mixed");
     private static final Identifier GLITCH_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/glitch");
-
-    float prevYaw2;
-    Vec3d prevCameraPosition = Vec3d.ZERO;
-    float prevPitch2;
 
     public static boolean zoom = false;
     public static double zoomTime = 0;
@@ -98,9 +91,6 @@ public class SPBRevampedClient implements ClientModInitializer {
     private static final Random random2 = Random.create(34563264);
 
     public static boolean shoudlRenderWarp = false;
-
-
-    public static boolean doingTest;
 
     @Override
     public void onInitializeClient() {
@@ -176,7 +166,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }
 
                 if(!cutsceneManager.fall) {
-                    if (clientWorld.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY || clientWorld.getRegistryKey() == World.OVERWORLD) {
+                    if (clientWorld.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                         if (stage == Stage.AFTER_SKY) {
                             if (camera != null) {
                                 ShadowMapRenderer.renderLevel0ShadowMap(camera, clientWorld);
@@ -188,15 +178,13 @@ public class SPBRevampedClient implements ClientModInitializer {
 
 
 
-            //Flashlight
-            if(stage == Stage.AFTER_LEVEL) {
-                flashlightRenderer.renderFlashlightForEveryPlayer(partialTicks);
-            }
-
-
             //Enable the VHS shader
             PostProcessingManager postProcessingManager = VeilRenderSystem.renderer().getPostProcessingManager();
             if (stage == Stage.AFTER_LEVEL) {
+                //Flashlight
+                flashlightRenderer.renderFlashlightForEveryPlayer(partialTicks);
+
+
                 PostPipeline Pipeline = postProcessingManager.getPipeline(VHS_POST);
                 if (Pipeline != null) {
                     if (ConfigStuff.enableVhsEffect || isInBackrooms()) {
@@ -265,25 +253,10 @@ public class SPBRevampedClient implements ClientModInitializer {
             if (player != null && client.world != null) {
                 WorldEvents events = InitializeComponents.EVENTS.get(client.world);
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                float yaw = player.getYaw();
-                float pitch = player.getPitch();
-                float yawRotAmount = yaw - prevYaw2;
-                float pitchRotAmount = pitch - prevPitch2;
-                Vec2f Velocity = new Vec2f(MathHelper.cos((float) Math.toRadians(yawRotAmount + 90.0f)), MathHelper.sin((float) Math.toRadians(pitchRotAmount)));
 
                 if (VHS_POST.equals(name)) {
                     ShaderProgram shaderProgram = context.getShader(POST_VHS);
                     if (shaderProgram != null) {
-                        if(client.getCameraEntity() == player) {
-                            if (!getCutsceneManager().isPlaying) {
-                                shaderProgram.setVector("Velocity", Velocity.x, Velocity.y);
-                            } else {
-                                shaderProgram.setVector("Velocity", 0, 0);
-                            }
-                        } else {
-                            shaderProgram.setVector("Velocity", 0, 0);
-                        }
-
                         if(youCantEscape) {
                             shaderProgram.setInt("youCantEscape", 1);
                         } else {
@@ -298,6 +271,14 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("CreepyFace2", 0);
                             shaderProgram.setVector("Rand", 0, 0);
                         }
+
+                        if(PreviousUniforms.prevModelViewMat != null && PreviousUniforms.prevProjMat != null){
+                            shaderProgram.setMatrix("prevViewMat", PreviousUniforms.prevModelViewMat);
+                            shaderProgram.setMatrix("prevProjMat", PreviousUniforms.prevProjMat);
+                            shaderProgram.setVector("prevCameraPos", PreviousUniforms.prevCameraPos);
+                        }
+
+                        shaderProgram.setFloat("MotionBlurStrength", ConfigStuff.motionBlurStrength);
                     }
 
                     shaderProgram = context.getShader(SSAO);
@@ -331,8 +312,6 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                     shaderProgram = context.getShader(MIXED_SHADER);
                     if (shaderProgram != null) {
-
-                        shaderProgram.setVector("prevCameraPos", prevCameraPosition.toVector3f());
                         shaderProgram.setVector("Rand", random.nextFloat() * 2.0f - 1.0f, random2.nextFloat() * 2.0f - 1.0f);
 
                         shaderProgram.setVector("shadowColor", PoolroomsDayCycle.getLightColor());
@@ -366,17 +345,18 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }
 
                 if (events.isLevel2Warp()) {
-                    if(definitions.getDefinition("WARP") == null) {
-                        definitions.define("WARP");
-                    }
+                    definitions.define("WARP");
                 } else {
-                    if(definitions.getDefinition("WARP") != null) {
-                        definitions.remove("WARP");
-                    }
+                    definitions.remove("WARP");
                 }
-                prevYaw2 = yaw;
-                prevPitch2 = pitch;
-                prevCameraPosition = player.getClientCameraPosVec(MinecraftClient.getInstance().getTickDelta());
+
+                if(ConfigStuff.motionBlur){
+                    definitions.define("MOTION_BLUR");
+                } else {
+                    definitions.remove("MOTION_BLUR");
+                }
+
+                PreviousUniforms.update();
             }
         }));
 
@@ -413,9 +393,6 @@ public class SPBRevampedClient implements ClientModInitializer {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) ->{
-            if(isInBackrooms()){
-                SPBRevampedClient.doingTest = false;
-            }
 
             Vector<PhysicsPoint> physicsPoints = PhysicsPoint.getAllInstances();
             if(!physicsPoints.isEmpty()){

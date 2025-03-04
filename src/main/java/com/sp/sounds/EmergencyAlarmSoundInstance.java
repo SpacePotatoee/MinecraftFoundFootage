@@ -17,14 +17,14 @@ public class EmergencyAlarmSoundInstance extends MovingSoundInstance {
     private PlayerEntity player;
 
     public EmergencyAlarmSoundInstance(BlockEntity entity, PlayerEntity player) {
-        super(ModSounds.EMERGENCY_LIGHT_ALARM, SoundCategory.AMBIENT, SoundInstance.createRandom());
+        super(ModSounds.EMERGENCY_LIGHT_ALARM, SoundCategory.BLOCKS, SoundInstance.createRandom());
         this.x = (float) entity.getPos().toCenterPos().x;
         this.y = (float) entity.getPos().toCenterPos().y;
         this.z = (float) entity.getPos().toCenterPos().z;
         this.entity = entity;
         this.player = player;
         this.pitch = 1.0F;
-        this.volume = 5.0F;
+        this.volume = 3.0F;
     }
 
     @Override

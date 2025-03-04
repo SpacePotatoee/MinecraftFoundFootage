@@ -3,8 +3,7 @@ package com.sp;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.command.BlackScreenCommand;
-import com.sp.command.CastToTheBackroomsCommand;
-import com.sp.command.SetDoingTestCommand;
+import com.sp.command.EventCommand;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
@@ -22,7 +21,6 @@ import com.sp.world.generation.Level1ChunkGenerator;
 import com.sp.world.generation.Level2ChunkGenerator;
 import com.sp.world.generation.PoolroomsChunkGenerator;
 import eu.midnightdust.lib.config.MidnightConfig;
-import foundry.veil.api.client.util.Easings;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -83,8 +81,8 @@ public class SPBRevamped implements ModInitializer {
 		MidnightConfig.init(MOD_ID, ConfigStuff.class);
 
 		CommandRegistrationCallback.EVENT.register(BlackScreenCommand::register);
-		CommandRegistrationCallback.EVENT.register(CastToTheBackroomsCommand::register);
-		CommandRegistrationCallback.EVENT.register(SetDoingTestCommand::register);
+//		CommandRegistrationCallback.EVENT.register(CastToTheBackroomsCommand::register);
+		CommandRegistrationCallback.EVENT.register(EventCommand::register);
 
 		// Thanks Bob Mowzie
 		GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());
@@ -152,18 +150,12 @@ public class SPBRevamped implements ModInitializer {
 		ServerPlayNetworking.send(player, InitializePackets.BLACK_SCREEN, buffer);
 	}
 
-	public static void sendPlaySoundPacket(ServerPlayerEntity player, SoundEvent sound, float volume, float pitch){
+	public static void sendPersonalPlaySoundPacket(ServerPlayerEntity player, SoundEvent sound, float volume, float pitch){
 		PacketByteBuf buffer = PacketByteBufs.create();
 		buffer.writeRegistryEntry(Registries.SOUND_EVENT.getIndexedEntries(), RegistryEntry.of(sound), (packetByteBuf, soundEvent) -> soundEvent.writeBuf(packetByteBuf));
 		buffer.writeFloat(volume);
 		buffer.writeFloat(pitch);
 		ServerPlayNetworking.send(player, InitializePackets.SOUND, buffer);
-	}
-
-	public static void sendDoTestPacket(ServerPlayerEntity player, boolean test){
-		PacketByteBuf buffer = PacketByteBufs.create();
-		buffer.writeBoolean(test);
-		ServerPlayNetworking.send(player, InitializePackets.DOTEST, buffer);
 	}
 
 }

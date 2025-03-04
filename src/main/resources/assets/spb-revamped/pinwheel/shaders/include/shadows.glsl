@@ -152,7 +152,7 @@ vec3 getVolumetricLight(vec4 incolor, vec2 texCoord, vec3 viewPos, vec2 ScreenSi
 
 
             if (shadowDepth < shadowSampler){
-                brightness += 0.0003;
+                brightness += 0.0001;
                 dist += 0.01;
             } else {
                 dist += 0.2;

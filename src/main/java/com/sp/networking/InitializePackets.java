@@ -20,7 +20,6 @@ public class InitializePackets {
     public static final Identifier BLACK_SCREEN = new Identifier(SPBRevamped.MOD_ID, "blk_screen");
     public static final Identifier RELOAD_LIGHTS = new Identifier(SPBRevamped.MOD_ID, "rl_lights");
     public static final Identifier SOUND = new Identifier(SPBRevamped.MOD_ID, "snd");
-    public static final Identifier DOTEST = new Identifier(SPBRevamped.MOD_ID, "dtst");
 
     public static void registerC2SPackets() {
         ServerPlayNetworking.registerGlobalReceiver(FL_SYNC, FlashLightSync::receive);
@@ -37,6 +36,5 @@ public class InitializePackets {
         ClientPlayNetworking.registerGlobalReceiver(BLACK_SCREEN, InvokeBlackScreenPacket::receive);
         ClientPlayNetworking.registerGlobalReceiver(RELOAD_LIGHTS, ReloadLightsPacket::receive);
         ClientPlayNetworking.registerGlobalReceiver(SOUND, SoundPacket::receive);
-        ClientPlayNetworking.registerGlobalReceiver(DOTEST, DoTestPacket::receive);
     }
 }

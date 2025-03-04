@@ -27,7 +27,7 @@ public class LightRendererMixin {
         PlayerEntity player = client.player;
         if(player != null && client.world != null) {
             RegistryKey<World> registryKey = player.getWorld().getRegistryKey();
-            if((registryKey == BackroomsLevels.LEVEL0_WORLD_KEY && !SPBRevampedClient.getCutsceneManager().isPlaying) || SPBRevampedClient.doingTest){
+            if(registryKey == BackroomsLevels.LEVEL0_WORLD_KEY && !SPBRevampedClient.getCutsceneManager().isPlaying){
                 setShadowUniforms(shader);
                 shader.setInt("InOverWorld", registryKey == World.OVERWORLD ? 1 : 0);
                 shader.setInt("ShouldRender", 1);

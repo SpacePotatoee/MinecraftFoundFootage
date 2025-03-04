@@ -22,7 +22,7 @@ public class SkinWalkerChaseSoundInstance extends MovingSoundInstance {
         this.setPosition(entity);
         this.repeat = true;
         this.repeatDelay = 0;
-        this.volume = 10.0f;
+        this.volume = 100.0f;
     }
 
     @Override

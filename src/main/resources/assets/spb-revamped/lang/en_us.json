@@ -67,7 +67,6 @@
   "spb-revamped.midnightconfig.enableVanillaLighting": "Enable Vanilla Lighting",
   "spb-revamped.midnightconfig.enableRealCamera": "Enable Realistic Camera",
   "spb-revamped.midnightconfig.forceBackrooms": "Force Inside Backrooms",
-  "spb-revamped.midnightconfig.enableWarp": "Enable Level 2 Warp",
   "spb-revamped.midnightconfig.enableCameraRoll": "Enable Camera Roll",
   "spb-revamped.midnightconfig.enableSmoothCamera": "Enable Smooth Camera",
   "spb-revamped.midnightconfig.cameraSmoothing": "Camera Smoothing Multiplier",
@@ -80,7 +79,8 @@
   "spb-revamped.midnightconfig.lookRollMultiplier": "Look Roll Multiplier",
   "spb-revamped.midnightconfig.strafeRollMultiplier": "Strafe Roll Multiplier",
   "spb-revamped.midnightconfig.lightRenderDistance": "Light Render Distance (In Blocks)",
-  "spb-revamped.midnightconfig.disableHud": "Hide your Hud (Except your hand)",
+  "spb-revamped.midnightconfig.motionBlur": "Enable Motion Blur",
+  "spb-revamped.midnightconfig.motionBlurStrength": "Motion Blur Strength",
 
   "death.attack.acid": "%1$s burned in Acid!",
   "death.attack.smiler": "%1$s was killed by a Smiler!",

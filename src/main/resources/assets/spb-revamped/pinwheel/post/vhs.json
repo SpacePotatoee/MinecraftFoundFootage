@@ -168,6 +168,10 @@
         "HandDepth": {
             "type": "framebuffer",
             "name": "veil:first_person:depth"
+        },
+        "TotalDepth": {
+            "type": "framebuffer",
+            "name": "minecraft:main:depth"
         }
     }
 }

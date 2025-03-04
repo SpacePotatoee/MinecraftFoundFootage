@@ -18,7 +18,6 @@ import com.sp.sounds.entity.SmilerGlitchSoundInstance;
 import com.sp.sounds.pipes.GasPipeSoundInstance;
 import com.sp.sounds.pipes.WaterPipeSoundInstance;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
-import com.sp.util.Timer;
 import com.sp.init.BackroomsLevels;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
@@ -543,13 +542,13 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //Level0 Cutscene
-//            if (this.player.isInsideWall() && this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene) {
-//                suffocationTimer++;
-//                if (suffocationTimer >= 40) {
-//                    this.setDoingCutscene(true);
-//                    suffocationTimer = 0;
-//                }
-//            }
+            if (this.player.isInsideWall() && this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene) {
+                suffocationTimer++;
+                if (suffocationTimer >= 40) {
+                    this.setDoingCutscene(true);
+                    suffocationTimer = 0;
+                }
+            }
 
         }
     }
@@ -624,55 +623,55 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         }
 
         //Cast him to the Backrooms
-//        if(this.player.isInsideWall()) {
-//            if (this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
-//                suffocationTimer++;
-//                if (suffocationTimer == 1) {
-//                    SPBRevamped.sendPlaySoundPacket((ServerPlayerEntity) this.player, ModSounds.GLITCH, 1.0f, 1.0f);
-//                    this.playingGlitchSound = true;
-//                }
-//
-//                if (suffocationTimer == 40) {
-//                    RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
-//                    ServerWorld backrooms = this.player.getWorld().getServer().getWorld(registryKey);
-//                    if (backrooms == null) {
-//                        return;
-//                    }
-//
-//                    TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-//                    FabricDimensions.teleport(this.player, backrooms, target);
-//                    this.setDoingCutscene(true);
-//                    this.sync();
-//                    suffocationTimer = 0;
-//                }
-//            }
-//        } else {
-//            if (this.playingGlitchSound) {
-//                StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(new Identifier(SPBRevamped.MOD_ID, "glitch"), null);
-//                ((ServerPlayerEntity) this.player).networkHandler.sendPacket(stopSoundS2CPacket);
-//            }
-//            this.playingGlitchSound = false;
-//            suffocationTimer = 0;
-//        }
-        if(this.suffocationTimer == 40){
-            this.suffocationTimer = 0;
-            RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
-            ServerWorld backrooms = this.player.getWorld().getServer().getWorld(registryKey);
-            if (backrooms == null) {
-                return;
+        if(this.player.isInsideWall()) {
+            if (this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
+                suffocationTimer++;
+                if (suffocationTimer == 1) {
+                    SPBRevamped.sendPersonalPlaySoundPacket((ServerPlayerEntity) this.player, ModSounds.GLITCH, 1.0f, 1.0f);
+                    this.playingGlitchSound = true;
+                }
+
+                if (suffocationTimer == 40) {
+                    RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
+                    ServerWorld backrooms = this.player.getWorld().getServer().getWorld(registryKey);
+                    if (backrooms == null) {
+                        return;
+                    }
+
+                    TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
+                    FabricDimensions.teleport(this.player, backrooms, target);
+                    this.setDoingCutscene(true);
+                    this.sync();
+                    suffocationTimer = 0;
+                }
             }
-
-            this.player.getInventory().clear();
-
-            TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-            FabricDimensions.teleport(this.player, backrooms, target);
-
-            this.setShouldNoClip(false);
-            this.setDoingCutscene(true);
-            this.sync();
-            StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(new Identifier(SPBRevamped.MOD_ID, "noescape"), null);
-            ((ServerPlayerEntity)this.player).networkHandler.sendPacket(stopSoundS2CPacket);
+        } else {
+            if (this.playingGlitchSound) {
+                StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(new Identifier(SPBRevamped.MOD_ID, "glitch"), null);
+                ((ServerPlayerEntity) this.player).networkHandler.sendPacket(stopSoundS2CPacket);
+            }
+            this.playingGlitchSound = false;
+            suffocationTimer = 0;
         }
+//        if(this.suffocationTimer == 40){
+//            this.suffocationTimer = 0;
+//            RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
+//            ServerWorld backrooms = this.player.getWorld().getServer().getWorld(registryKey);
+//            if (backrooms == null) {
+//                return;
+//            }
+//
+//            this.player.getInventory().clear();
+//
+//            TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
+//            FabricDimensions.teleport(this.player, backrooms, target);
+//
+//            this.setShouldNoClip(false);
+//            this.setDoingCutscene(true);
+//            this.sync();
+//            StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(new Identifier(SPBRevamped.MOD_ID, "noescape"), null);
+//            ((ServerPlayerEntity)this.player).networkHandler.sendPacket(stopSoundS2CPacket);
+//        }
 
 
         //Level Switcheroo//

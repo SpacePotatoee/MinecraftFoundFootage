@@ -189,15 +189,15 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         this.getNavigation().stop();
 
         if (this.ticks == 9){
-            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK, SoundCategory.HOSTILE, 1.0f, 1.0f);
+            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK, SoundCategory.HOSTILE, 10.0f, 1.0f);
         }
 
         if (this.ticks == 39){
-            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK_LONG, SoundCategory.HOSTILE, 1.0f, 1.0f);
+            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK_LONG, SoundCategory.HOSTILE, 10.0f, 1.0f);
         }
 
         if (this.ticks == 99){
-            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_REVEAL, SoundCategory.HOSTILE, 1.0f, 1.0f);
+            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_REVEAL, SoundCategory.HOSTILE, 100.0f, 1.0f);
         }
 
         if (this.ticks ==  110){

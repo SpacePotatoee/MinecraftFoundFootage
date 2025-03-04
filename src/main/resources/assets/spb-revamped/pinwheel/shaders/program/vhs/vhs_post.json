@@ -14,5 +14,8 @@
       "type": "location",
       "location": "spb-revamped:textures/shaders/creepy_face2.png"
     }
-  }
+  },
+  "definitions": [
+    "MOTION_BLUR"
+  ]
 }
