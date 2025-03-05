@@ -5,7 +5,6 @@ import eu.midnightdust.lib.config.MidnightConfig;
 
 public class ConfigStuff extends MidnightConfig {
     public static final String VIDEO = "video";
-//    public static final String ADMIN = "adminStuff";
     public static final String SHADERS = "shaders";
 
     @Entry(category = VIDEO)

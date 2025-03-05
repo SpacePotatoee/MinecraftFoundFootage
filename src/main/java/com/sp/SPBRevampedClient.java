@@ -9,7 +9,7 @@ import com.sp.block.renderer.*;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.cca_stuff.WorldEvents;
-import com.sp.init.RenderLayers;
+import com.sp.render.RenderLayers;
 import com.sp.networking.InitializePackets;
 import com.sp.render.*;
 import com.sp.render.camera.CameraShake;

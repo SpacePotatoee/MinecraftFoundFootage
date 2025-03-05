@@ -1,6 +1,6 @@
 package com.sp.mixin.renderlayer;
 
-import com.sp.init.RenderLayers;
+import com.sp.render.RenderLayers;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
@@ -26,8 +26,6 @@ public abstract class WorldRendererMixin {
         this.renderLayer(RenderLayers.getChainFence(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
         this.renderLayer(RenderLayers.getWoodenCrateLayer(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
         this.renderLayer(RenderLayers.getPoolroomsSky(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
-//        this.renderLayer(RenderLayers.getCeilingLightLayer(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
-//        this.renderLayer(RenderLayers.getPoolTileLayer(), matrices, cameraPos.getX(), cameraPos.getY(), cameraPos.getZ(), projectionMatrix);
     }
 
 }

@@ -5,7 +5,7 @@ import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
 import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
-import com.sp.init.RenderLayers;
+import com.sp.render.RenderLayers;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
 import net.minecraft.block.enums.WallMountLocation;

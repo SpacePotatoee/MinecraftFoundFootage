@@ -103,19 +103,24 @@ vec4 getPuddles(vec4 fragColor, vec2 texCoord, vec4 normal, sampler2D DiffuseSam
         noise = clamp(noise, 0.0, 1.0);
 //        color = mainTexture;
 
+        //perfect reflections
         if (noise.r < 0.5){
             color = getReflection(color, normal, viewSpace, 0.02, DiffuseSampler0, DepthSampler);
             color = mix(color, mainTexture, noise) - (noise * 0.02);
             color -= (1.0 - noise) * 0.1;
         }
+        //Dithered reflections
         else if (noise.r < 0.8){
             color = getReflection(color, normal, viewSpace, 0.4, DiffuseSampler0, DepthSampler);
             color = mix(color, mainTexture, noise) - (noise * 0.02);
             color -= (1.0 - noise) * 0.1;
         }
+        //wet
         else if (noise.r < 0.85){
             color -= 0.015;
         }
+
+        //else don't change the color at all (dry)
     }
 
     return color;

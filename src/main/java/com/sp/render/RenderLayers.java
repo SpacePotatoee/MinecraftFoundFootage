@@ -1,11 +1,11 @@
-package com.sp.init;
+package com.sp.render;
 
 import com.sp.SPBRevamped;
-import com.sp.render.ShadowMapRenderer;
 import foundry.veil.api.client.render.VeilRenderBridge;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 

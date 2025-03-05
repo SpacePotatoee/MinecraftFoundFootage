@@ -1,7 +1,7 @@
 package com.sp.mixin.renderlayer;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.sp.init.RenderLayers;
+import com.sp.render.RenderLayers;
 import net.minecraft.client.render.RenderLayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,8 +22,6 @@ public class RenderLayerMixin {
         list.add(RenderLayers.getCarpet());
         list.add(RenderLayers.getWoodenCrateLayer());
         list.add(RenderLayers.getPoolroomsSky());
-//        list.add(RenderLayers.getCeilingLightLayer());
-//        list.add(RenderLayers.getPoolTileLayer());
         return list;
     }
 
