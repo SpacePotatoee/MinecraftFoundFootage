@@ -1,4 +1,7 @@
+#version 330
 #priority 1000
 
 [FUNCTION isBlock HEAD]
-return (material >= BLOCK_SOLID && material <= BLOCK_TRANSLUCENT) || material >= 18;
+if(material >= 18) {
+    return true;
+}

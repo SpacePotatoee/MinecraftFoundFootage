@@ -303,12 +303,11 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         Random random = Random.create();
         getPrevSettings();
 
-        if(!this.world.getPlayers().isEmpty()) {
+        if(!this.world.getPlayers().isEmpty() && BackroomsLevels.isInBackrooms(this.world.getRegistryKey())) {
             ticks++;
             //Tick the currently active event and choose a random one every min and a half
             if (!eventActive) {
                 this.delay--;
-                System.out.println(this.delay);
                 if (this.delay <= 0) {
                     this.delay = 0;
                     if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty()) {

@@ -12,12 +12,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.nio.ByteBuffer;
+
 @Mixin(BufferBuilder.class)
 public abstract class BufferBuilderMixin implements BlockMaterial {
-    @Shadow public abstract void putShort(int index, short value);
     @Shadow public abstract void nextElement();
 
-    @Shadow private int currentElementId;
+    @Shadow private ByteBuffer buffer;
+    @Shadow private int elementOffset;
     @Unique boolean isRenderingBlock;
     @Unique int currentBlock;
     @Unique VertexFormat currentFormat;
@@ -46,7 +48,7 @@ public abstract class BufferBuilderMixin implements BlockMaterial {
     @Inject(method = "next", at = @At("HEAD"))
     private void putBlockID(CallbackInfo ci){
         if(this.isRenderingBlock && currentFormat == com.sp.render.VertexFormats.BLOCKS) {
-            this.putShort(0, (short) this.currentBlock);
+            this.buffer.putInt(this.elementOffset, this.currentBlock);
             this.nextElement();
         }
     }

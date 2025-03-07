@@ -48,21 +48,18 @@ in vec2 texCoord0;
 in vec2 texCoord2;
 in vec4 lightmapColor;
 in vec3 normal;
-in float blockMaterial;
+flat in int blockMaterial;
 
 void main() {
     vec4 color = texture(Sampler0, texCoord0) * vertexColor * ColorModulator;
-    if(color.a <= 0.5){
-        discard;
-    }
 
     int Mat = BLOCK_SOLID;
     if(blockMaterial != -1) {
-        Mat = int(blockMaterial);
+        Mat = blockMaterial;
     }
 
     vec4 LightmapColor = lightmapColor;
-    if(Mat == 19){
+    if(Mat == 19) {
         LightmapColor = vec4(1);
         color = texture(Sampler0, texCoord0);
     }
@@ -74,6 +71,3 @@ void main() {
     fragLightSampler = vec4(texCoord2, 0.0, 1.0);
     fragLightMap = LightmapColor;
 }
-
-
-

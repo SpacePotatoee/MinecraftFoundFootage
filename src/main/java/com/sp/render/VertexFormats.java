@@ -7,7 +7,7 @@ import net.minecraft.client.render.VertexFormatElement;
 public class VertexFormats {
     public static final VertexFormat BLOCKS;
     private static final VertexFormatElement MATERIAL = new VertexFormatElement(
-            0, VertexFormatElement.ComponentType.SHORT, VertexFormatElement.Type.GENERIC, 1
+            0, VertexFormatElement.ComponentType.FLOAT, VertexFormatElement.Type.GENERIC, 1
     );
 
 

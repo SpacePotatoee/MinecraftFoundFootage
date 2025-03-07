@@ -43,12 +43,14 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -758,12 +760,27 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
         }
 
-        //Poolrooms -> Level 0
+        //Poolrooms -> Overworld
         if(this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY && this.player.getWorld().getLightLevel(this.player.getBlockPos()) == 0 && this.player.getPos().y < 60 && this.player.getPos().y > 52){
             this.player.fallDistance = 0;
-            ServerWorld level0 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL0_WORLD_KEY);
-            TeleportTarget target = new TeleportTarget(new Vec3d(0.5, 26, 0.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-            FabricDimensions.teleport(this.player, level0, target);
+            if(this.player instanceof ServerPlayerEntity) {
+                BlockPos blockPos = ((ServerPlayerEntity)this.player).getSpawnPointPosition();
+                float f = ((ServerPlayerEntity)this.player).getSpawnAngle();
+                boolean bl = ((ServerPlayerEntity)this.player).isSpawnForced();
+                ServerWorld serverWorld = ((ServerPlayerEntity)this.player).server.getWorld(((ServerPlayerEntity)this.player).getSpawnPointDimension());
+                Optional<Vec3d> optional;
+                if (serverWorld != null && blockPos != null) {
+                    optional = PlayerEntity.findRespawnPosition(serverWorld, blockPos, f, bl, true);
+                } else {
+                    optional = Optional.empty();
+                }
+
+
+                ServerWorld overworld = this.player.getWorld().getServer().getWorld(World.OVERWORLD);
+                BlockPos blockPos1 = blockPos != null ? blockPos : overworld.getSpawnPos();
+                TeleportTarget target = new TeleportTarget(optional.orElseGet(() -> Vec3d.of(blockPos1)), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
+                FabricDimensions.teleport(this.player, overworld, target);
+            }
         }
 
 

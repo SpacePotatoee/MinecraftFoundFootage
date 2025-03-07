@@ -166,7 +166,7 @@ void main() {
             float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
             float shadow = step(shadowDepth, shadowSampler);
 
-            if(opaqueMaterial == 18 && !(isReflective > 0.0)){
+            if(opaqueMaterial == 18 && !(isReflective > 0.0)) {
                 float reflectionSize = 0.25;
                 //Only allow pixels closer to the center of the screen to cast reflections to boost performace
                 if(blockReflections == 1) {
