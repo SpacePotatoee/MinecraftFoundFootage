@@ -24,90 +24,100 @@ public class WindowBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void markRemoved() {;
-        if (this.world.isClient) {
-            if(areaLight != null) {
+    public void markRemoved() {
+        super.markRemoved();
+        if (!this.world.isClient) {
+            return;
+        }
+
+        if (areaLight != null) {
+            VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(areaLight);
+            this.areaLight = null;
+        }
+
+        if (this.pointLightList != null) {
+            for (PointLight light : pointLightList) {
+                VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(light);
+            }
+        }
+    }
+
+    public void tick(World world, BlockPos pos, BlockState state) {
+        if (!world.isClient) {
+            return;
+        }
+
+        if (state.get(WindowBlock.point) > 0) {
+            if (this.areaLight != null) {
                 VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(areaLight);
                 this.areaLight = null;
             }
 
-            if(this.pointLightList != null){
-                for (PointLight light : pointLightList){
-                    VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(light);
-                }
-            }
-        }
-        super.markRemoved();
-    }
-
-    public void tick(World world, BlockPos pos, BlockState state) {
-        if(world.isClient){
-
-            if(state.get(WindowBlock.point) > 0) {
-                if (this.areaLight != null) {
-                    VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(areaLight);
-                    this.areaLight = null;
-                }
-                if(state.get(WindowBlock.pointActive)) {
-
-                    if (this.pointLightList == null) {
-                        this.pointLightList = new ArrayList<>();
-                        int numOfLights =
-                                switch (state.get(WindowBlock.point)) {
-                                    case 1 -> 1;
-                                    case 2 -> 8;
-                                    case 3 -> 16;
-                                    default -> 0;
-                                };
-
-                        Vec3d position = pos.toCenterPos().add(0, -4, 0);
-
-                        for (int i = 0; i < numOfLights; i++) {
-                            PointLight pointLight = new PointLight();
-                            pointLight
-                                    .setPosition(position.x, position.y, position.z)
-                                    .setBrightness(1.0f)
-                                    .setRadius(15);
-
-                            pointLightList.add(pointLight);
-                            VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(pointLight);
-                        }
-
-                    }
-                }
-            } else {
-                if (this.areaLight == null) {
-                    areaLight = new AreaLight();
-                    Vec3d position = pos.toCenterPos().add(0, 1.0, 0);
-                    VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(areaLight
-                            .setBrightness(2.5f)
-                            .setSize(0, 0)
-                            .setPosition(position.x, position.y, position.z)
-                            .setOrientation(new Quaternionf().rotateXYZ((float) Math.toRadians(90), 0, 0))
-                            .setDistance(15)
-                    );
-
-                } else {
-                    switch (state.get(WindowBlock.color)) {
-                        case 1:
-                            areaLight.setColor(1, 0, 0);
-                            break;
-                        case 2:
-                            areaLight.setColor(1, (float) 152 / 255, 0);
-                            break;
-                        case 3:
-                            areaLight.setColor((float) 20 / 255, 1, 0);
-                            break;
-                        case 4:
-                            areaLight.setColor(0, (float) 78 / 255, 1);
-                            break;
-                        case 5:
-                            areaLight.setColor((float) 200 / 255, 0, 1);
-                            break;
-                    }
-                }
+            if (!state.get(WindowBlock.pointActive)) {
+                return;
             }
 
+            if (this.pointLightList != null) {
+                return;
+            }
+
+            this.pointLightList = new ArrayList<>();
+
+            int numOfLights =
+                    switch (state.get(WindowBlock.point)) {
+                        case 1 -> 1;
+                        case 2 -> 8;
+                        case 3 -> 16;
+                        default -> 0;
+                    };
+
+            Vec3d position = pos.toCenterPos().add(0, -4, 0);
+
+            for (int i = 0; i < numOfLights; i++) {
+                PointLight pointLight = new PointLight();
+                pointLight
+                        .setPosition(position.x, position.y, position.z)
+                        .setBrightness(1.0f)
+                        .setRadius(15);
+
+                pointLightList.add(pointLight);
+                VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(pointLight);
+
+            }
+
+            return;
+        }
+
+        if (this.areaLight == null) {
+            areaLight = new AreaLight();
+            Vec3d position = pos.toCenterPos().add(0, 1.0, 0);
+            VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(areaLight
+                    .setBrightness(2.5f)
+                    .setSize(0, 0)
+                    .setPosition(position.x, position.y, position.z)
+                    .setOrientation(new Quaternionf().rotateXYZ((float) Math.toRadians(90), 0, 0))
+                    .setDistance(15)
+            );
+            return;
+        }
+
+        switch (state.get(WindowBlock.color)) {
+            case 1:
+                areaLight.setColor(1, 0, 0);
+                break;
+            case 2:
+                areaLight.setColor(1, (float) 152 / 255, 0);
+                break;
+            case 3:
+                areaLight.setColor((float) 20 / 255, 1, 0);
+                break;
+            case 4:
+                areaLight.setColor(0, (float) 78 / 255, 1);
+                break;
+            case 5:
+                areaLight.setColor((float) 200 / 255, 0, 1);
+                break;
         }
     }
+
 }

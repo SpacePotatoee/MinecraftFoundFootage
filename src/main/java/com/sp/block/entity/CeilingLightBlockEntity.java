@@ -13,13 +13,13 @@ import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
 public class CeilingLightBlockEntity extends BlockEntity {
-    private AreaLight light;
-    private float brightness;
-    private float angle;
-    private int ticks;
-    private Random random = Random.create();
-    private int randomInt;
-    private boolean on;
+    AreaLight light;
+    float brightness;
+    float angle;
+    int ticks;
+    Random random = Random.create();
+    int randomInt;
+    boolean on;
 
     public CeilingLightBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CEILING_LIGHT_BLOCK_ENTITY, pos, state);
@@ -29,7 +29,7 @@ public class CeilingLightBlockEntity extends BlockEntity {
 
     @Override
     public void markRemoved() {
-        if (this.light != null) {
+        if (this.light != null && world.isClient) {
             VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(this.light);
             this.light = null;
         }
@@ -37,21 +37,27 @@ public class CeilingLightBlockEntity extends BlockEntity {
     }
 
     public void tick(World world, BlockPos pos, BlockState state) {
-        if(this.world.isClient) {
-            if (this.light == null) {
-                Vec3d position = pos.toCenterPos().add(-0.5, -0.06, 0);
-                this.brightness = 2.58f;
-                this.angle = 60.4f;
-                this.light = new AreaLight();
-                VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(this.light
-                        .setBrightness(this.brightness)
-                        .setSize(0.9, 0.0)
-                        .setAngle((float) Math.toRadians(this.angle))
-                        .setOrientation(new Quaternionf().rotateXYZ((float) Math.toRadians(-90d), 0, 0))
-                        .setPosition(new Vector3d(position.x, position.y, position.z))
-                        .setDistance(15)
-                );
-            }
+        if (!world.isClient) {
+            return;
+        }
+
+        if (this.light != null) {
+            return;
+        }
+
+        Vec3d position = pos.toCenterPos().add(-0.5, -0.06, 0);
+        this.brightness = 2.58f;
+        this.angle = 60.4f;
+        this.light = new AreaLight();
+
+        VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(this.light
+                .setBrightness(this.brightness)
+                .setSize(0.9, 0.0)
+                .setAngle((float) Math.toRadians(this.angle))
+                .setOrientation(new Quaternionf().rotateXYZ((float) Math.toRadians(-90d), 0, 0))
+                .setPosition(new Vector3d(position.x, position.y, position.z))
+                .setDistance(15)
+        );
 
 //            if(!state.get(CeilingLight.STOPPED)) {
 //                ticks++;
@@ -92,6 +98,5 @@ public class CeilingLightBlockEntity extends BlockEntity {
 //                }
 //            } else
 
-        }
     }
 }

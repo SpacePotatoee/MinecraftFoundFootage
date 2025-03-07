@@ -1,6 +1,5 @@
 package com.sp.mixin;
 
-import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.ModDamageTypes;
@@ -14,7 +13,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -38,11 +36,14 @@ public abstract class EntityMixin {
     }
 
 
+    /*
     @Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;shouldSpawnSprintingParticles()Z"))
-    private boolean noSprintingParticles(Entity instance){
+    private boolean noSprintingParticles(Entity instance) {
+
+
         return instance.shouldSpawnSprintingParticles() && !SPBRevampedClient.isInBackrooms();
     }
-
+*/
 
     @Inject(method = "getSwimSound", at = @At("RETURN"), cancellable = true)
     private void newSwimSound(CallbackInfoReturnable<SoundEvent> cir){

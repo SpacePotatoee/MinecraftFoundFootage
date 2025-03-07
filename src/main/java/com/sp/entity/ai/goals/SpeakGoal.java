@@ -1,6 +1,5 @@
 package com.sp.entity.ai.goals;
 
-import com.ibm.icu.impl.locale.XCldrStub;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.SkinWalkerComponent;
 import com.sp.entity.custom.SkinWalkerEntity;
@@ -9,12 +8,8 @@ import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.api.audiochannel.AudioPlayer;
 import de.maxhenkel.voicechat.api.audiochannel.LocationalAudioChannel;
 import de.maxhenkel.voicechat.plugins.impl.ServerLevelImpl;
-import it.unimi.dsi.fastutil.shorts.ShortCollection;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.random.Random;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SpeakGoal extends Goal {
     private final Random random = Random.create(7585889L);

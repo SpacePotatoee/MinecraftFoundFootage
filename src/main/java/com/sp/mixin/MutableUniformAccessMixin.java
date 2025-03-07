@@ -47,7 +47,7 @@ public interface MutableUniformAccessMixin {
         this.setVector("ScreenSize", window.getWidth(), window.getHeight());
 
         if(client.world != null && SPBRevampedClient.camera != null) {
-            this.setFloat("sunsetTimer", PoolroomsDayCycle.getDayTime());
+            this.setFloat("sunsetTimer", PoolroomsDayCycle.getDayTime(client.world));
             SPBRevampedClient.setShadowUniforms((MutableUniformAccess) (Object) this, client.world);
         }
 

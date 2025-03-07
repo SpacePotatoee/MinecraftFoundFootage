@@ -2,8 +2,10 @@ package com.sp.sounds;
 
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
-import com.sp.init.ModSounds;
 import com.sp.init.BackroomsLevels;
+import com.sp.init.ModSounds;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,6 +13,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 
+@Environment(EnvType.CLIENT)
 public class PoolroomsNoonAmbienceSoundInstance extends MovingSoundInstance {
     private final PlayerEntity player;
 

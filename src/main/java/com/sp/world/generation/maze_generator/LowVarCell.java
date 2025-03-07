@@ -2,8 +2,6 @@ package com.sp.world.generation.maze_generator;
 
 import com.sp.SPBRevamped;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;

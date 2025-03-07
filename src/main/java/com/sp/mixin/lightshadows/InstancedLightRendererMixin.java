@@ -2,18 +2,11 @@ package com.sp.mixin.lightshadows;
 
 import foundry.veil.api.client.render.deferred.light.InstancedLight;
 import foundry.veil.api.client.render.deferred.light.Light;
-import foundry.veil.api.client.render.deferred.light.renderer.IndirectLightRenderer;
 import foundry.veil.api.client.render.deferred.light.renderer.InstancedLightRenderer;
-import foundry.veil.api.client.render.deferred.light.renderer.LightRenderer;
-import net.minecraft.client.gl.VertexBuffer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-
-import java.util.List;
 
 @Mixin(value = InstancedLightRenderer.class, remap = false)
 public abstract class InstancedLightRendererMixin<T extends Light & InstancedLight> {

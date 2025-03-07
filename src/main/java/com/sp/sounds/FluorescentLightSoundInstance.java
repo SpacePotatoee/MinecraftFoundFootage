@@ -1,12 +1,14 @@
 package com.sp.sounds;
 
 import com.sp.SPBRevampedClient;
-import com.sp.init.ModBlocks;
 import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.block.entity.FluorescentLightBlockEntity;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.ModBlocks;
 import com.sp.init.ModSounds;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
@@ -14,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 
+@Environment(EnvType.CLIENT)
 public class FluorescentLightSoundInstance extends MovingSoundInstance {
     private BlockEntity entity;
     private PlayerEntity player;

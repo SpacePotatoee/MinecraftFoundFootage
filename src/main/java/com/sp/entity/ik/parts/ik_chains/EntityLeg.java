@@ -1,7 +1,6 @@
 package com.sp.entity.ik.parts.ik_chains;
 
 import com.sp.entity.ik.parts.Segment;
-import com.sp.entity.ik.util.MathUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 

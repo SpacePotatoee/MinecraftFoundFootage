@@ -3,7 +3,6 @@ package com.sp.render;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
 import foundry.veil.api.client.util.Easings;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.joml.Vector3f;
@@ -23,11 +22,7 @@ public class PoolroomsDayCycle {
     static float midnightAngle = 70.0f;
     static float sunriseAngle = 20.0f;
 
-    public static float advanceDayTime() {
-        World world = MinecraftClient.getInstance().world;
-//        System.out.println(dayTime);
-
-
+    public static float advanceDayTime(World world) {
         if(world != null) {
             WorldEvents events = InitializeComponents.EVENTS.get(world);
             if(events.isSunsetTransition()) {
@@ -121,8 +116,8 @@ public class PoolroomsDayCycle {
         return whiteColor;
     }
 
-    public static float getDayTime(){
-        return advanceDayTime();
+    public static float getDayTime(World world){
+        return advanceDayTime(world);
     }
 
 

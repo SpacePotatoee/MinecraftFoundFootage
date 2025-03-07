@@ -1,10 +1,10 @@
 package com.sp.block.renderer;
 
-import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
 import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
+import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.render.RenderLayers;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
@@ -21,7 +21,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
 
-import static net.minecraft.util.math.Direction.*;
+import static net.minecraft.util.math.Direction.WEST;
 
 public class ThinFluorescentLightBlockEntityRenderer implements BlockEntityRenderer<ThinFluorescentLightBlockEntity> {
     private static final Identifier SHADER = new Identifier(SPBRevamped.MOD_ID, "light/fluorescent_light");

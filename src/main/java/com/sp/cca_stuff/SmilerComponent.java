@@ -3,9 +3,7 @@ package com.sp.cca_stuff;
 import com.sp.entity.custom.SmilerEntity;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
-import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.random.Random;
 
 public class SmilerComponent implements AutoSyncedComponent, ClientTickingComponent {
     private final SmilerEntity smiler;

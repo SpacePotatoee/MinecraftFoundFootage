@@ -19,12 +19,13 @@ public class ModBlockEntities {
     public static BlockEntityType<EmergencyLightBlockEntity> EMERGENCY_LIGHT_BLOCK_ENTITY;
 
 
-    public static void registerAllBlockEntities(){
+    public static void registerAllBlockEntities() {
 
         FLUORESCENT_LIGHT_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
                 new Identifier(SPBRevamped.MOD_ID,"fluorescent_light_block_entity"),
                 FabricBlockEntityTypeBuilder.create(FluorescentLightBlockEntity::new,
                         ModBlocks.FluorescentLight).build());
+
 
         DRAWING_MARKER_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
                 new Identifier(SPBRevamped.MOD_ID,"poolrooms_window_block_entity"),

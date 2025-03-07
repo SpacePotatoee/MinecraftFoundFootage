@@ -22,7 +22,6 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
 public class EventCommand {

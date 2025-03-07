@@ -4,7 +4,9 @@ import foundry.veil.api.client.render.deferred.light.AreaLight;
 import foundry.veil.api.client.render.deferred.light.renderer.InstancedLightRenderer;
 import foundry.veil.impl.client.render.deferred.light.AreaLightRenderer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;

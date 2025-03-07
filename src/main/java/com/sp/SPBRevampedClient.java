@@ -1,15 +1,15 @@
 package com.sp;
 
+import com.sp.block.renderer.FluorescentLightBlockEntityRenderer;
+import com.sp.block.renderer.ThinFluorescentLightBlockEntityRenderer;
+import com.sp.cca_stuff.InitializeComponents;
+import com.sp.cca_stuff.PlayerComponent;
+import com.sp.cca_stuff.WorldEvents;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.client.model.SmilerModel;
 import com.sp.entity.client.renderer.SkinWalkerRenderer;
 import com.sp.entity.client.renderer.SmilerRenderer;
 import com.sp.init.*;
-import com.sp.block.renderer.*;
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.PlayerComponent;
-import com.sp.cca_stuff.WorldEvents;
-import com.sp.render.RenderLayers;
 import com.sp.networking.InitializePackets;
 import com.sp.render.*;
 import com.sp.render.camera.CameraShake;
@@ -20,7 +20,6 @@ import com.sp.render.physics.PhysicsPoint;
 import com.sp.render.physics.PhysicsStick;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
-import com.sp.init.BackroomsLevels;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
@@ -45,7 +44,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.SimpleOption;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
@@ -56,9 +56,9 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import org.joml.*;
+import org.joml.Matrix4f;
 
-import java.util.*;
+import java.util.Vector;
 
 
 public class SPBRevampedClient implements ClientModInitializer {

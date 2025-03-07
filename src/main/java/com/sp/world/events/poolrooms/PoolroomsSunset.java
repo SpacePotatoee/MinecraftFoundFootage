@@ -1,6 +1,5 @@
 package com.sp.world.events.poolrooms;
 
-import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.ModSounds;
@@ -13,7 +12,7 @@ public class PoolroomsSunset implements AbstractEvent {
     @Override
     public void init(World world) {
         WorldEvents events = InitializeComponents.EVENTS.get(world);
-        float currentDayTime = PoolroomsDayCycle.getDayTime();
+        float currentDayTime = PoolroomsDayCycle.getDayTime(world);
         events.setSunsetTransition(true);
         events.setCurrentPoolroomsTime(events.getCurrentPoolroomsTime() + 0.25f);
         events.sync();

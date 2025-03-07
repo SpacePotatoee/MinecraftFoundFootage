@@ -1,14 +1,14 @@
 package com.sp.render.camera;
 
-import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
+import com.sp.compat.modmenu.ConfigStuff;
+import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
 import com.sp.mixin.cutscene.PathAccessor;
 import com.sp.networking.InitializePackets;
 import com.sp.util.MathStuff;
-import com.sp.init.BackroomsLevels;
 import foundry.veil.api.client.anim.Frame;
 import foundry.veil.api.client.anim.Keyframe;
 import foundry.veil.api.client.anim.Path;
@@ -16,16 +16,13 @@ import foundry.veil.api.client.util.Easings;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.EntityTrackingSoundInstance;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import org.joml.Random;
 
 import java.util.List;
 

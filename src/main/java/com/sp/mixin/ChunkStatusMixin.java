@@ -1,7 +1,5 @@
 package com.sp.mixin;
 
-import com.mojang.datafixers.util.Either;
-import com.sp.SPBRevamped;
 import com.sp.world.generation.Level0ChunkGenerator;
 import com.sp.world.generation.Level1ChunkGenerator;
 import com.sp.world.generation.PoolroomsChunkGenerator;
@@ -9,11 +7,8 @@ import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.chunk.BelowZeroRetrogen;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

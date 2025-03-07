@@ -20,14 +20,13 @@ public abstract class PlayerEntityMixin extends Entity {
     }
 
     @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;noClip:Z", ordinal = 0, shift = At.Shift.AFTER))
-    private void enableNoclip(CallbackInfo ci){
-            PlayerComponent playerComponent = InitializeComponents.PLAYER.get((PlayerEntity) (Object) this);
+    private void enableNoclip(CallbackInfo ci) {
+        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(this);
 
-            if (playerComponent.shouldNoClip()) {
-                this.noClip = playerComponent.shouldNoClip();
-            } else {
-                this.noClip = this.isSpectator();
-            }
+        if (playerComponent.shouldNoClip()) {
+            this.noClip = playerComponent.shouldNoClip();
+        } else {
+            this.noClip = this.isSpectator();
+        }
     }
-
 }

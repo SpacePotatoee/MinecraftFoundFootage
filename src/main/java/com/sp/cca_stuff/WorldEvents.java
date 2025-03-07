@@ -3,6 +3,7 @@ package com.sp.cca_stuff;
 import com.sp.SPBRevamped;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
+import com.sp.init.BackroomsLevels;
 import com.sp.init.ModEntities;
 import com.sp.init.ModSounds;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
@@ -17,11 +18,9 @@ import com.sp.world.events.level1.Level1Flicker;
 import com.sp.world.events.level2.Level2Ambience;
 import com.sp.world.events.level2.Level2Warp;
 import com.sp.world.events.poolrooms.PoolroomsAmbience;
-import com.sp.init.BackroomsLevels;
 import com.sp.world.events.poolrooms.PoolroomsSunset;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -137,7 +136,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
         this.done = false;
         this.smilerSpawnDelay = 80;
-        registerEvents();
     }
 
 
@@ -303,8 +301,16 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         Random random = Random.create();
         getPrevSettings();
 
-        if(!this.world.getPlayers().isEmpty() && BackroomsLevels.isInBackrooms(this.world.getRegistryKey())) {
+        if (!this.registered) {
+            registerEvents();
+            this.registered = true;
+        }
+
+        if (world != null && !world.getPlayers().isEmpty()) {
+            //Only tick for the current Dimension instead of all of them
             ticks++;
+            checkDimension();
+
             //Tick the currently active event and choose a random one every min and a half
             if (!eventActive) {
                 this.delay--;
@@ -517,6 +523,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                         }
                     }
                 }
+
             }
         }
         shouldSync();
@@ -636,16 +643,16 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     }
 
     private int getCurrentDimension(){
-        if(this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY){
+        if(this.inLevel0){
             return 1;
         }
-        else if(this.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY){
+        else if(this.inLevel1){
             return 2;
         }
-        else if(this.world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY){
+        else if(this.inLevel2){
             return 3;
         }
-        else if(this.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY){
+        else if(this.inPoolRooms){
             return 4;
         }
         else {
@@ -653,27 +660,27 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         }
     }
 
-    private void checkDimension(MinecraftClient client){
-        if(client.world != null) {
-            if (client.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+    private void checkDimension(){
+        if(world != null) {
+            if (world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                 this.inLevel0 = true;
                 this.inLevel1 = false;
                 this.inLevel2 = false;
                 this.inPoolRooms = false;
             }
-            else if (client.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+            else if (world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
                 this.inLevel0 = false;
                 this.inLevel1 = true;
                 this.inLevel2 = false;
                 this.inPoolRooms = false;
             }
-            else if (client.world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+            else if (world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
                 this.inLevel0 = false;
                 this.inLevel1 = false;
                 this.inLevel2 = true;
                 this.inPoolRooms = false;
             }
-            else if (client.world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+            else if (world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
                 this.inLevel0 = false;
                 this.inLevel1 = false;
                 this.inLevel2 = false;

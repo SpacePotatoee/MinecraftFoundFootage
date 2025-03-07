@@ -4,6 +4,7 @@ import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.cca_stuff.SkinWalkerComponent;
 import com.sp.cca_stuff.WorldEvents;
+import com.sp.clientWrapper.ClientWrapper;
 import com.sp.entity.ai.SlightlyBetterMobNavigation;
 import com.sp.entity.ai.goals.*;
 import com.sp.entity.ik.components.IKAnimatable;
@@ -11,8 +12,6 @@ import com.sp.entity.ik.components.IKModelComponent;
 import com.sp.init.ModSounds;
 import com.sp.sounds.entity.SkinWalkerChaseSoundInstance;
 import foundry.veil.api.client.util.Easings;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -41,7 +40,10 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +60,8 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
     private int ticks;
     private int trueFormTime;
 
-    private SoundInstance chaseSoundInstance;
+    public SkinWalkerChaseSoundInstance chaseSoundInstance;
+
 
     public SkinWalkerEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
@@ -280,21 +283,15 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
     @Override
     public void handleStatus(byte status) {
-        if(status == (byte) 123){
-            MinecraftClient client = MinecraftClient.getInstance();
-            if(!client.getSoundManager().isPlaying(chaseSoundInstance)) {
-                chaseSoundInstance = new SkinWalkerChaseSoundInstance(this);
-                client.getSoundManager().play(chaseSoundInstance);
-            }
+        if(status == (byte) 123 && this.getWorld().isClient){
+            ClientWrapper.handleSkinWalkerEntityClientSide(this);
         }
         super.handleStatus(status);
     }
 
     @Override
     public void onRemoved() {
-        if(this.chaseSoundInstance != null){
-            MinecraftClient.getInstance().getSoundManager().stop(this.chaseSoundInstance);
-        }
+        ClientWrapper.onRemoveSkinWalkerClientSide(this);
     }
 
     @Override

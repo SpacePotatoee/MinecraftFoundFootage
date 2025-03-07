@@ -2,7 +2,10 @@ package com.sp.networking;
 
 import com.sp.SPBRevamped;
 import com.sp.networking.C2S.*;
-import com.sp.networking.S2C.*;
+import com.sp.networking.S2C.InvokeBlackScreenPacket;
+import com.sp.networking.S2C.InvokeScreenShakePacket;
+import com.sp.networking.S2C.ReloadLightsPacket;
+import com.sp.networking.S2C.SoundPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;

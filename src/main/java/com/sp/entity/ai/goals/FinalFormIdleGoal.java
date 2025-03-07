@@ -5,14 +5,12 @@ import com.sp.cca_stuff.PlayerComponent;
 import com.sp.cca_stuff.SkinWalkerComponent;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.init.ModSounds;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 public class FinalFormIdleGoal extends Goal {
     private final SkinWalkerEntity entity;

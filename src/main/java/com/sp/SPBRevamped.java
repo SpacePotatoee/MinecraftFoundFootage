@@ -9,20 +9,15 @@ import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
 import com.sp.entity.ik.model.GeckoLib.MowzieModelFactory;
 import com.sp.entity.ik.util.PrAnCommonClass;
-import com.sp.init.ModBlockEntities;
-import com.sp.init.ModEntities;
+import com.sp.init.*;
 import com.sp.item.ModItemGroups;
-import com.sp.init.ModItems;
 import com.sp.networking.InitializePackets;
-import com.sp.init.ModSounds;
-import com.sp.init.BackroomsLevels;
 import com.sp.world.generation.Level0ChunkGenerator;
 import com.sp.world.generation.Level1ChunkGenerator;
 import com.sp.world.generation.Level2ChunkGenerator;
 import com.sp.world.generation.PoolroomsChunkGenerator;
 import eu.midnightdust.lib.config.MidnightConfig;
 import net.fabricmc.api.ModInitializer;
-
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -71,13 +66,12 @@ public class SPBRevamped implements ModInitializer {
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level2_chunk_generator"), Level2ChunkGenerator.CODEC);
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "poolrooms_chunk_generator"), PoolroomsChunkGenerator.CODEC);
 
-
 		ModItems.registerModItems();
 		ModSounds.registerSounds();
 		InitializePackets.registerC2SPackets();
 		ModItemGroups.registerItemGroups();
+		ModBlocks.init();
 		ModBlockEntities.registerAllBlockEntities();
-		GeckoLib.initialize();
 		MidnightConfig.init(MOD_ID, ConfigStuff.class);
 
 		CommandRegistrationCallback.EVENT.register(BlackScreenCommand::register);
@@ -90,23 +84,23 @@ public class SPBRevamped implements ModInitializer {
 		// !
 		PrAnCommonClass.init();
 
-
 		FabricDefaultAttributeRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerEntity.createSkinWalkerAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntities.SMILER_ENTITY, SmilerEntity.createSmilerAttributes());
 
-
-		System.out.println("\"WOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooooooooo..........\" -He said as he fell into the backrooms, never to be seen again.");
-
+		LOGGER.info("\"WOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooooooooo..........\" -He said as he fell into the backrooms, never to be seen again.");
 
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(((player, origin, destination) -> {
 			PacketByteBuf buffer = PacketByteBufs.create();
 			ServerPlayNetworking.send(player, InitializePackets.RELOAD_LIGHTS, buffer);
 		}));
 
-
 		ServerPlayerEvents.AFTER_RESPAWN.register(((oldPlayer, newPlayer, alive) -> {
-			if(BackroomsLevels.isInBackrooms(oldPlayer.getWorld().getRegistryKey())) {
-				boolean backupInvulnerable;
+			if(!BackroomsLevels.isInBackrooms(oldPlayer.getWorld().getRegistryKey())) {
+				return;
+			}
+
+			boolean backupInvulnerable;
+			try {
 				ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 				PlayerComponent playerComponent = InitializeComponents.PLAYER.get(newPlayer);
 
@@ -131,6 +125,8 @@ public class SPBRevamped implements ModInitializer {
 					playerComponent.sync();
 					executorService.shutdown();
 				}, 8000, TimeUnit.MILLISECONDS);
+			} catch (Exception e) {
+				LOGGER.error("Error in AFTER_RESPAWN event: {}", String.valueOf(e));
 			}
 		}));
 	}

@@ -1,7 +1,6 @@
 package com.sp.networking.S2C;
 
 import com.sp.SPBRevampedClient;
-import foundry.veil.api.client.util.Easings;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

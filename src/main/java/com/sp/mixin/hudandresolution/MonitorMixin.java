@@ -1,9 +1,6 @@
 package com.sp.mixin.hudandresolution;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import com.sp.SPBRevampedClient;
 import com.sp.render.VhsAspectRatio;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Monitor;
 import net.minecraft.client.util.VideoMode;
 import org.spongepowered.asm.mixin.Final;
@@ -14,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.awt.*;
 import java.util.List;
 
 @Mixin(Monitor.class)

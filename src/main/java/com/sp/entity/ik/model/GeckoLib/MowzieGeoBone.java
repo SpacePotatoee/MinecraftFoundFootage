@@ -5,10 +5,12 @@ import com.sp.entity.ik.util.MathUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
-import org.joml.*;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.GeoBone;
 
-import java.lang.Math;
 import java.util.List;
 
 /**

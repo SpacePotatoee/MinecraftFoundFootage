@@ -2,7 +2,9 @@ package com.sp.block.custom;
 
 import com.sp.block.entity.DrawingMarkerBlockEntity;
 import com.sp.init.ModBlockEntities;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;

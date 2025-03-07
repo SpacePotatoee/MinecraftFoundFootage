@@ -1,7 +1,6 @@
 package com.sp.mixin.hudandresolution;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.sp.SPBRevampedClient;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.render.VhsAspectRatio;
 import net.minecraft.client.gui.screen.option.VideoOptionsScreen;
@@ -16,8 +15,9 @@ import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Optional;
 import java.util.function.Consumer;

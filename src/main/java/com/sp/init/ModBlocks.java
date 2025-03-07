@@ -219,6 +219,10 @@ public class ModBlocks {
                 new BlockItem(block, new FabricItemSettings()));
     }
 
+    public static void init() {
+
+    }
+
     public static boolean always(BlockState state, BlockView world, BlockPos pos) {
         return true;
     }

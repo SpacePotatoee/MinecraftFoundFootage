@@ -1,7 +1,7 @@
 package com.sp.block.custom;
 
-import com.sp.init.ModBlockEntities;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
+import com.sp.init.ModBlockEntities;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -71,9 +71,9 @@ public class ThinFluorescentLightBlock extends BlockWithEntity {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        switch ((WallMountLocation)state.get(FACE)) {
+        switch (state.get(FACE)) {
             case FLOOR:
-                switch (((Direction)state.get(FACING)).getAxis()) {
+                switch (state.get(FACING).getAxis()) {
                     case X:
                         return FLOOR_X_AXIS_SHAPE;
                     case Z:
