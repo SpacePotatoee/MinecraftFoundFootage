@@ -52,6 +52,9 @@ flat in int blockMaterial;
 
 void main() {
     vec4 color = texture(Sampler0, texCoord0) * vertexColor * ColorModulator;
+    if(color.a < 0.1){
+        discard;
+    }
 
     int Mat = BLOCK_SOLID;
     if(blockMaterial != -1) {
