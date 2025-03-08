@@ -15,6 +15,7 @@ import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.client.SkinWalkerCapturedFlavorText;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
+import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
 import com.sp.networking.InitializePackets;
@@ -27,8 +28,10 @@ import com.sp.sounds.pipes.WaterPipeSoundInstance;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.deferred.light.AreaLight;
 import foundry.veil.api.client.render.deferred.light.PointLight;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -56,6 +59,14 @@ import static com.sp.block.custom.ThinFluorescentLightBlock.FACE;
 import static com.sp.block.custom.ThinFluorescentLightBlock.FACING;
 
 public class ClientWrapper {
+    public static void skinWalkerPlayStepSound(ServerLimb limb) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            MinecraftClient client = MinecraftClient.getInstance();
+            client.getSoundManager().play(new PositionedSoundInstance(ModSounds.SKINWALKER_FOOTSTEP, SoundCategory.HOSTILE, 10.0f, 1.0f, limb.random, limb.pos.x, limb.pos.y, limb.pos.z));
+            limb.playedStepSound = true;
+        }
+    }
+
     public static void tickClientPlayerComponent(PlayerComponent playerComponent) {
         MinecraftClient client = MinecraftClient.getInstance();
 

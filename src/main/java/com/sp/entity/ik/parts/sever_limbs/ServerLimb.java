@@ -1,13 +1,10 @@
 package com.sp.entity.ik.parts.sever_limbs;
 
+import com.sp.clientWrapper.ClientWrapper;
 import com.sp.entity.ik.components.IKLegComponent;
 import com.sp.entity.ik.util.ArrayUtil;
-import com.sp.init.ModSounds;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 
@@ -20,8 +17,8 @@ public class ServerLimb {
     public Vec3d pos = Vec3d.ZERO;
     public Vec3d baseOffset;
     public boolean hasToBeSet = true;
-    private final Random random = Random.create();
-    private boolean playedStepSound;
+    public final Random random = Random.create();
+    public boolean playedStepSound;
 
     public ServerLimb(Vec3d baseOffset) {
         this.baseOffset = baseOffset;
@@ -62,9 +59,7 @@ public class ServerLimb {
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 if (!this.playedStepSound) {
 //                if(this.random.nextBoolean()) {
-                    MinecraftClient client = MinecraftClient.getInstance();
-                    client.getSoundManager().play(new PositionedSoundInstance(ModSounds.SKINWALKER_FOOTSTEP, SoundCategory.HOSTILE, 10.0f, 1.0f, random, this.pos.x, this.pos.y, this.pos.z));
-                    this.playedStepSound = true;
+                    ClientWrapper.skinWalkerPlayStepSound(this);
 //                }
                 }
             }
