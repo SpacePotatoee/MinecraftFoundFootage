@@ -4,6 +4,7 @@ import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.command.BlackScreenCommand;
 import com.sp.command.EventCommand;
+import com.sp.command.GimmeMyInventoryBack;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
@@ -77,6 +78,7 @@ public class SPBRevamped implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register(BlackScreenCommand::register);
 //		CommandRegistrationCallback.EVENT.register(CastToTheBackroomsCommand::register);
 		CommandRegistrationCallback.EVENT.register(EventCommand::register);
+		CommandRegistrationCallback.EVENT.register(GimmeMyInventoryBack::register);
 
 		// Thanks Bob Mowzie
 		GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());

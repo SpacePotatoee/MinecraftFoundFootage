@@ -105,7 +105,9 @@ public class SpeakGoal extends Goal {
         short[] data = BackroomsVoicechatPlugin.randomSpeakingList.get(this.component.getTargetPlayerUUID()).get(random.nextBetween(0, BackroomsVoicechatPlugin.randomSpeakingList.get(this.component.getTargetPlayerUUID()).size() - 1));
 
         if (this.component.isInTrueForm()) {
-            data = demonizeVoice(data);
+            if(data != null && data.length > 0) {
+                data = demonizeVoice(data);
+            }
         }
 
         if (this.audioChannel == null) {

@@ -17,12 +17,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
@@ -39,6 +44,9 @@ import static com.sp.SPBRevamped.SLOW_SPEED_MODIFIER;
 @SuppressWarnings("DataFlowIssue")
 public class PlayerComponent implements AutoSyncedComponent, ClientTickingComponent, ServerTickingComponent {
     public final PlayerEntity player;
+    private final SimpleInventory playerSavedMainInventory = new SimpleInventory(36);
+    private SimpleInventory playerSavedArmorInventory = new SimpleInventory(4);
+    private SimpleInventory playerSavedOffhandInventory = new SimpleInventory(1);
 
     private int stamina;
     private boolean tired;
@@ -134,6 +142,48 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.glitchTimer = 0.0f;
         this.shouldGlitch = false;
         this.glitchTick = 0;
+    }
+
+    private void savePlayerInventory() {
+        PlayerInventory inventory = this.player.getInventory();
+        DefaultedList<ItemStack> mainInventory = inventory.main;
+        DefaultedList<ItemStack> armorInventory = inventory.armor;
+        DefaultedList<ItemStack> offHand = inventory.offHand;
+
+        this.saveInventory(mainInventory, this.playerSavedMainInventory);
+        this.saveInventory(armorInventory, this.playerSavedArmorInventory);
+        this.saveInventory(offHand, this.playerSavedOffhandInventory);
+    }
+
+    public void loadPlayerSavedInventory() {
+        PlayerInventory inventory = this.player.getInventory();
+        DefaultedList<ItemStack> mainInventory = inventory.main;
+        DefaultedList<ItemStack> armorInventory = inventory.armor;
+        DefaultedList<ItemStack> offHand = inventory.offHand;
+
+        this.loadInventory(mainInventory, this.playerSavedMainInventory);
+        this.loadInventory(armorInventory, this.playerSavedArmorInventory);
+        this.loadInventory(offHand, this.playerSavedOffhandInventory);
+
+        this.playerSavedMainInventory.clear();
+    }
+
+    private void saveInventory(DefaultedList<ItemStack> inventory1, Inventory inventory2){
+        for (int i = 0; i < inventory1.size(); i++) {
+            ItemStack itemStack = inventory1.get(i);
+            if (!itemStack.isEmpty()) {
+                inventory2.setStack(i, itemStack);
+            }
+        }
+    }
+
+    private void loadInventory(DefaultedList<ItemStack> inventory1, Inventory inventory2){
+        for (int i = 0; i < inventory2.size(); i++) {
+            ItemStack itemStack = inventory2.getStack(i);
+            if (!itemStack.isEmpty()) {
+                inventory1.set(i, itemStack);
+            }
+        }
     }
 
     public int getStamina() {
@@ -423,6 +473,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                         return;
                     }
 
+                    this.savePlayerInventory();
+                    this.player.getInventory().clear();
                     TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
                     FabricDimensions.teleport(this.player, backrooms, target);
                     this.setDoingCutscene(true);
@@ -550,7 +602,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 BlockPos blockPos = ((ServerPlayerEntity)this.player).getSpawnPointPosition();
                 float f = ((ServerPlayerEntity)this.player).getSpawnAngle();
                 boolean bl = ((ServerPlayerEntity)this.player).isSpawnForced();
-                ServerWorld serverWorld = ((ServerPlayerEntity)this.player).server.getWorld(((ServerPlayerEntity)this.player).getSpawnPointDimension());
+                ServerWorld serverWorld = this.player.getWorld().getServer().getWorld(World.OVERWORLD);
                 Optional<Vec3d> optional;
                 if (serverWorld != null && blockPos != null) {
                     optional = PlayerEntity.findRespawnPosition(serverWorld, blockPos, f, bl, true);
@@ -560,8 +612,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
 
                 ServerWorld overworld = this.player.getWorld().getServer().getWorld(World.OVERWORLD);
-                BlockPos blockPos1 = blockPos != null ? blockPos : overworld.getSpawnPos();
+                BlockPos blockPos1 = overworld.getSpawnPos();
                 TeleportTarget target = new TeleportTarget(optional.orElseGet(() -> Vec3d.of(blockPos1)), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
+                this.loadPlayerSavedInventory();
                 FabricDimensions.teleport(this.player, overworld, target);
             }
         }

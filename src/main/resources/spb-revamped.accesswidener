@@ -35,3 +35,4 @@ accessible class net/minecraft/client/render/VertexFormatElement$Type$SetupTask
 accessible class net/minecraft/client/render/VertexFormatElement$Type$ClearTask
 accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask
 accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask$RenderData
+accessible method net/minecraft/entity/player/PlayerInventory addStack (Lnet/minecraft/item/ItemStack;)I

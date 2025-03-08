@@ -1,5 +1,6 @@
 package com.sp.cca_stuff;
 
+import com.sp.Keybinds;
 import com.sp.SPBRevamped;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
@@ -383,7 +384,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
 
             //Start Looking for a player to take and take them when they're not talking and can't be seen
-            if (this.getIntercomCount() >= 3 && world.getPlayers().size() > 1) {
+            if (Keybinds.toggleEvent.wasPressed()) {
+                System.out.println("PRESSED");
                 if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                     //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
                     Map.Entry<UUID, Float> min = null;
@@ -397,21 +399,17 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                     if (min != null) {
                         PlayerEntity target = this.world.getPlayerByUuid(min.getKey());
                         if (target != null && target.isAlive()) {
-                            if (!target.getUuid().equals(this.prevActiveSkinwalkerTarget)) {
-                                this.setActiveSkinwalkerTarget(target.getUuid());
-                                this.prevActiveSkinwalkerTarget = target.getUuid();
-                                this.activeTargetCooldown = 100;
-                            }
-                            this.activeTargetCooldown = Math.max(this.activeTargetCooldown - 1, 0);
+                            this.setActiveSkinwalkerTarget(target.getUuid());
                         }
                     }
-
+                    System.out.println(this.activeTargetCooldown);
                     if (this.getActiveSkinwalkerTarget() != null && this.activeTargetCooldown <= 0) {
+                        System.out.println("NOT NULL");
                         PlayerEntity target = this.getActiveSkinwalkerTarget();
                         PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
 
                         if (!targetComponent.isSpeaking()) {
-
+                            System.out.println("NOT SPEAKING");
                             List<PlayerEntity> playerEntityList = target.getWorld().getPlayers(
                                     TargetPredicate.DEFAULT
                                             .ignoreDistanceScalingFactor()
@@ -431,8 +429,10 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                     }
                                 }
                             }
+                            System.out.println(seen);
                             if (!seen) {
                                 //Take em
+                                System.out.println("TAKE EM");
                                 SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(this.world);
                                 if (skinWalkerEntity != null) {
 
@@ -456,7 +456,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                 }
             }
 
-            if (this.activeSkinWalkerEntity != null) {
+            if (this.activeSkinWalkerEntity != null && !this.activeSkinWalkerEntity.isRemoved()) {
                 SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(this.activeSkinWalkerEntity);
                 if (component.shouldBeginRelease()) {
                     PlayerComponent targetComponent = InitializeComponents.PLAYER.get(this.getActiveSkinwalkerTarget());
@@ -496,6 +496,18 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                         this.activeSkinWalkerEntity = null;
                     }
                 }
+            } else if(this.getActiveSkinwalkerTarget() != null) {
+                ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
+                PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
+
+                if(targetComponent.hasBeenCaptured() || targetComponent.isBeingCaptured()) {
+                    target.changeGameMode(GameMode.SURVIVAL);
+                    targetComponent.setHasBeenCaptured(false);
+                    targetComponent.setShouldBeMuted(false);
+                    targetComponent.sync();
+                    SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
+                }
+                this.activeSkinwalkerTarget = nullUUID;
             }
 
 
