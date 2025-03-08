@@ -291,7 +291,9 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
     @Override
     public void onRemoved() {
-        ClientWrapper.onRemoveSkinWalkerClientSide(this);
+        if (this.getWorld().isClient()) {
+            ClientWrapper.onRemoveSkinWalkerClientSide(this);
+        }
     }
 
     @Override
