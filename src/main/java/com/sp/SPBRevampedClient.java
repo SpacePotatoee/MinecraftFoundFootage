@@ -520,7 +520,7 @@ public class SPBRevampedClient implements ClientModInitializer {
     public static float getWarpTimer(World world) {
         WorldEvents events = InitializeComponents.EVENTS.get(world);
 
-        if (events.isLevel2Warp()) {
+        if (events.isLevel2Warp() || tickTimer.getCurrentTick() != 0) {
             tickTimer.setOnOrOff(true);
             float x = tickTimer.getCurrentTick();
             float w = 0.03141592f;

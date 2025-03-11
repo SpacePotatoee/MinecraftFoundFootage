@@ -384,8 +384,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
 
             //Start Looking for a player to take and take them when they're not talking and can't be seen
-            if (Keybinds.toggleEvent.wasPressed()) {
-                System.out.println("PRESSED");
+            if (this.getIntercomCount() >= 3 && world.getPlayers().size() > 1) {
                 if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                     //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
                     Map.Entry<UUID, Float> min = null;
@@ -402,14 +401,11 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                             this.setActiveSkinwalkerTarget(target.getUuid());
                         }
                     }
-                    System.out.println(this.activeTargetCooldown);
                     if (this.getActiveSkinwalkerTarget() != null && this.activeTargetCooldown <= 0) {
-                        System.out.println("NOT NULL");
                         PlayerEntity target = this.getActiveSkinwalkerTarget();
                         PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
 
                         if (!targetComponent.isSpeaking()) {
-                            System.out.println("NOT SPEAKING");
                             List<PlayerEntity> playerEntityList = target.getWorld().getPlayers(
                                     TargetPredicate.DEFAULT
                                             .ignoreDistanceScalingFactor()
@@ -429,10 +425,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                     }
                                 }
                             }
-                            System.out.println(seen);
                             if (!seen) {
                                 //Take em
-                                System.out.println("TAKE EM");
                                 SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(this.world);
                                 if (skinWalkerEntity != null) {
 

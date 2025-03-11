@@ -18,15 +18,6 @@ public class Level2Warp implements AbstractEvent {
     @Override
     public void reset(World world) {
         WorldEvents events = InitializeComponents.EVENTS.get(world);
-        if(SPBRevampedClient.tickTimer.getCurrentTick() == 0){
-            events.setLevel2Warp(false);
-            done = true;
-        }
-    }
-
-    @Override
-    public void end(World world) {
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
         events.setLevel2Warp(false);
         done = true;
     }
