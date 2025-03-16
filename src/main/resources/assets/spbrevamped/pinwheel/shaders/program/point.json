@@ -1,6 +1,9 @@
 {
   "fragment": "spbrevamped:point",
   "vertex": "spbrevamped:point",
+  "definitions": [
+    "SHADOWS"
+  ],
   "textures": {
     "ShadowSampler": {
       "type": "framebuffer",

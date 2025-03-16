@@ -5,6 +5,7 @@ import com.sp.block.renderer.ThinFluorescentLightBlockEntityRenderer;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.cca_stuff.WorldEvents;
+import com.sp.compat.modmenu.ConfigDefinitions;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.client.model.SmilerModel;
 import com.sp.entity.client.renderer.SkinWalkerRenderer;
@@ -273,6 +274,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
 
                         if(PreviousUniforms.prevModelViewMat != null && PreviousUniforms.prevProjMat != null){
+//                            System.out.println(PreviousUniforms.prevModelViewMat);
                             shaderProgram.setMatrix("prevViewMat", PreviousUniforms.prevModelViewMat);
                             shaderProgram.setMatrix("prevProjMat", PreviousUniforms.prevProjMat);
                             shaderProgram.setVector("prevCameraPos", PreviousUniforms.prevCameraPos);
@@ -326,15 +328,15 @@ public class SPBRevampedClient implements ClientModInitializer {
                             shaderProgram.setInt("OverWorld", 1);
                         }
 
-                        if(ConfigStuff.renderBlockReflections) {
-                            if(shaderProgram.getInt("blockReflections") == 0) {
-                                shaderProgram.setInt("blockReflections", 1);
-                            }
-                        } else {
-                            if(shaderProgram.getInt("blockReflections") == 1) {
-                                shaderProgram.setInt("blockReflections", 0);
-                            }
-                        }
+//                        if(ConfigStuff.renderBlockReflections) {
+//                            if(shaderProgram.getInt("blockReflections") == 0) {
+//                                shaderProgram.setInt("blockReflections", 1);
+//                            }
+//                        } else {
+//                            if(shaderProgram.getInt("blockReflections") == 1) {
+//                                shaderProgram.setInt("blockReflections", 0);
+//                            }
+//                        }
                     }
 
                     shaderProgram = context.getShader(GLITCH_SHADER);
@@ -350,11 +352,14 @@ public class SPBRevampedClient implements ClientModInitializer {
                     definitions.remove("WARP");
                 }
 
-                if(ConfigStuff.motionBlur){
-                    definitions.define("MOTION_BLUR");
-                } else {
-                    definitions.remove("MOTION_BLUR");
-                }
+                ConfigDefinitions.definitions.forEach((s, aBoolean) -> {
+                    if(aBoolean.get()){
+                        definitions.define(s);
+                    } else {
+//                        System.out.println("REMOVED: " + s);
+                        definitions.remove(s);
+                    }
+                });
 
                 PreviousUniforms.update();
             }

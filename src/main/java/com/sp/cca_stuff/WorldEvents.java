@@ -102,7 +102,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     private UUID nullUUID = UUID.randomUUID();
     private UUID activeSkinwalkerTarget;
     private UUID prevActiveSkinwalkerTarget;
-    private SkinWalkerEntity activeSkinWalkerEntity;
+    public SkinWalkerEntity activeSkinWalkerEntity;
     private int activeTargetCooldown;
 
     private boolean done;
@@ -307,84 +307,85 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
             this.registered = true;
         }
 
-        if (world != null && !world.getPlayers().isEmpty()) {
-            //Only tick for the current Dimension instead of all of them
+        if (world != null && !world.getPlayers().isEmpty() && BackroomsLevels.isInBackrooms(world.getRegistryKey())) {
             ticks++;
             checkDimension();
 
             //Tick the currently active event and choose a random one every min and a half
-            if (!eventActive) {
-                this.delay--;
-                if (this.delay <= 0) {
-                    this.delay = 0;
-                    if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty()) {
-                        int currentDimension = getCurrentDimension();
+            if(this.activeSkinWalkerEntity == null) {
+                if (!eventActive) {
+                    this.delay--;
+                    if (this.delay <= 0) {
+                        this.delay = 0;
+                        if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty()) {
+                            int currentDimension = getCurrentDimension();
 
-                        switch (currentDimension) {
-                            case 1: {
-                                int index = random.nextBetween(0, level0EventList.size() - 1);
-                                activeEvent = level0EventList.get(index).get();
+                            switch (currentDimension) {
+                                case 1: {
+                                    int index = random.nextBetween(0, level0EventList.size() - 1);
+                                    activeEvent = level0EventList.get(index).get();
 
-                                if (activeEvent instanceof Level0Blackout) {
-                                    this.blackoutCount++;
-                                    if (this.blackoutCount > 2) {
-                                        while (activeEvent instanceof Level0Blackout) {
-                                            activeEvent = level0EventList.get(random.nextBetween(0, level0EventList.size() - 1)).get();
+                                    if (activeEvent instanceof Level0Blackout) {
+                                        this.blackoutCount++;
+                                        if (this.blackoutCount > 2) {
+                                            while (activeEvent instanceof Level0Blackout) {
+                                                activeEvent = level0EventList.get(random.nextBetween(0, level0EventList.size() - 1)).get();
+                                            }
                                         }
                                     }
+
+                                    activeEvent.init(this.world);
+                                    setEventActive(true);
+                                    ticks = 0;
+                                    this.delay = random.nextBetween(1000, 1500);
                                 }
+                                break;
+                                case 2: {
+                                    int index = random.nextBetween(0, level1EventList.size() - 1);
+                                    activeEvent = level1EventList.get(index).get();
 
-                                activeEvent.init(this.world);
-                                setEventActive(true);
-                                ticks = 0;
-                                this.delay = random.nextBetween(1000, 1500);
-                            }
-                            break;
-                            case 2: {
-                                int index = random.nextBetween(0, level1EventList.size() - 1);
-                                activeEvent = level1EventList.get(index).get();
+                                    activeEvent.init(this.world);
+                                    setEventActive(true);
+                                    ticks = 0;
+                                    this.delay = random.nextBetween(1000, 1600);
+                                }
+                                break;
+                                case 3: {
+                                    int index = random.nextBetween(0, level2EventList.size() - 1);
+                                    activeEvent = level2EventList.get(index).get();
 
-                                activeEvent.init(this.world);
-                                setEventActive(true);
-                                ticks = 0;
-                                this.delay = random.nextBetween(1000, 1600);
-                            }
-                            break;
-                            case 3: {
-                                int index = random.nextBetween(0, level2EventList.size() - 1);
-                                activeEvent = level2EventList.get(index).get();
+                                    activeEvent.init(this.world);
+                                    setEventActive(true);
+                                    ticks = 0;
+                                    this.delay = random.nextBetween(500, 800);
+                                }
+                                break;
+                                case 4: {
+                                    int index = random.nextBetween(0, poolroomsEventList.size() - 1);
+                                    activeEvent = poolroomsEventList.get(index).get();
 
-                                activeEvent.init(this.world);
-                                setEventActive(true);
-                                ticks = 0;
-                                this.delay = random.nextBetween(500, 800);
+                                    activeEvent.init(this.world);
+                                    setEventActive(true);
+                                    ticks = 0;
+                                    this.delay = random.nextBetween(800, 1000);
+                                }
+                                break;
                             }
-                            break;
-                            case 4: {
-                                int index = random.nextBetween(0, poolroomsEventList.size() - 1);
-                                activeEvent = poolroomsEventList.get(index).get();
-
-                                activeEvent.init(this.world);
-                                setEventActive(true);
-                                ticks = 0;
-                                this.delay = random.nextBetween(800, 1000);
-                            }
-                            break;
                         }
                     }
-                }
-            } else {
-                if (activeEvent.duration() <= ticks) {
-                    activeEvent.reset(this.world);
-                    if (activeEvent.isDone()) setEventActive(false);
                 } else {
-                    activeEvent.ticks(ticks, this.world);
+                    if (activeEvent.duration() <= ticks) {
+                        activeEvent.reset(this.world);
+                        if (activeEvent.isDone()) setEventActive(false);
+                    } else {
+                        activeEvent.ticks(ticks, this.world);
+                    }
                 }
             }
 
 
             //Start Looking for a player to take and take them when they're not talking and can't be seen
-            if (this.getIntercomCount() >= 3 && world.getPlayers().size() > 1) {
+            if (this.getIntercomCount() >= 2 && world.getPlayers().size() > 1) {
                 if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                     //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
                     Map.Entry<UUID, Float> min = null;
@@ -450,7 +451,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                 }
             }
 
-            if (this.activeSkinWalkerEntity != null && !this.activeSkinWalkerEntity.isRemoved()) {
+            if (this.activeSkinWalkerEntity != null) {
                 SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(this.activeSkinWalkerEntity);
                 if (component.shouldBeginRelease()) {
                     PlayerComponent targetComponent = InitializeComponents.PLAYER.get(this.getActiveSkinwalkerTarget());
@@ -470,7 +471,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
                         SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
 
-                        target.changeGameMode(GameMode.ADVENTURE);
+                        target.changeGameMode(GameMode.SURVIVAL);
                         target.setCameraEntity(target);
 
                         for (PlayerEntity player : this.world.getPlayers()) {
@@ -481,13 +482,18 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                         this.activeSkinWalkerEntity.discard();
                     }
 
-                    if (this.tick == 105) {
+                    if (this.tick >= 105) {
                         this.setLevel0On(true);
                         targetComponent.setBeingReleased(false);
                         targetComponent.setHasBeenCaptured(false);
                         targetComponent.setShouldBeMuted(false);
                         targetComponent.sync();
                         this.activeSkinWalkerEntity = null;
+                    }
+                } else {
+                    if(this.getActiveSkinwalkerTarget() != null){
+                        ((ServerPlayerEntity) this.getActiveSkinwalkerTarget()).changeGameMode(GameMode.SPECTATOR);
+                        ((ServerPlayerEntity) this.getActiveSkinwalkerTarget()).setCameraEntity(this.activeSkinWalkerEntity);
                     }
                 }
             } else if(this.getActiveSkinwalkerTarget() != null) {
@@ -503,6 +509,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                 }
                 this.activeSkinwalkerTarget = nullUUID;
             }
+
+//            this.level0On = true;
 
 
             //Spawn Level 1 Smilers

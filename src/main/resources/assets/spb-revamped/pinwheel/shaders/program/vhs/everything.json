@@ -1,6 +1,11 @@
 {
   "vertex": "veil:blit_screen",
-  "fragment": "spb-revamped:vhs/everything"
+  "fragment": "spb-revamped:vhs/everything",
+  "definitions": [
+    "VOLUMETRIC_LIGHT",
+    "PUDDLES",
+    "LEVEL1_FOG"
+  ]
 }
 
 

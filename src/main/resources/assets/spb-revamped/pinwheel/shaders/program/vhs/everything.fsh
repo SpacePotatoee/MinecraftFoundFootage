@@ -82,16 +82,18 @@ void main() {
 		uint OpaqueMat = texture(OpaqueMatSampler, texCoord).r;
 		uint TransparentMat = texture(TransparentMatSampler, texCoord).r;
 
+		#ifdef PUDDLES
 		if (!(compat.a > 0.0) && !(compat2.a > 0.0) && !isEntity(TransparentMat)){
 			if (TogglePuddles == 1){
 				color = getPuddles(color, texCoord, vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), DiffuseSampler0, TransparentDepthSampler, NoiseTexture, NoiseTexture2);
 			}
 		}
+		#endif
 
+		#ifdef LEVEL1_FOG
 		vec3 ro = VeilCamera.CameraPosition;
 		vec3 rd = normalize(viewToPlayerSpace(viewPos));
 		float travDist = 0.0;
-		float hitDist = 0.0;
 		vec4 col = vec4(0.0);
 		bool inside = false;
 		float fog = 0.0;
@@ -110,7 +112,6 @@ void main() {
 
 
 					if (d < 0.001) {
-						hitDist = travDist;
 						inside = true;
 					}
 
@@ -127,15 +128,18 @@ void main() {
 			}
 			color.rgb = mix(color.rgb, FOG_COLOR.rgb, fog);
 		}
+		#endif
 
 		color.rgb = blend(color, water);
 
 		//Do this after the water
+		#ifdef VOLUMETRIC_LIGHT
 		if(OpaqueMat != 15){
 			if(ShadowToggle == 1) {
 				color.rgb = getVolumetricLight(color, texCoord, transparentViewPos, ScreenSize, viewMatrix, orthographMatrix, ShadowSampler, sunsetTimer, shadowColor);
 			}
 		}
+		#endif
 
 
 		if(compat.a > 0.0 || compat2.a > 0.0){

@@ -202,7 +202,13 @@ public class ClientWrapper {
                     playerComponent.player.sendMessage(Text.literal("Your flashlight got wet. ").append(Text.literal("It no longer works").formatted(Formatting.RED)), true);
                 }
             } else if(playerComponent.hasBeenCaptured && playerComponent.isBeingCaptured()){
-                playerComponent.setFlashLightOn(false);
+                if(playerComponent.isFlashLightOn()) {
+                    playerComponent.setFlashLightOn(false);
+
+                    PacketByteBuf buffer = PacketByteBufs.create();
+                    buffer.writeBoolean(playerComponent.isFlashLightOn());
+                    ClientPlayNetworking.send(InitializePackets.FL_SYNC, buffer);
+                }
             }
 
             if (playerComponent.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {

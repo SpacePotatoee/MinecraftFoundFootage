@@ -4,6 +4,7 @@ import com.sp.SPBRevampedClient;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.util.MathStuff;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 
 public class CameraRoll {
@@ -22,10 +23,12 @@ public class CameraRoll {
             rotAmount *= tickDelta;
             spinRoll = MathStuff.Lerp(spinRoll, (rotAmount * 0.1f) * ConfigStuff.lookRollMultiplier, 0.8f, tickDelta);
             rotAmount = MathStuff.Lerp(rotAmount, 0, 0.5f, tickDelta);
+            spinRoll = MathHelper.clamp(spinRoll, -20.0f, 20.0f);
 
             //Strafe Roll
             Vec2f velocity2D = MathStuff.get2DRelativeRotation(player.getVelocity(), 360.0f - player.getYaw());
             strafeRoll = MathStuff.Lerp(strafeRoll, (-velocity2D.x * 5) * ConfigStuff.strafeRollMultiplier, 0.8f, tickDelta);
+            strafeRoll = MathHelper.clamp(strafeRoll, -20.0f, 20.0f);
 
             prevYaw = yaw;
         }

@@ -69,21 +69,21 @@ void main() {
 
     //Motion Blur
     vec4 blur3 = vec4(0.0);
-    #ifdef MOTION_BLUR
+//    #ifdef MOTION_BLUR
         const float kernalSize3 = 5.0;
         const float coeff3 = 1.0 / (kernalSize3 * kernalSize3);
         for(float x = -1.0; x <= 1.0; x += coeff3){
             blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(velocity.x * x, velocity.y * x) * MotionBlurStrength) * 0.5;
         }
-    #else
-        blur3 = texture(DiffuseSampler0, uv);
-    #endif
+//    #else
+//        blur3 = texture(DiffuseSampler0, uv);
+//    #endif
 
 
     if(youCantEscape == 0) {
         fragColor = blur3;
-        fragColor = vec4(prevViewPos, 1.0);
-        fragColor = texture(DiffuseSampler0, uv);
+//        fragColor = vec4(prevViewPos, 1.0);
+//        fragColor = texture(DiffuseSampler0, uv);
     } else {
         vec2 uv2 = vec2(uv.x + octave(uv.y + GameTime * 2000.0) * 0.01, uv.y);
 
@@ -116,5 +116,7 @@ void main() {
     vec2 vhsNoise = texture(VhsNoise, vec2(uv.x - GameTime * 3000.0, uv.y + GameTime * 5000.0)).gb * 0.1;
     fragColor.gb += vec2(vhsNoise.x * 0.9, vhsNoise.y * 0.9) * 0.2;
     fragColor.rgb = yuv2rgb(fragColor.rgb);
+
+//    fragColor = vec4(velocity)
 }
 

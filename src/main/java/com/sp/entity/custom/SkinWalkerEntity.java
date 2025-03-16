@@ -51,8 +51,6 @@ import java.util.concurrent.TimeUnit;
 public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAnimatable, IKAnimatable<SkinWalkerEntity> {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     public static final RawAnimation TRANSITION = RawAnimation.begin().then("transition", Animation.LoopType.PLAY_ONCE);
-    public static final RawAnimation HEADCRACK = RawAnimation.begin().then("headcrack", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    public static final RawAnimation EXACTLYWHATITIS = RawAnimation.begin().then("exactlywhatitis", Animation.LoopType.HOLD_ON_LAST_FRAME);
     public SkinWalkerComponent component;
     public List<IKModelComponent<SkinWalkerEntity>> components = new ArrayList<>();
     private final int maxSuspicion;
@@ -348,18 +346,10 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
                 return state.setAndContinue(TRANSITION);
             }
             else {
+                state.resetCurrentAnimation();
                 return null;
             }
         }));
-//        controllers.add(new AnimationController<>(this, "tempController", 0, state -> {
-//            return state.setAndContinue(HEADCRACK);
-//        }));
-//        controllers.add(new AnimationController<>(this, "tempController", 0, state -> {
-//            if(this.age >= 100) {
-//                return state.setAndContinue(EXACTLYWHATITIS);
-//            }
-//            return null;
-//        }));
     }
 
     @Override

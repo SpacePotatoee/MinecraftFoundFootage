@@ -22,7 +22,7 @@ public class EventSounds {
                             playerPos.getX(),
                             playerPos.getY(),
                             playerPos.getZ(),
-                            1.0f,
+                            100.0f,
                             1.0f,
                             player.getRandom().nextLong()
                     )
@@ -47,7 +47,7 @@ public class EventSounds {
                                     playerPos.getX() + randXOffset,
                                     yLevel,
                                     playerPos.getZ() + randZOffset,
-                                    1.0f,
+                                    100.0f,
                                     1.0f,
                                     player.getRandom().nextLong()
                             )

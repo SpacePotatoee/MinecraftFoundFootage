@@ -75,10 +75,16 @@
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Enable Only Vhs Aspect Ratios",
 
   "spb-revamped.midnightconfig.enableVhsEffect": "Enable Vhs Shader",
-  "spb-revamped.midnightconfig.renderBlockReflections": "Render Block Reflections (Only For Poolrooms Tiles)",
   "spb-revamped.midnightconfig.lookRollMultiplier": "Look Roll Multiplier",
   "spb-revamped.midnightconfig.strafeRollMultiplier": "Strafe Roll Multiplier",
   "spb-revamped.midnightconfig.lightRenderDistance": "Light Render Distance (In Blocks)",
+
+  "spb-revamped.midnightconfig.enableShadows": "Enable Shadows",
+  "spb-revamped.midnightconfig.enableVolumetricLight": "Enable Volumetric Light",
+  "spb-revamped.midnightconfig.enablePuddles": "Enable Puddles",
+  "spb-revamped.midnightconfig.enableLevel1Fog": "Enable Level 1 Fog",
+  "spb-revamped.midnightconfig.renderWaterReflections": "Enable Water Reflections",
+  "spb-revamped.midnightconfig.renderBlockReflections": "Enable Block Reflections (Only For Poolrooms Tiles)",
   "spb-revamped.midnightconfig.motionBlur": "Enable Motion Blur",
   "spb-revamped.midnightconfig.motionBlurStrength": "Motion Blur Strength",
 

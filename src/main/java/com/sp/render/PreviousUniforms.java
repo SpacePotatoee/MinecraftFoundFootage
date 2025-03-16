@@ -13,10 +13,11 @@ public class PreviousUniforms {
     public static Vector3f prevCameraPos;
 
     public static void update(){
-        CameraMatrices cameraMatrices = VeilRenderSystem.renderer().getCameraMatrices();
-        prevProjMat = new Matrix4f(cameraMatrices.getProjectionMatrix());
-        prevCameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos().toVector3f();
-        prevModelViewMat = new Matrix4f(cameraMatrices.getViewMatrix());
+        CameraMatrices matrices = VeilRenderSystem.renderer().getCameraMatrices();
+
+        prevProjMat = new Matrix4f(matrices.getProjectionMatrix());
+        prevModelViewMat = new Matrix4f(matrices.getViewMatrix());
+        prevCameraPos = new Vector3f(matrices.getCameraPosition());
     }
 
 }

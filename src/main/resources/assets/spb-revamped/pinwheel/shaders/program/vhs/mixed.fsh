@@ -73,9 +73,12 @@ void main(){
     color *= blur(7.0, 0.001, SSAOSampler, texCoord) * 2.0;
 
     if(Mat2 != 15){
-        if(ShadowToggle == 1) {
-            color = getShadow(color, texCoord, viewPos, normal, ScreenSize, viewMatrix, IShadowViewMatrix, orthographMatrix, NoiseTex, ShadowSampler, ditherSample, sunsetTimer, shadowColor);
-        }
+        #ifdef SHADOWS
+            if(ShadowToggle == 1) {
+                color = getShadow(color, texCoord, viewPos, normal, ScreenSize, viewMatrix, IShadowViewMatrix, orthographMatrix, NoiseTex, ShadowSampler, ditherSample, sunsetTimer, shadowColor);
+            }
+        #endif
+
     } else {
         //Sun
         vec3 rd = viewDirFromUv(texCoord);

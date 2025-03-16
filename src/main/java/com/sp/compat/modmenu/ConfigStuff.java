@@ -2,6 +2,9 @@ package com.sp.compat.modmenu;
 
 import eu.midnightdust.lib.config.MidnightConfig;
 
+import java.lang.reflect.Field;
+import java.util.Map;
+
 
 public class ConfigStuff extends MidnightConfig {
     public static final String VIDEO = "video";
@@ -49,26 +52,38 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = SHADERS, min = 10)
     public static int lightRenderDistance = 100;
 
+
+    @Comment(category = SHADERS)
+    public static Comment spacer3;
+
+
+    @Entry(category = SHADERS)
+    public static boolean enableShadows = true;
+
+    @Entry(category = SHADERS)
+    public static boolean enableVolumetricLight = true;
+
+    @Entry(category = SHADERS)
+    public static boolean enablePuddles = true;
+
+    @Entry(category = SHADERS)
+    public static boolean enableLevel1Fog = true;
+
+    @Entry(category = SHADERS)
+    public static boolean renderWaterReflections = true;
+
     @Entry(category = SHADERS)
     public static boolean renderBlockReflections = true;
 
-    @Comment(category = VIDEO)
-    public static Comment spacer3;
+
+    @Comment(category = SHADERS)
+    public static Comment spacer4;
+
 
     @Entry(category = SHADERS)
     public static boolean motionBlur = true;
 
     @Entry(category = SHADERS, isSlider = true, min = 0.1, max = 1, precision = 10)
     public static float motionBlurStrength = 0.5f;
-
-
-//    @Entry(category = ADMIN)
-//    public static boolean enableVanillaLighting = false;
-//
-//    @Entry(category = ADMIN)
-//    public static boolean forceBackrooms = false;
-//
-//    @Entry(category = ADMIN)
-//    public static boolean enable3rdPerson = false;
 
 }

@@ -107,28 +107,31 @@ void main() {
     float angle = areaLightInfo.angle;
     vec3 offset = lightPos - pos;
 
-    if(pos.y > 40.6 || pos.y < 20.5) {
+    #ifdef SHADOWS
+        if(pos.y > 40.6 || pos.y < 20.5) {
+            fragColor = setColor(albedoColor, normalVS, offset, angle);
+            return;
+        }
+
+        //If the pixel isn't in range, there's no point in doing any calculations
+        if(abs(length(offset)) > maxDistance) {
+            fragColor = vec4(0.0);
+            return;
+        }
+
+        vec3 offsetPos = vec3(pos.x + (0.01 * worldNormal.r), pos.y + (0.01 * worldNormal.g), pos.z + (0.01 * worldNormal.b));
+
+        vec3 rayDir = viewDirFromUv(screenUv);
+        float dist = 0.0;
+        float brightness = 0.0;
+        bool hit = ddaRayMarch(offset, offsetPos, viewMatrix, orthographMatrix, ShadowSampler);
+
+        if(hit == false){
+            fragColor = setColor(albedoColor, normalVS, offset, angle);
+        } else {
+            fragColor = vec4(0.0);
+        }
+    #else
         fragColor = setColor(albedoColor, normalVS, offset, angle);
-        return;
-    }
-
-    //If the pixel isn't in range, there's no point in doing any calculations
-    if(abs(length(offset)) > maxDistance) {
-        fragColor = vec4(0.0);
-        return;
-    }
-
-    vec3 offsetPos = vec3(pos.x + (0.01 * worldNormal.r), pos.y + (0.01 * worldNormal.g), pos.z + (0.01 * worldNormal.b));
-
-    vec3 rayDir = viewDirFromUv(screenUv);
-    float dist = 0.0;
-    float brightness = 0.0;
-    bool hit = ddaRayMarch(offset, offsetPos, viewMatrix, orthographMatrix, ShadowSampler);
-
-    if(hit == false){
-        fragColor = setColor(albedoColor, normalVS, offset, angle);
-    } else {
-        fragColor = vec4(0.0);
-    }
-
+    #endif
 }

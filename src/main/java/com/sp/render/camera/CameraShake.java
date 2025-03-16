@@ -2,10 +2,12 @@ package com.sp.render.camera;
 
 import com.sp.SPBRevampedClient;
 import com.sp.compat.modmenu.ConfigStuff;
+import com.sp.entity.ik.util.MathUtil;
 import com.sp.util.MathStuff;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.math.random.Random;
 
@@ -39,8 +41,8 @@ public class CameraShake {
             if (player != null) {
                 float playerSpeed = (player.horizontalSpeed - player.prevHorizontalSpeed) * 6;
 
-                this.traumaGoal = Math.max(0.6 * playerSpeed, 0.5);
-                this.noiseSpeedGoal = Math.max(0.25 * playerSpeed, 0.1);
+                this.traumaGoal = MathHelper.clamp(0.6 * playerSpeed, 0.5, 1.5f);
+                this.noiseSpeedGoal = MathHelper.clamp(0.25 * playerSpeed, 0.1, 1.0f);
                 this.amplitude = 4;
 
                 this.trauma = Math.max(MathStuff.Lerp((float) this.trauma, (float) this.traumaGoal, 0.93f, frameDelta), 0.5);
