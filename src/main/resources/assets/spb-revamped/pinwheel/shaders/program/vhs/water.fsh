@@ -215,6 +215,8 @@ void main() {
         } else {
             fragColor = vanillaWater;
         }
+    } else {
+        fragColor = vec4(0.0);
     }
 }
 

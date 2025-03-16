@@ -1,7 +1,7 @@
 layout(location = 0) in vec3 Position;
-layout(location = 0) out vec2 texCoord;
 
 
+out vec2 texCoord;
 
 void main() {
 	float distToCenter = length(Position.xy);

@@ -141,14 +141,13 @@ void main() {
 		if(compat.a > 0.0 || compat2.a > 0.0){
 			color.rgb = blend(color, compat);
 			color.rgb = blend(color, compat2);
-//			color = compat + compat2;
 			color.a = min(compat.a + compat2.a, 1.0);
 		}
 
 		//Emergency Light. Need this to get it to shine easier
 		if(OpaqueMat == 19){
 			vec4 testColor = texture(OpaqueAlbedoSampler, texCoord);
-//			color.rgb = testColor.rgb;
+
 			//If the color is pure white
 			if(testColor.r + testColor.g + testColor.b >= 3){
 				color = testColor;

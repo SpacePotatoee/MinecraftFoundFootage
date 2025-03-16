@@ -26,8 +26,8 @@ vec4 getSky(vec2 texCoord, float sunsetTimer, float GameTime, sampler2D CloudNoi
     vec2 uv = (rd.xz * 0.5) / rd.y + GameTime * 10.0;
     vec2 uv2 = (rd.xz * 0.7) / rd.y - GameTime * 10.0;
 
-    vec4 noise = texture2D(CloudNoise1, uv);
-    vec4 noise2 = texture2D(CloudNoise2, uv2);
+    vec4 noise = texture(CloudNoise1, uv);
+    vec4 noise2 = texture(CloudNoise2, uv2);
     vec4 clouds = rd.y > 0.0 ? vec4(noise * noise2) : vec4(0);
     float cloudFog = 1.0 + (1.0 / rd.y);
 

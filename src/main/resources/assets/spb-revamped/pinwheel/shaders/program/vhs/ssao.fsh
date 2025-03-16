@@ -32,15 +32,15 @@ const int QUALITY = 10;
 
 void main() {
     float depthSample = texture(DiffuseDepthSampler, texCoord).r;
-    vec4 mainTexture = texture2D(DiffuseSampler0, texCoord);
+    vec4 mainTexture = texture(DiffuseSampler0, texCoord);
     float depth = texture(DepthSampler, texCoord).r;
     float handDepth = texture(HandSampler, texCoord).r;
 
     vec3 viewPos = viewPosFromDepth(depth, texCoord);
     vec3 normal = normalize(texture(NormalSampler, texCoord).rgb);
 
-    uint material = texture2D(OpaqueMatSampler, texCoord).r;
-    uint material2 = texture2D(TransparentMatSampler, texCoord).r;
+    uint material = texture(OpaqueMatSampler, texCoord).r;
+    uint material2 = texture(TransparentMatSampler, texCoord).r;
 
     if(depthSample < 1.0 && !(material >= 12) && material != 1 && !isEntity(material2)){
         vec3 randDir = normalize(vec3(texture(RNoiseDir, texCoord * 100.0).rgb * 2.0 - 1.0));
@@ -60,7 +60,7 @@ void main() {
 
             //To screen space
             vec3 screenSamplePos = viewToScreenSpace(worldSamplePos);
-            float SSAOMaterial = texture2D(OpaqueMatSampler, screenSamplePos.xy).r;
+            float SSAOMaterial = texture(OpaqueMatSampler, screenSamplePos.xy).r;
             if(SSAOMaterial == 15 || SSAOMaterial == 1 || SSAOMaterial == 2){
                 continue;
             }
