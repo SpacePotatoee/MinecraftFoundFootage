@@ -166,20 +166,23 @@ void main() {
             float shadowSampler = texture(ShadowSampler, shadowScreenSpace.xy).r;
             float shadow = step(shadowDepth, shadowSampler);
 
-            #ifdef BLOCK_REFLECTIONS
-                if(opaqueMaterial == 18 && !(isReflective > 0.0)) {
-                    float reflectionSize = 0.25;
+            if(opaqueMaterial == 18 && !(isReflective > 0.0)) {
+                float reflectionSize = 0.25;
+                #ifdef BLOCK_REFLECTIONS
                     //Only allow pixels closer to the center of the screen to cast reflections to boost performace
-                    if(blockReflections == 1) {
-                        if(opaqueNormalSampler.b < 0.6 && texCoord.x > reflectionSize && texCoord.x < 1.0 - reflectionSize) {
-                            //Uncomment top and comment out bottom to see block reflection debug
-                            //fragColor = mix( vec4(1,0,0,1), vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
-                            fragColor = mix(getReflection(texture(DiffuseSampler0, texCoord), opaqueNormalSampler, waterDepth, texCoord, viewPos, 0.1) * 0.3, vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
-                        }
+                    if(opaqueNormalSampler.b < 0.6 && texCoord.x > reflectionSize && texCoord.x < 1.0 - reflectionSize) {
+                        //Uncomment top and comment out bottom to see block reflection debug
+                        //fragColor = mix( vec4(1,0,0,1), vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
+                        fragColor = mix(getReflection(texture(DiffuseSampler0, texCoord), opaqueNormalSampler, waterDepth, texCoord, viewPos, 0.1) * 0.3, vec4(0), smoothstep(0.0, 0.52, abs(texCoord.x * 2.0 - 1.0)) );
+                    } else {
+                        fragColor = vec4(0.0);
                     }
-                    return;
-                }
-            #endif
+                #else
+                    fragColor = vec4(0.0);
+                #endif
+                return;
+            }
+
 
             color = texture(WaterTexture, worldPos.xz * 0.05 + vec2(GameTime * 50.0)).rg - 0.5;
             color2 = texture(WaterTexture, worldPos.xz * 0.05 - vec2(0.0, GameTime * 50.0)).rg - 0.5;
@@ -192,7 +195,7 @@ void main() {
             normal = vec4(normal.r, normal.b, normal.g, normal.a) * 2.0 - 1.0;
 
 
-            fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER);
+            fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
 
             #ifdef WATER_REFLECTIONS
                 fragColor = getReflection(fragColor, mix(vec4(worldToViewSpaceDirection(normalize(vec3(0.0, 1.0,0.0))), 1.0), normal, 0.02), waterDepth, texCoord, viewPos, 0.0) * vec4(vec3(0.0, 1.2, 1.2), 1.0);

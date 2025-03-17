@@ -54,7 +54,7 @@ public class SkinWalkerCapturedFlavorText {
             }
         }
 
-        if(!shownTextTaunt) {
+        if(!shownTextTaunt && !shownTriedToChatText) {
             if(textCount >= 2) {
                 tick++;
 

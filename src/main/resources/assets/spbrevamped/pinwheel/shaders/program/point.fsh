@@ -60,6 +60,7 @@ void main() {
     vec3 worldNormal = viewToWorldSpaceDirection(normalVS);
     vec3 offset = lightPos - pos;
 
+    vec4 color = setColor(albedoColor, normalVS, offset, 1.0);
     #ifdef SHADOWS
         if(ShouldRender == 1) {
             vec3 tangent = normalize(cross(worldNormal, normalize(vec3(1.0))));
@@ -75,7 +76,7 @@ void main() {
 
             //If the pixel isn't in range, there's no point in doing any calculations
             if(abs(length(offset)) > radius || heightChecks){
-                fragColor = setColor(albedoColor, normalVS, offset, 1.0);
+                fragColor = color;
                 return;
             }
 
@@ -86,14 +87,12 @@ void main() {
             normalRayOffset = (normalRayOffset * TBN) + offsetPos;
 
             bool hit = ddaRayMarch(offset, normalRayOffset, viewMatrix, orthographMatrix, ShadowSampler);
-            if(!hit){
-                fragColor = setColor(albedoColor, normalVS, offset, 1.0);
+            if(hit){
+                color = vec4(vec3(0.0), 1.0);
             }
-        } else {
-            fragColor = setColor(albedoColor, normalVS, offset, 1.0);
         }
-    #else
-        fragColor = setColor(albedoColor, normalVS, offset, 1.0);
     #endif
+
+    fragColor = color;
 
 }
