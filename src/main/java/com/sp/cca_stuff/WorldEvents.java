@@ -383,10 +383,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
 
             //Start Looking for a player to take and take them when they're not talking and can't be seen
-            System.out.println(this.getIntercomCount());
             if (this.getIntercomCount() >= 2 && world.getPlayers().size() > 1) {
                 if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                    System.out.println("NOT DONE");
                     //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
                     Map.Entry<UUID, Float> min = null;
                     for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
@@ -403,14 +401,11 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                         }
                     }
 
-                    System.out.println(this.getActiveSkinwalkerTarget());
                     if (this.getActiveSkinwalkerTarget() != null) {
-                        System.out.println("GOT TARGET");
                         PlayerEntity target = this.getActiveSkinwalkerTarget();
                         PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
 
                         if (!targetComponent.isSpeaking()) {
-                            System.out.println("NOT SPEAKING");
                             List<PlayerEntity> playerEntityList = target.getWorld().getPlayers(
                                     TargetPredicate.DEFAULT
                                             .ignoreDistanceScalingFactor()
@@ -430,7 +425,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                     }
                                 }
                             }
-                            System.out.println(seen);
 
                             if (!seen) {
                                 //Take em
@@ -507,7 +501,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                 PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
 
                 if(targetComponent.hasBeenCaptured() || targetComponent.isBeingCaptured()) {
-                    System.out.println("AUTO RELEASED");
                     target.changeGameMode(GameMode.SURVIVAL);
                     targetComponent.setHasBeenCaptured(false);
                     targetComponent.setShouldBeMuted(false);
