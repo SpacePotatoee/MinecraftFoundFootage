@@ -28,9 +28,7 @@ public class ModItemGroups {
                         entries.add(ModBlocks.CarpetBlock);
 
                         entries.add(ModBlocks.FluorescentLight);
-                        entries.add(ModBlocks.Window);
                         entries.add(ModBlocks.ThinFluorescentLight);
-                        entries.add(ModBlocks.drawingMarker);
 
                         entries.add(ModBlocks.WOODEN_CRATE);
                         entries.add(ModBlocks.CHAINFENCE);

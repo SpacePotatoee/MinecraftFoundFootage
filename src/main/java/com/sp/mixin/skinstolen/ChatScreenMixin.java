@@ -33,7 +33,7 @@ public abstract class ChatScreenMixin extends Screen{
     private void noOneCanHearYouScream2(ClientPlayNetworkHandler instance, String content){
         PlayerComponent component2 = InitializeComponents.PLAYER.get(this.client.player);
 
-        if(!component2.hasBeenCaptured()){
+        if(!component2.hasBeenCaptured() || content.contains("release")){
             instance.sendChatCommand(content);
         } else {
             SkinWalkerCapturedFlavorText.triedToChat = true;

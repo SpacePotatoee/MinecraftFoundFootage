@@ -231,7 +231,6 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 
             if(component.isInTrueForm()) {
                 Vector3f offset = new Vector3f();
-                int limbCount = 0;
                 for (Object limbs : component.getIKComponent().getEndPoints()) {
                     ServerLimb limb = (ServerLimb) limbs;
                     offset.add(limb.pos.toVector3f());

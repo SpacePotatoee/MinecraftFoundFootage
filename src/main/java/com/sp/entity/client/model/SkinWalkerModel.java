@@ -42,11 +42,11 @@ public class SkinWalkerModel extends GeoModel<SkinWalkerEntity> {
 				if (player != null) {
 					if (player.getModel().equals("slim")) {
 						return SLIM_MODEL;
-					} else {
-						return DEFAULT_MODEL;
 					}
 				}
 			}
+
+			return DEFAULT_MODEL;
 		}
 
 		return FINAL_MODEL;

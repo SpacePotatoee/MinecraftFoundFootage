@@ -28,7 +28,7 @@ public abstract class GameMenuScreenMixin extends Screen {
             PlayerComponent component = InitializeComponents.PLAYER.get(client1.player);
 
             if (component.hasBeenCaptured()) {
-                return new ButtonWidget.Builder(Text.literal("There is no Escape").formatted(Formatting.RED), button -> {
+                return new ButtonWidget.Builder(Text.translatable("skinwalker.flavor-text.leave").formatted(Formatting.RED), button -> {
                     button.active = true;
                     SkinWalkerCapturedFlavorText.triedToLeave = true;
                 });

@@ -1,25 +1,45 @@
 {
+  "intro.backrooms": "The Backrooms",
+  "intro.credit": "A Mod By ",
+
   "itemgroup.spbrevamped": "Backrooms",
 
+  "block.spb-revamped.void_block": "Void Block",
+  "block.spb-revamped.ceiling_light": "Ceiling Light",
+  "block.spb-revamped.emergency_light": "Emergency Light",
 
   "block.spb-revamped.wall_block": "Wallpaper Block",
   "block.spb-revamped.wall_block_2": "Manilla Wallpaper Block",
   "block.spb-revamped.ceiling_tile": "Ceiling Tile",
+  "block.spb-revamped.ghost_ceiling_tile": "Ghost Ceiling Tile",
   "block.spb-revamped.carpet_block": "Carpet Block",
+  "block.spb-revamped.rug1": "Rug 1",
+  "block.spb-revamped.rug2": "Rug 2",
+
+
+  "block.spb-revamped.wooden_crate": "Wooden Crate",
+  "container.spb-revamped.wooden_crate": "Wooden Crate",
 
 
   "block.spb-revamped.fluorescent_light": "Fluorescent Light",
-  "block.spb-revamped.poolrooms_window": "Poolrooms Window Block",
-  "block.spb-revamped.window": "Window Block",
+  "block.spb-revamped.pool_sky": "Sky Block",
   "block.spb-revamped.thin_fluorescent_light": "Thin Fluorescent Light",
   "block.spb-revamped.bottom_trim": "Bottom Trim",
+  "block.spb-revamped.chain_fence": "Chain Fence",
+  "block.spb-revamped.new_stairs": "Stairwell Stairs",
 
 
+  "block.spb-revamped.concrete1": "Concrete 1",
+  "block.spb-revamped.concrete2": "Concrete 2",
+  "block.spb-revamped.concrete5": "Concrete 5",
   "block.spb-revamped.concrete6": "Concrete 6",
   "block.spb-revamped.concrete7": "Concrete 7",
   "block.spb-revamped.concrete9": "Concrete 9",
   "block.spb-revamped.concrete9slab": "Concrete 9 Slab",
+  "block.spb-revamped.concrete10": "Concrete 10",
   "block.spb-revamped.concrete11": "Concrete 11",
+  "block.spb-revamped.concrete12": "Concrete 12",
+  "block.spb-revamped.bricks": "Brick Wall",
 
 
   "block.spb-revamped.thin_pipe": "Thin Pipe",
@@ -48,14 +68,22 @@
   "block.spb-revamped.arrow3": "Arrow 3",
   "block.spb-revamped.arrow4": "Arrow 4",
 
+  "block.spb-revamped.pool_tiles": "Pool Tiles",
+  "block.spb-revamped.pool_tile_wall": "Pool Tile Vertical Slab",
+  "block.spb-revamped.slope": "Pool Tile Slope",
+
 
   "block.spb-revamped.wall_small_1": "Wall Drawing Hand",
   "block.spb-revamped.wall_small_2": "Wall Drawing Face",
   "block.spb-revamped.wall_drawing_door": "Wall Drawing Door",
   "block.spb-revamped.wall_drawing_window": "Wall Drawing Window",
 
+
   "item.spb-revamped.backshroom": "Backshrooms",
+  "item.spb-revamped.backshroom.tooltip": "If you've got nothing else to eat",
+
   "item.spb-revamped.canned_food": "Canned Food",
+  "item.spb-revamped.canned_food.tooltip": "Could be rotten",
 
 
   "spb-revamped.options.fullscreen.resolution": "Vhs Resolution",
@@ -94,5 +122,26 @@
   "spb-revamped.keybinds": "SPB-Revamped",
   "key.spb-revamped.toggle_flashlight": "Toggle Flashlight",
   "key.spb-revamped.zoom": "Zoom",
-  "key.spb-revamped.toggle_event": "Toggle Event"
+  "key.spb-revamped.toggle_event": "Toggle Event",
+
+
+  "skinwalker.flavor-text.move1": "You can't move anything. ",
+  "skinwalker.flavor-text.move2": "This isn't your body anymore",
+
+  "skinwalker.flavor-text.inventory": "That isn't your inventory anymore",
+
+  "skinwalker.flavor-text.leave": "There Is No Escape",
+
+  "skinwalker.flavor-text.chat": "No one can hear you scream",
+
+  "skinwalker.flavor-text.taunt1": "Go ahead",
+  "skinwalker.flavor-text.taunt2": "Try to call out to your friends (T)",
+  "skinwalker.flavor-text.taunt3": "If it isn't already obvious your skin has been stolen. ",
+  "skinwalker.flavor-text.taunt4": "Don't be a jerk. Don't DM any of the other players",
+
+
+
+
+  "spb-revamped.flashlight.wet1": "Your flashlight got wet. ",
+  "spb-revamped.flashlight.wet2": "It no longer works"
 }

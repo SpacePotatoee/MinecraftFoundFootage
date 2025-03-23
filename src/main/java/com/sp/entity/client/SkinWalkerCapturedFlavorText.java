@@ -24,7 +24,7 @@ public class SkinWalkerCapturedFlavorText {
     public static void tickFlavorText(PlayerEntity player) {
         if(isPressingMoveKeys()){
             if(!shownMovementText){
-                player.sendMessage(Text.literal("You can't move anything. ").append(Text.literal("This isn't your body anymore").formatted(Formatting.RED)));
+                player.sendMessage(Text.translatable("skinwalker.flavor-text.move1").append(Text.translatable("skinwalker.flavor-text.move2").formatted(Formatting.RED)));
                  shownMovementText = true;
                 textCount++;
             }
@@ -32,7 +32,7 @@ public class SkinWalkerCapturedFlavorText {
 
         if(triedToOpenInventory) {
             if(!shownInventoryText) {
-                player.sendMessage(Text.literal("That isn't your inventory anymore").formatted(Formatting.RED));
+                player.sendMessage(Text.translatable("skinwalker.flavor-text.inventory").formatted(Formatting.RED));
                 shownInventoryText = true;
                 textCount++;
             }
@@ -40,7 +40,7 @@ public class SkinWalkerCapturedFlavorText {
 
         if(triedToLeave) {
             if(!shownTriedToLeaveText) {
-                player.sendMessage(Text.literal("There is no escape").formatted(Formatting.RED));
+                player.sendMessage(Text.translatable("skinwalker.flavor-text.leave").formatted(Formatting.RED));
                 shownTriedToLeaveText = true;
                 textCount++;
             }
@@ -48,7 +48,7 @@ public class SkinWalkerCapturedFlavorText {
 
         if(triedToChat) {
             if(!shownTriedToChatText) {
-                player.sendMessage(Text.literal("No one can hear you scream").formatted(Formatting.RED));
+                player.sendMessage(Text.translatable("skinwalker.flavor-text.chat").formatted(Formatting.RED));
                 shownTriedToChatText = true;
                 textCount++;
             }
@@ -59,16 +59,16 @@ public class SkinWalkerCapturedFlavorText {
                 tick++;
 
                 if(tick == 100){
-                    player.sendMessage(Text.literal("Go ahead").formatted(Formatting.RED));
+                    player.sendMessage(Text.translatable("skinwalker.flavor-text.taunt1").formatted(Formatting.RED));
                 }
 
                 if(tick == 135){
-                    player.sendMessage(Text.literal("Try to call out to your friends (T)").formatted(Formatting.GOLD));
+                    player.sendMessage(Text.translatable("skinwalker.flavor-text.taunt2").formatted(Formatting.GOLD));
 
                 }
 
                 if(tick == 300){
-                    player.sendMessage(Text.literal("If it isn't already obvious your skin has been stolen. ").append("Don't be a jerk. Don't DM any of the other players").formatted(Formatting.RED));
+                    player.sendMessage(Text.translatable("skinwalker.flavor-text.taunt3").append(Text.translatable("skinwalker.flavor-text.taunt4")).formatted(Formatting.RED));
                     shownTextTaunt = true;
                 }
             }

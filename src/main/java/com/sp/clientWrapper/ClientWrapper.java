@@ -199,7 +199,7 @@ public class ClientWrapper {
                     }
                 } else {
                     playerComponent.setFlashLightOn(false);
-                    playerComponent.player.sendMessage(Text.literal("Your flashlight got wet. ").append(Text.literal("It no longer works").formatted(Formatting.RED)), true);
+                    playerComponent.player.sendMessage(Text.translatable("spb-revamped.flashlight.wet1").append(Text.translatable("spb-revamped.flashlight.wet2").formatted(Formatting.RED)), true);
                 }
             } else if(playerComponent.hasBeenCaptured && playerComponent.isBeingCaptured()){
                 if(playerComponent.isFlashLightOn()) {

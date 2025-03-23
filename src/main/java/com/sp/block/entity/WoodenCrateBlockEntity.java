@@ -82,7 +82,7 @@ public class WoodenCrateBlockEntity extends LootableContainerBlockEntity {
 
     @Override
     protected Text getContainerName() {
-        return Text.literal("Wooden Crate");
+        return Text.translatable("container.spb-revamped.wooden_crate");
     }
 
     @Override

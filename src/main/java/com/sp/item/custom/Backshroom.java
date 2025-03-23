@@ -19,6 +19,6 @@ public class Backshroom extends Item {
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
-        tooltip.add(Text.literal("If you've got nothing else to eat").formatted(Formatting.DARK_PURPLE).formatted(Formatting.ITALIC));
+        tooltip.add(Text.translatable("item.spb-revamped.backshroom.tooltip").formatted(Formatting.DARK_PURPLE).formatted(Formatting.ITALIC));
     }
 }

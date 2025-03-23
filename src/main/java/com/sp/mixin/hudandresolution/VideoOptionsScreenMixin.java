@@ -42,7 +42,7 @@ public class VideoOptionsScreenMixin {
 
 
         return VhsAspectRatio.normalVideoMode = new SimpleOption<>(
-                ConfigStuff.enableVHSAspectRatio ? "options.fullscreen.resolution" : "spb-revamped.options.fullscreen.resolution",
+                ConfigStuff.enableVHSAspectRatio ? "spb-revamped.options.fullscreen.resolution" : "options.fullscreen.resolution",
                 SimpleOption.emptyTooltip(),
                 (prefix, value) -> {
                     if (monitor == null) {

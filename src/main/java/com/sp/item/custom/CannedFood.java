@@ -19,6 +19,6 @@ public class CannedFood extends Item {
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
-        tooltip.add(Text.literal("Could be rotten").formatted(Formatting.DARK_PURPLE).formatted(Formatting.ITALIC));
+        tooltip.add(Text.translatable("item.spb-revamped.canned_food.tooltip").formatted(Formatting.DARK_PURPLE).formatted(Formatting.ITALIC));
     }
 }
