@@ -1,0 +1,147 @@
+{
+  "intro.backrooms": "Закулисье",
+  "intro.credit": "Мод от ",
+
+  "itemgroup.spbrevamped": "Закулисье",
+
+  "block.spb-revamped.void_block": "Блок пустоты",
+  "block.spb-revamped.ceiling_light": "Потолочный светильник",
+  "block.spb-revamped.emergency_light": "Аварийное освещение",
+
+  "block.spb-revamped.wall_block": "Блок обоев",
+  "block.spb-revamped.wall_block_2": "Блок обоев Manilla",
+  "block.spb-revamped.ceiling_tile": "Потолочная плитка",
+  "block.spb-revamped.ghost_ceiling_tile": "Призрачная потолочная плитка",
+  "block.spb-revamped.carpet_block": "Блок ковра",
+  "block.spb-revamped.rug1": "Ковёр 1",
+  "block.spb-revamped.rug2": "Ковёр 2",
+
+
+  "block.spb-revamped.wooden_crate": "Деревянный ящик",
+  "container.spb-revamped.wooden_crate": "Деревянный ящик",
+
+
+  "block.spb-revamped.fluorescent_light": "Флуоресцентная лампа",
+  "block.spb-revamped.pool_sky": "Блок неба",
+  "block.spb-revamped.thin_fluorescent_light": "Тонкая флуоресцентная лампа",
+  "block.spb-revamped.bottom_trim": "Нижняя обшивка",
+  "block.spb-revamped.chain_fence": "Сетчатый забор",
+  "block.spb-revamped.new_stairs": "Лестничная клетка",
+
+
+  "block.spb-revamped.concrete1": "Бетон 1",
+  "block.spb-revamped.concrete2": "Бетон 2",
+  "block.spb-revamped.concrete5": "Бетон 5",
+  "block.spb-revamped.concrete6": "Бетон 6",
+  "block.spb-revamped.concrete7": "Бетон 7",
+  "block.spb-revamped.concrete9": "Бетон 9",
+  "block.spb-revamped.concrete9slab": "Бетонная плита 9",
+  "block.spb-revamped.concrete10": "Бетон 10",
+  "block.spb-revamped.concrete11": "Бетон 11",
+  "block.spb-revamped.concrete12": "Бетон 12",
+  "block.spb-revamped.bricks": "Кирпичная стена",
+
+
+  "block.spb-revamped.thin_pipe": "Тонкая труба",
+  "block.spb-revamped.thin_pipe_corner": "Угол тонкой трубы",
+  "block.spb-revamped.pipe": "Труба",
+  "block.spb-revamped.pipe_middle": "Средняя труба",
+  "block.spb-revamped.pipe_corner": "Угловая труба",
+  "block.spb-revamped.big_pipe": "Большая труба",
+  "block.spb-revamped.big_pipe_middle": "Большая средняя труба",
+  "block.spb-revamped.small_pipe_set": "Маленькие трубы",
+
+
+  "block.spb-revamped.wall_text_1": "Стена номер 1",
+  "block.spb-revamped.wall_text_2": "Стена номер 2",
+  "block.spb-revamped.wall_text_3": "Стена номер 3",
+  "block.spb-revamped.wall_text_4": "Стена номер 4",
+  "block.spb-revamped.wall_text_5": "Стена номер 5",
+  "block.spb-revamped.wall_text_6": "Стена номер 6",
+  "block.spb-revamped.wall_text_7": "Стена номер 7",
+  "block.spb-revamped.wall_text_8": "Стена номер 8",
+  "block.spb-revamped.wall_text_99": "Стена номер 99",
+
+
+  "block.spb-revamped.arrow1": "Стрела 1",
+  "block.spb-revamped.arrow2": "Стрела 2",
+  "block.spb-revamped.arrow3": "Стрела 3",
+  "block.spb-revamped.arrow4": "Стрела 4",
+
+  "block.spb-revamped.pool_tiles": "Плитка бассейна",
+  "block.spb-revamped.pool_tile_wall": "Вертикальная плитка бассейна",
+  "block.spb-revamped.slope": "Склон плитки бассейна",
+
+
+  "block.spb-revamped.wall_small_1": "Настенный рисунок Рука",
+  "block.spb-revamped.wall_small_2": "Настенный рисунок Лицо",
+  "block.spb-revamped.wall_drawing_door": "Настенный рисунок Дверь",
+  "block.spb-revamped.wall_drawing_window": "Настенный рисунок Окно",
+
+
+  "item.spb-revamped.backshroom": "Закуморы",
+  "item.spb-revamped.backshroom.tooltip": "Если больше нечего есть",
+
+  "item.spb-revamped.canned_food": "Консервированная еда",
+  "item.spb-revamped.canned_food.tooltip": "Может быть испорчена",
+
+
+  "spb-revamped.options.fullscreen.resolution": "Разрешение VHS",
+
+
+  "spb-revamped.midnightconfig.category.video": "Настройки видео",
+  "spb-revamped.midnightconfig.category.adminStuff": "Настройки администрации",
+  "spb-revamped.midnightconfig.category.shaders": "Настройки шейдеров",
+  "spb-revamped.midnightconfig.enableVanillaLighting": "Включить ванильное освещение",
+  "spb-revamped.midnightconfig.enableRealCamera": "Включить реалистичную камеру",
+  "spb-revamped.midnightconfig.forceBackrooms": "Принудительно в Закулисье",
+  "spb-revamped.midnightconfig.enableCameraRoll": "Включить вращение камеры",
+  "spb-revamped.midnightconfig.enableSmoothCamera": "Включить плавное движение камеры",
+  "spb-revamped.midnightconfig.cameraSmoothing": "Множитель сглаживания камеры",
+  "spb-revamped.midnightconfig.showHands": "Показывать основную руку",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "Если ваш монитор поддерживает это, включите данную опцию, и в настройках видео Minecraft появятся дополнительные параметры для полноэкранного разрешения. Это даст больше эффекта VHS",
+  "spb-revamped.midnightconfig.enableVHSAspectRatio": "Включить только VHS-форматы",
+
+  "spb-revamped.midnightconfig.enableVhsEffect": "Включить шейдер Vhs",
+  "spb-revamped.midnightconfig.lookRollMultiplier": "Множитель наклона при повороте",
+  "spb-revamped.midnightconfig.strafeRollMultiplier": "Множитель наклона при движении",
+  "spb-revamped.midnightconfig.lightRenderDistance": "Дальность прорисовки освещения (в блоках)",
+
+  "spb-revamped.midnightconfig.enableShadows": "Включить тени",
+  "spb-revamped.midnightconfig.enableVolumetricLight": "Включить объёмное освещение",
+  "spb-revamped.midnightconfig.enablePuddles": "Включить лужи",
+  "spb-revamped.midnightconfig.enableLevel1Fog": "Включить туман 1-го уровня",
+  "spb-revamped.midnightconfig.renderWaterReflections": "Включить отражения на воде",
+  "spb-revamped.midnightconfig.renderBlockReflections": "Включить отражения блоков (только для плитки в Poolrooms)",
+  "spb-revamped.midnightconfig.motionBlur": "Включить размытие в движении",
+  "spb-revamped.midnightconfig.motionBlurStrength": "Сила размытия в движении",
+
+  "death.attack.acid": "%1$s сгорел в кислоте!",
+  "death.attack.smiler": "%1$s был убит Улыбающимся!",
+
+  "spb-revamped.keybinds": "SPB-Revamped",
+  "key.spb-revamped.toggle_flashlight": "Включить фонарик",
+  "key.spb-revamped.zoom": "Приблизить",
+  "key.spb-revamped.toggle_event": "Включить событие",
+
+
+  "skinwalker.flavor-text.move1": "Ты не можешь двигаться. ",
+  "skinwalker.flavor-text.move2": "Это больше не твое тело",
+
+  "skinwalker.flavor-text.inventory": "Это больше не твой инвентарь",
+
+  "skinwalker.flavor-text.leave": "Отсюда нет выхода",
+
+  "skinwalker.flavor-text.chat": "Никто не услышит твой крик",
+
+  "skinwalker.flavor-text.taunt1": "Давай, попробуй.",
+  "skinwalker.flavor-text.taunt2": "Попробуй позвать друзей (T).",
+  "skinwalker.flavor-text.taunt3": "Если ты ещё не понял, твой скин уже забрали. ",
+  "skinwalker.flavor-text.taunt4": "Не будь придурком. Не пиши другим игрокам в ЛС.",
+
+
+
+
+  "spb-revamped.flashlight.wet1": "Твой фонарь промок. ",
+  "spb-revamped.flashlight.wet2": "Больше он не работает."
+}
