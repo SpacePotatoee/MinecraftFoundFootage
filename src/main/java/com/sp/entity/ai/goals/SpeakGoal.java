@@ -154,7 +154,6 @@ public class SpeakGoal extends Goal {
     }
 
     private short[] bitCrush(short[] data, int resolution) {
-        System.out.println("Bit crushing with resolution " + resolution);
         short[] crushedData = new short[data.length];
         int mask = -(1 << (16 - resolution));
 
@@ -166,7 +165,6 @@ public class SpeakGoal extends Goal {
     }
 
     private short[] applyStutter(short[] data) {
-        System.out.println("Applying stutter");
         short[] stutteredData = new short[data.length];
         int stutterSize = 500;
         int stutterInterval = 1000;
@@ -183,7 +181,6 @@ public class SpeakGoal extends Goal {
     }
 
     private short[] reverseData(short[] data) {
-        System.out.println("Reversing data");
         short[] reversedData = new short[data.length];
 
         for (int i = 0; i < data.length; i++) {
@@ -194,7 +191,6 @@ public class SpeakGoal extends Goal {
     }
 
     private short[] addStaticNoise(short[] data) {
-        System.out.println("Adding static noise");
         short[] noisyData = new short[data.length];
         System.arraycopy(data, 0, noisyData, 0, data.length);
         for (int i = 0; i < noisyData.length; i++) {
@@ -206,7 +202,6 @@ public class SpeakGoal extends Goal {
     }
 
     private short[] warpSpeed(short[] data) {
-        System.out.println("Warping speed");
         int chunkSize = 200;
         float speedFactor = 0.8f + (float) this.random.nextDouble() * 0.4f;
         short[] warpedData = new short[(int) (data.length * speedFactor)];
@@ -220,7 +215,6 @@ public class SpeakGoal extends Goal {
     }
 
     private short[] reverseSegments(short[] data) {
-        System.out.println("Reversing segments");
         short[] reversedData = new short[data.length];
         System.arraycopy(data, 0, reversedData, 0, data.length);
 

@@ -181,7 +181,6 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
                 soundList.set(random.nextBetween(0, randomSpeakingList.size() - 1), totalSoundData.get(player.getUuid()));
             }
 
-            System.out.println("Adding to random speaking list");
             randomSpeakingList.put(player.getUuid(), soundList);
         }
 
