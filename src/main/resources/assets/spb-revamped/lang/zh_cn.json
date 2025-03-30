@@ -1,0 +1,89 @@
+{
+  "itemgroup.spbrevamped": "后室",
+
+  "block.spb-revamped.wall_block": "壁纸方块",
+  "block.spb-revamped.wall_block_2": "马尼拉壁纸方块",
+  "block.spb-revamped.ceiling_tile": "天花板瓷砖方块",
+  "block.spb-revamped.carpet_block": "地毯方块",
+
+  "block.spb-revamped.fluorescent_light": "荧光灯",
+  "block.spb-revamped.poolrooms_window": "泳池房窗格方块",
+  "block.spb-revamped.window": "窗格方块",
+  "block.spb-revamped.thin_fluorescent_light": "细型荧光灯",
+  "block.spb-revamped.bottom_trim": "底部装饰边",
+
+  "block.spb-revamped.concrete6": "混凝土6",
+  "block.spb-revamped.concrete7": "混凝土7",
+  "block.spb-revamped.concrete9": "混凝土9",
+  "block.spb-revamped.concrete9slab": "混凝土9台阶",
+  "block.spb-revamped.concrete11": "混凝土11",
+
+  "block.spb-revamped.thin_pipe": "细管道",
+  "block.spb-revamped.thin_pipe_corner": "细管道弯头",
+  "block.spb-revamped.pipe": "管道",
+  "block.spb-revamped.pipe_middle": "中间管道",
+  "block.spb-revamped.pipe_corner": "管道弯头",
+  "block.spb-revamped.big_pipe": "大型管道",
+  "block.spb-revamped.big_pipe_middle": "大型中间管道",
+  "block.spb-revamped.small_pipe_set": "小型管道组",
+
+  "block.spb-revamped.wall_text_1": "墙壁数字1",
+  "block.spb-revamped.wall_text_2": "墙壁数字2",
+  "block.spb-revamped.wall_text_3": "墙壁数字3",
+  "block.spb-revamped.wall_text_4": "墙壁数字4",
+  "block.spb-revamped.wall_text_5": "墙壁数字5",
+  "block.spb-revamped.wall_text_6": "墙壁数字6",
+  "block.spb-revamped.wall_text_7": "墙壁数字7",
+  "block.spb-revamped.wall_text_8": "墙壁数字8",
+  "block.spb-revamped.wall_text_99": "墙壁数字99",
+
+  "block.spb-revamped.arrow1": "箭头1",
+  "block.spb-revamped.arrow2": "箭头2",
+  "block.spb-revamped.arrow3": "箭头3",
+  "block.spb-revamped.arrow4": "箭头4",
+
+  "block.spb-revamped.wall_small_1": "墙壁手绘图案-手",
+  "block.spb-revamped.wall_small_2": "墙壁手绘图案-脸",
+  "block.spb-revamped.wall_drawing_door": "墙壁手绘门",
+  "block.spb-revamped.wall_drawing_window": "墙壁手绘窗",
+
+  "item.spb-revamped.backshroom": "后菇",
+  "item.spb-revamped.canned_food": "罐装龙肉",
+
+  "spb-revamped.options.fullscreen.resolution": "VHS分辨率",
+
+  "spb-revamped.midnightconfig.category.video": "视频设置",
+  "spb-revamped.midnightconfig.category.adminStuff": "管理设置",
+  "spb-revamped.midnightconfig.category.shaders": "着色器设置",
+  "spb-revamped.midnightconfig.enableVanillaLighting": "启用原版光照",
+  "spb-revamped.midnightconfig.enableRealCamera": "启用真实摄像机",
+  "spb-revamped.midnightconfig.forceBackrooms": "强制进入后室",
+  "spb-revamped.midnightconfig.enableCameraRoll": "启用摄像机晃动",
+  "spb-revamped.midnightconfig.enableSmoothCamera": "启用平滑镜头",
+  "spb-revamped.midnightconfig.cameraSmoothing": "镜头平滑系数",
+  "spb-revamped.midnightconfig.showHands": "显示主手",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "如果显示器支持，启用后可在全屏分辨率设置中选择VHS风格的纵横比",
+  "spb-revamped.midnightconfig.enableVHSAspectRatio": "仅启用VHS纵横比",
+
+  "spb-revamped.midnightconfig.enableVhsEffect": "启用VHS特效",
+  "spb-revamped.midnightconfig.lookRollMultiplier": "视角倾斜系数",
+  "spb-revamped.midnightconfig.strafeRollMultiplier": "平移倾斜系数",
+  "spb-revamped.midnightconfig.lightRenderDistance": "光照渲染距离（方块）",
+
+  "spb-revamped.midnightconfig.enableShadows": "启用阴影",
+  "spb-revamped.midnightconfig.enableVolumetricLight": "启用体积光",
+  "spb-revamped.midnightconfig.enablePuddles": "启用积水效果",
+  "spb-revamped.midnightconfig.enableLevel1Fog": "启用 level 1 雾气",
+  "spb-revamped.midnightconfig.renderWaterReflections": "启用水面反射",
+  "spb-revamped.midnightconfig.renderBlockReflections": "启用方块反射（仅泳池房瓷砖）",
+  "spb-revamped.midnightconfig.motionBlur": "启用动态模糊",
+  "spb-revamped.midnightconfig.motionBlurStrength": "动态模糊强度",
+
+  "death.attack.acid": "%1$s在酸液中灼伤！",
+  "death.attack.smiler": "%1$s被笑魇杀害！",
+
+  "spb-revamped.keybinds": "SPB重制版",
+  "key.spb-revamped.toggle_flashlight": "切换手电筒",
+  "key.spb-revamped.zoom": "缩放视角",
+  "key.spb-revamped.toggle_event": "切换事件"
+}
