@@ -69,15 +69,15 @@ void main() {
 
     //Motion Blur
     vec4 blur3 = vec4(0.0);
-//    #ifdef MOTION_BLUR
+    #ifdef MOTION_BLUR
         const float kernalSize3 = 5.0;
         const float coeff3 = 1.0 / (kernalSize3 * kernalSize3);
         for(float x = -1.0; x <= 1.0; x += coeff3){
             blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(velocity.x * x, velocity.y * x) * MotionBlurStrength) * 0.5;
         }
-//    #else
-//        blur3 = texture(DiffuseSampler0, uv);
-//    #endif
+    #else
+        blur3 = texture(DiffuseSampler0, uv);
+    #endif
 
 
     if(youCantEscape == 0) {
