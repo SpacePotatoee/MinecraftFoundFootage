@@ -82,8 +82,6 @@ void main() {
 
     if(youCantEscape == 0) {
         fragColor = blur3;
-//        fragColor = vec4(prevViewPos, 1.0);
-//        fragColor = texture(DiffuseSampler0, uv);
     } else {
         vec2 uv2 = vec2(uv.x + octave(uv.y + GameTime * 2000.0) * 0.01, uv.y);
 
@@ -116,7 +114,5 @@ void main() {
     vec2 vhsNoise = texture(VhsNoise, vec2(uv.x - GameTime * 3000.0, uv.y + GameTime * 5000.0)).gb * 0.1;
     fragColor.gb += vec2(vhsNoise.x * 0.9, vhsNoise.y * 0.9) * 0.2;
     fragColor.rgb = yuv2rgb(fragColor.rgb);
-
-//    fragColor = vec4(velocity)
 }
 
