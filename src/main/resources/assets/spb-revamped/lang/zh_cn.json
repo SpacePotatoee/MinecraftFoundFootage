@@ -62,6 +62,7 @@
   "spb-revamped.midnightconfig.enableSmoothCamera": "启用平滑镜头",
   "spb-revamped.midnightconfig.cameraSmoothing": "镜头平滑系数",
   "spb-revamped.midnightconfig.showHands": "显示主手",
+  "spb-revamped.midnightconfig.useDefaultGUI": "Use Minecraft's Default GUI",
   "spb-revamped.midnightconfig.VhsAspectRatioComment": "如果显示器支持，启用后可在全屏分辨率设置中选择VHS风格的纵横比",
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "仅启用VHS纵横比",
 

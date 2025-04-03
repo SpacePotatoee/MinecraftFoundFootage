@@ -33,6 +33,9 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = VIDEO)
     public static boolean showHands = false;
 
+    @Entry(category = VIDEO)
+    public static boolean useDefaultGUI = false;
+
 
     @Comment(category = VIDEO)
     public static Comment spacer2;
