@@ -31,6 +31,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
@@ -83,6 +84,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private int visibilityTimerCooldown;
     private boolean talkingTooLoud;
     private int talkingTooLoudTimer;
+    private GameMode prevGameMode;
 
     public MovingSoundInstance DeepAmbience;
     public MovingSoundInstance GasPipeAmbience;
@@ -318,6 +320,13 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     public void resetTalkingTooLoudTimer(){
         this.talkingTooLoudTimer = 20;
+    }
+
+    public GameMode getPrevGameMode() {
+        return prevGameMode;
+    }
+    public void setPrevGameMode(GameMode prevGameMode) {
+        this.prevGameMode = prevGameMode;
     }
 
     public boolean canSeeActiveSkinWalkerTarget() {return canSeeActiveSkinWalker;}

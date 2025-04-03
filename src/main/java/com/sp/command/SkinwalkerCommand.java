@@ -66,6 +66,7 @@ public class SkinwalkerCommand {
                 events.activeSkinWalkerEntity = skinWalkerEntity;
                 events.setActiveSkinwalkerTarget(target.getUuid());
 
+                targetComponent.setPrevGameMode(target.interactionManager.getGameMode());
                 targetComponent.setBeingCaptured(true);
                 targetComponent.setHasBeenCaptured(true);
                 targetComponent.setShouldBeMuted(true);
@@ -85,10 +86,17 @@ public class SkinwalkerCommand {
 
         for(ServerPlayerEntity target : targets) {
             PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
+            WorldEvents events = InitializeComponents.EVENTS.get(source.getWorld());
 
             targetComponent.setHasBeenCaptured(false);
             targetComponent.setShouldBeMuted(false);
             targetComponent.sync();
+
+            target.changeGameMode(targetComponent.getPrevGameMode() != null ? targetComponent.getPrevGameMode() : GameMode.SURVIVAL);
+            target.setCameraEntity(target);
+            events.activeSkinWalkerEntity.discard();
+            events.activeSkinWalkerEntity = null;
+
             SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
         }
         return 1;

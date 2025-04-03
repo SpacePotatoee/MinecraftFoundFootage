@@ -49,6 +49,9 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = SHADERS)
     public static boolean enableVhsEffect = true;
 
+    @Entry(category = SHADERS, isSlider = true, min = 0, max = 1)
+    public static float VHSDistortionMultiplier = 1.0f;
+
     @Entry(category = SHADERS, min = 10)
     public static int lightRenderDistance = 100;
 

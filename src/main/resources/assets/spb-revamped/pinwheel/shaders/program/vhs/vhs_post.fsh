@@ -23,6 +23,7 @@ uniform mat4 prevViewMat;
 uniform mat4 prevProjMat;
 uniform vec3 prevCameraPos;
 uniform float MotionBlurStrength;
+uniform float DistortionStrength;
 
 in vec2 texCoord;
 out vec4 fragColor;
@@ -33,7 +34,7 @@ vec2 BarrelDistortionCoordinates(vec2 uv){
     vec2 pos = 2.0f * uv - 1.0f;
 
     float len = distance(pos, vec2(0.0f));
-    len = pow(len/1.5f, 1.0f);
+    len = pow(len/1.5f, 1.0f) * DistortionStrength;
 
     pos = pos + pos * len * len;
 
@@ -73,7 +74,7 @@ void main() {
         const float kernalSize3 = 5.0;
         const float coeff3 = 1.0 / (kernalSize3 * kernalSize3);
         for(float x = -1.0; x <= 1.0; x += coeff3){
-            blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(velocity.x * x, velocity.y * x) * MotionBlurStrength) * 0.5;
+            blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(velocity.x * x, velocity.y * x) * MotionBlurStrength * 0.25) * 0.5;
         }
     #else
         blur3 = texture(DiffuseSampler0, uv);

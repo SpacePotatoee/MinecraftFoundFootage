@@ -281,6 +281,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
 
                         shaderProgram.setFloat("MotionBlurStrength", ConfigStuff.motionBlurStrength);
+                        shaderProgram.setFloat("DistortionStrength", ConfigStuff.VHSDistortionMultiplier);
                     }
 
                     shaderProgram = context.getShader(SSAO);

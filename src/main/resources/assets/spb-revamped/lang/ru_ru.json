@@ -103,6 +103,7 @@
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Включить только VHS-форматы",
 
   "spb-revamped.midnightconfig.enableVhsEffect": "Включить шейдер Vhs",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "VHS Distortion Multiplier",
   "spb-revamped.midnightconfig.lookRollMultiplier": "Множитель наклона при повороте",
   "spb-revamped.midnightconfig.strafeRollMultiplier": "Множитель наклона при движении",
   "spb-revamped.midnightconfig.lightRenderDistance": "Дальность прорисовки освещения (в блоках)",

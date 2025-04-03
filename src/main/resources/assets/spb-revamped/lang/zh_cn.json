@@ -66,6 +66,7 @@
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "仅启用VHS纵横比",
 
   "spb-revamped.midnightconfig.enableVhsEffect": "启用VHS特效",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "VHS Distortion Multiplier",
   "spb-revamped.midnightconfig.lookRollMultiplier": "视角倾斜系数",
   "spb-revamped.midnightconfig.strafeRollMultiplier": "平移倾斜系数",
   "spb-revamped.midnightconfig.lightRenderDistance": "光照渲染距离（方块）",

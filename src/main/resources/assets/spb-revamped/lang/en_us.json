@@ -103,6 +103,7 @@
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Enable Only Vhs Aspect Ratios",
 
   "spb-revamped.midnightconfig.enableVhsEffect": "Enable Vhs Shader",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "VHS Distortion Multiplier",
   "spb-revamped.midnightconfig.lookRollMultiplier": "Look Roll Multiplier",
   "spb-revamped.midnightconfig.strafeRollMultiplier": "Strafe Roll Multiplier",
   "spb-revamped.midnightconfig.lightRenderDistance": "Light Render Distance (In Blocks)",

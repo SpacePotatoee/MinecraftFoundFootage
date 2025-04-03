@@ -1,5 +1,6 @@
 layout(location = 0) in vec3 Position;
 
+uniform float DistortionStrength;
 
 out vec2 texCoord;
 
@@ -9,7 +10,7 @@ void main() {
 
 	
 	
-    gl_Position = vec4(Position.x, Position.y, 0, 0.70);
+    gl_Position = vec4(Position.x, Position.y, 0, mix(1.0, 0.70, DistortionStrength));
     texCoord = Position.xy/2.0 + 0.5;
 }
 

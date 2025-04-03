@@ -436,6 +436,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                     this.world.spawnEntity(skinWalkerEntity);
                                     this.activeSkinWalkerEntity = skinWalkerEntity;
 
+                                    targetComponent.setPrevGameMode(((ServerPlayerEntity) target).interactionManager.getGameMode());
                                     targetComponent.setBeingCaptured(true);
                                     targetComponent.setHasBeenCaptured(true);
                                     targetComponent.setShouldBeMuted(true);
@@ -471,7 +472,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
                         SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
 
-                        target.changeGameMode(GameMode.SURVIVAL);
+                        target.changeGameMode(targetComponent.getPrevGameMode() != null ? targetComponent.getPrevGameMode() : GameMode.SURVIVAL);
                         target.setCameraEntity(target);
 
                         for (PlayerEntity player : this.world.getPlayers()) {
