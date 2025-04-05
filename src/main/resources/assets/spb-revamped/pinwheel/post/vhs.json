@@ -94,6 +94,14 @@
             "type": "location",
             "location": "spb-revamped:textures/shaders/vhs_noise.png"
         },
+        "CloudNoise1": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/puddle_noise.png"
+        },
+        "CloudNoise2": {
+            "type": "location",
+            "location": "spb-revamped:textures/shaders/clouds2.png"
+        },
         "ShadowSampler": {
             "type": "framebuffer",
             "name": "spb-revamped:shadowmap:depth"

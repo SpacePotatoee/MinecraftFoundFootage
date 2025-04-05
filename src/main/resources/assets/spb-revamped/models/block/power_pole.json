@@ -1,0 +1,23 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "spb-revamped:block/power_pole_texture",
+		"particle": "spb-revamped:block/power_pole_texture"
+	},
+	"elements": [
+		{
+			"from": [5, 0, 5],
+			"to": [11, 16, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"faces": {
+				"north": {"uv": [0, 0, 3, 16], "texture": "#0"},
+				"east": {"uv": [3, 0, 6, 16], "texture": "#0"},
+				"south": {"uv": [6, 0, 9, 16], "texture": "#0"},
+				"west": {"uv": [9, 0, 12, 16], "texture": "#0"},
+				"up": {"uv": [15, 3, 12, 0], "texture": "#0"},
+				"down": {"uv": [15, 3, 12, 6], "texture": "#0"}
+			}
+		}
+	]
+}

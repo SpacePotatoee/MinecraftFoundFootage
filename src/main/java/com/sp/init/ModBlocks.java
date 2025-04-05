@@ -210,6 +210,14 @@ public class ModBlocks {
             new CeilingLight(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles()));
 
 
+
+    public static final Block POWER_POLE_TOP = registerBlock("power_pole_top",
+            new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).noBlockBreakParticles()));
+
+    public static final Block POWER_POLE = registerBlock("power_pole",
+            new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).noBlockBreakParticles()));
+
+
     private static Block registerBlock(String name, Block block) {
         registerBlockItem(name, block);
         return Registry.register(Registries.BLOCK, new Identifier(SPBRevamped.MOD_ID, name), block);

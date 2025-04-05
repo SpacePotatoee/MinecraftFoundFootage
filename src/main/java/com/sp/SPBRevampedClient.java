@@ -63,6 +63,7 @@ import java.util.Vector;
 
 
 public class SPBRevampedClient implements ClientModInitializer {
+    private GrassRenderer grassRenderer;
     private static final CutsceneManager cutsceneManager = new CutsceneManager();
     private static final CameraShake cameraShake = new CameraShake();
     private final FlashlightRenderer flashlightRenderer = new FlashlightRenderer();
@@ -175,6 +176,15 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
                     }
                 }
+
+                if(stage == Stage.AFTER_SOLID_BLOCKS) {
+                    if(this.grassRenderer == null){
+                        this.grassRenderer = new GrassRenderer();
+                    }
+
+                    this.grassRenderer.render();
+                }
+
             }
 
 

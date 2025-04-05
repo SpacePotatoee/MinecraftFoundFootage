@@ -15,6 +15,9 @@ uniform sampler2D NormalSampler;
 uniform sampler2D HandDepth;
 uniform sampler2D MixedSampler;
 
+uniform sampler2D CloudNoise1;
+uniform sampler2D CloudNoise2;
+
 uniform sampler2D SSAOSampler;
 uniform sampler2D ShadowSampler;
 uniform sampler2D ditherSample;
@@ -31,9 +34,11 @@ uniform mat4 IShadowViewMatrix;
 uniform mat4 orthographMatrix;
 uniform int ShadowToggle;
 uniform float sunsetTimer;
+uniform float GameTime;
 uniform vec2 Rand;
 uniform vec2 ScreenSize;
 uniform vec3 shadowColor;
+
 
 
 in vec2 texCoord;
@@ -94,6 +99,10 @@ void main(){
     if(compat.a > 0.0 || compat2.a > 0.0){
         color += compat + compat2;
         color.a = min(compat.a + compat2.a, 1.0);
+    }
+
+    if(depth >= 1.0) {
+        color = getSky(texCoord, sunsetTimer, GameTime, CloudNoise1, CloudNoise2);
     }
 
 
