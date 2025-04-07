@@ -9,6 +9,7 @@ import java.util.Map;
 public class ConfigStuff extends MidnightConfig {
     public static final String VIDEO = "video";
     public static final String SHADERS = "shaders";
+    public static final String GRASS = "grass";
 
     @Entry(category = VIDEO)
     public static boolean enableRealCamera = true;
@@ -91,5 +92,17 @@ public class ConfigStuff extends MidnightConfig {
 
     @Entry(category = SHADERS, isSlider = true, min = 0.1, max = 1, precision = 10)
     public static float motionBlurStrength = 0.5f;
+
+
+
+
+    @Entry(category = GRASS, isSlider = true, min = 1, max = 20)
+    public static float grassDensity = 5.0f;
+
+    @Entry(category = GRASS, isSlider = true, min = 0, max = 3)
+    public static float grassHeight = 0.5f;
+
+    @Entry(category = GRASS)
+    public static int grassCount = 100;
 
 }

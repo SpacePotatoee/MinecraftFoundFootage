@@ -177,7 +177,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     }
                 }
 
-                if(stage == Stage.AFTER_SOLID_BLOCKS) {
+                if(stage == Stage.AFTER_TRANSLUCENT_BLOCKS) {
                     if(this.grassRenderer == null){
                         this.grassRenderer = new GrassRenderer();
                     }
