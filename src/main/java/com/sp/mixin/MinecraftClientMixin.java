@@ -28,7 +28,7 @@ public abstract class MinecraftClientMixin {
 //        return Perspective.FIRST_PERSON;
 //    }
 
-    //@Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V", shift = At.Shift.AFTER))
+    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V", shift = At.Shift.AFTER))
     private void enableDeferredResourcePack(CallbackInfo ci){
         if(instance != null && resourcePackManager != null) {
             if(!resourcePackManager.getEnabledProfiles().contains(resourcePackManager.getProfile("veil:deferred"))) {

@@ -94,15 +94,17 @@ public class ConfigStuff extends MidnightConfig {
     public static float motionBlurStrength = 0.5f;
 
 
+    //Presets
+    //6.0, 1.0 , 1000000
+    //10.0, 1.0, 5000000
 
+    @Entry(category = GRASS, min = 1, max = 20)
+    public static float grassDensity = 10.0f;
 
-    @Entry(category = GRASS, isSlider = true, min = 1, max = 20)
-    public static float grassDensity = 5.0f;
-
-    @Entry(category = GRASS, isSlider = true, min = 0, max = 3)
-    public static float grassHeight = 0.5f;
+    @Entry(category = GRASS, min = 0, max = 3)
+    public static float grassHeight = 1.0f;
 
     @Entry(category = GRASS)
-    public static int grassCount = 100;
+    public static int grassCount = 5000000;
 
 }

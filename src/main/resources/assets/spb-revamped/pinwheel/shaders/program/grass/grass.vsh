@@ -2,6 +2,10 @@
 
 layout(location = 0) in vec3 Position;
 
+layout (std430, binding = 0) buffer MyBuffer {
+    vec3 position[];
+} myBuffer;
+
 uniform float GameTime;
 uniform sampler2D WindNoise;
 uniform int NumOfInstances;
@@ -53,18 +57,19 @@ void main() {
     float cameraX = mod(cameraPos.x, 2);
     float cameraZ = mod(cameraPos.z, 2);
 
-    cameraPos.xz = vec2(cameraX, cameraZ);
+//    cameraPos.xz = vec2(cameraX, cameraZ);
 
     float x = (mod(gl_InstanceID, NumOfInstances) - halfInstances);
     float z = (floor(gl_InstanceID / NumOfInstances) - halfInstances);
 
     vec3 offset = vec3(x / density, - 60, z /density);
 
-    vec3 WorldPos = (pos - cameraPos) + offset + VeilCamera.CameraPosition;
-    float rand = hash12(WorldPos.xz - pos.xz);
-
-    float randAngle = hash(gl_InstanceID) + rand * 360;
-    pos.xz *= rot2D(randAngle);
+//    vec3 WorldPos = (pos - cameraPos) + offset + VeilCamera.CameraPosition;
+//    float rand = hash12(WorldPos.xz - pos.xz);
+//
+//
+//    float randAngle = rand * 360;
+//    pos.xz *= rot2D(randAngle);
 
 
 
@@ -72,11 +77,13 @@ void main() {
 
 
 
-    vec3 worldPos = localPos + VeilCamera.CameraPosition;
-    float grassGradient = getGrassHeightGradient(pos.y);
-    float windtexture = texture(WindNoise, (worldPos.xz * 0.08) + GameTime * 100 + rand* 0.1).r - 0.3;
-    //    windtexture = 1 * (windtexture - 0.5) + 0.5;
-    localPos.xz -= 0.7 * grassGradient * windtexture;
+//    vec3 worldPos = localPos + VeilCamera.CameraPosition;
+//    float grassGradient = getGrassHeightGradient(pos.y);
+//    float windtexture = texture(WindNoise, (worldPos.xz * 0.03) + GameTime * 100 + rand* 0.1).r - 0.3;
+//    float heightTexture = clamp((texture(WindNoise, (WorldPos.xz * 0.1)).r * texture(WindNoise, (WorldPos.xz * 0.01)).r), 0.0, 1.0);
+//    heightTexture = 2 * (heightTexture - 0.5) + 0.5;
+//    localPos.y += heightTexture * grassGradient;
+//    localPos.xz -= 2 * (grassGradient * grassGradient) * windtexture * (grassHeight + heightTexture);
 
 
     gl_Position = VeilCamera.ProjMat * VeilCamera.ViewMat * vec4(localPos, 1.0);

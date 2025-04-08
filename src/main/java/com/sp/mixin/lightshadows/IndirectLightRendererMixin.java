@@ -4,6 +4,7 @@ import foundry.veil.api.client.render.CullFrustum;
 import foundry.veil.api.client.render.deferred.light.IndirectLight;
 import foundry.veil.api.client.render.deferred.light.Light;
 import foundry.veil.api.client.render.deferred.light.renderer.IndirectLightRenderer;
+import foundry.veil.api.client.render.shader.definition.DynamicShaderBlock;
 import org.lwjgl.system.MemoryStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,6 +29,8 @@ public abstract class IndirectLightRendererMixin<T extends Light & IndirectLight
 
     @Shadow protected abstract boolean shouldDrawHighResolution(T light, CullFrustum frustum);
 
+
+    @Shadow @Final private DynamicShaderBlock<?> indirectBlock;
 
     /**
      * @author
