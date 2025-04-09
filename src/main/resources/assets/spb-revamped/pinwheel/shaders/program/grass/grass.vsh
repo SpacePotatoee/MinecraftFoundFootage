@@ -1,3 +1,4 @@
+#version 460
 #include veil:camera
 
 layout(location = 0) in vec3 Position;
@@ -63,6 +64,7 @@ void main() {
     float z = (floor(gl_InstanceID / NumOfInstances) - halfInstances);
 
     vec3 offset = vec3(x / density, - 60, z /density);
+    offset = myBuffer.position[gl_InstanceID];
 
 //    vec3 WorldPos = (pos - cameraPos) + offset + VeilCamera.CameraPosition;
 //    float rand = hash12(WorldPos.xz - pos.xz);

@@ -58,6 +58,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.GLDebugMessageCallback;
 
 import java.util.Vector;
 
@@ -96,6 +98,8 @@ public class SPBRevampedClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+
+
 
         HudRenderCallback.EVENT.register(new TitleText());
         HudRenderCallback.EVENT.register(new StaminaBar());
@@ -396,6 +400,9 @@ public class SPBRevampedClient implements ClientModInitializer {
                 playerComponent.setFlashLightOn(false);
                 flashlightRenderer.flashLightList2.clear();
             }
+
+            this.grassRenderer.close();
+            this.grassRenderer = null;
         }));
 
 

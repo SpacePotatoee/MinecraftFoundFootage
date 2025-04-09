@@ -1,6 +1,6 @@
 package com.sp.mixin.pbr;
 
-import com.sp.util.mixinstuff.BlockMaterial;
+import com.sp.mixininterfaces.BlockMaterial;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;

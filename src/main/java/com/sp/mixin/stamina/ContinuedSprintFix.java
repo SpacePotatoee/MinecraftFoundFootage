@@ -1,6 +1,6 @@
 package com.sp.mixin.stamina;
 
-import com.sp.util.mixinstuff.ServerPlayNetworkSprint;
+import com.sp.mixininterfaces.ServerPlayNetworkSprint;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Mixin;

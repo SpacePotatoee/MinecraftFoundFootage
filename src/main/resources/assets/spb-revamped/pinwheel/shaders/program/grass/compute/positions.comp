@@ -3,16 +3,24 @@
 
 #include veil:camera
 
-layout(std430) buffer GrassPositions {
-    vec3 Position[];
-};
+layout (std430, binding = 0) buffer MyBuffer {
+    vec3 position[];
+} myBuffer;
 
-layout(binding = 0) uniform atomic_uint VeilLightCount;
+//layout(std430, binding = 0) buffer Counter {
+//    uint count;
+//    uint primCount;
+//    uint firstIndex;
+//    uint baseVertex;
+//    uint baseInstance;
+//};
 
 layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 void main() {
     uint idx = gl_GlobalInvocationID.x;
-    vec3 pos = vec3(1);
+    vec3 pos = vec3(float(idx), -60, 1);
 
-    Position[idx] = pos;
+//    atomicAdd(primCount, 0);
+//    primCount = 1;
+    myBuffer.position[idx] = pos;
 }

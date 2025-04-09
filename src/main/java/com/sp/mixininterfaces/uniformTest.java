@@ -1,4 +1,4 @@
-package com.sp.util.mixinstuff;
+package com.sp.mixininterfaces;
 
 import net.minecraft.client.gl.GlUniform;
 

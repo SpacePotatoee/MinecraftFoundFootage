@@ -6,7 +6,7 @@ import com.sp.init.BackroomsLevels;
 import com.sp.init.ModDamageTypes;
 import com.sp.init.ModSounds;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
-import com.sp.util.mixinstuff.ServerPlayNetworkSprint;
+import com.sp.mixininterfaces.ServerPlayNetworkSprint;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;

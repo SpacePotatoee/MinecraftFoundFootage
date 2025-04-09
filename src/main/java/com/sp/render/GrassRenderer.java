@@ -4,20 +4,18 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevamped;
 import com.sp.compat.modmenu.ConfigStuff;
+import com.sp.mixininterfaces.RenderIndirectExtension;
 import foundry.veil.api.client.render.VeilRenderSystem;
-import foundry.veil.api.client.render.shader.VeilShaders;
-import foundry.veil.api.client.render.shader.definition.DynamicShaderBlock;
-import foundry.veil.api.client.render.shader.definition.ShaderBlock;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
-import org.joml.Vector4f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL43;
 
 import java.nio.IntBuffer;
 
-import static foundry.veil.api.client.render.framebuffer.FramebufferAttachmentDefinition.DataType.UNSIGNED_SHORT;
 import static net.minecraft.client.render.VertexFormats.NORMAL_ELEMENT;
 import static net.minecraft.client.render.VertexFormats.POSITION_ELEMENT;
 import static net.minecraft.util.math.MathHelper.floor;
@@ -35,8 +33,8 @@ public class GrassRenderer {
 
     private static final Identifier computeShaderPath = new Identifier(SPBRevamped.MOD_ID, "grass/compute/positions");
     private final int positionsVbo;
-    private final IntBuffer instanceBuffer;
-    private final DynamicShaderBlock<?> grassPositions;
+    private IntBuffer instanceBuffer;
+//    private final DynamicShaderBlock<?> grassPositions;
 
     public static final VertexFormat POSITION_NORMAL = new VertexFormat(
             ImmutableMap.<String, VertexFormatElement>builder()
@@ -53,53 +51,58 @@ public class GrassRenderer {
         bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
 
         this.positionsVbo = glGenBuffers();
-        this.grassPositions = ShaderBlock.wrapper(GL_SHADER_STORAGE_BUFFER, this.positionsVbo);
+        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, this.positionsVbo);
+        glBufferData(GL_DRAW_INDIRECT_BUFFER, (long) 3 * 1 * Float.BYTES, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 
-//        this.instanceBuffer = IntBuffer.allocate(5);
+        this.instanceBuffer = IntBuffer.allocate(5);
 
 
         this.createGrassModel(bufferBuilder);
 
-        this.vertexBuffer.bind();
-        this.vertexBuffer.upload(bufferBuilder.end());
+        BufferBuilder.BuiltBuffer builtBuffer = bufferBuilder.end();
 
+        this.vertexBuffer.bind();
+        this.vertexBuffer.upload(builtBuffer);
+        VertexBuffer.unbind();
         int[] args = new int[5];
         args[0] = VeilRenderSystem.getIndexCount(this.vertexBuffer);
-        args[1] = 0;
+        args[1] = 1;
         args[2] = 0;
         args[3] = 0;
         args[4] = 0;
-        this.instanceBuffer = IntBuffer.wrap(args);
+//        this.instanceBuffer.put(builtBuffer.getParameters().indexCount());
+//        this.instanceBuffer.put(10);
+//        this.instanceBuffer.put(0);
+//        this.instanceBuffer.put(0);
+//        this.instanceBuffer.put(0);
+        this.instanceBuffer.put(args);
+        this.instanceBuffer.flip();
 
-        VertexBuffer.unbind();
+
     }
 
     private void getGrassPositions() {
-//        ShaderProgram shader = VeilRenderSystem.setShader(computeShaderPath);
-        ShaderProgram prevProgram = VeilRenderSystem.getShader();
-        VeilRenderSystem.setShader(VeilShaders.LIGHT_INDIRECT_SPHERE);
-        ShaderProgram shader = VeilRenderSystem.getShader();
-
+        ShaderProgram shader = VeilRenderSystem.setShader(computeShaderPath);
         if(shader == null) return;
 
         if(shader.isCompute()){
-            this.grassPositions.setSize((long) ConfigStuff.grassCount * Float.SIZE * 3);
+//            this.grassPositions.setSize((long) ConfigStuff.grassCount * Float.SIZE * 3);
 //            VeilRenderSystem.bind("GrassPositions", this.grassPositions);
 
-            glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, this.positionsVbo);
-            glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0L, this.instanceBuffer);
-
-
             shader.bind();
-            glDispatchCompute(Math.min(ConfigStuff.grassCount, VeilRenderSystem.maxComputeWorkGroupCountX()), 1, 1);
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this.positionsVbo);
+
+//            System.out.println(VeilRenderSystem.maxComputeWorkGroupCountX());
+
+            glDispatchCompute(Math.min(1, VeilRenderSystem.maxComputeWorkGroupCountX()), 1, 1);
             glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
             ShaderProgram.unbind();
-            glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
-//            VeilRenderSystem.unbind(this.grassPositions);
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
         }
 
-        VeilRenderSystem.setShader(prevProgram);
+        ShaderProgram.unbind();
 
 
     }
@@ -110,21 +113,22 @@ public class GrassRenderer {
 //        if(fbo == null) return;
 //        fbo.bind(true);
 
-        if(this.vertexBuffer != null){
-            this.vertexBuffer.close();
-        }
-
-        this.vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
-
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-
-        this.createGrassModel(bufferBuilder);
-
-        this.vertexBuffer.bind();
-        this.vertexBuffer.upload(bufferBuilder.end());
-        VertexBuffer.unbind();
+//        if(this.vertexBuffer != null){
+//            this.vertexBuffer.close();
+//            this.vertexBuffer = null;
+//        }
+//
+//        this.vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+//        Tessellator tessellator = Tessellator.getInstance();
+//        BufferBuilder bufferBuilder = tessellator.getBuffer();
+//
+//        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+//
+//        this.createGrassModel(bufferBuilder);
+//
+//        this.vertexBuffer.bind();
+//        this.vertexBuffer.upload(bufferBuilder.end());
+//        VertexBuffer.unbind();
 
 
         ShaderProgram shader = VeilRenderSystem.setShader(shaderPath);
@@ -141,18 +145,20 @@ public class GrassRenderer {
         shader.addSampler("WindNoise", RenderSystem.getShaderTexture(0));
         shader.applyShaderSamplers(0);
 
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, this.positionsVbo);
-
         this.vertexBuffer.bind();
+//        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this.positionsVbo);
+        glBindBuffer(GL43.GL_DRAW_INDIRECT_BUFFER, this.positionsVbo);
         shader.bind();
 
+        ((RenderIndirectExtension)this.vertexBuffer).spb_revamped_1_20_1$drawIndirect(this.instanceBuffer);
 
-        glDrawElementsIndirect(GL_QUADS, GL_UNSIGNED_SHORT, this.instanceBuffer);
 //        VeilRenderSystem.drawInstanced(this.vertexBuffer, ConfigStuff.grassCount);
 
         ShaderProgram.unbind();
+        glBindBuffer(GL43.GL_DRAW_INDIRECT_BUFFER, 0);
+//        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
         VertexBuffer.unbind();
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
 //        AdvancedFbo.unbind();
     }
 
@@ -184,6 +190,11 @@ public class GrassRenderer {
             bufferBuilder.vertex(0.4+xStep*(i+1),ConfigStuff.grassHeight/segments*(i+1),0).next();
             bufferBuilder.vertex(0.6-xStep*(i+1),ConfigStuff.grassHeight/segments*(i+1),0).next();
         }
+    }
+
+    public void close(){
+        glDeleteBuffers(this.positionsVbo);
+        glDeleteBuffers(this.instanceBuffer);
     }
 
 }

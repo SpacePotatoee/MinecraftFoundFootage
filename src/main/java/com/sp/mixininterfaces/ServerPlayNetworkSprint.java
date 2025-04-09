@@ -1,4 +1,4 @@
-package com.sp.util.mixinstuff;
+package com.sp.mixininterfaces;
 
 public interface ServerPlayNetworkSprint {
 
