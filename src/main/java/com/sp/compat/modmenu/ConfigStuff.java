@@ -104,6 +104,9 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = GRASS, min = 0, max = 3)
     public static float grassHeight = 1.0f;
 
+    @Entry(category = GRASS, min = 1, max = 5)
+    public static int meshResolution = 1;
+
     @Entry(category = GRASS)
     public static int grassCount = 5000000;
 

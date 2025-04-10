@@ -55,8 +55,8 @@ void main() {
 
     vec3 cameraPos = VeilCamera.CameraPosition;
 
-    float cameraX = mod(cameraPos.x, 2);
-    float cameraZ = mod(cameraPos.z, 2);
+//    float cameraX = mod(cameraPos.x, 2);
+//    float cameraZ = mod(cameraPos.z, 2);
 
 //    cameraPos.xz = vec2(cameraX, cameraZ);
 
@@ -64,12 +64,13 @@ void main() {
     float z = (floor(gl_InstanceID / NumOfInstances) - halfInstances);
 
     vec3 offset = vec3(x / density, - 60, z /density);
-    offset = myBuffer.position[gl_InstanceID];
+//    vec3 offset = myBuffer.position[gl_InstanceID];
+//    vec3 offset = vec3(0);
 
 //    vec3 WorldPos = (pos - cameraPos) + offset + VeilCamera.CameraPosition;
 //    float rand = hash12(WorldPos.xz - pos.xz);
-//
-//
+
+
 //    float randAngle = rand * 360;
 //    pos.xz *= rot2D(randAngle);
 

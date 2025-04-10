@@ -1,6 +1,7 @@
 package com.sp.mixin.grass;
 
 import com.mojang.blaze3d.platform.GlConst;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.mixininterfaces.RenderIndirectExtension;
 import foundry.veil.api.client.render.VeilRenderSystem;
@@ -40,34 +41,29 @@ public class VertexBufferMixin implements RenderIndirectExtension {
     }
 
     @Override
-    public void spb_revamped_1_20_1$drawIndirect(IntBuffer intBuffer) {
+    public void spb_revamped_1_20_1$drawIndirect() {
         if (!RenderSystem.isOnRenderThread()) {
-            RenderSystem.recordRenderCall(() -> this.drawIndirect(intBuffer));
+            RenderSystem.recordRenderCall(() -> this.drawIndirect());
         } else {
-            this.drawIndirect(intBuffer);
+            this.drawIndirect();
         }
     }
 
     @Unique
-    public void drawIndirect(IntBuffer intBuffer) {
-//        IntBuffer intBuffer1 = IntBuffer.wrap(intBuffer.array());
-//        System.out.println("====================================================");
-//        for(int i = 0; i<5; i++){
-//            System.out.println(intBuffer1.get(i));
-//        }
-//        System.out.println("====================================================");
-
+    public void drawIndirect() {
 //        if (this.sharedSequentialIndexBuffer != null) {
 //            this.sharedSequentialIndexBuffer.bindAndGrow(this.indexCount);
-//            glDrawElementsIndirect(this.getDrawMode(this.drawMode.glMode), this.sharedSequentialIndexBuffer.getIndexType().glType, intBuffer);
+//            glDrawElementsIndirect(this.getDrawMode(this.drawMode.glMode), this.sharedSequentialIndexBuffer.getIndexType().glType, 0);
 //        } else {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.indexBufferId);
-            glDrawElementsIndirect(this.getDrawMode(this.drawMode.glMode), this.indexType.glType, intBuffer);
-
-            GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
-                System.err.println("GL DEBUG: " + GLDebugMessageCallback.getMessage(length, message));
-            }, 0);
+            glDrawElementsIndirect(this.getDrawMode(this.drawMode.glMode), this.indexType.glType, 0);
+//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 //        }
-//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
+        GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
+            System.err.println("GL DEBUG: " + GLDebugMessageCallback.getMessage(length, message));
+        }, 0);
+
     }
 }

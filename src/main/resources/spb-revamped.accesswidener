@@ -36,3 +36,5 @@ accessible class net/minecraft/client/render/VertexFormatElement$Type$ClearTask
 accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask
 accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask$RenderData
 accessible method net/minecraft/entity/player/PlayerInventory addStack (Lnet/minecraft/item/ItemStack;)I
+accessible field com/mojang/blaze3d/systems/RenderSystem$ShapeIndexBuffer id I
+accessible method com/mojang/blaze3d/systems/RenderSystem$ShapeIndexBuffer grow (I)V

@@ -7,6 +7,9 @@ layout (std430, binding = 0) buffer MyBuffer {
     vec3 position[];
 } myBuffer;
 
+uniform int NumOfInstances;
+uniform float density;
+
 //layout(std430, binding = 0) buffer Counter {
 //    uint count;
 //    uint primCount;
@@ -18,9 +21,34 @@ layout (std430, binding = 0) buffer MyBuffer {
 layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 void main() {
     uint idx = gl_GlobalInvocationID.x;
-    vec3 pos = vec3(float(idx), -60, 1);
+    uint idy = gl_GlobalInvocationID.y;
+
+    uint instanceID = idx + (idy*NumOfInstances);
+
+//    vec3 pos = vec3(idx, -60, idy);
+
+    float halfInstances = NumOfInstances / 2 - 0.5;
+
+//    vec3 cameraPos = VeilCamera.CameraPosition;
+
+//    float cameraX = mod(cameraPos.x, 2);
+//    float cameraZ = mod(cameraPos.z, 2);
+
+//    cameraPos.xz = vec2(cameraX, cameraZ);
+
+    float x = (mod(instanceID, NumOfInstances) - halfInstances);
+    float z = (floor(instanceID / NumOfInstances) - halfInstances);
+
+    vec3 offset = vec3(x/density, - 60, z/density);
+
+//    vec3 WorldPos = (pos - cameraPos) + offset + VeilCamera.CameraPosition;
+//    float rand = hash12(WorldPos.xz - pos.xz);
+//
+//
+//    float randAngle = rand * 360;
+//    pos.xz *= rot2D(randAngle);
+
 
 //    atomicAdd(primCount, 0);
-//    primCount = 1;
-    myBuffer.position[idx] = pos;
+    myBuffer.position[instanceID] = offset;
 }
