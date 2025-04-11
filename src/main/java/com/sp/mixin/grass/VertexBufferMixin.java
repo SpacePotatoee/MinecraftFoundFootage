@@ -22,6 +22,9 @@ import static org.lwjgl.opengl.GL15C.*;
 import static org.lwjgl.opengl.GL40C.GL_PATCHES;
 import static org.lwjgl.opengl.GL40C.glDrawElementsIndirect;
 
+/***
+ * Thanks Veil lol
+ */
 @Mixin(VertexBuffer.class)
 public class VertexBufferMixin implements RenderIndirectExtension {
 
@@ -30,6 +33,7 @@ public class VertexBufferMixin implements RenderIndirectExtension {
     @Shadow private VertexFormat.IndexType indexType;
     @Shadow @Nullable private RenderSystem.@Nullable ShapeIndexBuffer sharedSequentialIndexBuffer;
     @Shadow private int indexCount;
+
 
     @Unique
     private int getDrawMode(int defaultMode) {
@@ -51,19 +55,19 @@ public class VertexBufferMixin implements RenderIndirectExtension {
 
     @Unique
     public void drawIndirect() {
-//        if (this.sharedSequentialIndexBuffer != null) {
-//            this.sharedSequentialIndexBuffer.bindAndGrow(this.indexCount);
-//            glDrawElementsIndirect(this.getDrawMode(this.drawMode.glMode), this.sharedSequentialIndexBuffer.getIndexType().glType, 0);
-//        } else {
+        if (this.sharedSequentialIndexBuffer != null) {
+            this.sharedSequentialIndexBuffer.bindAndGrow(this.indexCount);
+            glDrawElementsIndirect(this.getDrawMode(this.drawMode.glMode), this.sharedSequentialIndexBuffer.getIndexType().glType, 0);
+        } else {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.indexBufferId);
             glDrawElementsIndirect(this.getDrawMode(this.drawMode.glMode), this.indexType.glType, 0);
 //            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-//        }
+        }
 
 
-        GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
-            System.err.println("GL DEBUG: " + GLDebugMessageCallback.getMessage(length, message));
-        }, 0);
+//        GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
+//            System.err.println("GL DEBUG: " + GLDebugMessageCallback.getMessage(length, message));
+//        }, 0);
 
     }
 }

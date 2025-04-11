@@ -217,6 +217,9 @@ public class ModBlocks {
     public static final Block POWER_POLE = registerBlock("power_pole",
             new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).noBlockBreakParticles()));
 
+    public static final Block DIRT = registerBlock("dirt",
+            new Block(FabricBlockSettings.copyOf(Blocks.DIRT).hardness(-1f).noBlockBreakParticles()));
+
 
     private static Block registerBlock(String name, Block block) {
         registerBlockItem(name, block);

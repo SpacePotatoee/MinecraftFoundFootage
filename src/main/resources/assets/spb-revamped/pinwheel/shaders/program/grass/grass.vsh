@@ -9,7 +9,7 @@ layout (std430, binding = 0) buffer MyBuffer {
 
 uniform float GameTime;
 uniform sampler2D WindNoise;
-uniform int NumOfInstances;
+//uniform int NumOfInstances;
 uniform float density;
 uniform float grassHeight;
 
@@ -48,31 +48,22 @@ float getGrassHeightGradient(float height){
 out vec3 localPos;
 
 void main() {
-
     vec3 pos = Position;
-
-    float halfInstances = NumOfInstances / 2 - 0.5;
 
     vec3 cameraPos = VeilCamera.CameraPosition;
 
-//    float cameraX = mod(cameraPos.x, 2);
-//    float cameraZ = mod(cameraPos.z, 2);
+    float cameraX = mod(cameraPos.x, 1);
+    float cameraZ = mod(cameraPos.z, 1);
+    cameraPos.xz = vec2(cameraX, cameraZ);
 
-//    cameraPos.xz = vec2(cameraX, cameraZ);
+    vec3 offset = myBuffer.position[gl_InstanceID];
 
-    float x = (mod(gl_InstanceID, NumOfInstances) - halfInstances);
-    float z = (floor(gl_InstanceID / NumOfInstances) - halfInstances);
-
-    vec3 offset = vec3(x / density, - 60, z /density);
-//    vec3 offset = myBuffer.position[gl_InstanceID];
-//    vec3 offset = vec3(0);
-
-//    vec3 WorldPos = (pos - cameraPos) + offset + VeilCamera.CameraPosition;
-//    float rand = hash12(WorldPos.xz - pos.xz);
+    vec3 WorldPos = (pos - cameraPos) + offset + VeilCamera.CameraPosition;
+    float rand = hash12(WorldPos.xz - pos.xz);
 
 
-//    float randAngle = rand * 360;
-//    pos.xz *= rot2D(randAngle);
+    float randAngle = rand * 360;
+    pos.xz *= rot2D(randAngle);
 
 
 
@@ -80,13 +71,13 @@ void main() {
 
 
 
-//    vec3 worldPos = localPos + VeilCamera.CameraPosition;
-//    float grassGradient = getGrassHeightGradient(pos.y);
-//    float windtexture = texture(WindNoise, (worldPos.xz * 0.03) + GameTime * 100 + rand* 0.1).r - 0.3;
-//    float heightTexture = clamp((texture(WindNoise, (WorldPos.xz * 0.1)).r * texture(WindNoise, (WorldPos.xz * 0.01)).r), 0.0, 1.0);
-//    heightTexture = 2 * (heightTexture - 0.5) + 0.5;
-//    localPos.y += heightTexture * grassGradient;
-//    localPos.xz -= 2 * (grassGradient * grassGradient) * windtexture * (grassHeight + heightTexture);
+    vec3 worldPos = localPos + VeilCamera.CameraPosition;
+    float grassGradient = getGrassHeightGradient(pos.y);
+    float windtexture = texture(WindNoise, (worldPos.xz * 0.03) + GameTime * 100 + rand* 0.1).r - 0.3;
+    float heightTexture = clamp((texture(WindNoise, (WorldPos.xz * 0.1)).r * texture(WindNoise, (WorldPos.xz * 0.01)).r), 0.0, 1.0);
+    heightTexture = 2 * (heightTexture - 0.5) + 0.5;
+    localPos.y += heightTexture * grassGradient;
+    localPos.xz -= 2 * (grassGradient * grassGradient) * windtexture * (grassHeight + heightTexture);
 
 
     gl_Position = VeilCamera.ProjMat * VeilCamera.ViewMat * vec4(localPos, 1.0);

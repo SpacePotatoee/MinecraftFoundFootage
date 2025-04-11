@@ -1,24 +1,21 @@
 package com.sp.render;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevamped;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.mixininterfaces.RenderIndirectExtension;
 import foundry.veil.api.client.render.VeilRenderSystem;
+import foundry.veil.api.client.render.VeilRenderer;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
-import org.lwjgl.opengl.GL11;
+import org.joml.Vector4fc;
 import org.lwjgl.opengl.GL43;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
-import static net.minecraft.client.render.VertexFormats.NORMAL_ELEMENT;
-import static net.minecraft.client.render.VertexFormats.POSITION_ELEMENT;
 import static net.minecraft.util.math.MathHelper.floor;
 import static net.minecraft.util.math.MathHelper.sqrt;
 import static org.lwjgl.opengl.GL15C.glBindBuffer;
@@ -35,6 +32,7 @@ public class GrassRenderer {
     private static final Identifier computeShaderPath = new Identifier(SPBRevamped.MOD_ID, "grass/compute/positions");
     private final int positionsVbo;
     private final int indirectVbo;
+
     private int lastGrassCount;
     private int lastMeshResolution;
     private ByteBuffer cmd;
@@ -62,78 +60,7 @@ public class GrassRenderer {
         this.updateBuffers(true);
     }
 
-    private void updateBuffers(boolean init){
-        int currentGrassCount = ConfigStuff.grassCount;
-        int currentMeshResolution = ConfigStuff.meshResolution;
-        boolean countChange = currentGrassCount != this.lastGrassCount;
-        boolean resolutionChange = currentMeshResolution != this.lastMeshResolution;
-
-        if(countChange) {
-            //Update positions buffer size
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, this.positionsVbo);
-            glBufferData(GL_SHADER_STORAGE_BUFFER, (long) 4 * ((long) currentGrassCount * currentGrassCount) * Float.BYTES, GL_DYNAMIC_DRAW);
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-        }
-
-        if(countChange || resolutionChange){
-            //Update Indirect buffer instance count
-            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, this.indirectVbo);
-            if(init) glBufferData(GL_DRAW_INDIRECT_BUFFER, (long) 20, GL_STATIC_DRAW);
-
-            if(this.cmd == null) {
-                this.cmd = glMapBufferRange(
-                        GL_DRAW_INDIRECT_BUFFER, 0, 20,
-                        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
-                );
-            }
-
-            //Actual struct part
-            if(cmd != null) {
-                this.cmd.clear();
-                this.cmd.putInt(VeilRenderSystem.getIndexCount(this.vertexBuffer));
-                this.cmd.putInt(currentGrassCount * currentGrassCount);
-                this.cmd.putInt(0);
-                this.cmd.putInt(0);
-                this.cmd.putInt(0);
-
-                this.cmd.flip();
-
-                if(!init) glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, cmd);
-            }
-            glUnmapBuffer(GL_DRAW_INDIRECT_BUFFER);
-            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
-        }
-
-        if(countChange)this.lastGrassCount = currentGrassCount;
-        if(resolutionChange)this.lastMeshResolution = currentMeshResolution;
-
-    }
-
-    private void computeGrassPositions() {
-        ShaderProgram shader = VeilRenderSystem.setShader(computeShaderPath);
-        if(shader == null) return;
-
-        if(shader.isCompute()){
-            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this.positionsVbo);
-
-            shader.setInt("NumOfInstances", ConfigStuff.grassCount);
-            shader.setFloat("density", ConfigStuff.grassDensity);
-
-            shader.bind();
-            glDispatchCompute(Math.min(ConfigStuff.grassCount, VeilRenderSystem.maxComputeWorkGroupCountX()), Math.min(ConfigStuff.grassCount, VeilRenderSystem.maxComputeWorkGroupCountY()), 1);
-            glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
-
-            ShaderProgram.unbind();
-            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
-        }
-
-        ShaderProgram.unbind();
-
-
-    }
-
     public void render() {
-        this.computeGrassPositions();
 
 //        AdvancedFbo fbo = VeilRenderSystem.renderer().getFramebufferManager().getFramebuffer(VeilFramebuffers.OPAQUE);
 //        if(fbo == null) return;
@@ -157,15 +84,22 @@ public class GrassRenderer {
             this.vertexBuffer.upload(bufferBuilder.end());
             VertexBuffer.unbind();
 
-            this.updateBuffers(false);
+
         }
+
+        //Update the Buffers
+        this.updateBuffers(false);
+
+        //Use a compute shader to get all visible grass positions (Frustum Culling)
+        this.computeGrassPositions();
+
 
 
         ShaderProgram shader = VeilRenderSystem.setShader(shaderPath);
         if(shader == null) return;
 
         shader.setFloat("GameTime", RenderSystem.getShaderGameTime());
-        shader.setInt("NumOfInstances", ConfigStuff.grassCount);
+        shader.setInt("NumOfInstances", floor(sqrt(ConfigStuff.grassCount)));
         shader.setFloat("grassHeight", ConfigStuff.grassHeight);
         shader.setFloat("density", ConfigStuff.grassDensity);
 
@@ -174,6 +108,8 @@ public class GrassRenderer {
         shader.applyShaderSamplers(0);
 
         this.vertexBuffer.bind();
+        //glDrawElementsIndirect needs the indirect fbo
+        //REMEMBER the int struct goes HERE and not directly into the method like I thought before
         glBindBuffer(GL43.GL_DRAW_INDIRECT_BUFFER, this.indirectVbo);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this.positionsVbo);
         shader.bind();
@@ -188,22 +124,110 @@ public class GrassRenderer {
 //        AdvancedFbo.unbind();
     }
 
+    private void updateBuffers(boolean init){
+        int currentGrassCount = ConfigStuff.grassCount;
+        int currentMeshResolution = ConfigStuff.meshResolution;
+        boolean countChange = currentGrassCount != this.lastGrassCount;
+        boolean resolutionChange = currentMeshResolution != this.lastMeshResolution;
+
+        if(countChange) {
+            //Update positions buffer size
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, this.positionsVbo);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, (long) 4 * ((long) currentGrassCount) * Float.BYTES, GL_DYNAMIC_DRAW);
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        }
+
+//        if(countChange || resolutionChange){
+            //Update Indirect buffer instance count
+            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, this.indirectVbo);
+            if(init) glBufferData(GL_DRAW_INDIRECT_BUFFER, (long) 20, GL_STATIC_DRAW);
+
+            boolean unmap = false;
+            if(this.cmd == null) {
+                unmap = true;
+                this.cmd = glMapBufferRange(
+                        GL_DRAW_INDIRECT_BUFFER, 0, 20,
+                        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_UNSYNCHRONIZED_BIT
+                );
+            }
+
+
+            //Actual struct part
+            /*
+                uint count;
+                uint primCount;
+                uint firstIndex;
+                uint baseVertex;
+                uint baseInstance;
+             */
+            if(cmd != null) {
+                this.cmd.clear();
+                this.cmd.putInt(VeilRenderSystem.getIndexCount(this.vertexBuffer));
+                this.cmd.putInt(0);
+                this.cmd.putInt(0);
+                this.cmd.putInt(0);
+                this.cmd.putInt(0);
+
+                this.cmd.flip();
+
+                if(!init) glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, cmd);
+            }
+            if(unmap) glUnmapBuffer(GL_DRAW_INDIRECT_BUFFER);
+            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+//        }
+
+        if(countChange)this.lastGrassCount = currentGrassCount;
+        if(resolutionChange)this.lastMeshResolution = currentMeshResolution;
+
+    }
+
+    private void computeGrassPositions() {
+        ShaderProgram shader = VeilRenderSystem.setShader(computeShaderPath);
+        if(shader == null) return;
+
+        if(shader.isCompute()){
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this.positionsVbo);
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, this.indirectVbo);
+
+            shader.setInt("NumOfInstances", floor(sqrt(ConfigStuff.grassCount)));
+            shader.setFloat("density", ConfigStuff.grassDensity);
+
+            Vector4fc[] planes = VeilRenderer.getCullingFrustum().getPlanes();
+            float[] values = new float[4 * planes.length];
+            for (int i = 0; i < planes.length; i++) {
+                Vector4fc plane = planes[i];
+                values[i * 4] = plane.x();
+                values[i * 4 + 1] = plane.y();
+                values[i * 4 + 2] = plane.z();
+                values[i * 4 + 3] = plane.w();
+            }
+            shader.setFloats("FrustumPlanes", values);
+
+            shader.bind();
+
+            //Eight work groups
+            int grass = floor(sqrt((float) ConfigStuff.grassCount) / 8);
+            int x = Math.min(grass, VeilRenderSystem.maxComputeWorkGroupCountX());
+            int y = Math.min(grass, VeilRenderSystem.maxComputeWorkGroupCountY());
+
+            glDispatchCompute(x, y, 1);
+            glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+
+            ShaderProgram.unbind();
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
+        }
+
+        ShaderProgram.unbind();
+
+
+    }
+
     private void createGrassModel(BufferBuilder bufferBuilder) {
-
-//        bufferBuilder.vertex(0.5,ConfigStuff.grassHeight,0).normal(0,0,-1).next();
-//        bufferBuilder.vertex(0.5,ConfigStuff.grassHeight,0).normal(0,0,-1).next();
-//        bufferBuilder.vertex(0.6,0,0).normal(0,0,-1).next();
-//        bufferBuilder.vertex(0.4,0,0).normal(0,0,-1).next();
-//
-//        bufferBuilder.vertex(0.4,0,0).normal(0,0,1).next();
-//        bufferBuilder.vertex(0.6,0,0).normal(0,0,1).next();
-//        bufferBuilder.vertex(0.5,ConfigStuff.grassHeight,0).normal(0,0,1).next();
-//        bufferBuilder.vertex(0.5,ConfigStuff.grassHeight,0).normal(0,0,1).next();
-
-        //Segmented Grass blades (Use 1 for just a single triangle)
+        //Segmented Grass blades (1 is just a single triangle)
         int segments = ConfigStuff.meshResolution;
-        float thickness = 0.1f;
-        float xStep = thickness/segments;
+        float xStep = 0.1f/segments;
 
         for(int i = 0; i < segments; i++){
             bufferBuilder.vertex(0.6-xStep*(i),ConfigStuff.grassHeight/segments*i,0)      .next();
@@ -222,6 +246,7 @@ public class GrassRenderer {
     public void close(){
         glDeleteBuffers(this.positionsVbo);
         glDeleteBuffers(this.indirectVbo);
+        this.cmd = null;
     }
 
 }

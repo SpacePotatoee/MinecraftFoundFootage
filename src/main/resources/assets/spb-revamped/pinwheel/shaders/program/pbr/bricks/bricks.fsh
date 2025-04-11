@@ -3,7 +3,6 @@
 #include veil:deferred_utils
 #include veil:camera
 
-uniform sampler2D Sampler0;
 uniform sampler2D HeightMap;
 uniform sampler2D ColorMap;
 uniform sampler2D NormalMap;

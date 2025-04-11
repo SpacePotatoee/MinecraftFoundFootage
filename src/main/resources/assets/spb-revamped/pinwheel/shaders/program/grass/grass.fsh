@@ -7,7 +7,7 @@ uniform float grassHeight;
 
 out vec4 fragColor;
 in vec3 localPos;
-in vec3 WorldPos;
+
 
 float getGrassHeightGradient(float height){
     return height / grassHeight;
@@ -22,5 +22,4 @@ void main() {
 
 
     fragColor = vec4(grassColor * occlusionFactor, 1.0);
-//    fragColor = vec4(WorldPos, 1.0);
 }

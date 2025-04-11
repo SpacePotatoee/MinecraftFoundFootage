@@ -27,6 +27,7 @@ public class RenderLayers extends RenderLayer {
     private static final RenderPhase.ShaderProgram CEILING_TILE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/ceilingtile/ceilingtile"));
     private static final RenderPhase.ShaderProgram CHAIN_FENCE_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/chainfence/chainfence"));
     private static final RenderPhase.ShaderProgram BRICK_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/bricks/bricks"));
+    private static final RenderPhase.ShaderProgram DIRT_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/dirt/dirt"));
     private static final RenderPhase.ShaderProgram WOODEN_CRATE = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/crate/crate"));
     private static final RenderPhase.ShaderProgram CONCRETE = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "pbr/concrete/concrete"));
     private static final RenderPhase.ShaderProgram POOLROOMS_SKY_SHADER = VeilRenderBridge.shaderState(new Identifier(SPBRevamped.MOD_ID, "sky"));
@@ -156,6 +157,20 @@ public class RenderLayers extends RenderLayer {
                     .build(true)
     );
 
+    private static final RenderLayer DIRT_LAYER = RenderLayer.of(
+            "dirt",
+            VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
+            VertexFormat.DrawMode.QUADS,
+            1536,
+            false,
+            false,
+            RenderLayer.MultiPhaseParameters.builder()
+                    .lightmap(ENABLE_LIGHTMAP)
+                    .program(DIRT_SHADER)
+                    .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
+                    .build(true)
+    );
+
     private static net.minecraft.client.gl.ShaderProgram getCarpetProgram(){
         if(ShadowMapRenderer.isRenderingShadowMap()) {
             foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(shadowSolid);
@@ -175,30 +190,26 @@ public class RenderLayers extends RenderLayer {
     public static RenderLayer getConcreteLayer() {
         return CONCRETE_LAYER;
     }
-
-
     public static RenderLayer getPoolroomsSky() {
         return POOLROOMS_SKY;
     }
-
     public static RenderLayer getCeilingTile() {
         return CEILING_TILE;
     }
-
     public static RenderLayer getCarpet() {
         return CARPET;
     }
-
     public static RenderLayer getChainFence() {
         return CHAIN_FENCE;
     }
-
     public static RenderLayer getBricksLayer() {
         return BRICKS_LAYER;
     }
-
     public static RenderLayer getWoodenCrateLayer() {
         return WOODEN_CRATE_LAYER;
+    }
+    public static RenderLayer getDirtLayer() {
+        return DIRT_LAYER;
     }
 
     public RenderLayers(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, Runnable startAction, Runnable endAction) {

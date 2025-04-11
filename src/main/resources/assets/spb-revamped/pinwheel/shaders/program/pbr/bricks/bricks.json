@@ -5,7 +5,6 @@
   "textures": {
     "HeightMap": "spb-revamped:textures/shaders/bricks/bricks_height.png",
     "ColorMap": "spb-revamped:textures/shaders/bricks/bricks_color.png",
-    "AoMap": "spb-revamped:textures/shaders/bricks/bricks_ao.png",
     "NormalMap": "spb-revamped:textures/shaders/bricks/bricks_normal.png"
   }
 }

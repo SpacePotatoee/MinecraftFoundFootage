@@ -84,6 +84,7 @@ public class ModItemGroups {
 
                         entries.add(ModBlocks.POWER_POLE_TOP);
                         entries.add(ModBlocks.POWER_POLE);
+                        entries.add(ModBlocks.DIRT);
 
 
 

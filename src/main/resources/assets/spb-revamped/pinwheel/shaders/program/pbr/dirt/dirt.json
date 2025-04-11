@@ -1,0 +1,10 @@
+{
+  "vertex": "spb-revamped:pbr/dirt/dirt",
+  "geometry": "spb-revamped:pbr/dirt/dirt",
+  "fragment": "spb-revamped:pbr/dirt/dirt",
+  "textures": {
+    "HeightMap": "spb-revamped:textures/shaders/dirt/dirt_height.png",
+    "ColorMap": "spb-revamped:textures/shaders/dirt/dirt_color.png",
+    "NormalMap": "spb-revamped:textures/shaders/dirt/dirt_normal.png"
+  }
+}

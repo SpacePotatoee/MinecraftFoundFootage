@@ -36,6 +36,7 @@ import foundry.veil.api.event.VeilRenderLevelStageEvent.Stage;
 import foundry.veil.platform.VeilEventPlatform;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -110,6 +111,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayers.getConcreteLayer());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Bricks, RenderLayers.getBricksLayer());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.DIRT, RenderLayers.getDirtLayer());
 
 //        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTiles, RenderLayers.getPoolTileLayer());
 
@@ -404,6 +406,11 @@ public class SPBRevampedClient implements ClientModInitializer {
             this.grassRenderer.close();
             this.grassRenderer = null;
         }));
+
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            this.grassRenderer.close();
+            this.grassRenderer = null;
+        });
 
 
         ClientTickEvents.END_WORLD_TICK.register((client) ->{
