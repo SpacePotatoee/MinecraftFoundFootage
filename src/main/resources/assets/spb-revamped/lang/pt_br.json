@@ -1,0 +1,149 @@
+{
+  "intro.backrooms": "As Backrooms",
+  "intro.credit": "Um mod feito por ",
+
+  "itemgroup.spbrevamped": "Backrooms",
+
+  "block.spb-revamped.void_block": "Bloco de Vácuo",
+  "block.spb-revamped.ceiling_light": "Luz de Teto",
+  "block.spb-revamped.emergency_light": "Luz de Emergência",
+
+  "block.spb-revamped.wall_block": "Bloco de Papel de Parede",
+  "block.spb-revamped.wall_block_2": "Bloco de Papel de Parede Manila",
+  "block.spb-revamped.ceiling_tile": "Telha de Teto",
+  "block.spb-revamped.ghost_ceiling_tile": "Telha de Teto Fantasma",
+  "block.spb-revamped.carpet_block": "Bloco de Carpete",
+  "block.spb-revamped.rug1": "Tapete 1",
+  "block.spb-revamped.rug2": "Tapete 2",
+
+
+  "block.spb-revamped.wooden_crate": "Caixa de Madeira",
+  "container.spb-revamped.wooden_crate": "Caixa de Madeira",
+
+
+  "block.spb-revamped.fluorescent_light": "Luz Fluorecente",
+  "block.spb-revamped.pool_sky": "Bloco de Céu",
+  "block.spb-revamped.thin_fluorescent_light": "Luz Fluorecente Fina",
+  "block.spb-revamped.bottom_trim": "Acabamento Inferior",
+  "block.spb-revamped.chain_fence": "Cerca de Corrente",
+  "block.spb-revamped.new_stairs": "Escadas de Escadaria",
+
+
+  "block.spb-revamped.concrete1": "Concreto 1",
+  "block.spb-revamped.concrete2": "Concreto 2",
+  "block.spb-revamped.concrete5": "Concreto 5",
+  "block.spb-revamped.concrete6": "Concreto 6",
+  "block.spb-revamped.concrete7": "Concreto 7",
+  "block.spb-revamped.concrete9": "Concreto 9",
+  "block.spb-revamped.concrete9slab": "Laje de Concreto 9",
+  "block.spb-revamped.concrete10": "Concreto 10",
+  "block.spb-revamped.concrete11": "Concreto 11",
+  "block.spb-revamped.concrete12": "Concreto 12",
+  "block.spb-revamped.bricks": "Parede de Tijolo",
+
+
+  "block.spb-revamped.thin_pipe": "Cano Fino",
+  "block.spb-revamped.thin_pipe_corner": "Canto de Cano Fino",
+  "block.spb-revamped.pipe": "Cano",
+  "block.spb-revamped.pipe_middle": "Meio de Cano",
+  "block.spb-revamped.pipe_corner": "Canto de Cano",
+  "block.spb-revamped.big_pipe": "Cano Grande",
+  "block.spb-revamped.big_pipe_middle": "Meio de Cano Grande",
+  "block.spb-revamped.small_pipe_set": "Canos Pequenos",
+
+
+  "block.spb-revamped.wall_text_1": "Parede Número 1",
+  "block.spb-revamped.wall_text_2": "Parede Número 2",
+  "block.spb-revamped.wall_text_3": "Parede Número 3",
+  "block.spb-revamped.wall_text_4": "Parede Número 4",
+  "block.spb-revamped.wall_text_5": "Parede Número 5",
+  "block.spb-revamped.wall_text_6": "Parede Número 6",
+  "block.spb-revamped.wall_text_7": "Parede Número 7",
+  "block.spb-revamped.wall_text_8": "Parede Número 8",
+  "block.spb-revamped.wall_text_99": "Parede Número 99",
+
+
+  "block.spb-revamped.arrow1": "Seta 1",
+  "block.spb-revamped.arrow2": "Seta 2",
+  "block.spb-revamped.arrow3": "Seta 3",
+  "block.spb-revamped.arrow4": "Seta 4",
+
+  "block.spb-revamped.pool_tiles": "Azulejos de Piscina",
+  "block.spb-revamped.pool_tile_wall": "Laje Vertical de Azulejos de Piscina",
+  "block.spb-revamped.slope": "Rampa de Azulejos de Piscina",
+
+
+  "block.spb-revamped.wall_small_1": "Desenho de Parede (Mão)",
+  "block.spb-revamped.wall_small_2": "Desenho de Parede (Rosto)",
+  "block.spb-revamped.wall_drawing_door": "Desnho de Parede (Porta)",
+  "block.spb-revamped.wall_drawing_window": "Desenho de Parede (Janela)",
+
+
+  "item.spb-revamped.backshroom": "Backshrooms",
+  "item.spb-revamped.backshroom.tooltip": "Se você não tiver nada mais pra comer.",
+
+  "item.spb-revamped.canned_food": "Comida Enlatada",
+  "item.spb-revamped.canned_food.tooltip": "Pode estar estragado...",
+
+
+  "spb-revamped.options.fullscreen.resolution": "Resolução de VHS",
+
+
+  "spb-revamped.midnightconfig.category.video": "Configurações de Vídeo",
+  "spb-revamped.midnightconfig.category.adminStuff": "Configurações de Admin",
+  "spb-revamped.midnightconfig.category.shaders": "Configurações de Shader",
+  "spb-revamped.midnightconfig.enableVanillaLighting": "Habilitar Iluminação Vanilla",
+  "spb-revamped.midnightconfig.enableRealCamera": "Habilitar Câmera Realística",
+  "spb-revamped.midnightconfig.forceBackrooms": "Forçar Dentro das Backrooms",
+  "spb-revamped.midnightconfig.enableCameraRoll": "Habilitar Rotação da Câmera",
+  "spb-revamped.midnightconfig.enableSmoothCamera": "Habilitar Câmera Suave",
+  "spb-revamped.midnightconfig.cameraSmoothing": "Multiplicador de Suavização de Câmera",
+  "spb-revamped.midnightconfig.showHands": "Mostrar Mão Principal",
+  "spb-revamped.midnightconfig.useDefaultGUI": "Usar a Interface Padrão do Minecraft",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "Se seu monitor tiver suporte, ative esta opção e verá escolhas diferentes na sua configuração de resolução. Dá uma sensação mais \"VHS\".",
+  "spb-revamped.midnightconfig.enableVHSAspectRatio": "Habilitar Somente Proporções de Aspecto VHS",
+
+  "spb-revamped.midnightconfig.enableVhsEffect": "Habilitar Shader de VHS",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "Multiplicador de Distorção VHS",
+  "spb-revamped.midnightconfig.lookRollMultiplier": "Multiplicador de Rolagem de Visão",
+  "spb-revamped.midnightconfig.strafeRollMultiplier": "Multiplicador de Movimento de Lado",
+  "spb-revamped.midnightconfig.lightRenderDistance": "Distância de Renderização de Luz (Em Blocos)",
+
+  "spb-revamped.midnightconfig.enableShadows": "Habilitar Sombras",
+  "spb-revamped.midnightconfig.enableVolumetricLight": "Habilitar Luz Volumétrica",
+  "spb-revamped.midnightconfig.enablePuddles": "Habilitar Poças",
+  "spb-revamped.midnightconfig.enableLevel1Fog": "Habilitar Neblina do Nível 1",
+  "spb-revamped.midnightconfig.renderWaterReflections": "Habilitar Reflexões D'água",
+  "spb-revamped.midnightconfig.renderBlockReflections": "Habilitar Reflexões de Blocos (Somente Para Azulejos das Poolrooms)",
+  "spb-revamped.midnightconfig.motionBlur": "Habilitar Desfoque de Movimento",
+  "spb-revamped.midnightconfig.motionBlurStrength": "Intensidade do Desfoque de Movimento",
+
+  "death.attack.acid": "%1$s derreteu em Ácido!",
+  "death.attack.smiler": "%1$s foi morto por um Smiler!",
+
+  "spb-revamped.keybinds": "SPB-Revamped",
+  "key.spb-revamped.toggle_flashlight": "Ligar Lanterna",
+  "key.spb-revamped.zoom": "Zoom",
+  "key.spb-revamped.toggle_event": "Trocar Evento",
+
+
+  "skinwalker.flavor-text.move1": "Você não consegue mover nada. ",
+  "skinwalker.flavor-text.move2": "Esse não é mais o seu corpo.",
+
+  "skinwalker.flavor-text.inventory": "Aquele não é mais seu inventário.",
+
+  "skinwalker.flavor-text.leave": "Não Há Escapatória",
+
+  "skinwalker.flavor-text.chat": "Ninguém pode te ouvir gritar",
+
+  "skinwalker.flavor-text.taunt1": "Vá em frente",
+  "skinwalker.flavor-text.taunt2": "Tente chamar os seus amigos (T)",
+  "skinwalker.flavor-text.taunt3": "Se não já é óbvio o bastante, sua pele foi roubada. ",
+  "skinwalker.flavor-text.taunt4": "Não seja chato. Não mande mensagens pros outros jogadores",
+
+
+
+
+  "spb-revamped.flashlight.wet1": "Sua lanterna molhou. ",
+  "spb-revamped.flashlight.wet2": "Ela não funciona mais."
+}
