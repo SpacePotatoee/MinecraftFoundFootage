@@ -44,6 +44,8 @@ public class BlockIdMap {
         BlockIDs.put(ModBlocks.PoolTiles, 18);
         BlockIDs.put(ModBlocks.CEILINGLIGHT, 15);
         BlockIDs.put(ModBlocks.EmergencyLight, 19);
+        BlockIDs.put(ModBlocks.POWER_POLE, 20);
+        BlockIDs.put(ModBlocks.POWER_POLE_TOP, 20);
     }
 
     public static int getBlockID(Block block) {

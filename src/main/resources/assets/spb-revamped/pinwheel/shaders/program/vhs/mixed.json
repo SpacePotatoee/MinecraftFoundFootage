@@ -2,6 +2,8 @@
   "vertex": "veil:blit_screen",
   "fragment": "spb-revamped:vhs/mixed",
   "definitions": [
-    "SHADOWS"
+    "SHADOWS",
+    "POOLROOMS",
+    "INFINITE_FIELD"
   ]
 }

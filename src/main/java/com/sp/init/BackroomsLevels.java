@@ -1,12 +1,16 @@
 package com.sp.init;
 
 import com.sp.SPBRevamped;
+import com.sp.compat.modmenu.ConfigDefinitions;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class BackroomsLevels {
     public static final RegistryKey<World> LEVEL0_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "level0"));
@@ -17,6 +21,8 @@ public class BackroomsLevels {
     public static final RegistryKey<World> LEVEL2_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "level2"));
 
     public static final RegistryKey<World> POOLROOMS_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "poolrooms"));
+
+    public static final RegistryKey<World> INFINITE_FIELD_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "infinite_field"));
 
     public static boolean isInBackrooms(RegistryKey<World> world){
         return world == LEVEL0_WORLD_KEY || world == LEVEL1_WORLD_KEY || world == LEVEL2_WORLD_KEY || world == POOLROOMS_WORLD_KEY;
@@ -41,6 +47,14 @@ public class BackroomsLevels {
 
         return null;
     }
+
+    public static Map<String, RegistryKey<World>> definitions = Map.of(
+            "LEVEL0",         LEVEL0_WORLD_KEY,
+            "LEVEL1",         LEVEL1_WORLD_KEY,
+            "LEVEL2",         LEVEL2_WORLD_KEY,
+            "POOLROOMS",      POOLROOMS_WORLD_KEY,
+            "INFINITE_FIELD", INFINITE_FIELD_WORLD_KEY
+    );
 
 
 }

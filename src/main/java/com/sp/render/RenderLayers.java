@@ -12,7 +12,6 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 
 public class RenderLayers extends RenderLayer {
-    private static final MinecraftClient client = MinecraftClient.getInstance();
 
     //PBR material identifiers
     private static final Identifier CARPET_COLOR = new Identifier(SPBRevamped.MOD_ID, "textures/shaders/carpet/carpet_color.png");
@@ -167,7 +166,6 @@ public class RenderLayers extends RenderLayer {
             RenderLayer.MultiPhaseParameters.builder()
                     .lightmap(ENABLE_LIGHTMAP)
                     .program(DIRT_SHADER)
-                    .texture(MIPMAP_BLOCK_ATLAS_TEXTURE)
                     .build(true)
     );
 

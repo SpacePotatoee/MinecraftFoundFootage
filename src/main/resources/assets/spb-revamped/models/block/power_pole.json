@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "spb-revamped:block/power_pole_texture",
+		"2": "spb-revamped:block/power_pole_texture",
 		"particle": "spb-revamped:block/power_pole_texture"
 	},
 	"elements": [
@@ -11,12 +11,12 @@
 			"to": [11, 16, 11],
 			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
 			"faces": {
-				"north": {"uv": [0, 0, 3, 16], "texture": "#0"},
-				"east": {"uv": [3, 0, 6, 16], "texture": "#0"},
-				"south": {"uv": [6, 0, 9, 16], "texture": "#0"},
-				"west": {"uv": [9, 0, 12, 16], "texture": "#0"},
-				"up": {"uv": [15, 3, 12, 0], "texture": "#0"},
-				"down": {"uv": [15, 3, 12, 6], "texture": "#0"}
+				"north": {"uv": [0, 0, 3, 8], "texture": "#2"},
+				"east": {"uv": [3, 0, 6, 8], "texture": "#2"},
+				"south": {"uv": [6, 0, 9, 8], "texture": "#2"},
+				"west": {"uv": [0, 8, 3, 16], "texture": "#2"},
+				"up": {"uv": [6, 11, 3, 8], "texture": "#2"},
+				"down": {"uv": [9, 8, 6, 11], "texture": "#2"}
 			}
 		}
 	]

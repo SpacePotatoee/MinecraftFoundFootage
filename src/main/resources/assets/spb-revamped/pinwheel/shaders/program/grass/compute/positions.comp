@@ -50,7 +50,7 @@ void main() {
     float x = (mod(instanceID, NumOfInstances) - halfInstances);
     float z = (floor(instanceID / NumOfInstances) - halfInstances);
 
-    vec3 offset = vec3(x/density, -60, z/density);
+    vec3 offset = vec3(x/density, 31, z/density);
 
     vec3 WorldPos = offset - cameraPos;
 

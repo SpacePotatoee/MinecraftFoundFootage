@@ -1,0 +1,26 @@
+{
+  "type": "spb-revamped:infinite_field",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "spb-revamped:infinite_field",
+      "features": false,
+      "lakes": false,
+      "layers": [
+        {
+          "block": "minecraft:bedrock",
+          "height": 1
+        },
+        {
+          "block": "minecraft:dirt",
+          "height": 29
+        },
+        {
+          "block": "minecraft:grass_block",
+          "height": 1
+        }
+      ],
+      "structure_overrides": []
+    }
+  }
+}

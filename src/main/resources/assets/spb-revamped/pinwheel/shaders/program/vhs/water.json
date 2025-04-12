@@ -3,7 +3,8 @@
   "fragment": "spb-revamped:vhs/water",
   "definitions": [
     "WATER_REFLECTIONS",
-    "BLOCK_REFLECTIONS"
+    "BLOCK_REFLECTIONS",
+    "POOLROOMS"
   ],
   "textures": {
     "WaterTexture": "spb-revamped:textures/shaders/water_noise.png",

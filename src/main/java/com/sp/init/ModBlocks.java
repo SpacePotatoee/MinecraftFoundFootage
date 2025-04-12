@@ -212,13 +212,13 @@ public class ModBlocks {
 
 
     public static final Block POWER_POLE_TOP = registerBlock("power_pole_top",
-            new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).noBlockBreakParticles()));
+            new UtilityPole(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).noBlockBreakParticles()));
 
     public static final Block POWER_POLE = registerBlock("power_pole",
-            new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).noBlockBreakParticles()));
+            new UtilityPole(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).noBlockBreakParticles()));
 
     public static final Block DIRT = registerBlock("dirt",
-            new Block(FabricBlockSettings.copyOf(Blocks.DIRT).hardness(-1f).noBlockBreakParticles()));
+            new Block(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).hardness(-1f).noBlockBreakParticles()));
 
 
     private static Block registerBlock(String name, Block block) {

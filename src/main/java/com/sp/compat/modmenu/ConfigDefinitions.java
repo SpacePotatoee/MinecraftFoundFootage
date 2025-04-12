@@ -12,7 +12,8 @@ public class ConfigDefinitions {
             "LEVEL1_FOG",        ConfigDefinitions::isEnableLevel1Fog,
             "WATER_REFLECTIONS", ConfigDefinitions::isRenderWaterReflections,
             "BLOCK_REFLECTIONS", ConfigDefinitions::isRenderBlockReflections,
-            "MOTION_BLUR",       ConfigDefinitions::isMotionBlur);
+            "MOTION_BLUR",       ConfigDefinitions::isMotionBlur
+    );
 
     public static boolean isEnableShadows() {
         return ConfigStuff.enableShadows;

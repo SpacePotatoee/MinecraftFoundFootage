@@ -26,7 +26,6 @@ uniform sampler2D VanillaWater;
 
 uniform vec2 ScreenSize;
 uniform float GameTime;
-uniform int OverWorld;
 uniform mat4 viewMatrix;
 uniform mat4 orthographMatrix;
 uniform mat4 IShadowViewMatrix;
@@ -154,7 +153,7 @@ void main() {
     vec4 normal = vec4(0.0);
     vec4 normal2 = vec4(0.0);
     if ((isReflective > 0.0 || opaqueMaterial == 18) && isBlock(material)) {
-        if(OverWorld != 1){
+        #ifdef POOLROOMS
             vec3 playerSpace = mat3(VeilCamera.IViewMat) * viewPos;
             vec3 worldPos = playerSpace + cameraPos;
 
@@ -219,9 +218,9 @@ void main() {
                     fragColor += clamp(caustics, 0.0, 1.0) * 2.0;
                 }
             }
-        } else {
+        #else
             fragColor = vanillaWater;
-        }
+        #endif
     } else {
         fragColor = vec4(0.0);
     }

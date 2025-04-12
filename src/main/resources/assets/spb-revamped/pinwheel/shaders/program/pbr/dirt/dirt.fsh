@@ -21,7 +21,7 @@ in vec3 Pos;
 in mat3 TBN;
 
 const int MaxSteps = 75;
-const float ZOOM = 0.2;
+const float ZOOM = 0.3;
 
 void main() {
     vec3 dir = Pos;
@@ -36,7 +36,7 @@ void main() {
         pos = worldPos + dir * dist;
 
         texCoords = vec3((pos.zx * worldNormal.g) + (vec2(pos.x, -pos.y) * worldNormal.b) + (-pos.zy * worldNormal.r), dist);
-        float heightMapDepth = ((1 - texture(HeightMap, vec2(texCoords.x, -texCoords.y) * ZOOM).r) * 0.7) - 0.35;
+        float heightMapDepth = ((1 - texture(HeightMap, vec2(texCoords.x, -texCoords.y) * ZOOM).r) * 0.03);
 
         if(texCoords.z >= heightMapDepth){
             color = texture(ColorMap, vec2(texCoords.x, -texCoords.y) * ZOOM) * vertexColor;
@@ -53,7 +53,7 @@ void main() {
     fragNormal = vec4(normalMap.rgb, 1.0);
     fragMaterial = ivec4(BLOCK_SOLID, 0, 0, 1);
     fragLightSampler = vec4(texCoord2, 0.0, 1.0);
-    fragLightMap = lightmapColor;
+    fragLightMap = lightmapColor*0.4;
 }
 
 

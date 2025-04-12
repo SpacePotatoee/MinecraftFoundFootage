@@ -1,5 +1,6 @@
 #include veil:material
 #include veil:camera
+#include veil:fog
 #include spb-revamped:shadows
 #include spb-revamped:sky
 #include spb-revamped:puddles
@@ -32,7 +33,6 @@ uniform usampler2D OpaqueMatSampler;
 uniform mat4 viewMatrix;
 uniform mat4 IShadowViewMatrix;
 uniform mat4 orthographMatrix;
-uniform int ShadowToggle;
 uniform float sunsetTimer;
 uniform float GameTime;
 uniform vec2 Rand;
@@ -77,33 +77,36 @@ void main(){
 
     color *= blur(7.0, 0.001, SSAOSampler, texCoord) * 2.0;
 
-    if(Mat2 != 15){
-        #ifdef SHADOWS
-            if(ShadowToggle == 1) {
+    #ifdef POOLROOMS
+        if(Mat2 != 15){
+            #ifdef SHADOWS
                 color = getShadow(color, texCoord, viewPos, normal, ScreenSize, viewMatrix, IShadowViewMatrix, orthographMatrix, NoiseTex, ShadowSampler, ditherSample, sunsetTimer, shadowColor);
+            #endif
+        } else {
+            //Sun
+            vec3 rd = viewDirFromUv(texCoord);
+            vec3 lightAngled = getLightAngle(IShadowViewMatrix);
+            color.rgb += smoothstep(0.998, 1.0, dot(rd, lightAngled));
+            if(sunsetTimer < 0.35 || sunsetTimer > 0.65) {
+                color.rgb += smoothstep(0.7, 1.0, dot(rd, lightAngled)) * 0.6;
             }
-        #endif
-
-    } else {
-        //Sun
-        vec3 rd = viewDirFromUv(texCoord);
-        vec3 lightAngled = getLightAngle(IShadowViewMatrix);
-        color.rgb += smoothstep(0.998, 1.0, dot(rd, lightAngled));
-        if(sunsetTimer < 0.35 || sunsetTimer > 0.65) {
-            color.rgb += smoothstep(0.7, 1.0, dot(rd, lightAngled)) * 0.6;
+            color.rgb += texture(Stars, rd.xz * 0.9).rgb * clamp(sin(sunsetTimer*3.5), 0.0, 1.0);
         }
-        color.rgb += texture(Stars, rd.xz * 0.9).rgb * clamp(sin(sunsetTimer*3.5), 0.0, 1.0);
-
-    }
+    #endif
 
     if(compat.a > 0.0 || compat2.a > 0.0){
         color += compat + compat2;
         color.a = min(compat.a + compat2.a, 1.0);
     }
 
-    if(depth >= 1.0) {
-        color = getSky(texCoord, sunsetTimer, GameTime, CloudNoise1, CloudNoise2);
-    }
+    #ifdef INFINITE_FIELD
+        if(Mat2 == 20) {
+            color *= 0.8;
+        }
+        color = linear_fog(color, length(viewPos), -10, 90, vec4(vec3(0.8), 1.0));
+
+    #endif
+
 
 
     fragColor = color;

@@ -22,6 +22,9 @@ import com.sp.render.physics.PhysicsStick;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
+import eu.midnightdust.core.MidnightLibClient;
+import eu.midnightdust.fabric.core.MidnightLibClientFabric;
+import eu.midnightdust.lib.config.MidnightConfig;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
 import foundry.veil.api.client.render.deferred.VeilDeferredRenderer;
@@ -111,7 +114,10 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayers.getConcreteLayer());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Bricks, RenderLayers.getBricksLayer());
+
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.DIRT, RenderLayers.getDirtLayer());
+//        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POWER_POLE, RenderLayers.getUtilityPoleLayer());
+//        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POWER_POLE_TOP, RenderLayers.getUtilityPoleLayer());
 
 //        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTiles, RenderLayers.getPoolTileLayer());
 
@@ -183,12 +189,17 @@ public class SPBRevampedClient implements ClientModInitializer {
                     }
                 }
 
-                if(stage == Stage.AFTER_TRANSLUCENT_BLOCKS) {
-                    if(this.grassRenderer == null){
-                        this.grassRenderer = new GrassRenderer();
-                    }
+                if (clientWorld.getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY) {
+                    if (stage == Stage.AFTER_SOLID_BLOCKS) {
+                        if (this.grassRenderer == null) {
+                            this.grassRenderer = new GrassRenderer();
+                        }
 
-                    this.grassRenderer.render();
+                        this.grassRenderer.render();
+                    }
+                } else if(this.grassRenderer != null){
+                    this.grassRenderer.close();
+                    this.grassRenderer = null;
                 }
 
             }
@@ -337,25 +348,6 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                     }
 
-                    shaderProgram = context.getShader(WATER_SHADER);
-                    if (shaderProgram != null) {
-                        if (inBackrooms) {
-                            shaderProgram.setInt("OverWorld", 0);
-                        } else {
-                            shaderProgram.setInt("OverWorld", 1);
-                        }
-
-//                        if(ConfigStuff.renderBlockReflections) {
-//                            if(shaderProgram.getInt("blockReflections") == 0) {
-//                                shaderProgram.setInt("blockReflections", 1);
-//                            }
-//                        } else {
-//                            if(shaderProgram.getInt("blockReflections") == 1) {
-//                                shaderProgram.setInt("blockReflections", 0);
-//                            }
-//                        }
-                    }
-
                     shaderProgram = context.getShader(GLITCH_SHADER);
                     if (shaderProgram != null) {
                         shaderProgram.setFloat("glitchTime", playerComponent.getGlitchTimer());
@@ -369,11 +361,19 @@ public class SPBRevampedClient implements ClientModInitializer {
                     definitions.remove("WARP");
                 }
 
+
                 ConfigDefinitions.definitions.forEach((s, aBoolean) -> {
                     if(aBoolean.get()){
                         definitions.define(s);
                     } else {
-//                        System.out.println("REMOVED: " + s);
+                        definitions.remove(s);
+                    }
+                });
+
+                BackroomsLevels.definitions.forEach((s, registryKey) -> {
+                    if(client.world.getRegistryKey() == registryKey){
+                        definitions.define(s);
+                    } else {
                         definitions.remove(s);
                     }
                 });
@@ -533,12 +533,6 @@ public class SPBRevampedClient implements ClientModInitializer {
     public static void setShadowUniforms(MutableUniformAccess access, World world) {
         Matrix4f level0ViewMat = ShadowMapRenderer.createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, true).peek().getPositionMatrix();
         Matrix4f viewMat = ShadowMapRenderer.createShadowModelView(camera.getPos().x, camera.getPos().y, camera.getPos().z, world, true).peek().getPositionMatrix();
-
-        if (world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
-            access.setInt("ShadowToggle", 1);
-        } else {
-            access.setInt("ShadowToggle", 0);
-        }
 
         access.setMatrix("level0ViewMatrix", level0ViewMat);
         access.setMatrix("viewMatrix", viewMat);
