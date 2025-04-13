@@ -101,13 +101,11 @@ void main(){
 
     #ifdef INFINITE_FIELD
         if(Mat2 == 20) {
-            color *= 0.8;
+//            color = vec4(vec3(0.5), 1.0);
         }
         color = linear_fog(color, length(viewPos), -10, 90, vec4(vec3(0.8), 1.0));
 
     #endif
-
-
 
     fragColor = color;
 }

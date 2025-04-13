@@ -223,7 +223,7 @@ public class GrassRenderer {
 
             shader.bind();
 
-            //*Eight work groups
+            //*Eight local groups
             int grass = floor(sqrt((float) ConfigStuff.grassCount) / 8);
             int x = Math.min(grass, VeilRenderSystem.maxComputeWorkGroupCountX());
             int y = Math.min(grass, VeilRenderSystem.maxComputeWorkGroupCountY());

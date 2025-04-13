@@ -62,9 +62,11 @@ public class FlashlightRenderer {
                         } else {
                             ArrayList<AreaLight> areaLightList = flashLightList2.get(player);
 
-                            for(AreaLight areaLights : areaLightList){
+                            for(AreaLight areaLights : areaLightList) {
                                 Quaternionf currentRot = new Quaternionf().rotateXYZ((float) -Math.toRadians(player.getPitch(partialTicks)), (float) Math.toRadians(player.getYaw(partialTicks)), 0.0f);
-                                areaLights.getOrientation().slerp(currentRot, 0.7f * client.getLastFrameDuration());
+                                //*Fix for replay mod
+                                float alpha = client.player.isSpectator() ? 1.0f : 0.7f * client.getLastFrameDuration();
+                                areaLights.getOrientation().slerp(currentRot, alpha);
                                 areaLights.setPosition(playerPos.getX(), playerPos.getY(), playerPos.getZ());
                             }
                         }

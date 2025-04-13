@@ -3,5 +3,8 @@
   "vertex": "spb-revamped:warp_solid",
   "definitions": [
     "WARP"
-  ]
+  ],
+  "textures": {
+    "PoleTexture": "spb-revamped:textures/shaders/utility_pole_color.png"
+  }
 }

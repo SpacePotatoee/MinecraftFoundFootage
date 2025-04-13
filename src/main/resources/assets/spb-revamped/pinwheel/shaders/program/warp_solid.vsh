@@ -24,14 +24,15 @@ out vec2 texCoord2;
 out vec4 lightmapColor;
 out vec3 normal;
 flat out int blockMaterial;
-
+out vec3 localPos;
+out vec3 chunkOffset;
 
 void main() {
     vec3 cameraPos = VeilCamera.CameraPosition;
     vec3 pos = Position + ChunkOffset;
     float dist = pos.z;
+    chunkOffset = ChunkOffset + cameraPos;
     pos = playerSpaceToWorldSpace(pos);
-
 
 
 
@@ -45,6 +46,8 @@ void main() {
     pos += vec3(0.5, 21.0, 0.0);
 
     pos = pos - cameraPos;
+
+    localPos = pos;
     gl_Position = ProjMat * ModelViewMat * vec4(pos, 1.0);
 
     vertexColor = Color;

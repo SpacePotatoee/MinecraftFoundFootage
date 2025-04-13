@@ -225,3 +225,29 @@ vec3 worldToScreenSpace(vec3 worldPos) {
     vec3 ndcPos = projectAndDivide(VeilCamera.ProjMat, viewPos);
     return ndcPos * 0.5 + 0.5;
 }
+
+const float pi = 3.14159265;
+float atan2(float y, float x) {
+    if (x > 0.0) {
+        return atan(y / x);
+    }
+    else if (x == 0.0) {
+        if (y > 0.0) {
+            return pi / 2.0;
+        }
+        else if (y < 0.0) {
+            return -(pi / 2.0);
+        }
+        else {
+            return 0.0;
+        }
+    }
+    else { //(x < 0.0)
+        if (y >= 0.0) {
+            return atan(y / x) + pi;
+        }
+        else {
+            return atan(y / x) - pi;
+        }
+    }
+}

@@ -39,35 +39,27 @@ void main() {
     uint instanceID = idx + (idy*NumOfInstances);
 
     vec3 cameraPos = VeilCamera.CameraPosition;
-
     float cameraX = mod(cameraPos.x, 1);
     float cameraZ = mod(cameraPos.z, 1);
-
     cameraPos.xz = vec2(cameraX, cameraZ);
 
     float halfInstances = NumOfInstances / 2 - 0.5;
-
     float x = (mod(instanceID, NumOfInstances) - halfInstances);
     float z = (floor(instanceID / NumOfInstances) - halfInstances);
 
     vec3 offset = vec3(x/density, 31, z/density);
-
     vec3 WorldPos = offset - cameraPos;
 
-//    if(gl_LocalInvocationIndex == 0) sharedGrassBladeCount = 0;
     memoryBarrierShared();
     barrier();
 
     if(testSphere(WorldPos.x, WorldPos.y, WorldPos.z, 1.0)) {
-//        myBuffer.position[instanceID] = offset;
-//        atomicAdd(sharedGrassBladeCount, 1);
         uint compactIndex = atomicAdd(indirectBuffer.primCount, 1);
         myBuffer.position[compactIndex] = offset;
     }
 
     barrier();
     memoryBarrierShared();
-//    if(gl_LocalInvocationIndex == 0) atomicAdd(indirectBuffer.primCount, sharedGrassBladeCount);
 
 
 

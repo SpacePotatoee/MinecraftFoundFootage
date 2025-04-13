@@ -150,6 +150,7 @@ public class SPBRevampedClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallDrawingWindow, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Rug1, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Rug2, RenderLayer.getCutout());
+//        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POWER_POLE, RenderLayer.getTranslucent());
 //        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTileSlope, RenderLayer.getCutout());
 
         BlockEntityRendererFactories.register(ModBlockEntities.FLUORESCENT_LIGHT_BLOCK_ENTITY, FluorescentLightBlockEntityRenderer::new);
@@ -403,11 +404,14 @@ public class SPBRevampedClient implements ClientModInitializer {
                 flashlightRenderer.flashLightList2.clear();
             }
 
+            cutsceneManager.reset();
+
             this.grassRenderer.close();
             this.grassRenderer = null;
         }));
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            cutsceneManager.reset();
             this.grassRenderer.close();
             this.grassRenderer = null;
         });

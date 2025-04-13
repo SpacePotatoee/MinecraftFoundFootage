@@ -191,7 +191,7 @@ public class CutsceneManager {
         );
     }
 
-    private void reset(){
+    public void reset(){
         PlayerComponent playerComponent = InitializeComponents.PLAYER.get(client.player);
         this.isPlaying = false;
         this.started = false;
