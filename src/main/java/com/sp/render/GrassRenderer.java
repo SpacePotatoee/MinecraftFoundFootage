@@ -206,9 +206,12 @@ public class GrassRenderer {
 //            glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_RGBA32F, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
             glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, this.indirectVbo);
 
-
-            shader.setInt("NumOfInstances", floor(sqrt(ConfigStuff.grassCount)));
+            int numOfInst = floor(sqrt(ConfigStuff.grassCount));
+            shader.setInt("NumOfInstances", numOfInst);
             shader.setFloat("density", ConfigStuff.grassDensity);
+
+            float maxDist = numOfInst / (ConfigStuff.grassDensity * 1.85f);
+            shader.setFloat("maxDist", maxDist);
 
             Vector4fc[] planes = VeilRenderer.getCullingFrustum().getPlanes();
             float[] values = new float[4 * planes.length];
