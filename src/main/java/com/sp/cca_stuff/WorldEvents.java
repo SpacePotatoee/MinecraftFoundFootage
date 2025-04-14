@@ -317,8 +317,11 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
             //Tick the currently active event and choose a random one every min and a half
             if(this.activeSkinWalkerEntity == null) {
+
                 if (!eventActive) {
                     this.delay--;
+//                    delay = 100;
+                    System.out.println(delay);
                     if (this.delay <= 0) {
                         this.delay = 0;
                         if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty() && !infiniteGrassEventList.isEmpty()) {
@@ -376,7 +379,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                 break;
                                 case 5: {
 //                                    int index = random.nextBetween(0, infiniteGrassEventList.size() - 1);
-                                    activeEvent = poolroomsEventList.get(0).get();
+                                    activeEvent = infiniteGrassEventList.get(0).get();
 
                                     activeEvent.init(this.world);
                                     setEventActive(true);

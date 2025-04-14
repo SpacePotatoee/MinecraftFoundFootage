@@ -469,7 +469,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
 
                     if (inBackrooms) {
-                        if (client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                        if (client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY && client.world.getRegistryKey() != BackroomsLevels.INFINITE_FIELD_WORLD_KEY) {
                             lightRenderer.disableVanillaLight();
                         } else {
                             lightRenderer.enableVanillaLight();

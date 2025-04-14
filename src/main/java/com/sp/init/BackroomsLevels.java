@@ -25,7 +25,7 @@ public class BackroomsLevels {
     public static final RegistryKey<World> INFINITE_FIELD_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "infinite_field"));
 
     public static boolean isInBackrooms(RegistryKey<World> world){
-        return world == LEVEL0_WORLD_KEY || world == LEVEL1_WORLD_KEY || world == LEVEL2_WORLD_KEY || world == POOLROOMS_WORLD_KEY;
+        return world == LEVEL0_WORLD_KEY || world == LEVEL1_WORLD_KEY || world == LEVEL2_WORLD_KEY || world == POOLROOMS_WORLD_KEY || world == INFINITE_FIELD_WORLD_KEY;
     }
 
     public static BlockPos getCurrentLevelsOrigin(RegistryKey<World> world){

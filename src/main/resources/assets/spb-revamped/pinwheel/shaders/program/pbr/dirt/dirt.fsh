@@ -49,11 +49,11 @@ void main() {
         dist += 0.001;
     }
 
-    fragAlbedo = vec4(color.rgb, 1.0);
+    fragAlbedo = vec4(color.rgb*vec3(0.5,1,0.5), 1.0);
     fragNormal = vec4(normalMap.rgb, 1.0);
     fragMaterial = ivec4(BLOCK_SOLID, 0, 0, 1);
     fragLightSampler = vec4(texCoord2, 0.0, 1.0);
-    fragLightMap = lightmapColor*0.4;
+    fragLightMap = lightmapColor*0.2;
 }
 
 
