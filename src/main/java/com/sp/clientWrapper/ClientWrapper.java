@@ -258,6 +258,11 @@ public class ClientWrapper {
                 soundManager.play(playerComponent.SmilerAmbience);
             }
 
+            if ((level == BackroomsLevels.INFINITE_FIELD_WORLD_KEY) && !soundManager.isPlaying(playerComponent.WindAmbience)) {
+                playerComponent.WindAmbience = new InfiniteGrassAmbienceSoundInstance(playerComponent.player);
+                soundManager.play(playerComponent.WindAmbience);
+            }
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

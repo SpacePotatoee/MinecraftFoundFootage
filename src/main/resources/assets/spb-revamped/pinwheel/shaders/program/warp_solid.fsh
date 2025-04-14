@@ -69,16 +69,16 @@ float map(vec3 p) {
     vec3 polePos = chunkOffset;
     p = mod(p, 1.0) - 1.0/2;
 //    vec3 polePos = vec3(-1871.5, 31, 646.5);
-    return sdCappedCylinder(p, 9, 0.18);
+    return sdCappedCylinder(p, 9, 0.15);
 }
 
-void raymarchLightPole(inout vec4 color, inout vec3 normal){
+void raymarchLightPole(inout vec4 color, inout vec3 normal) {
     color = vec4(0.0);
     vec3 rayOrigin = playerSpaceToWorldSpace(localPos);
     vec3 rayDir = normalize(localPos);
     float dist = 0.0;
 
-    for(int i = 0; i <= 100; i++){
+    for(int i = 0; i <= 100; i++) {
         vec3 rayPos = rayOrigin + rayDir * dist;
 
         float d = map(rayPos);
@@ -96,8 +96,6 @@ void raymarchLightPole(inout vec4 color, inout vec3 normal){
         if(distance(rayPos, rayOrigin) > 0.5){
             break;
         }
-
-
     }
 
 }

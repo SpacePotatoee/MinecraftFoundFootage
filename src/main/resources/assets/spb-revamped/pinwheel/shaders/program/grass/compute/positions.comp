@@ -3,7 +3,7 @@
 
 #include veil:camera
 
-layout (std430, binding = 0) writeonly buffer MyBuffer {
+layout (std430, binding = 0) buffer MyBuffer {
     vec3 position[];
 } myBuffer;
 

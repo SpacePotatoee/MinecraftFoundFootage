@@ -59,23 +59,9 @@ public class EventSounds {
 
     public static void playDistantSound(World world, SoundEvent soundEvent){
         Random random = Random.create();
-        int rand = random.nextBetween(1, 2);
-        int randXOffset;
-        int randZOffset;
 
-        if(rand == 1){
-            randXOffset = random.nextBetween(-300, -200);
-        } else {
-            randXOffset = random.nextBetween(200, 300);
-        }
-
-        rand = random.nextBetween(3, 4);
-
-        if(rand == 3){
-            randZOffset = random.nextBetween(-300, -200);
-        } else {
-            randZOffset = random.nextBetween(200, 300);
-        }
+        int randXOffset = random.nextBetween(-300, 300);
+        int randZOffset = random.nextBetween(-300, 300);
 
         for(PlayerEntity player : world.getPlayers()){
             BlockPos playerPos = player.getBlockPos();

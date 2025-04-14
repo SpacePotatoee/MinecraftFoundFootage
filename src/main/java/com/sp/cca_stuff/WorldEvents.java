@@ -9,6 +9,7 @@ import com.sp.init.ModEntities;
 import com.sp.init.ModSounds;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.world.events.AbstractEvent;
+import com.sp.world.events.infinite_grass.InfiniteGrassAmbience;
 import com.sp.world.events.level0.Level0Blackout;
 import com.sp.world.events.level0.Level0Flicker;
 import com.sp.world.events.level0.Level0IntercomBasic;
@@ -67,6 +68,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     private boolean inLevel1;
     private boolean inLevel2;
     private boolean inPoolRooms;
+    private boolean inInfgrass;
 
     private boolean prevLevel0Blackout;
     private boolean prevLevel0On;
@@ -87,11 +89,13 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     private boolean prevInLevel1;
     private boolean prevInLevel2;
     private boolean prevInPoolRooms;
+    private boolean prevInInfGrass;
 
     private static List<Supplier<AbstractEvent>> level0EventList;
     private static List<Supplier<AbstractEvent>> level1EventList;
     private static List<Supplier<AbstractEvent>> level2EventList;
     private static List<Supplier<AbstractEvent>> poolroomsEventList;
+    private static List<Supplier<AbstractEvent>> infiniteGrassEventList;
     boolean registered;
 
     private AbstractEvent activeEvent;
@@ -271,6 +275,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.inLevel1 = tag.getBoolean("inLevel1");
         this.inLevel2 = tag.getBoolean("inLevel2");
         this.inPoolRooms = tag.getBoolean("inPoolRooms");
+        this.inInfgrass = tag.getBoolean("inInfgrass");
         this.activeSkinwalkerTarget = tag.getUuid("activeSkinwalkerTarget");
     }
 
@@ -292,6 +297,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         tag.putBoolean("inLevel1", this.inLevel1);
         tag.putBoolean("inLevel2", this.inLevel2);
         tag.putBoolean("inPoolRooms", this.inPoolRooms);
+        tag.putBoolean("inInfgrass", this.inInfgrass);
         tag.putUuid("activeSkinwalkerTarget", this.activeSkinwalkerTarget);
     }
 
@@ -315,7 +321,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                     this.delay--;
                     if (this.delay <= 0) {
                         this.delay = 0;
-                        if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty()) {
+                        if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty() && !infiniteGrassEventList.isEmpty()) {
                             int currentDimension = getCurrentDimension();
 
                             switch (currentDimension) {
@@ -361,6 +367,16 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                 case 4: {
                                     int index = random.nextBetween(0, poolroomsEventList.size() - 1);
                                     activeEvent = poolroomsEventList.get(index).get();
+
+                                    activeEvent.init(this.world);
+                                    setEventActive(true);
+                                    ticks = 0;
+                                    this.delay = random.nextBetween(800, 1000);
+                                }
+                                break;
+                                case 5: {
+//                                    int index = random.nextBetween(0, infiniteGrassEventList.size() - 1);
+                                    activeEvent = poolroomsEventList.get(0).get();
 
                                     activeEvent.init(this.world);
                                     setEventActive(true);
@@ -566,6 +582,9 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         poolroomsEventList = new ArrayList<>();
         poolroomsEventList.add(PoolroomsSunset::new);
         poolroomsEventList.add(PoolroomsAmbience::new);
+
+        infiniteGrassEventList = new ArrayList<>();
+        infiniteGrassEventList.add(InfiniteGrassAmbience::new);
     }
 
     private void shouldSync() {
@@ -632,6 +651,10 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
             sync = true;
         }
 
+        if(this.prevInInfGrass != this.inInfgrass){
+            sync = true;
+        }
+
         if(sync){
             this.sync();
         }
@@ -655,6 +678,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.prevInLevel1 = this.inLevel1;
         this.prevInLevel2 = this.inLevel2;
         this.prevInPoolRooms = this.inPoolRooms;
+        this.prevInInfGrass = this.inInfgrass;
     }
 
     private int getCurrentDimension(){
@@ -670,6 +694,9 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         else if(this.inPoolRooms){
             return 4;
         }
+        else if(this.inInfgrass) {
+            return 5;
+        }
         else {
             return 0;
         }
@@ -682,30 +709,42 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                 this.inLevel1 = false;
                 this.inLevel2 = false;
                 this.inPoolRooms = false;
+                this.inInfgrass = false;
             }
             else if (world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
                 this.inLevel0 = false;
                 this.inLevel1 = true;
                 this.inLevel2 = false;
                 this.inPoolRooms = false;
+                this.inInfgrass = false;
             }
             else if (world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
                 this.inLevel0 = false;
                 this.inLevel1 = false;
                 this.inLevel2 = true;
                 this.inPoolRooms = false;
+                this.inInfgrass = false;
             }
             else if (world.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
                 this.inLevel0 = false;
                 this.inLevel1 = false;
                 this.inLevel2 = false;
                 this.inPoolRooms = true;
+                this.inInfgrass = false;
+            }
+            else if (world.getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY) {
+                this.inLevel0 = false;
+                this.inLevel1 = false;
+                this.inLevel2 = false;
+                this.inPoolRooms = false;
+                this.inInfgrass = true;
             }
             else{
                 this.inLevel0 = false;
                 this.inLevel1 = false;
                 this.inLevel2 = false;
                 this.inPoolRooms = false;
+                this.inInfgrass = false;
             }
         }
     }

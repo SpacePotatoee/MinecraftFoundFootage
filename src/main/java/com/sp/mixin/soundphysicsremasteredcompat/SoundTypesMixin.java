@@ -19,6 +19,7 @@ public class SoundTypesMixin {
     private static void addMaps(CallbackInfo ci, @Local Map<BlockSoundGroup, String> names){
         names.put(SprintBlockSoundGroup.CARPET, "CARPET");
         names.put(SprintBlockSoundGroup.CONCRETE, "CONCRETE");
+        names.put(SprintBlockSoundGroup.GRASS2, "GRASS2");
     }
 
 }

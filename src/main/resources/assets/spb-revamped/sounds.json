@@ -344,6 +344,51 @@
       "spb-revamped:concrete/walking/concrete_walk_7"
     ]
   },
+  "grass_run": {
+    "sounds": [
+      "spb-revamped:grass/running/grass_run1",
+      "spb-revamped:grass/running/grass_run2",
+      "spb-revamped:grass/running/grass_run3",
+      "spb-revamped:grass/running/grass_run4",
+      "spb-revamped:grass/running/grass_run5",
+      "spb-revamped:grass/running/grass_run6",
+      "spb-revamped:grass/running/grass_run7"
+    ]
+  },
+  "grass_walk": {
+    "sounds": [
+      "spb-revamped:grass/walking/grass_walk1",
+      "spb-revamped:grass/walking/grass_walk2",
+      "spb-revamped:grass/walking/grass_walk3",
+      "spb-revamped:grass/walking/grass_walk4",
+      "spb-revamped:grass/walking/grass_walk5",
+      "spb-revamped:grass/walking/grass_walk6",
+      "spb-revamped:grass/walking/grass_walk7"
+    ]
+  },
+  "infinite_grass_ambience": {
+    "sounds": [
+      "spb-revamped:infinite_grass/infinite_grass_ambience"
+    ]
+  },
+  "infinite_grass_soundevent": {
+    "sounds": [
+      "spb-revamped:infinite_grass/infinite_grass_soundevent1",
+      "spb-revamped:infinite_grass/infinite_grass_soundevent2",
+      "spb-revamped:infinite_grass/infinite_grass_soundevent3",
+      "spb-revamped:infinite_grass/infinite_grass_soundevent4",
+      "spb-revamped:infinite_grass/infinite_grass_soundevent5",
+      "spb-revamped:infinite_grass/infinite_grass_soundevent6",
+      "spb-revamped:infinite_grass/infinite_grass_soundevent7"
+    ]
+  },
+  "infinite_grass_soundevent_far": {
+    "sounds": [
+      "spb-revamped:infinite_grass/infinite_grass_soundevent5",
+      "spb-revamped:infinite_grass/infinite_grass_soundevent6",
+      "spb-revamped:infinite_grass/infinite_grass_soundevent7"
+    ]
+  },
   "snapsnap": {
     "sounds": [
       "spb-revamped:snapsnap"

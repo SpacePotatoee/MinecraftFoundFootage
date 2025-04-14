@@ -61,6 +61,17 @@ public class SprintBlockSoundGroup extends BlockSoundGroup {
             SoundEvents.BLOCK_WOOD_FALL
     );
 
+    public static final BlockSoundGroup GRASS2 = new SprintBlockSoundGroup(
+            1.0f,
+            1.0f,
+            SoundEvents.BLOCK_GRASS_BREAK,
+            ModSounds.GRASS_WALK,
+            SoundEvents.BLOCK_GRASS_PLACE,
+            ModSounds.SILENCE,
+            ModSounds.GRASS_RUN,
+            ModSounds.GRASS_RUN
+    );
+
     public SprintBlockSoundGroup(float volume, float pitch, SoundEvent breakSound, SoundEvent stepSound, SoundEvent placeSound, SoundEvent hitSound, SoundEvent fallSound, SoundEvent sprintSound) {
         super(volume, pitch, breakSound, stepSound, placeSound, hitSound, fallSound);
         this.sprintSound = sprintSound;

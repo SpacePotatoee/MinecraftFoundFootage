@@ -218,7 +218,7 @@ public class ModBlocks {
             new UtilityPole(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).noBlockBreakParticles()));
 
     public static final Block DIRT = registerBlock("dirt",
-            new Block(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).hardness(-1f).noBlockBreakParticles()));
+            new Block(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).hardness(-1f).noBlockBreakParticles().sounds(SprintBlockSoundGroup.GRASS2)));
 
 
     private static Block registerBlock(String name, Block block) {
@@ -232,10 +232,6 @@ public class ModBlocks {
 
     public static void init() {
 
-    }
-
-    public static boolean always(BlockState state, BlockView world, BlockPos pos) {
-        return true;
     }
 
 }

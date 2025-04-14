@@ -94,6 +94,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public MovingSoundInstance PoolroomsSunsetAmbience;
     public MovingSoundInstance GlitchAmbience;
     public MovingSoundInstance SmilerAmbience;
+    public MovingSoundInstance WindAmbience;
 
     private boolean canSeeActiveSkinWalker;
     private boolean prevFlashLightOn;

@@ -23,5 +23,6 @@ public abstract class SFRReflectivityMixin extends BlockSoundConfigBase {
     private void addReflectivity(Map<BlockDefinition, Float> map, CallbackInfo ci) {
         putSoundType(map, SprintBlockSoundGroup.CARPET, 0.1F);
         putSoundType(map, SprintBlockSoundGroup.CONCRETE, 1.5F);
+        putSoundType(map, SprintBlockSoundGroup.GRASS2, 0.1F);
     }
 }

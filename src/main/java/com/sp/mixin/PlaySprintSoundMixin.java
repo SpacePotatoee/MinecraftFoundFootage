@@ -2,6 +2,7 @@ package com.sp.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.sp.block.SprintBlockSoundGroup;
+import com.sp.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvent;
@@ -20,7 +21,8 @@ public abstract class PlaySprintSoundMixin {
         if(blockSoundGroup instanceof SprintBlockSoundGroup && instance.isSprinting()) {
             this.playSound(((SprintBlockSoundGroup) blockSoundGroup).getSprintingSound(), blockSoundGroup.getVolume(), blockSoundGroup.getPitch());
         } else {
-            this.playSound(blockSoundGroup.getStepSound(), blockSoundGroup.getVolume() * 0.15F, blockSoundGroup.getPitch());
+//            float mult = blockSoundGroup.getStepSound() == ModSounds.CARPET_WALK || blockSoundGroup.getStepSound() == ModSounds.CONCRETE_WALK ? 0.15f : 1.0f;
+            this.playSound(blockSoundGroup.getStepSound(), blockSoundGroup.getVolume() * 0.15f, blockSoundGroup.getPitch());
         }
     }
 

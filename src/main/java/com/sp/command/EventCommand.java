@@ -8,6 +8,7 @@ import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.BackroomsLevels;
 import com.sp.world.events.AbstractEvent;
+import com.sp.world.events.infinite_grass.InfiniteGrassAmbience;
 import com.sp.world.events.level0.Level0Blackout;
 import com.sp.world.events.level0.Level0Flicker;
 import com.sp.world.events.level0.Level0IntercomBasic;
@@ -27,7 +28,7 @@ import net.minecraft.world.World;
 public class EventCommand {
     private static final SimpleCommandExceptionType FLICKER_BLACKOUT_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in Level 0 and Level 1"));
     private static final SimpleCommandExceptionType ONLY_LEVEL0_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in Level 0"));
-    private static final SimpleCommandExceptionType AMBIENCE_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in Level 1, Level 2, or The Poolrooms"));
+    private static final SimpleCommandExceptionType AMBIENCE_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in Level 1, Level 2, The Poolrooms, or the Infinite Field"));
     private static final SimpleCommandExceptionType WARP_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in Level 2"));
     private static final SimpleCommandExceptionType SUNSET_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Event only occurs in The Poolrooms"));
 
@@ -164,6 +165,11 @@ public class EventCommand {
             return 1;
         } else if(registryKey == BackroomsLevels.LEVEL2_WORLD_KEY){
             Level1Ambience ambience = new Level1Ambience();
+            setEvent(events, world, ambience);
+
+            return 1;
+        } else if(registryKey == BackroomsLevels.INFINITE_FIELD_WORLD_KEY){
+            InfiniteGrassAmbience ambience = new InfiniteGrassAmbience();
             setEvent(events, world, ambience);
 
             return 1;

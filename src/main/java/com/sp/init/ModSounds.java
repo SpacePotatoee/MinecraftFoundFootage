@@ -67,6 +67,10 @@ public class ModSounds {
     public static final SoundEvent SUNSET_TRANSITION_END = registerSoundEvent("sunset_transition_end");
 
 
+    public static final SoundEvent INFINITE_GRASS_AMBIENCE = registerSoundEvent("infinite_grass_ambience");
+    public static final SoundEvent INFINITE_GRASS_SOUNDEVENT = registerSoundEvent("infinite_grass_soundevent");
+    public static final SoundEvent INFINITE_GRASS_SOUNDEVENT_FAR = registerSoundEvent("infinite_grass_soundevent_far");
+
 
     public static final SoundEvent SKINWALKER_AMBIENCE = registerSoundEvent("skinwalker_ambience");
     public static final SoundEvent SKINWALKER_CHASE = registerSoundEvent("skinwalker_chase");
@@ -89,6 +93,9 @@ public class ModSounds {
 
     public static final SoundEvent CONCRETE_WALK = registerSoundEvent("concrete_walk");
     public static final SoundEvent CONCRETE_RUN = registerSoundEvent("concrete_run");
+
+    public static final SoundEvent GRASS_WALK = registerSoundEvent("grass_walk");
+    public static final SoundEvent GRASS_RUN = registerSoundEvent("grass_run");
 
 
     public static final SoundEvent EMERGENCY_LIGHT_ALARM = registerSoundEvent("emergency_light_alarm");
