@@ -14,10 +14,7 @@ import com.sp.entity.ik.util.PrAnCommonClass;
 import com.sp.init.*;
 import com.sp.item.ModItemGroups;
 import com.sp.networking.InitializePackets;
-import com.sp.world.generation.Level0ChunkGenerator;
-import com.sp.world.generation.Level1ChunkGenerator;
-import com.sp.world.generation.Level2ChunkGenerator;
-import com.sp.world.generation.PoolroomsChunkGenerator;
+import com.sp.world.generation.*;
 import eu.midnightdust.lib.config.MidnightConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -67,6 +64,7 @@ public class SPBRevamped implements ModInitializer {
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level1_chunk_generator"), Level1ChunkGenerator.CODEC);
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level2_chunk_generator"), Level2ChunkGenerator.CODEC);
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "poolrooms_chunk_generator"), PoolroomsChunkGenerator.CODEC);
+		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "inf_grass_chunk_generator"), InfGrassChunkGenerator.CODEC);
 
 		ModItems.registerModItems();
 		ModSounds.registerSounds();

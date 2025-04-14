@@ -21,7 +21,6 @@ public abstract class PlaySprintSoundMixin {
         if(blockSoundGroup instanceof SprintBlockSoundGroup && instance.isSprinting()) {
             this.playSound(((SprintBlockSoundGroup) blockSoundGroup).getSprintingSound(), blockSoundGroup.getVolume(), blockSoundGroup.getPitch());
         } else {
-//            float mult = blockSoundGroup.getStepSound() == ModSounds.CARPET_WALK || blockSoundGroup.getStepSound() == ModSounds.CONCRETE_WALK ? 0.15f : 1.0f;
             this.playSound(blockSoundGroup.getStepSound(), blockSoundGroup.getVolume() * 0.15f, blockSoundGroup.getPitch());
         }
     }
