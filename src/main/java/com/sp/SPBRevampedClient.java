@@ -12,6 +12,7 @@ import com.sp.entity.client.renderer.SkinWalkerRenderer;
 import com.sp.entity.client.renderer.SmilerRenderer;
 import com.sp.init.*;
 import com.sp.networking.InitializePackets;
+import com.sp.networking.callbacks.ClientConnectionEvents;
 import com.sp.render.*;
 import com.sp.render.camera.CameraShake;
 import com.sp.render.camera.CutsceneManager;
@@ -41,6 +42,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -56,6 +58,8 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -387,6 +391,8 @@ public class SPBRevampedClient implements ClientModInitializer {
             VeilDeferredRenderer renderer = VeilRenderSystem.renderer().getDeferredRenderer();
             renderer.reset();
 
+            client.player.sendMessage(Text.translatable("flashlight.hint", Keybinds.toggleFlashlight.getBoundKeyLocalizedText().copyContentOnly().formatted(Formatting.BOLD, Formatting.UNDERLINE)));
+
             //Just in case it become  unsynced
             if(client.world != null){
                 WorldEvents events = InitializeComponents.EVENTS.get(client.world);
@@ -395,24 +401,29 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         }));
 
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
-            PlayerEntity player = MinecraftClient.getInstance().player;
+        ClientConnectionEvents.DISCONNECT.register(client -> {
+            PlayerEntity player = client.player;
             if (player != null) {
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                 playerComponent.setFlashLightOn(false);
                 flashlightRenderer.flashLightList2.clear();
+                playerComponent.setDoingCutscene(false);
             }
 
             cutsceneManager.reset();
 
-            this.grassRenderer.close();
-            this.grassRenderer = null;
-        }));
+            if(this.grassRenderer != null) {
+                this.grassRenderer.close();
+                this.grassRenderer = null;
+            }
+        });
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
             cutsceneManager.reset();
-            this.grassRenderer.close();
-            this.grassRenderer = null;
+            if(this.grassRenderer != null) {
+                this.grassRenderer.close();
+                this.grassRenderer = null;
+            }
         });
 
 
@@ -426,23 +437,6 @@ public class SPBRevampedClient implements ClientModInitializer {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) ->{
-
-            Vector<PhysicsPoint> physicsPoints = PhysicsPoint.getAllInstances();
-            if(!physicsPoints.isEmpty()){
-                for(PhysicsPoint point : physicsPoints){
-                    if(!point.isFixed()) {
-                        point.updatePoint();
-                    }
-                }
-            }
-
-            Vector<PhysicsStick> physicsSticks = PhysicsStick.getAllInstances();
-            if(!physicsSticks.isEmpty()){
-                for(PhysicsStick sticks : physicsSticks){
-                    sticks.updateSticks();
-                }
-            }
-
             if(cutsceneManager.isPlaying) {
                 if(!ClientManager.getPlayerStateManager().isMuted()) {
                     shouldBeUnmuted = true;
@@ -455,11 +449,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
             PlayerEntity playerClient = client.player;
             if(playerClient != null){
-//                SimpleOption<Integer> fps =  MinecraftClient.getInstance().options.getMaxFps();
-                //                    fps.setValue(30);
-                //                    setInBackrooms(ConfigStuff.forceBackrooms);
-
-                //Main Set in Backrooms
+                //*Main Set in Backrooms
                 setInBackrooms(BackroomsLevels.isInBackrooms(playerClient.getWorld().getRegistryKey()));
 
                 if(client.world != null) {
@@ -483,54 +473,6 @@ public class SPBRevampedClient implements ClientModInitializer {
             }
         });
 
-    }
-
-    //TODO: USE SYSTEM TIME INSTEAD OF RENDER TIME TO MAKE FRAME INDEPENDENT
-    public static double doCameraZoom (double fov, MinecraftClient client, Entity player){
-        SimpleOption<Double> currentSens = client.options.getMouseSensitivity();
-        double originalSensitivity = currentSens.getValue();
-
-        if (Keybinds.Zoom.isPressed() && !player.isSprinting() && zoomTime == 0) {
-            zoom = true;
-        } else if (zoomTime == 1 && !Keybinds.Zoom.isPressed()) {
-            zoom = false;
-        }
-
-
-        if (client.world != null && player != null) {
-            if (zoom) {
-                zoomTime = MathHelper.clamp(zoomTime + 0.007, 0, 1);
-                double easedZoom = Easings.Easing.linear.ease((float) zoomTime);
-
-                zoomed = fov / (1 + easedZoom * 4);
-                currentSens.setValue(currentSens.getValue() / (1 + easedZoom));
-
-                if (!playedZoomIn) {
-                    client.getSoundManager().play(PositionedSoundInstance.master(ModSounds.ZOOM_IN_SOUND, 1.0F));
-                    playedZoomIn = true;
-                    playedZoomOut = false;
-                }
-
-            } else if (zoomTime != 0) {
-                zoomTime = MathHelper.clamp(zoomTime - 0.007, 0, 1);
-                double easedZoom = Easings.Easing.linear.ease((float) zoomTime);
-
-                zoomed = fov / (1 + easedZoom * 4);
-                currentSens.setValue(currentSens.getValue() / (easedZoom));
-
-                if (!playedZoomOut) {
-                    client.getSoundManager().play(PositionedSoundInstance.master(ModSounds.ZOOM_OUT_SOUND, 1.0F));
-                    playedZoomIn = false;
-                    playedZoomOut = true;
-                }
-
-            } else {
-                currentSens.setValue(originalSensitivity);
-                zoomTime = 0;
-                zoomed = fov;
-            }
-        }
-        return zoomed;
     }
 
     public static void setShadowUniforms(MutableUniformAccess access, World world) {

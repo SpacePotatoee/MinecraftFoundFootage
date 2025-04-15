@@ -197,8 +197,10 @@ public class CutsceneManager {
         this.started = false;
         this.fall = false;
         this.backroomsBySP = false;
-        this.camera.remove(Entity.RemovalReason.DISCARDED);
-        this.camera = null;
+        if(this.camera != null) {
+            this.camera.remove(Entity.RemovalReason.DISCARDED);
+            this.camera = null;
+        }
         client.cameraEntity = client.player;
         client.options.hudHidden = false;
         this.startTime = 0L;

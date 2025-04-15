@@ -1,6 +1,7 @@
 package com.sp.world.generation.maze_generator;
 
 import com.sp.init.ModBlocks;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -43,7 +44,8 @@ public class Level0MazeGenerator {
 
         for (int y = 0; y < this.rows; y++) {
             for (int x = 0; x < this.cols; x++) {
-                if(world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 19, y + ((this.size - 1) * y) + this.originY)) == Blocks.AIR.getDefaultState()) {
+                BlockState blockState = world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 19, y + ((this.size - 1) * y) + this.originY));
+                if(this.isAirOrNull(blockState)) {
                     grid[x][y] = new LowVarCell(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
                 }
             }
@@ -55,6 +57,7 @@ public class Level0MazeGenerator {
 
 
 
+        //*Actual maze generation
         while(!cellStack.isEmpty()) {
             LowVarCell randNeighbor = this.checkNeighbors(grid, currentCell.getGridPosY(), currentCell.getGridPosX(), world);
 
@@ -66,25 +69,54 @@ public class Level0MazeGenerator {
                 randNeighbor = this.checkNeighbors(grid, currentCell.getGridPosY(), currentCell.getGridPosX(), world);
             }
             currentCell = cellStack.pop();
-
         }
 
+        //*Connect the mazes together
         for(int i = 0; i < this.cols; i += 2) {
-            grid[i][0].setSouth(false);
+            LowVarCell cell = this.grid[i][0];
+            if(cell != null) {
+                cell.setSouth(false);
+            }
         }
 
-        for(int i = 0; i < this.cols; i += 2) {
-            grid[this.cols - 1][i].setWest(false);
+        for(int i = 1; i < this.cols; i += 2) {
+            LowVarCell cell = this.grid[this.cols - 1][i];
+            if(cell != null) {
+                cell.setWest(false);
+            }
+        }
+
+        for(int i = this.cols - 2; i >= 0; i -= 2) {
+            LowVarCell cell = this.grid[i][this.cols - 1];
+            if(cell != null) {
+                cell.setNorth(false);
+            }
         }
 
         for(int i = this.cols - 1; i >= 0; i -= 2) {
-            grid[i][this.cols - 1].setNorth(false);
+            LowVarCell cell = this.grid[0][i];
+            if(cell != null) {
+                cell.setEast(false);
+            }
         }
 
-        for(int i = this.cols - 1; i >= 0; i -= 2) {
-            grid[0][i].setEast(false);
-        }
+//        for(int i = 0; i < this.cols; i += 2) {
+//            grid[i][0].setSouth(false);
+//        }
+//
+//        for(int i = 0; i < this.cols; i += 2) {
+//            grid[this.cols - 1][i].setWest(false);
+//        }
+//
+//        for(int i = this.cols - 1; i >= 0; i -= 2) {
+//            grid[i][this.cols - 1].setNorth(false);
+//        }
+//
+//        for(int i = this.cols - 1; i >= 0; i -= 2) {
+//            grid[0][i].setEast(false);
+//        }
 
+        //*Generate the rooms (print the maze)
         for (LowVarCell[] cell : grid){
             for(LowVarCell cells: cell){
                 if (cells != null) {
@@ -185,6 +217,10 @@ public class Level0MazeGenerator {
                 neighbor.setSouth(false);
             }
         }
+    }
+
+    private boolean isAirOrNull(BlockState blockState){
+        return blockState == Blocks.AIR.getDefaultState() || blockState == null;
     }
 
 

@@ -84,6 +84,7 @@ public class ClientWrapper {
                     if(smiler.canSee(playerComponent.player)){
                         playerComponent.setShouldGlitch(true);
                         isSeen = true;
+                        break;
                     }
                 }
             }
@@ -187,9 +188,11 @@ public class ClientWrapper {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //Flashlight
+            boolean notInTheseLevels = playerComponent.player.getWorld().getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY && playerComponent.player.getWorld().getRegistryKey() != BackroomsLevels.INFINITE_FIELD_WORLD_KEY;
+
             if (Keybinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen && !playerComponent.hasBeenCaptured && !playerComponent.isBeingCaptured()) {
                 playerComponent.player.playSound(ModSounds.FLASHLIGHT_CLICK, 0.5f, 1);
-                if (playerComponent.player.getWorld().getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                if (notInTheseLevels) {
                     playerComponent.setFlashLightOn(!playerComponent.isFlashLightOn());
 
                     if (!playerComponent.player.isSpectator()) {
@@ -211,7 +214,7 @@ public class ClientWrapper {
                 }
             }
 
-            if (playerComponent.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+            if (!notInTheseLevels) {
                 if(playerComponent.isFlashLightOn()){
                     PacketByteBuf buffer = PacketByteBufs.create();
                     buffer.writeBoolean(false);

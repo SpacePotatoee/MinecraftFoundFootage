@@ -7,7 +7,6 @@
 
 uniform sampler2D Sampler0;
 uniform sampler2D Sampler1;
-uniform sampler2D ColorMap;
 uniform sampler2D NormalMap;
 
 uniform vec4 ColorModulator;

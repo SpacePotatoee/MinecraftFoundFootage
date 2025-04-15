@@ -4,6 +4,8 @@
 
   "itemgroup.spbrevamped": "Закулисье",
 
+  "flashlight.hint": "Press %s to toggle your flashlight",
+
   "block.spb-revamped.void_block": "Блок пустоты",
   "block.spb-revamped.ceiling_light": "Потолочный светильник",
   "block.spb-revamped.emergency_light": "Аварийное освещение",
@@ -123,7 +125,6 @@
 
   "spb-revamped.keybinds": "SPB-Revamped",
   "key.spb-revamped.toggle_flashlight": "Включить фонарик",
-  "key.spb-revamped.zoom": "Приблизить",
   "key.spb-revamped.toggle_event": "Включить событие",
 
 

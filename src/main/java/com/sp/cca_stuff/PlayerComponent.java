@@ -344,9 +344,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.shouldGlitch = shouldGlitch;
     }
 
-    public boolean shouldInflictGlitchDamage() {
-        return shouldInflictGlitchDamage;
-    }
     public void setShouldInflictGlitchDamage(boolean shouldInflictGlitchDamage) {
         this.shouldInflictGlitchDamage = shouldInflictGlitchDamage;
     }
@@ -402,10 +399,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public void serverTick() {
         getPrevSettings();
 
-        //Update Stamina
+        //*Update Stamina
         EntityAttributeInstance attributeInstance = this.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
         if(attributeInstance != null) {
-            int temp = this.stamina;
+            int prevStamina = this.stamina;
             if(!this.player.isCreative() && !this.player.isSpectator()){
                 if(this.player.isSprinting()) {
                     this.stamina--;
@@ -441,20 +438,20 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             } else if(attributeInstance.hasModifier(SLOW_SPEED_MODIFIER)) {
                 attributeInstance.removeModifier(SLOW_SPEED_MODIFIER);
             }
-
-            if(temp != this.stamina && this.stamina % 20 == 0){
-                //Only sync with the specific player since other players don't need to know your stamina
+            //*Mod by 20 to reduce packet count
+            if(prevStamina != this.stamina && this.stamina % 20 == 0){
+                //*Only sync with the specific player since other players don't need to know your stamina
                 InitializeComponents.PLAYER.syncWith((ServerPlayerEntity) this.player, (ComponentProvider) this.player);
             }
 
         }
 
-        //Damage if glitched enough from smilers
+        //*Damage if glitched enough from smilers
         if(this.shouldInflictGlitchDamage){
             this.player.damage(ModDamageTypes.of(this.player.getWorld(), ModDamageTypes.SMILER), 1.0f);
         }
 
-        //Is speaking
+        //*Is speaking
         if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid()) && BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid()) == this.prevSpeakingTime) {
             if(this.isSpeaking()) {
                 this.speakingBuffer--;
@@ -467,7 +464,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             this.speakingBuffer = 80;
         }
 
-        //Cast him to the Backrooms
+        //*Cast him to the Backrooms
         if(this.player.isInsideWall()) {
             if (this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
                 suffocationTimer++;
@@ -500,30 +497,12 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             this.playingGlitchSound = false;
             suffocationTimer = 0;
         }
-//        if(this.suffocationTimer == 40){
-//            this.suffocationTimer = 0;
-//            RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
-//            ServerWorld backrooms = this.player.getWorld().getServer().getWorld(registryKey);
-//            if (backrooms == null) {
-//                return;
-//            }
-//
-//            this.player.getInventory().clear();
-//
-//            TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-//            FabricDimensions.teleport(this.player, backrooms, target);
-//
-//            this.setShouldNoClip(false);
-//            this.setDoingCutscene(true);
-//            this.sync();
-//            StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(new Identifier(SPBRevamped.MOD_ID, "noescape"), null);
-//            ((ServerPlayerEntity)this.player).networkHandler.sendPacket(stopSoundS2CPacket);
-//        }
 
 
-        //Level Switcheroo//
+        //*Level Switcheroo//
 
-        //Level 0 -> Level 1
+
+        //*Level 0 -> Level 1
         if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
             ServerWorld level1 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL1_WORLD_KEY);
 
@@ -552,7 +531,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
         }
 
-        //Level 1 -> Level 2
+        //*Level 1 -> Level 2
         else if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
             ServerWorld level2 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL2_WORLD_KEY);
 
@@ -581,7 +560,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
 
         }
-        //Level 2 -> Poolrooms
+
+        //*Level 2 -> Poolrooms
         else if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
             ServerWorld poolrooms = this.player.getWorld().getServer().getWorld(BackroomsLevels.POOLROOMS_WORLD_KEY);
 
@@ -605,8 +585,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
         }
 
-        //Poolrooms -> Grass Field
-        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY && this.player.getWorld().getLightLevel(this.player.getBlockPos()) == 0 && this.player.getPos().y < 60 && this.player.getPos().y > 52){
+        //*Poolrooms -> Grass Field
+        else if(this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY && this.player.getWorld().getLightLevel(this.player.getBlockPos()) == 0 && this.player.getPos().y < 60 && this.player.getPos().y > 52){
             this.player.fallDistance = 0;
             if(this.player instanceof ServerPlayerEntity) {
                 SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) this.player, 60, true, false);
@@ -616,8 +596,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
         }
 
-        //Grass Field -> OverWorld
-        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY && this.player.getPos().y > 57.5 && this.player.isOnGround()){
+        //*Grass Field -> OverWorld
+        else if(this.player.getWorld().getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY && this.player.getPos().y > 57.5 && this.player.isOnGround()){
             if(this.player instanceof ServerPlayerEntity) {
                 BlockPos blockPos = ((ServerPlayerEntity)this.player).getSpawnPointPosition();
                 float f = ((ServerPlayerEntity)this.player).getSpawnAngle();
@@ -639,7 +619,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
         }
 
-        //Update Entity Visibility
+        //*Update Entity Visibility
         if(this.isTalkingTooLoud() && this.talkingTooLoudTimer >= 0){
             this.setVisibleToEntity(true);
             this.talkingTooLoudTimer--;

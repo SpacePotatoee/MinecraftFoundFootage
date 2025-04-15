@@ -383,7 +383,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                                     activeEvent.init(this.world);
                                     setEventActive(true);
                                     ticks = 0;
-                                    this.delay = random.nextBetween(800, 1000);
+                                    this.delay = random.nextBetween(1000, 1200);
                                 }
                                 break;
                             }
