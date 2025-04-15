@@ -5,7 +5,6 @@
 uniform sampler2D preSampler;
 uniform sampler2D DiffuseSampler0;
 uniform sampler2D TotalDepth;
-uniform sampler2D HandDepth;
 uniform sampler2D MidSampler;
 uniform sampler2D VhsNoise;
 uniform sampler2D NoEscape;
@@ -58,7 +57,6 @@ void main() {
     vec4 viginette = Viginette(uv);
 
     float depth = texture(TotalDepth, uv).r;
-    float handDepth = texture(HandDepth, uv).r;
     vec3 positionVS = viewPosFromDepthSample(depth, uv);
     vec3 NDCPos = projectAndDivide(VeilCamera.ProjMat, positionVS);
 
@@ -70,21 +68,17 @@ void main() {
 
     vec2 velocity = (NDCPos - prevNDCPos).xy;
 
+    //Motion Blur
     vec4 blur3 = vec4(0.0);
-    if(handDepth >= 1.0){
-        //Motion Blur
-        #ifdef MOTION_BLUR
-            const float kernalSize3 = 5.0;
-            const float coeff3 = 1.0 / (kernalSize3 * kernalSize3);
-            for(float x = -1.0; x <= 1.0; x += coeff3){
-                blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(velocity.x * x, velocity.y * x) * MotionBlurStrength * 0.25) * 0.5;
-            }
-        #else
-            blur3 = texture(DiffuseSampler0, uv);
-        #endif
-    } else {
+    #ifdef MOTION_BLUR
+        const float kernalSize3 = 5.0;
+        const float coeff3 = 1.0 / (kernalSize3 * kernalSize3);
+        for(float x = -1.0; x <= 1.0; x += coeff3){
+            blur3 += coeff3 * texture(DiffuseSampler0, uv - vec2(velocity.x * x, velocity.y * x) * MotionBlurStrength * 0.25) * 0.5;
+        }
+    #else
         blur3 = texture(DiffuseSampler0, uv);
-    }
+    #endif
 
 
     if(youCantEscape == 0) {

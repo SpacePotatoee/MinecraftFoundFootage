@@ -3,6 +3,7 @@
   "geometry": "spb-revamped:pbr/ceilingtile/ceilingtile",
   "fragment": "spb-revamped:pbr/ceilingtile/ceilingtile",
   "textures": {
+    "ColorMap": "spb-revamped:textures/block/ceiling_tile.png",
     "NormalMap": "spb-revamped:textures/shaders/ceilingtile/ceiling_tile_normal.png"
   }
 }

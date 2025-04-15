@@ -28,7 +28,7 @@ void main(){
         scale *= 2.0;
     }
 
-    float Brightness = 1.0 * dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    float Brightness = 1.00 * dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
     float handDepth = texture(HandDepth, texCoord).r;
     
 	

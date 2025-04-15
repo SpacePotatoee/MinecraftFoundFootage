@@ -2,7 +2,6 @@ package com.sp.world.generation.maze_generator;
 
 import com.sp.SPBRevamped;
 import com.sp.init.ModBlocks;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;
@@ -157,9 +156,10 @@ public class PoolroomsMazeGenerator {
                 int xPos = x + ((this.size - 1) * x) + this.originX;
                 int yPos = y + ((this.size - 1) * y) + this.originY;
 
-                BlockState blockState = world.getBlockState(mutable.set(xPos, 18, yPos));
-                if(this.isAirOrNull(blockState)) {
+                if(world.getBlockState(mutable.set(xPos, 18, yPos)) == Blocks.AIR.getDefaultState()) {
+
                     grid[x][y] = new CellWDoor(yPos, xPos, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
+
                 }
             }
         }
@@ -185,28 +185,19 @@ public class PoolroomsMazeGenerator {
         }
 
         for(int i = 0; i < this.cols; i += 2) {
-            CellWDoor cell = this.grid[i][0];
-            if(cell != null) {
-                cell.setSouth(false);
-            }
+            grid[i][0].setSouth(false);
         }
+
         for(int i = 1; i < this.cols; i += 2) {
-            CellWDoor cell = this.grid[this.cols - 1][i];
-            if(cell != null) {
-                cell.setWest(false);
-            }
+            grid[this.cols - 1][i].setWest(false);
         }
+
         for(int i = this.cols - 2; i >= 0; i -= 2) {
-            CellWDoor cell = this.grid[i][this.cols - 1];
-            if(cell != null) {
-                cell.setNorth(false);
-            }
+            grid[i][this.cols - 1].setNorth(false);
         }
+
         for(int i = this.cols - 1; i >= 0; i -= 2) {
-            CellWDoor cell = this.grid[0][i];
-            if(cell != null) {
-                cell.setEast(false);
-            }
+            grid[0][i].setEast(false);
         }
 
         for (CellWDoor[] cell : grid){
@@ -386,9 +377,5 @@ public class PoolroomsMazeGenerator {
         megaRoomList.add("32x16");
         megaRoomList.add("32x24");
         megaRoomList.add("32x32");
-    }
-
-    private boolean isAirOrNull(BlockState blockState){
-        return blockState == Blocks.AIR.getDefaultState() || blockState == null;
     }
 }
