@@ -605,9 +605,19 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
         }
 
-        //Poolrooms -> Overworld
+        //Poolrooms -> Grass Field
         if(this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY && this.player.getWorld().getLightLevel(this.player.getBlockPos()) == 0 && this.player.getPos().y < 60 && this.player.getPos().y > 52){
             this.player.fallDistance = 0;
+            if(this.player instanceof ServerPlayerEntity) {
+                SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) this.player, 60, true, false);
+                ServerWorld grassField = this.player.getWorld().getServer().getWorld(BackroomsLevels.INFINITE_FIELD_WORLD_KEY);
+                TeleportTarget target = new TeleportTarget(new Vec3d(0, 32, 0), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
+                FabricDimensions.teleport(this.player, grassField, target);
+            }
+        }
+
+        //Grass Field -> OverWorld
+        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY && this.player.getPos().y > 57.5 && this.player.isOnGround()){
             if(this.player instanceof ServerPlayerEntity) {
                 BlockPos blockPos = ((ServerPlayerEntity)this.player).getSpawnPointPosition();
                 float f = ((ServerPlayerEntity)this.player).getSpawnAngle();
@@ -620,7 +630,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                     optional = Optional.empty();
                 }
 
-
+                SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) this.player, 60, true, false);
                 ServerWorld overworld = this.player.getWorld().getServer().getWorld(World.OVERWORLD);
                 BlockPos blockPos1 = overworld.getSpawnPos();
                 TeleportTarget target = new TeleportTarget(optional.orElseGet(() -> Vec3d.of(blockPos1)), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
@@ -628,7 +638,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 FabricDimensions.teleport(this.player, overworld, target);
             }
         }
-
 
         //Update Entity Visibility
         if(this.isTalkingTooLoud() && this.talkingTooLoudTimer >= 0){

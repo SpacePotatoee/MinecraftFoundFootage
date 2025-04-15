@@ -1,5 +1,6 @@
 package com.sp.mixin;
 
+import com.sp.world.generation.InfGrassChunkGenerator;
 import com.sp.world.generation.Level0ChunkGenerator;
 import com.sp.world.generation.Level1ChunkGenerator;
 import com.sp.world.generation.PoolroomsChunkGenerator;
@@ -39,6 +40,11 @@ public abstract class ChunkStatusMixin {
         if (generator instanceof PoolroomsChunkGenerator prcg) {
             ChunkRegion chunkRegion = new ChunkRegion(world, chunks, targetStatus, 10);
             prcg.generateMaze(chunkRegion, chunk);
+        }
+
+        if (generator instanceof InfGrassChunkGenerator infGrassChunkGenerator) {
+            ChunkRegion chunkRegion = new ChunkRegion(world, chunks, targetStatus, 2);
+            infGrassChunkGenerator.generate(chunkRegion, chunk);
         }
 
     }

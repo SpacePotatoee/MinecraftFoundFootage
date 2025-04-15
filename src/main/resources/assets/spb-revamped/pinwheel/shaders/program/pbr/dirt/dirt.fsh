@@ -32,7 +32,7 @@ void main() {
     float dist = 0;
     vec3 pos = vec3(0);
     vec3 texCoords = vec3(0);
-    for(int i = 1; i <= MaxSteps; i++){
+    for(int i = 1; i <= MaxSteps; i++) {
         pos = worldPos + dir * dist;
 
         texCoords = vec3((pos.zx * worldNormal.g) + (vec2(pos.x, -pos.y) * worldNormal.b) + (-pos.zy * worldNormal.r), dist);

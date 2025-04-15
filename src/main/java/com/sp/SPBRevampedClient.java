@@ -302,7 +302,6 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
 
                         if(PreviousUniforms.prevModelViewMat != null && PreviousUniforms.prevProjMat != null){
-//                            System.out.println(PreviousUniforms.prevModelViewMat);
                             shaderProgram.setMatrix("prevViewMat", PreviousUniforms.prevModelViewMat);
                             shaderProgram.setMatrix("prevProjMat", PreviousUniforms.prevProjMat);
                             shaderProgram.setVector("prevCameraPos", PreviousUniforms.prevCameraPos);

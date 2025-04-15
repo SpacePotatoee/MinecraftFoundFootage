@@ -15,13 +15,9 @@ import java.util.function.Supplier;
 public class BackroomsLevels {
     public static final RegistryKey<World> LEVEL0_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "level0"));
     public static final RegistryKey<DimensionType> LEVEL0_DIM_TYPE = RegistryKey.of(RegistryKeys.DIMENSION_TYPE, new Identifier(SPBRevamped.MOD_ID, "level0_type"));
-
     public static final RegistryKey<World> LEVEL1_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "level1"));
-
     public static final RegistryKey<World> LEVEL2_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "level2"));
-
     public static final RegistryKey<World> POOLROOMS_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "poolrooms"));
-
     public static final RegistryKey<World> INFINITE_FIELD_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "infinite_field"));
 
     public static boolean isInBackrooms(RegistryKey<World> world){
@@ -31,7 +27,7 @@ public class BackroomsLevels {
     public static BlockPos getCurrentLevelsOrigin(RegistryKey<World> world){
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-        if(world == LEVEL0_WORLD_KEY){
+        if(world == LEVEL0_WORLD_KEY) {
             return mutable.set(1,22,1);
 
         } else if(world == LEVEL1_WORLD_KEY){
@@ -44,7 +40,6 @@ public class BackroomsLevels {
             return mutable.set(15,104,16);
 
         }
-
         return null;
     }
 

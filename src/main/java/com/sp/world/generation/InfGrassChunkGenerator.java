@@ -16,6 +16,7 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
@@ -55,9 +56,7 @@ public final class InfGrassChunkGenerator extends ChunkGenerator {
         this.settings = settings;
     }
 
-
-    @Override
-    public void generateFeatures(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
+    public void generate(StructureWorldAccess world, Chunk chunk) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
 
@@ -73,31 +72,51 @@ public final class InfGrassChunkGenerator extends ChunkGenerator {
         structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
 
 
-//        for(int i = 0; i < 16; i++) {
         float sampler = SimplexNoise.noise(x, 0);
-            if (sampler >= 0.6) {
-                if (server != null) {
-                    roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "utility_pole");
+        if (sampler >= 0.6) {
+            if (server != null) {
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "infgrass/utility_pole");
 
-                    optional = structureTemplateManager.getTemplate(roomIdentifier);
+                optional = structureTemplateManager.getTemplate(roomIdentifier);
 
-                    for (int j = 0; j < 16; j++) {
-                        if((z+j) % 21 == 0) {
-                            int finalJ = j;
-                            optional.ifPresent(structureTemplate -> structureTemplate.place(
-                                    world,
-                                    mutable.set(x, 31, z+finalJ + sampler*10),
-                                    mutable.set(x, 31, z+finalJ + sampler*10),
-                                    structurePlacementData, random, 2));
-                        }
+                for (int j = 0; j < 16; j++) {
+                    if ((z + j) % 21 == 0) {
+                        int finalJ = j;
+                        optional.ifPresent(structureTemplate -> structureTemplate.place(
+                                world,
+                                mutable.set(x, 31, z + finalJ + sampler * 10),
+                                mutable.set(x, 31, z + finalJ + sampler * 10),
+                                structurePlacementData, random, 2));
                     }
-
-
-//
-
                 }
+
+
             }
-//        }
+        } else {
+            float rand = random.nextFloat();
+            if (rand < 0.01f) {
+                roomIdentifier = this.randFeature(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000));
+
+                optional = structureTemplateManager.getTemplate(roomIdentifier);
+
+                optional.ifPresent(structureTemplate -> structureTemplate.place(
+                        world,
+                        mutable.set(x, 31, z),
+                        mutable.set(x, 31, z),
+                        structurePlacementData, random, 2));
+
+            }
+        }
+    }
+
+    private Identifier randFeature(boolean exit) {
+        int rand = random.nextBetween(1,3);
+        if(exit){
+            if(rand == 1){
+                return Identifier.of(SPBRevamped.MOD_ID, "infgrass/exit");
+            }
+        }
+        return Identifier.of(SPBRevamped.MOD_ID, "infgrass/feature" + rand);
     }
 
 

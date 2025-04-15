@@ -321,7 +321,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
                 if (!eventActive) {
                     this.delay--;
 //                    delay = 100;
-                    System.out.println(delay);
                     if (this.delay <= 0) {
                         this.delay = 0;
                         if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty() && !infiniteGrassEventList.isEmpty()) {
