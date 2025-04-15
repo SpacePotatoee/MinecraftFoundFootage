@@ -10,8 +10,6 @@ public class ModSounds {
 
     public static final SoundEvent SILENCE = registerSoundEvent("silence");
 
-    public static final SoundEvent ZOOM_IN_SOUND = registerSoundEvent("zoomin");
-    public static final SoundEvent ZOOM_OUT_SOUND = registerSoundEvent("zoomout");
     public static final SoundEvent FLASHLIGHT_CLICK = registerSoundEvent("flashlight_click");
 
 

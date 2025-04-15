@@ -67,6 +67,7 @@ public class AllowedSoundsConfigMixin {
 
         map.put(ModSounds.INFINITE_GRASS_AMBIENCE.getId().toString(), false);
         map.put(ModSounds.INFINITE_GRASS_SOUNDEVENT.getId().toString(), false);
+        map.put(ModSounds.INFINITE_GRASS_SOUNDEVENT_FAR.getId().toString(), false);
 
         map.put(ModSounds.EMERGENCY_LIGHT_ALARM.getId().toString(), false);
     }

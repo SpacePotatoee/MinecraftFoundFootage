@@ -4,6 +4,9 @@
 
   "itemgroup.spbrevamped": "Backrooms",
 
+  "flashlight.hint": "Press %s to toggle your flashlight",
+  "noclip.hint": "Suffocate yourself in sand or gravel to noclip into the backrooms",
+
   "block.spb-revamped.void_block": "Bloco de Vácuo",
   "block.spb-revamped.ceiling_light": "Luz de Teto",
   "block.spb-revamped.emergency_light": "Luz de Emergência",
@@ -123,7 +126,6 @@
 
   "spb-revamped.keybinds": "SPB-Revamped",
   "key.spb-revamped.toggle_flashlight": "Ligar Lanterna",
-  "key.spb-revamped.zoom": "Zoom",
   "key.spb-revamped.toggle_event": "Trocar Evento",
 
 

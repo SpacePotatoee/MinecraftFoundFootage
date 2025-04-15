@@ -1,6 +1,9 @@
 {
   "itemgroup.spbrevamped": "后室",
 
+  "flashlight.hint": "Press %s to toggle your flashlight",
+  "noclip.hint": "Suffocate yourself in sand or gravel to noclip into the backrooms",
+
   "block.spb-revamped.wall_block": "壁纸方块",
   "block.spb-revamped.wall_block_2": "马尼拉壁纸方块",
   "block.spb-revamped.ceiling_tile": "天花板瓷砖方块",
@@ -86,6 +89,5 @@
 
   "spb-revamped.keybinds": "SPB重制版",
   "key.spb-revamped.toggle_flashlight": "切换手电筒",
-  "key.spb-revamped.zoom": "缩放视角",
   "key.spb-revamped.toggle_event": "切换事件"
 }

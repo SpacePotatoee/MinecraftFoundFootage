@@ -12,19 +12,15 @@ import com.sp.entity.client.renderer.SkinWalkerRenderer;
 import com.sp.entity.client.renderer.SmilerRenderer;
 import com.sp.init.*;
 import com.sp.networking.InitializePackets;
+import com.sp.networking.callbacks.ClientConnectionEvents;
 import com.sp.render.*;
 import com.sp.render.camera.CameraShake;
 import com.sp.render.camera.CutsceneManager;
 import com.sp.render.gui.StaminaBar;
 import com.sp.render.gui.TitleText;
-import com.sp.render.physics.PhysicsPoint;
-import com.sp.render.physics.PhysicsStick;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
-import eu.midnightdust.core.MidnightLibClient;
-import eu.midnightdust.fabric.core.MidnightLibClientFabric;
-import eu.midnightdust.lib.config.MidnightConfig;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
 import foundry.veil.api.client.render.deferred.VeilDeferredRenderer;
@@ -34,7 +30,6 @@ import foundry.veil.api.client.render.post.PostProcessingManager;
 import foundry.veil.api.client.render.shader.definition.ShaderPreDefinitions;
 import foundry.veil.api.client.render.shader.program.MutableUniformAccess;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
-import foundry.veil.api.client.util.Easings;
 import foundry.veil.api.event.VeilRenderLevelStageEvent.Stage;
 import foundry.veil.platform.VeilEventPlatform;
 import net.fabricmc.api.ClientModInitializer;
@@ -48,22 +43,19 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL43;
-import org.lwjgl.opengl.GLDebugMessageCallback;
 
 import java.util.Vector;
 
@@ -77,15 +69,9 @@ public class SPBRevampedClient implements ClientModInitializer {
     private static final Identifier SSAO = new Identifier(SPBRevamped.MOD_ID, "vhs/ssao");
     private static final Identifier EVERYTHING_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/everything");
     private static final Identifier POST_VHS = new Identifier(SPBRevamped.MOD_ID, "vhs/vhs_post");
-    private static final Identifier WATER_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/water");
     private static final Identifier MIXED_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/mixed");
     private static final Identifier GLITCH_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/glitch");
 
-    public static boolean zoom = false;
-    public static double zoomTime = 0;
-    public static double zoomed;
-    static boolean playedZoomIn = false;
-    static boolean playedZoomOut = true;
     static boolean inBackrooms = false;
     public static Camera camera;
 
@@ -110,16 +96,12 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         InitializePackets.registerS2CPackets();
 
-        Keybinds.initializeKeyBinds();
+        com.sp.Keybinds.initializeKeyBinds();
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayers.getConcreteLayer());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Bricks, RenderLayers.getBricksLayer());
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.DIRT, RenderLayers.getDirtLayer());
-//        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POWER_POLE, RenderLayers.getUtilityPoleLayer());
-//        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POWER_POLE_TOP, RenderLayers.getUtilityPoleLayer());
-
-//        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTiles, RenderLayers.getPoolTileLayer());
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CHAINFENCE, RenderLayers.getChainFence());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CeilingTile, RenderLayers.getCeilingTile());
@@ -150,8 +132,6 @@ public class SPBRevampedClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallDrawingWindow, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Rug1, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Rug2, RenderLayer.getCutout());
-//        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POWER_POLE, RenderLayer.getTranslucent());
-//        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolTileSlope, RenderLayer.getCutout());
 
         BlockEntityRendererFactories.register(ModBlockEntities.FLUORESCENT_LIGHT_BLOCK_ENTITY, FluorescentLightBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(ModBlockEntities.THIN_FLUORESCENT_LIGHT_BLOCK_ENTITY, ThinFluorescentLightBlockEntityRenderer::new);
@@ -163,7 +143,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
 
         VeilEventPlatform.INSTANCE.onVeilRenderTypeStageRender((stage, levelRenderer, bufferSource, poseStack, projectionMatrix, renderTick, partialTicks, camera, frustum) -> {
-            //Setting for later use
+            //*Setting for later use
             if(camera != null){
                 SPBRevampedClient.camera = camera;
             }
@@ -171,7 +151,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             MinecraftClient client = MinecraftClient.getInstance();
             World clientWorld = client.world;
             if(clientWorld != null) {
-                //Only render the shadow map when in the poolrooms
+                //*Only render the shadow map when in the poolrooms
                 if (clientWorld.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
                     if (stage == Stage.AFTER_SKY) {
                         if (camera != null) {
@@ -207,10 +187,10 @@ public class SPBRevampedClient implements ClientModInitializer {
 
 
 
-            //Enable the VHS shader
+            //*Enable the VHS shader
             PostProcessingManager postProcessingManager = VeilRenderSystem.renderer().getPostProcessingManager();
             if (stage == Stage.AFTER_LEVEL) {
-                //Flashlight
+                //*Flashlight
                 flashlightRenderer.renderFlashlightForEveryPlayer(partialTicks);
 
 
@@ -382,37 +362,47 @@ public class SPBRevampedClient implements ClientModInitializer {
             }
         }));
 
-        //For some reason veil lights aren't removed when you leave the game
+        //*For some reason veil lights aren't removed when you leave the game
         ClientPlayConnectionEvents.JOIN.register(((handler,sender, client) -> {
             VeilDeferredRenderer renderer = VeilRenderSystem.renderer().getDeferredRenderer();
             renderer.reset();
 
-            //Just in case it become  unsynced
+            client.player.sendMessage(Text.translatable("flashlight.hint", com.sp.Keybinds.toggleFlashlight.getBoundKeyLocalizedText().copyContentOnly().formatted(Formatting.BOLD, Formatting.UNDERLINE)));
+
+            //*Just in case it become  unsynced
             if(client.world != null){
+                if(!BackroomsLevels.isInBackrooms(client.world.getRegistryKey())){
+                    client.player.sendMessage(Text.translatable("noclip.hint"));
+                }
                 WorldEvents events = InitializeComponents.EVENTS.get(client.world);
                 PoolroomsDayCycle.dayTime = events.getCurrentPoolroomsTime();
             }
 
         }));
 
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
-            PlayerEntity player = MinecraftClient.getInstance().player;
+        ClientConnectionEvents.DISCONNECT.register(client -> {
+            PlayerEntity player = client.player;
             if (player != null) {
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                 playerComponent.setFlashLightOn(false);
                 flashlightRenderer.flashLightList2.clear();
+                playerComponent.setDoingCutscene(false);
             }
 
             cutsceneManager.reset();
 
-            this.grassRenderer.close();
-            this.grassRenderer = null;
-        }));
+            if(this.grassRenderer != null) {
+                this.grassRenderer.close();
+                this.grassRenderer = null;
+            }
+        });
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
             cutsceneManager.reset();
-            this.grassRenderer.close();
-            this.grassRenderer = null;
+            if(this.grassRenderer != null) {
+                this.grassRenderer.close();
+                this.grassRenderer = null;
+            }
         });
 
 
@@ -426,23 +416,6 @@ public class SPBRevampedClient implements ClientModInitializer {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) ->{
-
-            Vector<PhysicsPoint> physicsPoints = PhysicsPoint.getAllInstances();
-            if(!physicsPoints.isEmpty()){
-                for(PhysicsPoint point : physicsPoints){
-                    if(!point.isFixed()) {
-                        point.updatePoint();
-                    }
-                }
-            }
-
-            Vector<PhysicsStick> physicsSticks = PhysicsStick.getAllInstances();
-            if(!physicsSticks.isEmpty()){
-                for(PhysicsStick sticks : physicsSticks){
-                    sticks.updateSticks();
-                }
-            }
-
             if(cutsceneManager.isPlaying) {
                 if(!ClientManager.getPlayerStateManager().isMuted()) {
                     shouldBeUnmuted = true;
@@ -455,11 +428,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
             PlayerEntity playerClient = client.player;
             if(playerClient != null){
-//                SimpleOption<Integer> fps =  MinecraftClient.getInstance().options.getMaxFps();
-                //                    fps.setValue(30);
-                //                    setInBackrooms(ConfigStuff.forceBackrooms);
-
-                //Main Set in Backrooms
+                //*Main Set in Backrooms
                 setInBackrooms(BackroomsLevels.isInBackrooms(playerClient.getWorld().getRegistryKey()));
 
                 if(client.world != null) {
@@ -483,54 +452,6 @@ public class SPBRevampedClient implements ClientModInitializer {
             }
         });
 
-    }
-
-    //TODO: USE SYSTEM TIME INSTEAD OF RENDER TIME TO MAKE FRAME INDEPENDENT
-    public static double doCameraZoom (double fov, MinecraftClient client, Entity player){
-        SimpleOption<Double> currentSens = client.options.getMouseSensitivity();
-        double originalSensitivity = currentSens.getValue();
-
-        if (Keybinds.Zoom.isPressed() && !player.isSprinting() && zoomTime == 0) {
-            zoom = true;
-        } else if (zoomTime == 1 && !Keybinds.Zoom.isPressed()) {
-            zoom = false;
-        }
-
-
-        if (client.world != null && player != null) {
-            if (zoom) {
-                zoomTime = MathHelper.clamp(zoomTime + 0.007, 0, 1);
-                double easedZoom = Easings.Easing.linear.ease((float) zoomTime);
-
-                zoomed = fov / (1 + easedZoom * 4);
-                currentSens.setValue(currentSens.getValue() / (1 + easedZoom));
-
-                if (!playedZoomIn) {
-                    client.getSoundManager().play(PositionedSoundInstance.master(ModSounds.ZOOM_IN_SOUND, 1.0F));
-                    playedZoomIn = true;
-                    playedZoomOut = false;
-                }
-
-            } else if (zoomTime != 0) {
-                zoomTime = MathHelper.clamp(zoomTime - 0.007, 0, 1);
-                double easedZoom = Easings.Easing.linear.ease((float) zoomTime);
-
-                zoomed = fov / (1 + easedZoom * 4);
-                currentSens.setValue(currentSens.getValue() / (easedZoom));
-
-                if (!playedZoomOut) {
-                    client.getSoundManager().play(PositionedSoundInstance.master(ModSounds.ZOOM_OUT_SOUND, 1.0F));
-                    playedZoomIn = false;
-                    playedZoomOut = true;
-                }
-
-            } else {
-                currentSens.setValue(originalSensitivity);
-                zoomTime = 0;
-                zoomed = fov;
-            }
-        }
-        return zoomed;
     }
 
     public static void setShadowUniforms(MutableUniformAccess access, World world) {

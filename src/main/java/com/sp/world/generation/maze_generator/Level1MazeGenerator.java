@@ -2,6 +2,7 @@ package com.sp.world.generation.maze_generator;
 
 import com.sp.SPBRevamped;
 import com.sp.init.ModBlocks;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;
@@ -34,7 +35,7 @@ public class Level1MazeGenerator {
 
     String levelDirectory;
 
-    public Level1MazeGenerator(int size, int rows, int cols, int originX, int originY, String levelDirectory){
+    public Level1MazeGenerator(int size, int rows, int cols, int originX, int originY, String levelDirectory) {
         this.size = size;
         this.rows = rows;
         this.cols = cols;
@@ -55,8 +56,10 @@ public class Level1MazeGenerator {
 
         for (int y = 0; y < this.rows; y++) {
             for (int x = 0; x < this.cols; x++) {
-                if(world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 20, y + ((this.size - 1) * y) + this.originY)) == Blocks.AIR.getDefaultState() &&
-                    world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 26, y + ((this.size - 1) * y) + this.originY)) == Blocks.AIR.getDefaultState()) {
+                BlockState blockState1 = world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 20, y + ((this.size - 1) * y) + this.originY));
+                BlockState blockState2 = world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 26, y + ((this.size - 1) * y) + this.originY));
+
+                if(this.isAirOrNull(blockState1) && this.isAirOrNull(blockState2)) {
                     grid[x][y] = new HighVarCell(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
                 }
             }
@@ -79,23 +82,34 @@ public class Level1MazeGenerator {
                 randNeighbor = this.checkNeighbors(grid, currentCell.getGridPosY(), currentCell.getGridPosX(), world);
             }
             currentCell = cellStack.pop();
-
         }
 
         for(int i = 0; i < this.cols; i += 2) {
-            grid[i][0].setSouth(false);
+            HighVarCell cell = this.grid[i][0];
+            if(cell != null) {
+                cell.setSouth(false);
+            }
         }
 
         for(int i = 1; i < this.cols; i += 2) {
-            grid[this.cols - 1][i].setWest(false);
+            HighVarCell cell = this.grid[this.cols - 1][i];
+            if(cell != null) {
+                cell.setWest(false);
+            }
         }
 
         for(int i = this.cols - 2; i >= 0; i -= 2) {
-            grid[i][this.cols - 1].setNorth(false);
+            HighVarCell cell = this.grid[i][this.cols - 1];
+            if(cell != null) {
+                cell.setNorth(false);
+            }
         }
 
         for(int i = this.cols - 1; i >= 0; i -= 2) {
-            grid[0][i].setEast(false);
+            HighVarCell cell = this.grid[0][i];
+            if(cell != null) {
+                cell.setEast(false);
+            }
         }
 
         for (HighVarCell[] cell : grid){
@@ -124,11 +138,8 @@ public class Level1MazeGenerator {
 
 
         if (y + 1 < this.rows) North = grid[x][y + 1];
-
         if (x + 1 < this.cols) West = grid[x + 1][y];
-
         if(y - 1 >= 0) South = grid[x][y - 1];
-
         if(x - 1 >= 0) East = grid[x - 1][y];
 
 
@@ -155,7 +166,7 @@ public class Level1MazeGenerator {
             currentCell.setWest(false);
         }
         if (world.getBlockState(mutable.set(currentCell.getX() - this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState() ||
-            world.getBlockState(mutable.set(currentCell.getX() - this.size, 26, currentCell.getY())) == Blocks.YELLOW_WOOL.getDefaultState()){
+                world.getBlockState(mutable.set(currentCell.getX() - this.size, 26, currentCell.getY())) == Blocks.YELLOW_WOOL.getDefaultState()){
             currentCell.setEast(false);
         }
 
@@ -167,8 +178,6 @@ public class Level1MazeGenerator {
         else{
             return null;
         }
-
-
     }
 
     public void removeWalls(HighVarCell currentCell, HighVarCell neighbor){
@@ -226,7 +235,7 @@ public class Level1MazeGenerator {
             for(int i = 0; i < 3; i++){
                 for(int j = 0; j < 3; j++){
                     if(world.getBlockState(mutable.set(XOffset + this.size * i, 20, ZOffset + this.size * j)) != Blocks.AIR.getDefaultState() ||
-                        world.getBlockState(mutable.set(XOffset + this.size * i, 26, ZOffset + this.size * j)) == Blocks.YELLOW_WOOL.getDefaultState()){
+                            world.getBlockState(mutable.set(XOffset + this.size * i, 26, ZOffset + this.size * j)) == Blocks.YELLOW_WOOL.getDefaultState()){
                         place = false;
                     }
                 }
@@ -240,6 +249,10 @@ public class Level1MazeGenerator {
                         structurePlacementData, random, 16));
             }
         }
+    }
+
+    private boolean isAirOrNull(BlockState blockState){
+        return blockState == Blocks.AIR.getDefaultState() || blockState == null;
     }
 }
 
