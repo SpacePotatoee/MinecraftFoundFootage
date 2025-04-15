@@ -121,6 +121,12 @@
   "spb-revamped.midnightconfig.motionBlur": "Habilitar Desfoque de Movimento",
   "spb-revamped.midnightconfig.motionBlurStrength": "Intensidade do Desfoque de Movimento",
 
+  "spb-revamped.midnightconfig.grassQuality": "Grass Quality",
+  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "LOW",
+  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MEDIUM",
+  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "HIGH",
+  "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
+
   "death.attack.acid": "%1$s derreteu em Ácido!",
   "death.attack.smiler": "%1$s foi morto por um Smiler!",
 

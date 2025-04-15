@@ -1,9 +1,7 @@
 package com.sp.compat.modmenu;
 
+import com.sp.render.grass.GrassQuality;
 import eu.midnightdust.lib.config.MidnightConfig;
-
-import java.lang.reflect.Field;
-import java.util.Map;
 
 
 public class ConfigStuff extends MidnightConfig {
@@ -94,20 +92,22 @@ public class ConfigStuff extends MidnightConfig {
     public static float motionBlurStrength = 0.5f;
 
 
-    //Presets
-    //6.0, 1.0 , 1000000
-    //10.0, 1.0, 5000000
+    @Comment(category = SHADERS)
+    public static Comment spacer5;
 
-    @Entry(category = GRASS, min = 1, max = 20)
-    public static float grassDensity = 10.0f;
+    @Entry(category = SHADERS)
+    public static GrassQuality grassQuality = GrassQuality.MEDIUM;
 
-    @Entry(category = GRASS, min = 0, max = 3)
+//    @Entry(category = GRASS, min = 1, max = 20)
+//    public static float grassDensity = 10.0f;
+
+//    @Entry(category = GRASS, min = 0, max = 3)
     public static float grassHeight = 1.0f;
 
-    @Entry(category = GRASS, min = 1, max = 5)
-    public static int meshResolution = 1;
+//    @Entry(category = GRASS, min = 1, max = 5)
+//    public static int meshResolution = 1;
 
-    @Entry(category = GRASS, min = 0, max = 5000000)
-    public static int grassCount = 5000000;
+//    @Entry(category = GRASS, min = 0, max = 5000000)
+//    public static int grassCount = 5000000;
 
 }

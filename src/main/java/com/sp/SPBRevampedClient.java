@@ -16,6 +16,7 @@ import com.sp.networking.callbacks.ClientConnectionEvents;
 import com.sp.render.*;
 import com.sp.render.camera.CameraShake;
 import com.sp.render.camera.CutsceneManager;
+import com.sp.render.grass.GrassRenderer;
 import com.sp.render.gui.StaminaBar;
 import com.sp.render.gui.TitleText;
 import com.sp.util.MathStuff;

@@ -60,15 +60,14 @@ void main() {
 
     vec3 offset = myBuffer.position[gl_InstanceID];
 
-    vec3 WorldPos = (pos - cameraPos) + offset + VeilCamera.CameraPosition;
-    float rand = hash12(WorldPos.xz - pos.xz);
+    vec3 WorldPos = offset + floor(VeilCamera.CameraPosition);
+    float rand = hash12(WorldPos.xz);
 
     vec3 tempNormal = Normal;
     float randAngle = rand * 360;
     mat2 randRot = rot2D(randAngle);
     pos.xz *= randRot;
     tempNormal.xz *= randRot;
-//    normal = tempNormal;
 
 
 

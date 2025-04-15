@@ -93,7 +93,6 @@
 
 
   "spb-revamped.midnightconfig.category.video": "Video Settings",
-  "spb-revamped.midnightconfig.category.adminStuff": "Admin Settings",
   "spb-revamped.midnightconfig.category.shaders": "Shader Settings",
   "spb-revamped.midnightconfig.enableVanillaLighting": "Enable Vanilla Lighting",
   "spb-revamped.midnightconfig.enableRealCamera": "Enable Realistic Camera",
@@ -120,6 +119,12 @@
   "spb-revamped.midnightconfig.renderBlockReflections": "Enable Block Reflections (Only For Poolrooms Tiles)",
   "spb-revamped.midnightconfig.motionBlur": "Enable Motion Blur",
   "spb-revamped.midnightconfig.motionBlurStrength": "Motion Blur Strength",
+
+  "spb-revamped.midnightconfig.grassQuality": "Grass Quality",
+  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "LOW",
+  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MEDIUM",
+  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "HIGH",
+  "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
 
   "death.attack.acid": "%1$s burned in Acid!",
   "death.attack.smiler": "%1$s was killed by a Smiler!",
