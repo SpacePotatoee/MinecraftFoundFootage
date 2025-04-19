@@ -65,5 +65,16 @@
 	},
 	"suggests": {
 		"mod-menu": "*"
+	},
+	"breaks": {
+		"sodium": "*",
+		"create": "*",
+		"iris": "*",
+		"optifine": "*",
+		"lithium": "*",
+		"phosphor": "*",
+		"starlight": "*",
+		"indium": "*",
+		"modern_industrialization": "*"
 	}
 }

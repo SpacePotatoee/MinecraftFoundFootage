@@ -1,7 +1,5 @@
 package com.sp.mixin.grass;
 
-import com.mojang.blaze3d.platform.GlConst;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.mixininterfaces.RenderIndirectExtension;
 import foundry.veil.api.client.render.VeilRenderSystem;
@@ -9,16 +7,12 @@ import foundry.veil.api.client.render.shader.program.ShaderProgram;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.VertexFormat;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL43;
-import org.lwjgl.opengl.GLDebugMessageCallback;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-import java.nio.IntBuffer;
-
-import static org.lwjgl.opengl.GL15C.*;
+import static org.lwjgl.opengl.GL15C.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15C.glBindBuffer;
 import static org.lwjgl.opengl.GL40C.GL_PATCHES;
 import static org.lwjgl.opengl.GL40C.glDrawElementsIndirect;
 

@@ -16,7 +16,7 @@ public abstract class ServerPlayerEntityMixin {
     @Inject(method = "canBeSpectated", at = @At("HEAD"), cancellable = true)
     private void stopSpectatorPlayersFromNotBeingCounted(ServerPlayerEntity spectator, CallbackInfoReturnable<Boolean> cir){
         PlayerComponent component = InitializeComponents.PLAYER.get((ServerPlayerEntity) (Object) this);
-        if(component.hasBeenCaptured() || component.isBeingCaptured()){
+        if (component.hasBeenCaptured() || component.isBeingCaptured()){
             cir.setReturnValue(true);
         }
     }
@@ -24,7 +24,7 @@ public abstract class ServerPlayerEntityMixin {
     @Redirect(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;setCameraEntity(Lnet/minecraft/entity/Entity;)V"))
     private void dontChangeTargets(ServerPlayerEntity instance, Entity entity){
         PlayerComponent component = InitializeComponents.PLAYER.get((ServerPlayerEntity) (Object) this);
-        if(!component.hasBeenCaptured() && !component.isBeingCaptured()){
+        if (!component.hasBeenCaptured() && !component.isBeingCaptured()){
             instance.setCameraEntity(entity);
         }
     }

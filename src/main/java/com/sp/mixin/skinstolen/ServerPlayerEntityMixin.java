@@ -18,5 +18,4 @@ public abstract class ServerPlayerEntityMixin {
             instance.setCameraEntity(entity);
         }
     }
-
 }

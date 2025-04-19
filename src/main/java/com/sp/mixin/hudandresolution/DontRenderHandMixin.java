@@ -17,9 +17,10 @@ public abstract class DontRenderHandMixin {
 
     @Redirect(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderArmHoldingItem(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IFFLnet/minecraft/util/Arm;)V"))
     private void cancel(HeldItemRenderer instance, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, float equipProgress, float swingProgress, Arm arm){
-        if(ConfigStuff.showHands){
-            this.renderArmHoldingItem(matrices, vertexConsumers, light, equipProgress, swingProgress, arm);
+        if (!ConfigStuff.showHands) {
+            return;
         }
-    }
 
+        this.renderArmHoldingItem(matrices, vertexConsumers, light, equipProgress, swingProgress, arm);
+    }
 }

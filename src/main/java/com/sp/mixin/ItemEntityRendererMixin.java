@@ -1,5 +1,6 @@
 package com.sp.mixin;
 
+import com.sp.SPBRevampedClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -20,21 +21,29 @@ public class ItemEntityRendererMixin {
 //    }
 
     @ModifyArg(method = "render(Lnet/minecraft/entity/ItemEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V"), index = 1)
-    private float injected(float value){
+    private float injected(float value) {
+        if (!SPBRevampedClient.shouldRenderCameraEffect()) {
+            return value;
+        }
         return 0.03f;
     }
 
     @ModifyArg(method = "render(Lnet/minecraft/entity/ItemEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/RotationAxis;rotation(F)Lorg/joml/Quaternionf;"), index = 0)
-    private float injected2(float value){
+    private float injected2(float value) {
+        if (!SPBRevampedClient.shouldRenderCameraEffect()) {
+            return value;
+        }
         return 0;
     }
 
     @Inject(method = "render(Lnet/minecraft/entity/ItemEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;multiply(Lorg/joml/Quaternionf;)V"))
     private void makeFlat(ItemEntity itemEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci){
-        float groundRotation = itemEntity.getYaw();
+        if (SPBRevampedClient.shouldRenderCameraEffect()) {
+            float groundRotation = itemEntity.getYaw();
 
-        matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
-        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(groundRotation + 180.0f));
+            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
+            matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(groundRotation + 180.0f));
+        }
     }
 
 }

@@ -23,16 +23,16 @@ public class CastToTheBackroomsCommand {
                 CommandManager.literal("casttothebackrooms")
                         .requires(source -> source.hasPermissionLevel(2))
                         .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                    .executes(context -> execute(
-                                                    EntityArgumentType.getPlayers(context, "targets")
-                                            )
-                                    )
+                                .executes(context -> execute(
+                                                EntityArgumentType.getPlayers(context, "targets")
+                                        )
+                                )
                         )
         );
     }
 
-    private static int execute(Collection<ServerPlayerEntity> targets){
-        if(!targets.isEmpty()) {
+    private static int execute(Collection<ServerPlayerEntity> targets) {
+        if (!targets.isEmpty()) {
             for (ServerPlayerEntity serverPlayer : targets) {
                 PlayerComponent component = InitializeComponents.PLAYER.get(serverPlayer);
                 ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();

@@ -20,5 +20,4 @@ public class LivingEntityMixin {
         return 0;
 
     }
-
 }

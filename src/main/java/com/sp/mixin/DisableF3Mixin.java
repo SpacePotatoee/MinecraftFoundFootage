@@ -1,5 +1,6 @@
 package com.sp.mixin;
 
+import com.sp.SPBRevampedClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,7 +17,7 @@ public class DisableF3Mixin {
         PlayerEntity player = MinecraftClient.getInstance().player;
 
         if(player != null) {
-            if (!player.isCreative() && !player.isSpectator()) {
+            if (!player.isCreative() && !player.isSpectator() && SPBRevampedClient.isInBackrooms()) {
                 ci.cancel();
             }
         }

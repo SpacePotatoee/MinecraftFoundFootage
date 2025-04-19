@@ -86,11 +86,11 @@ public class EventCommand {
         RegistryKey<World> registryKey = world.getRegistryKey();
         WorldEvents events = InitializeComponents.EVENTS.get(world);
 
-        if(registryKey == BackroomsLevels.LEVEL0_WORLD_KEY){
+        if (registryKey == BackroomsLevels.LEVEL0_WORLD_KEY) {
             Level0Flicker flicker = new Level0Flicker();
             setEvent(events, world, flicker);
             return 1;
-        } else if(registryKey == BackroomsLevels.LEVEL1_WORLD_KEY){
+        } else if (registryKey == BackroomsLevels.LEVEL1_WORLD_KEY) {
             Level1Flicker flicker = new Level1Flicker();
             setEvent(events, world, flicker);
 
@@ -106,12 +106,12 @@ public class EventCommand {
         RegistryKey<World> registryKey = world.getRegistryKey();
         WorldEvents events = InitializeComponents.EVENTS.get(world);
 
-        if(registryKey == BackroomsLevels.LEVEL0_WORLD_KEY){
+        if (registryKey == BackroomsLevels.LEVEL0_WORLD_KEY) {
             Level0Blackout blackout = new Level0Blackout();
             setEvent(events, world, blackout);
 
             return 1;
-        } else if(registryKey == BackroomsLevels.LEVEL1_WORLD_KEY){
+        } else if (registryKey == BackroomsLevels.LEVEL1_WORLD_KEY) {
             Level1Blackout blackout = new Level1Blackout();
             setEvent(events, world, blackout);
 
@@ -126,7 +126,7 @@ public class EventCommand {
         RegistryKey<World> registryKey = world.getRegistryKey();
         WorldEvents events = InitializeComponents.EVENTS.get(world);
 
-        if(registryKey == BackroomsLevels.LEVEL0_WORLD_KEY){
+        if (registryKey == BackroomsLevels.LEVEL0_WORLD_KEY) {
             Level0IntercomBasic intercom = new Level0IntercomBasic();
             setEvent(events, world, intercom);
             return 1;
@@ -140,7 +140,7 @@ public class EventCommand {
         RegistryKey<World> registryKey = world.getRegistryKey();
         WorldEvents events = InitializeComponents.EVENTS.get(world);
 
-        if(registryKey == BackroomsLevels.LEVEL0_WORLD_KEY){
+        if (registryKey == BackroomsLevels.LEVEL0_WORLD_KEY) {
             Level0Music music = new Level0Music();
             setEvent(events, world, music);
             return 1;
@@ -154,21 +154,21 @@ public class EventCommand {
         RegistryKey<World> registryKey = world.getRegistryKey();
         WorldEvents events = InitializeComponents.EVENTS.get(world);
 
-        if(registryKey == BackroomsLevels.POOLROOMS_WORLD_KEY){
+        if (registryKey == BackroomsLevels.POOLROOMS_WORLD_KEY) {
             PoolroomsAmbience ambience = new PoolroomsAmbience();
             setEvent(events, world, ambience);
             return 1;
-        } else if(registryKey == BackroomsLevels.LEVEL1_WORLD_KEY){
+        } else if (registryKey == BackroomsLevels.LEVEL1_WORLD_KEY) {
             Level1Ambience ambience = new Level1Ambience();
             setEvent(events, world, ambience);
 
             return 1;
-        } else if(registryKey == BackroomsLevels.LEVEL2_WORLD_KEY){
+        } else if (registryKey == BackroomsLevels.LEVEL2_WORLD_KEY) {
             Level1Ambience ambience = new Level1Ambience();
             setEvent(events, world, ambience);
 
             return 1;
-        } else if(registryKey == BackroomsLevels.INFINITE_FIELD_WORLD_KEY){
+        } else if (registryKey == BackroomsLevels.INFINITE_FIELD_WORLD_KEY) {
             InfiniteGrassAmbience ambience = new InfiniteGrassAmbience();
             setEvent(events, world, ambience);
 
@@ -183,7 +183,7 @@ public class EventCommand {
         RegistryKey<World> registryKey = world.getRegistryKey();
         WorldEvents events = InitializeComponents.EVENTS.get(world);
 
-        if(registryKey == BackroomsLevels.LEVEL2_WORLD_KEY){
+        if (registryKey == BackroomsLevels.LEVEL2_WORLD_KEY) {
             Level2Warp warp = new Level2Warp();
             setEvent(events, world, warp);
             return 1;
@@ -197,7 +197,7 @@ public class EventCommand {
         RegistryKey<World> registryKey = world.getRegistryKey();
         WorldEvents events = InitializeComponents.EVENTS.get(world);
 
-        if(registryKey == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+        if (registryKey == BackroomsLevels.POOLROOMS_WORLD_KEY) {
             PoolroomsSunset sunset = new PoolroomsSunset();
             setEvent(events, world, sunset);
             return 1;
@@ -206,8 +206,8 @@ public class EventCommand {
         throw SUNSET_EXCEPTION.create();
     }
 
-    private static void setEvent(WorldEvents events, World world, AbstractEvent activeEvent){
-        if(events.getActiveEvent() != null) {
+    private static void setEvent(WorldEvents events, World world, AbstractEvent activeEvent) {
+        if (events.getActiveEvent() != null) {
             events.getActiveEvent().end(world);
         }
         events.setActiveEvent(activeEvent);

@@ -52,6 +52,37 @@
       "model": "spb-revamped:block/thin_pipe",
       "x": 90,
       "y": 270
+    },
+
+    "face=wall,facing=down": {
+      "model": "spb-revamped:block/thin_pipe",
+      "x": 90,
+      "y": 270
+    },
+    "face=wall,facing=up": {
+      "model": "spb-revamped:block/thin_pipe",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=up": {
+      "model": "spb-revamped:block/thin_pipe",
+      "x": 90,
+      "y": 270
+    },
+    "face=floor,facing=down": {
+      "model": "spb-revamped:block/thin_pipe",
+      "x": 90,
+      "y": 270
+    },
+    "face=floor,facing=up": {
+      "model": "spb-revamped:block/thin_pipe",
+      "x": 90,
+      "y": 270
+    },
+    "face=ceiling,facing=down": {
+      "model": "spb-revamped:block/thin_pipe",
+      "x": 90,
+      "y": 270
     }
   }
 }

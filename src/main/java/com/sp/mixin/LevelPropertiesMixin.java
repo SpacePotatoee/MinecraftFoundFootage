@@ -20,5 +20,4 @@ public class LevelPropertiesMixin {
             cir.setReturnValue(Lifecycle.stable());
         }
     }
-
 }

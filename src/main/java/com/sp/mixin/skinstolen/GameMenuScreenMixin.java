@@ -37,5 +37,4 @@ public abstract class GameMenuScreenMixin extends Screen {
 
         return new ButtonWidget.Builder(message, onPress);
     }
-
 }

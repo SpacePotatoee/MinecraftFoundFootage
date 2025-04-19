@@ -1,8 +1,8 @@
 package com.sp.mixin.pbr;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.sp.render.pbr.BlockIdMap;
 import com.sp.mixininterfaces.BlockMaterial;
+import com.sp.render.pbr.BlockIdMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;

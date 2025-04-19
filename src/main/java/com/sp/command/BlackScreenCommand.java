@@ -21,8 +21,8 @@ public class BlackScreenCommand {
                         .then(CommandManager.argument("targets", EntityArgumentType.players())
                                 .then(CommandManager.argument("time", TimeArgumentType.time())
                                         .executes(context -> execute(
-                                                EntityArgumentType.getPlayers(context, "targets"),
-                                                IntegerArgumentType.getInteger(context, "time")
+                                                        EntityArgumentType.getPlayers(context, "targets"),
+                                                        IntegerArgumentType.getInteger(context, "time")
                                                 )
                                         )
                                 )
@@ -30,8 +30,8 @@ public class BlackScreenCommand {
         );
     }
 
-    private static int execute(Collection<ServerPlayerEntity> targets, int time){
-        if(!targets.isEmpty()) {
+    private static int execute(Collection<ServerPlayerEntity> targets, int time) {
+        if (!targets.isEmpty()) {
             for (ServerPlayerEntity serverPlayer : targets) {
                 SPBRevamped.sendBlackScreenPacket(serverPlayer, time, false, false);
             }

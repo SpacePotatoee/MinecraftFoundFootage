@@ -52,6 +52,151 @@
       "model": "spb-revamped:block/thin_fluorescent_light",
       "x": 90,
       "y": 270
+    },
+
+    "blackout=true,copy=false,face=floor,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=wall,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=ceiling,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=wall,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=floor,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=ceiling,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=floor,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=wall,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=wall,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=floor,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=floor,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=ceiling,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=floor,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=ceiling,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=ceiling,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=ceiling,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=floor,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=floor,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=floor,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=floor,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=wall,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=wall,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=wall,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=ceiling,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=wall,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=wall,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=wall,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=wall,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=floor,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=ceiling,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=ceiling,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=wall,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=ceiling,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=wall,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=floor,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=ceiling,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=floor,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=floor,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=wall,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=ceiling,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=ceiling,facing=down,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=floor,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=ceiling,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=true,face=floor,facing=up,on=false": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=false,copy=false,face=ceiling,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=ceiling,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=true,face=wall,facing=down,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
+    },
+    "blackout=true,copy=false,face=wall,facing=up,on=true": {
+      "model": "spb-revamped:block/thin_fluorescent_light"
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.sp.mixin;
 
+import com.sp.SPBRevampedClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,8 +13,10 @@ public class EntityRenderDispatcherMixin {
     @Shadow
     private boolean renderShadows = false;
 
-    @Inject(method = "setRenderShadows", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "setRenderShadows", at = @At("TAIL"))
     private void setRenderShadows(boolean renderShadows, CallbackInfo ci){
-        this.renderShadows = false;
+        if (SPBRevampedClient.shouldRenderCameraEffect()) {
+            this.renderShadows = false;
+        }
     }
 }

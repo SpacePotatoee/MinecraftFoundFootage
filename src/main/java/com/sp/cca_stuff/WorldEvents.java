@@ -1,9 +1,7 @@
 package com.sp.cca_stuff;
 
-import com.sp.Keybinds;
 import com.sp.SPBRevamped;
 import com.sp.entity.custom.SkinWalkerEntity;
-import com.sp.entity.custom.SmilerEntity;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModEntities;
 import com.sp.init.ModSounds;
@@ -28,8 +26,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
@@ -110,8 +106,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
     private boolean done;
     private int tick;
-    private int smilerSpawnDelay;
-
 
     public WorldEvents(World world){
         this.world = world;
@@ -138,10 +132,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.activeSkinwalkerTarget = nullUUID;
 
         this.done = false;
-        this.smilerSpawnDelay = 80;
     }
-
-
 
     public boolean isEventActive() {
         return eventActive;
@@ -313,253 +304,282 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
         if (world != null && !world.getPlayers().isEmpty() && BackroomsLevels.isInBackrooms(world.getRegistryKey())) {
             ticks++;
+
             checkDimension();
-
             //Tick the currently active event and choose a random one every min and a half
-            if(this.activeSkinWalkerEntity == null) {
-
-                if (!eventActive) {
-                    this.delay--;
-//                    delay = 100;
-                    if (this.delay <= 0) {
-                        this.delay = 0;
-                        if (!level0EventList.isEmpty() && !level1EventList.isEmpty() && !level2EventList.isEmpty() && !poolroomsEventList.isEmpty() && !infiniteGrassEventList.isEmpty()) {
-                            int currentDimension = getCurrentDimension();
-
-                            switch (currentDimension) {
-                                case 1: {
-                                    int index = random.nextBetween(0, level0EventList.size() - 1);
-                                    activeEvent = level0EventList.get(index).get();
-
-                                    if (activeEvent instanceof Level0Blackout) {
-                                        this.blackoutCount++;
-                                        if (this.blackoutCount > 2) {
-                                            while (activeEvent instanceof Level0Blackout) {
-                                                activeEvent = level0EventList.get(random.nextBetween(0, level0EventList.size() - 1)).get();
-                                            }
-                                        }
-                                    }
-
-                                    activeEvent.init(this.world);
-                                    setEventActive(true);
-                                    ticks = 0;
-                                    this.delay = random.nextBetween(1000, 1500);
-                                }
-                                break;
-                                case 2: {
-                                    int index = random.nextBetween(0, level1EventList.size() - 1);
-                                    activeEvent = level1EventList.get(index).get();
-
-                                    activeEvent.init(this.world);
-                                    setEventActive(true);
-                                    ticks = 0;
-                                    this.delay = random.nextBetween(1000, 1600);
-                                }
-                                break;
-                                case 3: {
-                                    int index = random.nextBetween(0, level2EventList.size() - 1);
-                                    activeEvent = level2EventList.get(index).get();
-
-                                    activeEvent.init(this.world);
-                                    setEventActive(true);
-                                    ticks = 0;
-                                    this.delay = random.nextBetween(500, 800);
-                                }
-                                break;
-                                case 4: {
-                                    int index = random.nextBetween(0, poolroomsEventList.size() - 1);
-                                    activeEvent = poolroomsEventList.get(index).get();
-
-                                    activeEvent.init(this.world);
-                                    setEventActive(true);
-                                    ticks = 0;
-                                    this.delay = random.nextBetween(800, 1000);
-                                }
-                                break;
-                                case 5: {
-//                                    int index = random.nextBetween(0, infiniteGrassEventList.size() - 1);
-                                    activeEvent = infiniteGrassEventList.get(0).get();
-
-                                    activeEvent.init(this.world);
-                                    setEventActive(true);
-                                    ticks = 0;
-                                    this.delay = random.nextBetween(1000, 1200);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    if (activeEvent.duration() <= ticks) {
-                        activeEvent.reset(this.world);
-                        if (activeEvent.isDone()) setEventActive(false);
-                    } else {
-                        activeEvent.ticks(ticks, this.world);
-                    }
-                }
-            }
-
+            tickWorldEvents(random);
 
             //Start Looking for a player to take and take them when they're not talking and can't be seen
-            if (this.getIntercomCount() >= 2 && world.getPlayers().size() > 1) {
-                if (!done && this.world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                    //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
-                    Map.Entry<UUID, Float> min = null;
-                    for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
-                        if (min == null || min.getValue() > entry.getValue()) {
-                            min = entry;
+            tickSkinWalkerCapturing();
 
-                        }
-                    }
+            shouldReleasePlayer();
+        }
 
-                    if (min != null) {
-                        PlayerEntity target = this.world.getPlayerByUuid(min.getKey());
-                        if (target != null && target.isAlive()) {
-                            this.setActiveSkinwalkerTarget(target.getUuid());
-                        }
-                    }
+        shouldSync();
+    }
 
-                    if (this.getActiveSkinwalkerTarget() != null) {
-                        PlayerEntity target = this.getActiveSkinwalkerTarget();
-                        PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
+    private void shouldReleasePlayer() {
+        if (this.getActiveSkinwalkerTarget() != null && this.activeSkinWalkerEntity == null) {
+            ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
+            PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
 
-                        if (!targetComponent.isSpeaking()) {
-                            List<PlayerEntity> playerEntityList = target.getWorld().getPlayers(
-                                    TargetPredicate.DEFAULT
-                                            .ignoreDistanceScalingFactor()
-                                            .ignoreVisibility()
-                                            .setBaseMaxDistance(50)
-                                            .setPredicate(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test),
-                                    target,
-                                    target.getBoundingBox().expand(50));
-
-                            boolean seen = false;
-                            for (PlayerEntity player : playerEntityList) {
-                                if (player != target) {
-                                    PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                                    if (playerComponent.canSeeActiveSkinWalkerTarget()) {
-                                        seen = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (!seen) {
-                                //Take em
-                                SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(this.world);
-                                if (skinWalkerEntity != null) {
-
-                                    skinWalkerEntity.refreshPositionAndAngles((double) target.getX(), (double) target.getY(), (double) target.getZ(), target.getYaw(), target.getPitch());
-                                    skinWalkerEntity.setVelocity(target.getVelocity());
-                                    this.world.spawnEntity(skinWalkerEntity);
-                                    this.activeSkinWalkerEntity = skinWalkerEntity;
-
-                                    targetComponent.setPrevGameMode(((ServerPlayerEntity) target).interactionManager.getGameMode());
-                                    targetComponent.setBeingCaptured(true);
-                                    targetComponent.setHasBeenCaptured(true);
-                                    targetComponent.setShouldBeMuted(true);
-                                    targetComponent.sync();
-
-                                    ((ServerPlayerEntity) target).changeGameMode(GameMode.SPECTATOR);
-                                    ((ServerPlayerEntity) target).setCameraEntity(skinWalkerEntity);
-                                    this.done = true;
-                                }
-                            }
-                        }
-                    }
-                }
+            if (targetComponent.hasBeenCaptured() || targetComponent.isBeingCaptured()) {
+                target.changeGameMode(GameMode.SURVIVAL);
+                targetComponent.setHasBeenCaptured(false);
+                targetComponent.setShouldBeMuted(false);
+                targetComponent.sync();
+                SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
             }
 
-            if (this.activeSkinWalkerEntity != null) {
-                SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(this.activeSkinWalkerEntity);
-                if (component.shouldBeginRelease()) {
-                    PlayerComponent targetComponent = InitializeComponents.PLAYER.get(this.getActiveSkinwalkerTarget());
-                    ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
-                    tick++;
+            this.activeSkinwalkerTarget = nullUUID;
 
-                    if (this.tick == 1) {
-                        this.setLevel0Flicker(true);
-                    }
+            return;
+        }
 
-                    if (this.tick == 80) {
-                        this.setLevel0Flicker(false);
-                        this.setLevel0On(false);
+        if (activeSkinWalkerEntity == null) {
+            return;
+        }
 
-                        targetComponent.setBeingReleased(true);
-                        targetComponent.sync();
+        SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(this.activeSkinWalkerEntity);
 
-                        SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
-
-                        target.changeGameMode(targetComponent.getPrevGameMode() != null ? targetComponent.getPrevGameMode() : GameMode.SURVIVAL);
-                        target.setCameraEntity(target);
-
-                        for (PlayerEntity player : this.world.getPlayers()) {
-                            PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                            playerComponent.setFlashLightOn(false);
-                            playerComponent.sync();
-                        }
-                        this.activeSkinWalkerEntity.discard();
-                    }
-
-                    if (this.tick >= 105) {
-                        this.setLevel0On(true);
-                        targetComponent.setBeingReleased(false);
-                        targetComponent.setHasBeenCaptured(false);
-                        targetComponent.setShouldBeMuted(false);
-                        targetComponent.sync();
-                        this.activeSkinWalkerEntity = null;
-                    }
-                } else {
-                    if(this.getActiveSkinwalkerTarget() != null){
-                        ((ServerPlayerEntity) this.getActiveSkinwalkerTarget()).changeGameMode(GameMode.SPECTATOR);
-                        ((ServerPlayerEntity) this.getActiveSkinwalkerTarget()).setCameraEntity(this.activeSkinWalkerEntity);
-                    }
-                }
-            } else if(this.getActiveSkinwalkerTarget() != null) {
-                ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
-                PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
-
-                if(targetComponent.hasBeenCaptured() || targetComponent.isBeingCaptured()) {
-                    target.changeGameMode(GameMode.SURVIVAL);
-                    targetComponent.setHasBeenCaptured(false);
-                    targetComponent.setShouldBeMuted(false);
-                    targetComponent.sync();
-                    SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
-                }
-                this.activeSkinwalkerTarget = nullUUID;
+        if (!component.shouldBeginRelease()) {
+            if (this.getActiveSkinwalkerTarget() != null) {
+                ((ServerPlayerEntity) this.getActiveSkinwalkerTarget()).changeGameMode(GameMode.SPECTATOR);
+                ((ServerPlayerEntity) this.getActiveSkinwalkerTarget()).setCameraEntity(this.activeSkinWalkerEntity);
             }
 
-//            this.level0On = true;
+            return;
+        }
 
+        PlayerComponent targetComponent = InitializeComponents.PLAYER.get(this.getActiveSkinwalkerTarget());
+        ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
+        tick++;
 
-            //Spawn Level 1 Smilers
-            if (this.isLevel1Blackout() && this.world.getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                List<? extends PlayerEntity> playerList = this.world.getPlayers();
+        if (this.tick == 1) {
+            this.setLevel0Flicker(true);
+        }
 
-                this.smilerSpawnDelay--;
-                if (this.smilerSpawnDelay <= 0) {
-                    for (PlayerEntity player : playerList) {
-                        int rand = player.getRandom().nextBetween(1, 10);
+        if (this.tick == 80) {
+            this.setLevel0Flicker(false);
+            this.setLevel0On(false);
 
-                        if (rand == 1) {
-                            SmilerEntity smiler = ModEntities.SMILER_ENTITY.create(this.world);
-                            if (smiler != null) {
-                                BlockPos.Mutable mutable = new BlockPos.Mutable();
-                                float randomAngle = random.nextFloat() * 360.0f;
-                                Vec3d spawnPos = new Vec3d(0, 0, 15).rotateY(randomAngle).add(player.getPos());
-                                if (!this.world.getBlockState(mutable.set(spawnPos.x, spawnPos.y, spawnPos.z)).blocksMovement()) {
-                                    smiler.refreshPositionAndAngles(Math.floor(spawnPos.x) + 0.5f, spawnPos.y, Math.floor(spawnPos.z) + 0.5f, 0.0f, 0.0f);
-                                    this.world.spawnEntity(smiler);
-                                    this.smilerSpawnDelay = 80;
-                                }
-                            }
-                        }
-                    }
-                }
+            targetComponent.setBeingReleased(true);
+            targetComponent.sync();
+
+            SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
+
+            target.changeGameMode(targetComponent.getPrevGameMode() != null ? targetComponent.getPrevGameMode() : GameMode.SURVIVAL);
+            target.setCameraEntity(target);
+
+            for (PlayerEntity player : this.world.getPlayers()) {
+                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+                playerComponent.setFlashLightOn(false);
+                playerComponent.sync();
+            }
+            this.activeSkinWalkerEntity.discard();
+        }
+
+        if (this.tick >= 105) {
+            this.setLevel0On(true);
+            targetComponent.setBeingReleased(false);
+            targetComponent.setHasBeenCaptured(false);
+            targetComponent.setShouldBeMuted(false);
+            targetComponent.sync();
+            this.activeSkinWalkerEntity = null;
+        }
+    }
+
+    private void tickSkinWalkerCapturing() {
+        if (this.getIntercomCount() < 2 || world.getPlayers().size() <= 1) {
+            return;
+        }
+
+        if (done || this.world.getRegistryKey() != BackroomsLevels.LEVEL0_WORLD_KEY) {
+            return;
+        }
+        //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
+        Map.Entry<UUID, Float> min = null;
+        for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
+            if (min == null || min.getValue() > entry.getValue()) {
+                min = entry;
 
             }
         }
-        shouldSync();
+
+        if (min != null) {
+            PlayerEntity target = this.world.getPlayerByUuid(min.getKey());
+            if (target != null && target.isAlive()) {
+                this.setActiveSkinwalkerTarget(target.getUuid());
+            }
+        }
+
+        if (this.getActiveSkinwalkerTarget() == null) {
+            return;
+        }
+
+        PlayerEntity target = this.getActiveSkinwalkerTarget();
+        PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
+
+        if (targetComponent.isSpeaking()) {
+            return;
+        }
+
+        List<PlayerEntity> playerEntityList = target.getWorld().getPlayers(
+                TargetPredicate.DEFAULT
+                        .ignoreDistanceScalingFactor()
+                        .ignoreVisibility()
+                        .setBaseMaxDistance(50)
+                        .setPredicate(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test),
+                target,
+                target.getBoundingBox().expand(50));
+
+        boolean seen = false;
+        for (PlayerEntity player : playerEntityList) {
+            if (player != target) {
+                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+                if (playerComponent.canSeeActiveSkinWalkerTarget()) {
+                    seen = true;
+                    break;
+                }
+            }
+        }
+
+        if (seen) {
+            return;
+        }
+        //Take em
+        SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(this.world);
+        if (skinWalkerEntity == null) {
+            return;
+        }
+
+        skinWalkerEntity.refreshPositionAndAngles((double) target.getX(), (double) target.getY(), (double) target.getZ(), target.getYaw(), target.getPitch());
+        skinWalkerEntity.setVelocity(target.getVelocity());
+        this.world.spawnEntity(skinWalkerEntity);
+        this.activeSkinWalkerEntity = skinWalkerEntity;
+
+        targetComponent.setPrevGameMode(((ServerPlayerEntity) target).interactionManager.getGameMode());
+        targetComponent.setBeingCaptured(true);
+        targetComponent.setHasBeenCaptured(true);
+        targetComponent.setShouldBeMuted(true);
+        targetComponent.sync();
+
+        ((ServerPlayerEntity) target).changeGameMode(GameMode.SPECTATOR);
+        ((ServerPlayerEntity) target).setCameraEntity(skinWalkerEntity);
+        this.done = true;
+    }
+
+    private void tickWorldEvents(Random random) {
+        if (this.activeSkinWalkerEntity != null) {
+
+            return;
+        }
+
+        if (!eventActive) {
+            this.delay--;
+//                    delay = 100;
+            if (this.delay > 0) {
+                return;
+            }
+
+            this.delay = 0;
+
+            if (level0EventList.isEmpty() || level1EventList.isEmpty() || level2EventList.isEmpty() || poolroomsEventList.isEmpty() || infiniteGrassEventList.isEmpty()) {
+                return;
+            }
+
+            int currentDimension = getCurrentDimension();
+
+            switch (currentDimension) {
+                case 1: {
+                    tickLevel0Events(random);
+                }
+                break;
+                case 2: {
+                    tickLevel1Events(random);
+                }
+                break;
+                case 3: {
+                    tickLevel2Events(random);
+                }
+                break;
+                case 4: {
+                    tickPoolroomsEvents(random);
+                }
+                break;
+                case 5: {
+                    tickInfiniteGrassEvents(random);
+                }
+                break;
+            }
+
+            return;
+        }
+
+        if (activeEvent.duration() <= ticks) {
+            activeEvent.reset(this.world);
+            if (activeEvent.isDone()) setEventActive(false);
+        } else {
+            activeEvent.ticks(ticks, this.world);
+        }
+    }
+
+    private void tickInfiniteGrassEvents(Random random) {
+        activeEvent = infiniteGrassEventList.get(0).get();
+
+        activeEvent.init(this.world);
+        setEventActive(true);
+        ticks = 0;
+        this.delay = random.nextBetween(1000, 1200);
+    }
+
+    private void tickPoolroomsEvents(Random random) {
+        int index = random.nextBetween(0, poolroomsEventList.size() - 1);
+        activeEvent = poolroomsEventList.get(index).get();
+
+        activeEvent.init(this.world);
+        setEventActive(true);
+        ticks = 0;
+        this.delay = random.nextBetween(800, 1000);
+    }
+
+    private void tickLevel2Events(Random random) {
+        int index = random.nextBetween(0, level2EventList.size() - 1);
+        activeEvent = level2EventList.get(index).get();
+
+        activeEvent.init(this.world);
+        setEventActive(true);
+        ticks = 0;
+        this.delay = random.nextBetween(500, 800);
+    }
+
+    private void tickLevel1Events(Random random) {
+        int index = random.nextBetween(0, level1EventList.size() - 1);
+        activeEvent = level1EventList.get(index).get();
+
+        activeEvent.init(this.world);
+        setEventActive(true);
+        ticks = 0;
+        this.delay = random.nextBetween(1000, 1600);
+    }
+
+    private void tickLevel0Events(Random random) {
+        int index = random.nextBetween(0, level0EventList.size() - 1);
+        activeEvent = level0EventList.get(index).get();
+
+        if (activeEvent instanceof Level0Blackout) {
+            this.blackoutCount++;
+            if (this.blackoutCount > 2) {
+                while (activeEvent instanceof Level0Blackout) {
+                    activeEvent = level0EventList.get(random.nextBetween(0, level0EventList.size() - 1)).get();
+                }
+            }
+        }
+
+        activeEvent.init(this.world);
+        setEventActive(true);
+        ticks = 0;
+        this.delay = random.nextBetween(1000, 1500);
     }
 
     private void registerEvents() {
@@ -705,7 +725,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     }
 
     private void checkDimension(){
-        if(world != null) {
+        if (world != null) {
             if (world.getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
                 this.inLevel0 = true;
                 this.inLevel1 = false;
@@ -750,6 +770,4 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
             }
         }
     }
-
-
 }

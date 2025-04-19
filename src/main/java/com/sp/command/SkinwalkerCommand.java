@@ -50,11 +50,11 @@ public class SkinwalkerCommand {
     }
 
     private static int execute(ServerCommandSource source, Collection<ServerPlayerEntity> targets) throws CommandSyntaxException {
-        if(targets.size() > 1){
+        if (targets.size() > 1) {
             throw TOO_MANY_TARGETS.create();
         }
 
-        for(ServerPlayerEntity target : targets) {
+        for (ServerPlayerEntity target : targets) {
             SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(source.getWorld());
             if (skinWalkerEntity != null) {
                 PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
@@ -80,11 +80,11 @@ public class SkinwalkerCommand {
     }
 
     private static int release(ServerCommandSource source, Collection<ServerPlayerEntity> targets) throws CommandSyntaxException {
-        if(targets.size() > 1){
+        if (targets.size() > 1) {
             throw TOO_MANY_TARGETS.create();
         }
 
-        for(ServerPlayerEntity target : targets) {
+        for (ServerPlayerEntity target : targets) {
             PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
             WorldEvents events = InitializeComponents.EVENTS.get(source.getWorld());
 

@@ -1,6 +1,5 @@
 package com.sp.world.events.level2;
 
-import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.WorldEvents;
 import com.sp.world.events.AbstractEvent;

@@ -34,7 +34,7 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V", shift = At.Shift.AFTER))
     private void enableDeferredResourcePack(CallbackInfo ci){
-        if(instance != null && resourcePackManager != null) {
+        if (instance != null && resourcePackManager != null) {
             if(!resourcePackManager.getEnabledProfiles().contains(resourcePackManager.getProfile("veil:deferred"))) {
                 SPBRevamped.LOGGER.info("Re-enabled Deferred Resourcepack");
                 resourcePackManager.enable("veil:deferred");

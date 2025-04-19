@@ -2,7 +2,6 @@ package com.sp.render;
 
 import foundry.veil.api.client.render.CameraMatrices;
 import foundry.veil.api.client.render.VeilRenderSystem;
-import net.minecraft.client.MinecraftClient;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

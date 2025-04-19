@@ -5,8 +5,8 @@ import com.sp.clientWrapper.ClientWrapper;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModDamageTypes;
 import com.sp.init.ModSounds;
-import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.mixininterfaces.ServerPlayNetworkSprint;
+import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
@@ -400,6 +400,55 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         getPrevSettings();
 
         //*Update Stamina
+        updateStamina();
+
+        //*Damage if glitched enough from smilers
+        if(this.shouldInflictGlitchDamage){
+            this.player.damage(ModDamageTypes.of(this.player.getWorld(), ModDamageTypes.SMILER), 1.0f);
+        }
+
+        //*Is speaking
+        if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid()) && BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid()) == this.prevSpeakingTime) {
+            if(this.isSpeaking()) {
+                this.speakingBuffer--;
+                if (this.speakingBuffer <= 0) {
+                    this.setSpeaking(false);
+                    this.speakingBuffer = 80;
+                }
+            }
+        } else {
+            this.speakingBuffer = 80;
+        }
+
+        //*Cast him to the Backrooms
+        if (checkBackroomsTeleport()) return;
+
+        //*Level 0 -> Level 1
+        checkLevel1Teleport();
+
+        //*Level 1 -> Level 2
+        checkLevel2Teleport();
+
+        //*Level 2 -> Poolrooms
+        checkPoolroomsTeleport();
+
+        //*Poolrooms -> Grass Field
+        checkGrassFieldsTeleport();
+
+        //*Grass Field -> OverWorld
+        checkOverWroldReturnTeleport();
+
+        //*Update Entity Visibility
+        updateEntityVisibility();
+
+        if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid())) {
+            this.prevSpeakingTime = BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid());
+        }
+        
+        shouldSync();
+    }
+
+    private void updateStamina() {
         EntityAttributeInstance attributeInstance = this.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
         if(attributeInstance != null) {
             int prevStamina = this.stamina;
@@ -445,26 +494,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
 
         }
+    }
 
-        //*Damage if glitched enough from smilers
-        if(this.shouldInflictGlitchDamage){
-            this.player.damage(ModDamageTypes.of(this.player.getWorld(), ModDamageTypes.SMILER), 1.0f);
-        }
-
-        //*Is speaking
-        if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid()) && BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid()) == this.prevSpeakingTime) {
-            if(this.isSpeaking()) {
-                this.speakingBuffer--;
-                if (this.speakingBuffer <= 0) {
-                    this.setSpeaking(false);
-                    this.speakingBuffer = 80;
-                }
-            }
-        } else {
-            this.speakingBuffer = 80;
-        }
-
-        //*Cast him to the Backrooms
+    private boolean checkBackroomsTeleport() {
         if(this.player.isInsideWall()) {
             if (this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
                 suffocationTimer++;
@@ -477,7 +509,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                     RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
                     ServerWorld backrooms = this.player.getWorld().getServer().getWorld(registryKey);
                     if (backrooms == null) {
-                        return;
+                        return true;
                     }
 
                     this.savePlayerInventory();
@@ -497,12 +529,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             this.playingGlitchSound = false;
             suffocationTimer = 0;
         }
+        return false;
+    }
 
-
-        //*Level Switcheroo//
-
-
-        //*Level 0 -> Level 1
+    private void checkLevel1Teleport() {
         if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
             ServerWorld level1 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL1_WORLD_KEY);
 
@@ -530,9 +560,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 }
             }
         }
+    }
 
-        //*Level 1 -> Level 2
-        else if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+    private void checkLevel2Teleport() {
+        if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
             ServerWorld level2 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL2_WORLD_KEY);
 
             if (this.readyForLevel2) {
@@ -558,11 +589,11 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                     }
                 }
             }
-
         }
+    }
 
-        //*Level 2 -> Poolrooms
-        else if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+    private void checkPoolroomsTeleport() {
+        if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
             ServerWorld poolrooms = this.player.getWorld().getServer().getWorld(BackroomsLevels.POOLROOMS_WORLD_KEY);
 
             if (Math.abs(this.player.getPos().getZ()) >= 1000) {
@@ -584,9 +615,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.readyForPoolrooms = false;
             }
         }
+    }
 
-        //*Poolrooms -> Grass Field
-        else if(this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY && this.player.getWorld().getLightLevel(this.player.getBlockPos()) == 0 && this.player.getPos().y < 60 && this.player.getPos().y > 52){
+    private void checkGrassFieldsTeleport() {
+        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY && this.player.getWorld().getLightLevel(this.player.getBlockPos()) == 0 && this.player.getPos().y < 60 && this.player.getPos().y > 52){
             this.player.fallDistance = 0;
             if(this.player instanceof ServerPlayerEntity) {
                 SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) this.player, 60, true, false);
@@ -595,9 +627,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 FabricDimensions.teleport(this.player, grassField, target);
             }
         }
+    }
 
-        //*Grass Field -> OverWorld
-        else if(this.player.getWorld().getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY && this.player.getPos().y > 57.5 && this.player.isOnGround()){
+    private void checkOverWroldReturnTeleport() {
+        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY && this.player.getPos().y > 57.5 && this.player.isOnGround()){
             if(this.player instanceof ServerPlayerEntity) {
                 BlockPos blockPos = ((ServerPlayerEntity)this.player).getSpawnPointPosition();
                 float f = ((ServerPlayerEntity)this.player).getSpawnAngle();
@@ -618,8 +651,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 FabricDimensions.teleport(this.player, overworld, target);
             }
         }
+    }
 
-        //*Update Entity Visibility
+    private void updateEntityVisibility() {
         if(this.isTalkingTooLoud() && this.talkingTooLoudTimer >= 0){
             this.setVisibleToEntity(true);
             this.talkingTooLoudTimer--;
@@ -658,14 +692,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 }
             }
         }
-
-        if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid())) {
-            this.prevSpeakingTime = BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid());
-        }
-
-
-
-        shouldSync();
     }
 
 

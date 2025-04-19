@@ -58,6 +58,11 @@ import java.util.concurrent.TimeUnit;
 import static com.sp.block.custom.ThinFluorescentLightBlock.FACE;
 import static com.sp.block.custom.ThinFluorescentLightBlock.FACING;
 
+/**
+ * This class is just here to avoid dedicated server crashes.
+ * Minecraft seams to crash even when a client class is present in a method without being called on the client.
+ * This mostly happens with Sound Instances. And Veil lights.
+ **/
 public class ClientWrapper {
     public static void skinWalkerPlayStepSound(ServerLimb limb) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -79,9 +84,9 @@ public class ClientWrapper {
             //Get a list of all the smilers in the area and see if any of them can see you
             List<SmilerEntity> smilerEntityList = playerComponent.player.getWorld().getEntitiesByClass(SmilerEntity.class, playerComponent.player.getBoundingBox().expand(15, 1, 15), livingEntity -> true);
             boolean isSeen = false;
-            if(!smilerEntityList.isEmpty()){
-                for(SmilerEntity smiler : smilerEntityList) {
-                    if(smiler.canSee(playerComponent.player)){
+            if (!smilerEntityList.isEmpty()) {
+                for (SmilerEntity smiler : smilerEntityList) {
+                    if (smiler.canSee(playerComponent.player)) {
                         playerComponent.setShouldGlitch(true);
                         isSeen = true;
                         break;
@@ -94,35 +99,35 @@ public class ClientWrapper {
             }
 
             //Update smiler glitch effect
-            if(playerComponent.shouldGlitch()) {
+            if (playerComponent.shouldGlitch()) {
                 playerComponent.glitchTick = Math.min(playerComponent.glitchTick + 1, 80);
                 playerComponent.glitchTimer = Math.min((float) playerComponent.glitchTick / 80, 1.0f);
 
-                if(!soundManager.isPlaying(playerComponent.GlitchAmbience)) {
+                if (!soundManager.isPlaying(playerComponent.GlitchAmbience)) {
                     playerComponent.GlitchAmbience = new SmilerGlitchSoundInstance(playerComponent.player);
                     soundManager.play(playerComponent.GlitchAmbience);
                 }
 
-                if(playerComponent.glitchTimer >= 0.25f){
-                    if(!playerComponent.shouldInflictGlitchDamage) {
+                if (playerComponent.glitchTimer >= 0.25f) {
+                    if (!playerComponent.shouldInflictGlitchDamage) {
                         playerComponent.shouldInflictGlitchDamage = true;
 //                                System.out.println("SENT TRUE TO: " + playerComponent.player.getName().toString());
                         SPBRevampedClient.sendGlitchDamagePacket(true);
                     }
                 }
 
-            } else if(!playerComponent.isTeleportingToPoolrooms()) {
+            } else if (!playerComponent.isTeleportingToPoolrooms()) {
                 playerComponent.glitchTick = Math.max(playerComponent.glitchTick - 1, 0);
                 playerComponent.glitchTimer = Math.max((float) playerComponent.glitchTick / 80, 0.0f);
 
-                if(playerComponent.glitchTimer <= 0){
-                    if(soundManager.isPlaying(playerComponent.GlitchAmbience)) {
+                if (playerComponent.glitchTimer <= 0) {
+                    if (soundManager.isPlaying(playerComponent.GlitchAmbience)) {
                         soundManager.stop(playerComponent.GlitchAmbience);
                     }
                 }
 
-                if(playerComponent.glitchTimer <= 0.75f) {
-                    if(playerComponent.shouldInflictGlitchDamage) {
+                if (playerComponent.glitchTimer <= 0.75f) {
+                    if (playerComponent.shouldInflictGlitchDamage) {
                         playerComponent.shouldInflictGlitchDamage = false;
 //                                System.out.println("SENT FALSE TO: " + playerComponent.player.getName().toString());
                         SPBRevampedClient.sendGlitchDamagePacket(false);
@@ -131,11 +136,11 @@ public class ClientWrapper {
             }
 
             //Teleporting to poolrooms Glitch
-            if(playerComponent.isTeleportingToPoolrooms()){
+            if (playerComponent.isTeleportingToPoolrooms()) {
                 playerComponent.glitchTick = Math.min(playerComponent.glitchTick + 1, 120);
                 playerComponent.glitchTimer = Math.min((float) playerComponent.glitchTick / 120, 1.0f);
 
-                if(!soundManager.isPlaying(playerComponent.GlitchAmbience)) {
+                if (!soundManager.isPlaying(playerComponent.GlitchAmbience)) {
                     playerComponent.GlitchAmbience = new SmilerGlitchSoundInstance(playerComponent.player);
                     soundManager.play(playerComponent.GlitchAmbience);
                 }
@@ -204,8 +209,8 @@ public class ClientWrapper {
                     playerComponent.setFlashLightOn(false);
                     playerComponent.player.sendMessage(Text.translatable("spb-revamped.flashlight.wet1").append(Text.translatable("spb-revamped.flashlight.wet2").formatted(Formatting.RED)), true);
                 }
-            } else if(playerComponent.hasBeenCaptured && playerComponent.isBeingCaptured()){
-                if(playerComponent.isFlashLightOn()) {
+            } else if (playerComponent.hasBeenCaptured && playerComponent.isBeingCaptured()) {
+                if (playerComponent.isFlashLightOn()) {
                     playerComponent.setFlashLightOn(false);
 
                     PacketByteBuf buffer = PacketByteBufs.create();
@@ -215,7 +220,7 @@ public class ClientWrapper {
             }
 
             if (!notInTheseLevels) {
-                if(playerComponent.isFlashLightOn()){
+                if (playerComponent.isFlashLightOn()) {
                     PacketByteBuf buffer = PacketByteBufs.create();
                     buffer.writeBoolean(false);
                     ClientPlayNetworking.send(InitializePackets.FL_SYNC, buffer);
@@ -256,7 +261,7 @@ public class ClientWrapper {
                 soundManager.play(playerComponent.PoolroomsSunsetAmbience);
             }
 
-            if(events.isLevel1Blackout() && !soundManager.isPlaying(playerComponent.SmilerAmbience)){
+            if (events.isLevel1Blackout() && !soundManager.isPlaying(playerComponent.SmilerAmbience)) {
                 playerComponent.SmilerAmbience = new SmilerAmbienceSoundInstance(playerComponent.player);
                 soundManager.play(playerComponent.SmilerAmbience);
             }
@@ -289,7 +294,7 @@ public class ClientWrapper {
 
     public static void handleSkinWalkerEntityClientSide(SkinWalkerEntity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if(!client.getSoundManager().isPlaying(entity.chaseSoundInstance)) {
+        if (!client.getSoundManager().isPlaying(entity.chaseSoundInstance)) {
             entity.chaseSoundInstance = new SkinWalkerChaseSoundInstance(entity);
             client.getSoundManager().play(entity.chaseSoundInstance);
         }

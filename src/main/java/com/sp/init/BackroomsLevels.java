@@ -1,7 +1,6 @@
 package com.sp.init;
 
 import com.sp.SPBRevamped;
-import com.sp.compat.modmenu.ConfigDefinitions;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
@@ -9,8 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class BackroomsLevels {
     public static final RegistryKey<World> LEVEL0_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "level0"));
@@ -20,26 +19,25 @@ public class BackroomsLevels {
     public static final RegistryKey<World> POOLROOMS_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "poolrooms"));
     public static final RegistryKey<World> INFINITE_FIELD_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "infinite_field"));
 
+    public static HashMap<RegistryKey<World>, BlockPos> BACKROOMS_LEVEL = new HashMap<>();
+
+    public static void init() {
+        BACKROOMS_LEVEL.put(LEVEL0_WORLD_KEY, new BlockPos(1, 22, 1));
+        BACKROOMS_LEVEL.put(LEVEL1_WORLD_KEY, new BlockPos(6, 22, 3));
+        BACKROOMS_LEVEL.put(LEVEL2_WORLD_KEY, new BlockPos(0, 21, 8));
+        BACKROOMS_LEVEL.put(POOLROOMS_WORLD_KEY, new BlockPos(15, 104, 16));
+        BACKROOMS_LEVEL.put(INFINITE_FIELD_WORLD_KEY, new BlockPos(0, 31, 0));
+    }
+
     public static boolean isInBackrooms(RegistryKey<World> world){
-        return world == LEVEL0_WORLD_KEY || world == LEVEL1_WORLD_KEY || world == LEVEL2_WORLD_KEY || world == POOLROOMS_WORLD_KEY || world == INFINITE_FIELD_WORLD_KEY;
+        return BACKROOMS_LEVEL.containsKey(world);
     }
 
     public static BlockPos getCurrentLevelsOrigin(RegistryKey<World> world){
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-
-        if(world == LEVEL0_WORLD_KEY) {
-            return mutable.set(1,22,1);
-
-        } else if(world == LEVEL1_WORLD_KEY){
-            return mutable.set(6,22,3);
-
-        } else if(world == LEVEL2_WORLD_KEY){
-            return mutable.set(0,21,8);
-
-        } else if(world == POOLROOMS_WORLD_KEY){
-            return mutable.set(15,104,16);
-
+        if (BACKROOMS_LEVEL.containsKey(world)) {
+            return BACKROOMS_LEVEL.get(world);
         }
+
         return null;
     }
 
@@ -50,6 +48,4 @@ public class BackroomsLevels {
             "POOLROOMS",      POOLROOMS_WORLD_KEY,
             "INFINITE_FIELD", INFINITE_FIELD_WORLD_KEY
     );
-
-
 }

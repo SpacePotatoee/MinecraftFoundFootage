@@ -3,19 +3,18 @@ package com.sp.init;
 import com.sp.SPBRevamped;
 import com.sp.block.SprintBlockSoundGroup;
 import com.sp.block.custom.*;
-import com.sp.block.custom.CarpetBlock;
-import com.sp.block.custom.WallBlock;
 import com.sp.block.custom.pipes.*;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.GlassBlock;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 
 public class ModBlocks {
 

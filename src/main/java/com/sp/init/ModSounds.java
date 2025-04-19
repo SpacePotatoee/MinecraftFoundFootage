@@ -107,6 +107,4 @@ public class ModSounds {
     public static void registerSounds() {
         SPBRevamped.LOGGER.info("Registering Sounds for" + SPBRevamped.MOD_ID);
     }
-
-
 }

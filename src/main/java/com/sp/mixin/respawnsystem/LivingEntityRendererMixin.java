@@ -41,7 +41,7 @@ public abstract class LivingEntityRendererMixin <T extends LivingEntity, M exten
 
     @Inject(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/VertexConsumerProvider;getBuffer(Lnet/minecraft/client/render/RenderLayer;)Lnet/minecraft/client/render/VertexConsumer;", shift = At.Shift.BEFORE))
     private void setShaderAndUniforms(T livingEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci){
-        if(livingEntity instanceof AbstractClientPlayerEntity){
+        if (livingEntity instanceof AbstractClientPlayerEntity){
             PlayerComponent playerComponent = InitializeComponents.PLAYER.get(livingEntity);
 
             shader = VeilRenderSystem.setShader(SHADER_LOCATION);
@@ -71,7 +71,7 @@ public abstract class LivingEntityRendererMixin <T extends LivingEntity, M exten
 
     @Inject(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;IIFFFF)V", shift = At.Shift.BEFORE))
     private void bind(T livingEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci){
-        if(livingEntity instanceof AbstractClientPlayerEntity){
+        if (livingEntity instanceof AbstractClientPlayerEntity){
             shader.bind();
         }
     }

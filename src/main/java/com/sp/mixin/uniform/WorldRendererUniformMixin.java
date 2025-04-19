@@ -2,8 +2,8 @@ package com.sp.mixin.uniform;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.sp.SPBRevampedClient;
-import com.sp.render.ShadowMapRenderer;
 import com.sp.mixininterfaces.uniformTest;
+import com.sp.render.ShadowMapRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.RenderLayer;
@@ -28,38 +28,40 @@ public class WorldRendererUniformMixin {
 
     @Inject(method = "renderLayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/GlUniform;set(F)V", ordinal = 3, shift = At.Shift.BY, by = 2))
     public void uniformInject(RenderLayer renderLayer, MatrixStack matrices, double cameraX, double cameraY, double cameraZ, Matrix4f positionMatrix, CallbackInfo ci, @Local ShaderProgram shaderProgram){
-        if(shaderProgram instanceof uniformTest) {
-            if (((uniformTest) shaderProgram).getOrthoMatrix() != null) {
-                Matrix4f matrix4f = createProjMat();
-                ((uniformTest) shaderProgram).getOrthoMatrix().set(matrix4f);
-            }
+        if (SPBRevampedClient.shouldRenderCameraEffect()) {
+            if (shaderProgram instanceof uniformTest) {
+                if (((uniformTest) shaderProgram).getOrthoMatrix() != null) {
+                    Matrix4f matrix4f = createProjMat();
+                    ((uniformTest) shaderProgram).getOrthoMatrix().set(matrix4f);
+                }
 
 
-            if (((uniformTest) shaderProgram).getViewMatrix() != null) {
-                MatrixStack shadowModelView = ShadowMapRenderer.createShadowModelView(cameraX, cameraY, cameraZ, world, true);
+                if (((uniformTest) shaderProgram).getViewMatrix() != null) {
+                    MatrixStack shadowModelView = ShadowMapRenderer.createShadowModelView(cameraX, cameraY, cameraZ, world, true);
 
-                ((uniformTest) shaderProgram).getViewMatrix().set(shadowModelView.peek().getPositionMatrix());
-            }
-
-
-            if (((uniformTest) shaderProgram).getLightAngle() != null) {
-                Matrix4f shadowModelView = new Matrix4f();
-                shadowModelView.identity();
-                ShadowMapRenderer.rotateShadowModelView(shadowModelView, world);
-                Vector4f lightPosition = new Vector4f(0.0f, 0.0f, 1.0f, 0.0f);
-                lightPosition.mul(shadowModelView.invert());
-
-                Vector3f shadowLightDirection = new Vector3f(lightPosition.x(), lightPosition.y(), lightPosition.z());
-
-                ((uniformTest) shaderProgram).getLightAngle().set(shadowLightDirection);
-            }
+                    ((uniformTest) shaderProgram).getViewMatrix().set(shadowModelView.peek().getPositionMatrix());
+                }
 
 
-            if (((uniformTest) shaderProgram).getWarpAngle() != null) {
-                MinecraftClient client = MinecraftClient.getInstance();
+                if (((uniformTest) shaderProgram).getLightAngle() != null) {
+                    Matrix4f shadowModelView = new Matrix4f();
+                    shadowModelView.identity();
+                    ShadowMapRenderer.rotateShadowModelView(shadowModelView, world);
+                    Vector4f lightPosition = new Vector4f(0.0f, 0.0f, 1.0f, 0.0f);
+                    lightPosition.mul(shadowModelView.invert());
 
-                if(client.world != null) {
-                    ((uniformTest) shaderProgram).getWarpAngle().set(SPBRevampedClient.getWarpTimer(client.world));
+                    Vector3f shadowLightDirection = new Vector3f(lightPosition.x(), lightPosition.y(), lightPosition.z());
+
+                    ((uniformTest) shaderProgram).getLightAngle().set(shadowLightDirection);
+                }
+
+
+                if (((uniformTest) shaderProgram).getWarpAngle() != null) {
+                    MinecraftClient client = MinecraftClient.getInstance();
+
+                    if(client.world != null) {
+                        ((uniformTest) shaderProgram).getWarpAngle().set(SPBRevampedClient.getWarpTimer(client.world));
+                    }
                 }
             }
         }
@@ -69,5 +71,4 @@ public class WorldRendererUniformMixin {
     public Matrix4f createProjMat(){
         return ShadowMapRenderer.orthographicMatrix(160, 0.05f, 256.0f);
     }
-
 }

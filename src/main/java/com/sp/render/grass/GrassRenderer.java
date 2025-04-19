@@ -11,7 +11,10 @@ import foundry.veil.api.client.render.framebuffer.AdvancedFbo;
 import foundry.veil.api.client.render.framebuffer.VeilFramebuffers;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
 import net.minecraft.client.gl.VertexBuffer;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormatElement;
 import net.minecraft.util.Identifier;
 import org.joml.Vector4fc;
 import org.lwjgl.opengl.GL43;
@@ -25,7 +28,8 @@ import static net.minecraft.util.math.MathHelper.sqrt;
 import static org.lwjgl.opengl.GL15C.glBindBuffer;
 import static org.lwjgl.opengl.GL15C.glGenBuffers;
 import static org.lwjgl.opengl.GL42C.*;
-import static org.lwjgl.opengl.GL43C.*;
+import static org.lwjgl.opengl.GL43C.GL_SHADER_STORAGE_BUFFER;
+import static org.lwjgl.opengl.GL43C.glDispatchCompute;
 
 public class GrassRenderer {
     VertexBuffer vertexBuffer;

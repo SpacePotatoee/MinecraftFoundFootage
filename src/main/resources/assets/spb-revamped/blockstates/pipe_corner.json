@@ -48,6 +48,37 @@
       "model": "spb-revamped:block/pipe_turn",
       "y": 90,
       "x": 180
+    },
+
+    "facing=down,type=2": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 90,
+      "x": 180
+    },
+    "facing=down,type=1": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 90,
+      "x": 180
+    },
+    "facing=down,type=0": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 90,
+      "x": 180
+    },
+    "facing=up,type=2": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 90,
+      "x": 180
+    },
+    "facing=up,type=1": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 90,
+      "x": 180
+    },
+    "facing=up,type=0": {
+      "model": "spb-revamped:block/pipe_turn",
+      "y": 90,
+      "x": 180
     }
   }
 }

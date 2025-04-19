@@ -60,6 +60,8 @@ public class SPBRevamped implements ModInitializer {
             PrAnCommonClass.LOGGER.info("Started in a development environment. Debug renderers will be activated by default.");
         }
 
+		BackroomsLevels.init();
+
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level0_chunk_generator"), Level0ChunkGenerator.CODEC);
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level1_chunk_generator"), Level1ChunkGenerator.CODEC);
 		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level2_chunk_generator"), Level2ChunkGenerator.CODEC);
@@ -155,5 +157,4 @@ public class SPBRevamped implements ModInitializer {
 		buffer.writeFloat(pitch);
 		ServerPlayNetworking.send(player, InitializePackets.SOUND, buffer);
 	}
-
 }

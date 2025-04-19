@@ -89,9 +89,6 @@ public class SPBRevampedClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
-
-
         HudRenderCallback.EVENT.register(new TitleText());
         HudRenderCallback.EVENT.register(new StaminaBar());
 
@@ -197,7 +194,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                 PostPipeline Pipeline = postProcessingManager.getPipeline(VHS_POST);
                 if (Pipeline != null) {
-                    if (ConfigStuff.enableVhsEffect || isInBackrooms()) {
+                    if (shouldRenderCameraEffect()) {
                         if(!postProcessingManager.isActive(VHS_POST)) {
                             postProcessingManager.add(VHS_POST);
                         }
@@ -254,7 +251,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             VeilRenderer renderer = VeilRenderSystem.renderer();
             ShaderPreDefinitions definitions = renderer.getShaderDefinitions();
 
-            if(!inBackrooms) {
+            if(!shouldRenderCameraEffect()) {
                 if(definitions.getDefinition("WARP") != null) {
                     definitions.remove("WARP");
                 }
@@ -363,14 +360,13 @@ public class SPBRevampedClient implements ClientModInitializer {
             }
         }));
 
-        //*For some reason veil lights aren't removed when you leave the game
         ClientPlayConnectionEvents.JOIN.register(((handler,sender, client) -> {
             VeilDeferredRenderer renderer = VeilRenderSystem.renderer().getDeferredRenderer();
             renderer.reset();
 
             client.player.sendMessage(Text.translatable("flashlight.hint", com.sp.Keybinds.toggleFlashlight.getBoundKeyLocalizedText().copyContentOnly().formatted(Formatting.BOLD, Formatting.UNDERLINE)));
 
-            //*Just in case it become  unsynced
+            //*Just in case it become unsynced
             if(client.world != null){
                 if(!BackroomsLevels.isInBackrooms(client.world.getRegistryKey())){
                     client.player.sendMessage(Text.translatable("noclip.hint"));
@@ -381,6 +377,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         }));
 
+        //*For some reason veil lights aren't removed when you leave the game
         ClientConnectionEvents.DISCONNECT.register(client -> {
             PlayerEntity player = client.player;
             if (player != null) {
@@ -437,7 +434,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     VeilDeferredRenderer deferredRenderer = renderer.getDeferredRenderer();
                     LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
 
-                    if (inBackrooms) {
+                    if (shouldRenderCameraEffect()) {
                         if (client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY && client.world.getRegistryKey() != BackroomsLevels.INFINITE_FIELD_WORLD_KEY) {
                             lightRenderer.disableVanillaLight();
                         } else {
@@ -495,6 +492,10 @@ public class SPBRevampedClient implements ClientModInitializer {
         return inBackrooms;
     }
 
+    public static boolean shouldRenderCameraEffect() {
+        return isInBackrooms() || ConfigStuff.enableVhsEffect;
+    }
+
     public static void setInBackrooms(boolean inBackrooms) {
         SPBRevampedClient.inBackrooms = inBackrooms;
     }
@@ -506,7 +507,4 @@ public class SPBRevampedClient implements ClientModInitializer {
     public static CameraShake getCameraShake() {
         return cameraShake;
     }
-
-
-
 }

@@ -21,12 +21,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import org.joml.*;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import software.bernie.geckolib.cache.object.*;
 import software.bernie.geckolib.renderer.DynamicGeoEntityRenderer;
 import software.bernie.geckolib.util.RenderUtils;
 
-import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -146,11 +148,6 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
                 left_leg.setRotY(-0.005F);
                 right_leg.setRotZ(0.005F);
                 left_leg.setRotZ(-0.005F);
-
-
-                System.out.println(entity.getZ());
-                System.out.println(right_leg.getRotX());
-                System.out.println("======================================================================");
 
                 right_arm.setRotY(0.0F);
                 left_arm.setRotY(0.0F);

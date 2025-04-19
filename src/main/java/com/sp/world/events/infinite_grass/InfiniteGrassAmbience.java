@@ -2,8 +2,6 @@ package com.sp.world.events.infinite_grass;
 
 import com.sp.init.ModSounds;
 import com.sp.world.events.AbstractEvent;
-import com.terraformersmc.modmenu.util.mod.Mod;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 

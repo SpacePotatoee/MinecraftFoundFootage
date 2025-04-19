@@ -23,10 +23,9 @@ public interface MutableUniformAccessMixin {
 
     @Shadow public abstract void setVector(CharSequence name, float[] values);
 
-    //Because apparently you can't inject into interfaces :\
     /**
-     * @author
-     * @reason
+     * @author SpacePotato
+     * @reason Because apparently you can't inject into interfaces :\
      */
     @Overwrite
     default void applyRenderSystem() {

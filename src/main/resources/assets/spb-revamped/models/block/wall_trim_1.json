@@ -1,6 +1,5 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "wall_trim_1",
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "spb-revamped:block/wall_trim_texture",

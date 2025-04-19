@@ -39,5 +39,4 @@ public abstract class ChatScreenMixin extends Screen{
             SkinWalkerCapturedFlavorText.triedToChat = true;
         }
     }
-
 }

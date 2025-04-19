@@ -57,24 +57,29 @@ public abstract class GameRendererMixin {
     @Shadow public abstract void render(float tickDelta, long startTime, boolean tick);
 
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;tiltViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V"))
-    public void renderWorld(float tickDelta, long limitTime, MatrixStack matrices, CallbackInfo ci){
-        PlayerEntity player = this.client.player;
-        this.setBlockOutlineEnabled(true);
+    public void renderWorld(float tickDelta, long limitTime, MatrixStack matrices, CallbackInfo ci) {
+        if (SPBRevampedClient.shouldRenderCameraEffect()) {
+            PlayerEntity player = this.client.player;
+            this.setBlockOutlineEnabled(true);
 
-        if (player != null) {
-            CutsceneManager cutsceneManager = SPBRevampedClient.getCutsceneManager();
+            if (player != null) {
+                CutsceneManager cutsceneManager = SPBRevampedClient.getCutsceneManager();
 
-            if(ConfigStuff.enableRealCamera && !cutsceneManager.isPlaying && client.getCameraEntity() == player) {
-                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(CameraRoll.doCameraRoll(player, tickDelta)));
-            }
-            else if(cutsceneManager.isPlaying){
-                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(cutsceneManager.cameraRotZ));
+                if (ConfigStuff.enableRealCamera && !cutsceneManager.isPlaying && client.getCameraEntity() == player) {
+                    matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(CameraRoll.doCameraRoll(player, tickDelta)));
+                } else if (cutsceneManager.isPlaying) {
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(cutsceneManager.cameraRotZ));
+                }
             }
         }
     }
 
     @ModifyArg(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/RotationAxis;rotationDegrees(F)Lorg/joml/Quaternionf;", ordinal = 2))
     private float smoothPitch(float deg) {
+        if (!SPBRevampedClient.shouldRenderCameraEffect()) {
+            return deg;
+        }
+
         PlayerEntity player = this.client.player;
 
         if(player != null && ConfigStuff.enableSmoothCamera && client.options.getPerspective() == Perspective.FIRST_PERSON){
@@ -88,7 +93,11 @@ public abstract class GameRendererMixin {
     }
 
     @ModifyArg(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/RotationAxis;rotationDegrees(F)Lorg/joml/Quaternionf;", ordinal = 3))
-    private float smoothYaw(float deg){
+    private float smoothYaw(float deg) {
+        if (!SPBRevampedClient.shouldRenderCameraEffect()) {
+            return deg;
+        }
+
         PlayerEntity player = this.client.player;
 
         if(player != null && ConfigStuff.enableSmoothCamera && client.options.getPerspective() == Perspective.FIRST_PERSON){
@@ -100,6 +109,8 @@ public abstract class GameRendererMixin {
 
         return deg;
     }
+
+    /// FIXME: Why are we doing this. Why are we overwriting this method? Space please tell me? best of wishes Chaos
 
     /**
      * @author

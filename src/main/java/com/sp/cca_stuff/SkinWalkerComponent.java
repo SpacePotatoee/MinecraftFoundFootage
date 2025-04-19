@@ -44,10 +44,10 @@ public class SkinWalkerComponent implements AutoSyncedComponent {
                     new ServerLimb(-1.5, 0, 2),
                     new ServerLimb(1.5, 0, -2),
                     new ServerLimb(-1.5, 0, -2)),
-            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
-            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
-            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build()),
-            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(1).build(), new Segment.Builder().length(1.3).build(), new Segment.Builder().length(0.85).build())
+            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(1.1).build(), new Segment.Builder().length(0.9).build()),
+            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(1.1).build(), new Segment.Builder().length(0.9).build()),
+            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(1.1).build(), new Segment.Builder().length(0.9).build()),
+            new TargetReachingIKChain(new Segment.Builder().length(0.65).build(), new Segment.Builder().length(0.9).build(), new Segment.Builder().length(1.1).build(), new Segment.Builder().length(0.9).build())
     );
 
     public SkinWalkerComponent(SkinWalkerEntity entity){

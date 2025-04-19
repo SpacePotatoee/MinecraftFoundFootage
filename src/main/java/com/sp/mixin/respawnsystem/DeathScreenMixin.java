@@ -42,7 +42,7 @@ public abstract class DeathScreenMixin extends Screen {
     //Remove the functionality of the respawn button
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget;builder(Lnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;)Lnet/minecraft/client/gui/widget/ButtonWidget$Builder;", ordinal = 0))
     private ButtonWidget.Builder disableRespawnButton(Text message, ButtonWidget.PressAction onPress){
-        if(this.isInBackrooms()) {
+        if (this.isInBackrooms()) {
             return new ButtonWidget.Builder(message, button -> {
                 firstTimeDead = false;
                 button.active = true;
@@ -55,7 +55,7 @@ public abstract class DeathScreenMixin extends Screen {
     //Remove the functionality of the title screen button
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget;builder(Lnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;)Lnet/minecraft/client/gui/widget/ButtonWidget$Builder;", ordinal = 1))
     private ButtonWidget.Builder disableTitleScreenButton(Text message, ButtonWidget.PressAction onPress){
-        if(this.isInBackrooms()) {
+        if (this.isInBackrooms()) {
             return new ButtonWidget.Builder(message, button -> {
                 firstTimeDead = false;
                 button.active = true;
@@ -68,7 +68,7 @@ public abstract class DeathScreenMixin extends Screen {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void youAreNotDoneYet(CallbackInfo ci){
-        if(this.isInBackrooms()) {
+        if (this.isInBackrooms()) {
             this.setButtonsActive(true);
             if (!firstTimeDead) {
                 delay++;

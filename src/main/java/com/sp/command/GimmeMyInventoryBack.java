@@ -27,7 +27,7 @@ public class GimmeMyInventoryBack {
     }
 
     private static int execute(Collection<ServerPlayerEntity> targets) {
-        for(ServerPlayerEntity player : targets) {
+        for (ServerPlayerEntity player : targets) {
             PlayerComponent component = InitializeComponents.PLAYER.get(player);
             component.loadPlayerSavedInventory();
             return 1;

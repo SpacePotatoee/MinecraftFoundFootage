@@ -139,11 +139,6 @@
       "spb-revamped:level2/level2_ambience"
     ]
   },
-  "level2_warp_creaking": {
-    "sounds": [
-      "spb-revamped:level2/level2_warp_creaking"
-    ]
-  },
   "level2_warp_creaking_loop": {
     "sounds": [
       "spb-revamped:level2/level2_warp_creaking_loop"
