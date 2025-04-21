@@ -7,7 +7,7 @@ import com.sp.render.PoolroomsDayCycle;
 import com.sp.world.events.AbstractEvent;
 import net.minecraft.world.World;
 
-public class PoolroomsSunset implements AbstractEvent {
+public class PoolroomsSunset extends AbstractEvent {
 
     @Override
     public void init(World world) {

@@ -5,7 +5,7 @@ import com.sp.cca_stuff.WorldEvents;
 import com.sp.world.events.AbstractEvent;
 import net.minecraft.world.World;
 
-public class Level2Warp implements AbstractEvent {
+public class Level2Warp extends AbstractEvent {
     boolean done = false;
 
     @Override

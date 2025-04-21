@@ -6,7 +6,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
-public class Level1Ambience implements AbstractEvent {
+public class Level1Ambience extends AbstractEvent {
     boolean done = false;
 
     @Override

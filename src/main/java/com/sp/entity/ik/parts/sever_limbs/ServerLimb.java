@@ -19,13 +19,24 @@ public class ServerLimb {
     public boolean hasToBeSet = true;
     public final Random random = Random.create();
     public boolean playedStepSound;
+    public StepCallback stepCallback;
 
     public ServerLimb(Vec3d baseOffset) {
         this.baseOffset = baseOffset;
     }
 
+    public ServerLimb(Vec3d baseOffset, StepCallback stepCallback) {
+        this.baseOffset = baseOffset;
+        this.stepCallback = stepCallback;
+    }
+
     public ServerLimb(double x, double y, double z) {
         this.baseOffset = new Vec3d(x, y, z);
+    }
+
+    public ServerLimb(double x, double y, double z, StepCallback stepCallback) {
+        this.baseOffset = new Vec3d(x, y, z);
+        this.stepCallback = stepCallback;
     }
 
     public void set(Vec3d newPos) {
@@ -57,10 +68,8 @@ public class ServerLimb {
 
         if (this.pos.isInRange(this.target, 0.3)) {
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                if (!this.playedStepSound) {
-//                if(this.random.nextBoolean()) {
-                    ClientWrapper.skinWalkerPlayStepSound(this);
-//                }
+                if (!this.playedStepSound || this.stepCallback != null) {
+                    this.stepCallback.onStep(this, legComponent, i, movementSpeed);
                 }
             }
 
@@ -69,6 +78,10 @@ public class ServerLimb {
         } else {
             this.playedStepSound = false;
         }
+    }
+
+    public interface StepCallback {
+        default void onStep(ServerLimb limb, IKLegComponent legComponent, int i, double movementSpeed) {}
     }
 
     private boolean adjacentEndPointGrounded(List<ServerLimb> limbs, int index) {

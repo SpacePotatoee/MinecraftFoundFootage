@@ -6,7 +6,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
-public class PoolroomsAmbience implements AbstractEvent {
+public class PoolroomsAmbience extends AbstractEvent {
     boolean done = false;
 
     @Override

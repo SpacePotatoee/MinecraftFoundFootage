@@ -21,7 +21,7 @@ import java.util.Stack;
 
 import static com.sp.block.custom.WallBlock.BOTTOM;
 
-public class Level1MazeGenerator {
+public class Level1MazeGenerator extends MazeGenerator {
     int cols;
     int rows;
     int size;
@@ -47,7 +47,8 @@ public class Level1MazeGenerator {
         this.levelDirectory = levelDirectory;
     }
 
-    public void setup(StructureWorldAccess world, boolean spawnRandomRooms){
+    @Override
+    public void setup(StructureWorldAccess world, boolean sky, boolean megaRooms, boolean spawnRandomRooms) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         if(spawnRandomRooms) {
@@ -180,33 +181,45 @@ public class Level1MazeGenerator {
         }
     }
 
-    public void removeWalls(HighVarCell currentCell, HighVarCell neighbor){
+    @Override
+    public void drawWalls(StructureWorldAccess world, String level) {
 
-        if(currentCell.getGridPosX() - neighbor.getGridPosX() != 0){
+    }
+
+    public void removeWalls(HighVarCell currentCell, HighVarCell neighbor){
+        if (currentCell.getGridPosX() - neighbor.getGridPosX() != 0) {
             int x = currentCell.getGridPosX() - neighbor.getGridPosX();
 
-            if(x > 0){
+            if (x > 0) {
                 currentCell.setEast(false);
                 neighbor.setWest(false);
-            }
-            else{
+            } else {
                 currentCell.setWest(false);
                 neighbor.setEast(false);
             }
         }
 
-        if(currentCell.getGridPosY() - neighbor.getGridPosY() != 0){
+        if (currentCell.getGridPosY() - neighbor.getGridPosY() != 0) {
             int y = currentCell.getGridPosY() - neighbor.getGridPosY();
 
-            if(y > 0){
+            if (y > 0) {
                 currentCell.setSouth(false);
                 neighbor.setNorth(false);
-            }
-            else{
+            } else {
                 currentCell.setNorth(false);
                 neighbor.setSouth(false);
             }
         }
+    }
+
+    @Override
+    public void removeWalls(LowVarCell currentCell, LowVarCell neighbor) {
+
+    }
+
+    @Override
+    public void removeWalls(CellWDoor currentCell, CellWDoor neighbor) {
+
     }
 
     public void spawnRandomRooms(StructureWorldAccess world, int x, int z) {

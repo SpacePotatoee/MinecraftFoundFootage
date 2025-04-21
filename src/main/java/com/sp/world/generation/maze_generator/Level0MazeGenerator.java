@@ -13,7 +13,7 @@ import java.util.Stack;
 
 import static com.sp.block.custom.WallBlock.BOTTOM;
 
-public class Level0MazeGenerator {
+public class Level0MazeGenerator extends MazeGenerator {
     int cols;
     int rows;
     int size;
@@ -39,7 +39,8 @@ public class Level0MazeGenerator {
         this.levelDirectory = levelDirectory;
     }
 
-    public void setup(StructureWorldAccess world){
+    @Override
+    public void setup(StructureWorldAccess world, boolean sky, boolean megaRooms, boolean spawnRandomRooms) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         for (int y = 0; y < this.rows; y++) {
@@ -173,33 +174,45 @@ public class Level0MazeGenerator {
 
     }
 
-    public void removeWalls(LowVarCell currentCell, LowVarCell neighbor){
+    @Override
+    public void drawWalls(StructureWorldAccess world, String level) {
 
-        if(currentCell.getGridPosX() - neighbor.getGridPosX() != 0){
+    }
+
+    @Override
+    public void removeWalls(HighVarCell currentCell, HighVarCell neighbor) {
+
+    }
+
+    public void removeWalls(LowVarCell currentCell, LowVarCell neighbor) {
+        if (currentCell.getGridPosX() - neighbor.getGridPosX() != 0) {
             int x = currentCell.getGridPosX() - neighbor.getGridPosX();
 
-            if(x > 0){
+            if (x > 0) {
                 currentCell.setEast(false);
                 neighbor.setWest(false);
-            }
-            else{
+            } else {
                 currentCell.setWest(false);
                 neighbor.setEast(false);
             }
         }
 
-        if(currentCell.getGridPosY() - neighbor.getGridPosY() != 0){
+        if (currentCell.getGridPosY() - neighbor.getGridPosY() != 0) {
             int y = currentCell.getGridPosY() - neighbor.getGridPosY();
 
-            if(y > 0){
+            if (y > 0) {
                 currentCell.setSouth(false);
                 neighbor.setNorth(false);
-            }
-            else{
+            } else {
                 currentCell.setNorth(false);
                 neighbor.setSouth(false);
             }
         }
+    }
+
+    @Override
+    public void removeWalls(CellWDoor currentCell, CellWDoor neighbor) {
+
     }
 
     private boolean isAirOrNull(BlockState blockState){

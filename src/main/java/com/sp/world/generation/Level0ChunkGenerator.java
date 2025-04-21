@@ -36,7 +36,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class Level0ChunkGenerator extends ChunkGenerator {
+public class Level0ChunkGenerator extends BackroomsChuckGenerator {
     public static final Codec<Level0ChunkGenerator> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource)
@@ -52,9 +52,7 @@ public class Level0ChunkGenerator extends ChunkGenerator {
         return CODEC;
     }
 
-
-
-    public void generateMaze(StructureWorldAccess world, Chunk chunk) {
+    public void generate(StructureWorldAccess world, Chunk chunk) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
         Random random = Random.create();
@@ -171,23 +169,20 @@ public class Level0ChunkGenerator extends ChunkGenerator {
                                         mutable.set(x - 16, 18, z - 16),
                                         structurePlacementData, random, 2);
                                 Level0MazeGenerator level0MazeGenerator = new Level0MazeGenerator(16, 5, 5, x, z, "level0");
-                                level0MazeGenerator.setup(world);
+                                level0MazeGenerator.setup(world, false, false, false);
                             }
                         }
                     } else {
 
                         Level0MazeGenerator level0MazeGenerator = new Level0MazeGenerator(16, 5, 5, x, z, "level0");
-                        level0MazeGenerator.setup(world);
+                        level0MazeGenerator.setup(world, false, false, false);
 
                     }
                 } else {
 
                     Level0MazeGenerator level0MazeGenerator = new Level0MazeGenerator(16, 5, 5, x, z, "level0");
-                    level0MazeGenerator.setup(world);
-
+                    level0MazeGenerator.setup(world, false, false, false);
                 }
-
-
             }
 
 

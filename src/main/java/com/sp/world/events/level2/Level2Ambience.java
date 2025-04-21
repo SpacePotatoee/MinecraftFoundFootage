@@ -2,11 +2,12 @@ package com.sp.world.events.level2;
 
 import com.sp.init.ModSounds;
 import com.sp.world.events.AbstractEvent;
+import com.sp.world.events.EventSounds;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
-public class Level2Ambience implements AbstractEvent {
+public class Level2Ambience extends AbstractEvent {
     boolean done = false;
     int duration = 200;
 
@@ -27,6 +28,10 @@ public class Level2Ambience implements AbstractEvent {
             break;
         }
         playLevel2Sound(world, soundEvent);
+    }
+
+    private void playLevel2Sound(World world, SoundEvent soundEvent){
+        EventSounds.playLevel2Sound(world, soundEvent);
     }
 
     @Override

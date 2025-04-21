@@ -21,7 +21,7 @@ import java.util.Stack;
 
 import static com.sp.block.custom.WallBlock.BOTTOM;
 
-public class PoolroomsMazeGenerator {
+public class PoolroomsMazeGenerator extends MazeGenerator {
     int cols;
     int rows;
     int size;
@@ -48,12 +48,14 @@ public class PoolroomsMazeGenerator {
         this.levelDirectory = levelDirectory;
     }
 
-    public void setup(StructureWorldAccess world, boolean sky, boolean megaRooms) {
+    @Override
+    public void setup(StructureWorldAccess world, boolean sky, boolean megaRooms, boolean spawnRandomRooms) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         Random random = Random.create();
         StructureTemplateManager structureTemplateManager = world.getServer().getStructureTemplateManager();
         Identifier roomIdentifier = null;
-        if(megaRooms) {
+
+        if (megaRooms) {
             //Initial Random Mega Room
             int w = random.nextBetween(1, 6);
             int p = random.nextBetween(1, 3);
@@ -220,7 +222,20 @@ public class PoolroomsMazeGenerator {
 
     }
 
+    @Override
+    public void drawWalls(StructureWorldAccess world, String level) {
 
+    }
+
+    @Override
+    public void removeWalls(HighVarCell currentCell, HighVarCell neighbor) {
+
+    }
+
+    @Override
+    public void removeWalls(LowVarCell currentCell, LowVarCell neighbor) {
+
+    }
 
     public CellWDoor checkNeighbors(CellWDoor[][] grid, int y, int x, StructureWorldAccess world){
         BlockPos.Mutable mutable = new BlockPos.Mutable();

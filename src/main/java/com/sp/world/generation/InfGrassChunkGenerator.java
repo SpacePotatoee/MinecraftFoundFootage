@@ -38,7 +38,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public final class InfGrassChunkGenerator extends ChunkGenerator {
+public final class InfGrassChunkGenerator extends BackroomsChuckGenerator {
     public static final Codec<InfGrassChunkGenerator> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),

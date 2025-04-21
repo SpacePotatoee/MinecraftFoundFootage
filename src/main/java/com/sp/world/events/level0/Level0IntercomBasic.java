@@ -7,7 +7,7 @@ import com.sp.world.events.AbstractEvent;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
-public class Level0IntercomBasic implements AbstractEvent {
+public class Level0IntercomBasic extends AbstractEvent {
     boolean done = false;
     boolean friend = false;
     int duration = 200;

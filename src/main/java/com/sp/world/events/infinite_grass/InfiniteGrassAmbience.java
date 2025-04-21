@@ -5,7 +5,7 @@ import com.sp.world.events.AbstractEvent;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
-public class InfiniteGrassAmbience implements AbstractEvent {
+public class InfiniteGrassAmbience extends AbstractEvent {
     boolean done = false;
 
     @Override

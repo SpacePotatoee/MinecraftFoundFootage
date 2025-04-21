@@ -38,7 +38,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public final class PoolroomsChunkGenerator extends ChunkGenerator {
+public final class PoolroomsChunkGenerator extends BackroomsChuckGenerator {
     public static final Codec<PoolroomsChunkGenerator> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
@@ -55,9 +55,7 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
         this.settings = settings;
     }
 
-
-
-    public void generateMaze(StructureWorldAccess world, Chunk chunk) {
+    public void generate(StructureWorldAccess world, Chunk chunk) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
 
@@ -88,7 +86,7 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
 
             if(server != null){
                 PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
-                poolroomsMazeGenerator.setup(world, true, false);
+                poolroomsMazeGenerator.setup(world, true, false, false);
             }
 
         } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
@@ -127,17 +125,15 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
             if (server != null) {
                 double noise = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
                 PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
-                poolroomsMazeGenerator.setup(world, noise > 0, true);
+                poolroomsMazeGenerator.setup(world, noise > 0, true, false);
             }
         }
 
     }
 
-
     protected Codec<? extends ChunkGenerator> getCodec() {
         return CODEC;
     }
-
 
     /* this method builds the shape of the terrain. it places stone everywhere, which will later be overwritten with grass, terracotta, snow, sand, etc
          by the buildSurface method. it also is responsible for putting the water in oceans. it returns a CompletableFuture-- you'll likely want this to be delegated to worker threads. */
@@ -145,7 +141,6 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
     public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
-
 
     @Override
     public int getSeaLevel() {
@@ -207,8 +202,5 @@ public final class PoolroomsChunkGenerator extends ChunkGenerator {
     public void populateEntities(ChunkRegion region) {
 
     }
-
-
-
 }
 

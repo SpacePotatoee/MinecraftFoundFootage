@@ -39,7 +39,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @SuppressWarnings("OptionalIsPresent")
-public final class Level1ChunkGenerator extends ChunkGenerator {
+public final class Level1ChunkGenerator extends BackroomsChuckGenerator {
     public static final Codec<Level1ChunkGenerator> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
@@ -59,7 +59,7 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
 
 
 
-    public void generateMaze(StructureWorldAccess world, Chunk chunk) {
+    public void generate(StructureWorldAccess world, Chunk chunk) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
         int lights = random.nextBetween(1,6);
@@ -90,7 +90,7 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
             }
 
             Level1MazeGenerator level1MazeGenerator = new Level1MazeGenerator(8, 10, 10, x, z, "level1");
-            level1MazeGenerator.setup(world, false);
+            level1MazeGenerator.setup(world, false, false, false);
         } else if (((float)chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float)chunk.getPos().z) % SPBRevamped.finalMazeSize == 0){
             double noise1 = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
             if (server != null) {
@@ -155,7 +155,7 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
                     } else {
                         if(world.getBlockState(mutable.set(x, 19, z)) != Blocks.RED_WOOL.getDefaultState()) {
                             Level1MazeGenerator level1MazeGenerator = new Level1MazeGenerator(8, 10, 10, x, z, "level1");
-                            level1MazeGenerator.setup(world, true);
+                            level1MazeGenerator.setup(world, false, false,true);
                         }
 
                     }
@@ -164,7 +164,7 @@ public final class Level1ChunkGenerator extends ChunkGenerator {
 
                     if(world.getBlockState(mutable.set(x, 19, z)) != Blocks.RED_WOOL.getDefaultState()) {
                         Level1MazeGenerator level1MazeGenerator = new Level1MazeGenerator(8, 10, 10, x, z, "level1");
-                        level1MazeGenerator.setup(world, true);
+                        level1MazeGenerator.setup(world, false, false,true);
                     }
 
                 }

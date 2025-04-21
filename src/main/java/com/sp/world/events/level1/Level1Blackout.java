@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class Level1Blackout implements AbstractEvent {
+public class Level1Blackout extends AbstractEvent {
     boolean done = false;
     private int smilerSpawnDelay = 80;
 

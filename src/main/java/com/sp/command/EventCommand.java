@@ -212,7 +212,6 @@ public class EventCommand {
         }
         events.setActiveEvent(activeEvent);
         activeEvent.init(world);
-        events.setEventActive(true);
         events.ticks = 0;
     }
 

@@ -239,6 +239,4 @@ public class LowVarCell {
     public boolean isEast() {
         return this.east;
     }
-
-
 }

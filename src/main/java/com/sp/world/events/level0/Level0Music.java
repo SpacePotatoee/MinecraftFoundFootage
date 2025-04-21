@@ -7,7 +7,7 @@ import com.sp.world.events.AbstractEvent;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
-public class Level0Music implements AbstractEvent {
+public class Level0Music extends AbstractEvent {
     boolean done = false;
     int duration = 980;
 

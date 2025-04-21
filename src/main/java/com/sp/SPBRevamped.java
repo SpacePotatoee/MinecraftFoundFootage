@@ -62,12 +62,6 @@ public class SPBRevamped implements ModInitializer {
 
 		BackroomsLevels.init();
 
-		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level0_chunk_generator"), Level0ChunkGenerator.CODEC);
-		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level1_chunk_generator"), Level1ChunkGenerator.CODEC);
-		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "level2_chunk_generator"), Level2ChunkGenerator.CODEC);
-		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "poolrooms_chunk_generator"), PoolroomsChunkGenerator.CODEC);
-		Registry.register(Registries.CHUNK_GENERATOR, new Identifier(MOD_ID, "inf_grass_chunk_generator"), InfGrassChunkGenerator.CODEC);
-
 		ModItems.registerModItems();
 		ModSounds.registerSounds();
 		InitializePackets.registerC2SPackets();

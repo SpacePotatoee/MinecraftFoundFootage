@@ -192,8 +192,5 @@ public final class Level2ChunkGenerator extends ChunkGenerator {
     public void populateEntities(ChunkRegion region) {
 
     }
-
-
-
 }
 

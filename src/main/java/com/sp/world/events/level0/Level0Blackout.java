@@ -6,7 +6,7 @@ import com.sp.init.ModSounds;
 import com.sp.world.events.AbstractEvent;
 import net.minecraft.world.World;
 
-public class Level0Blackout implements AbstractEvent {
+public class Level0Blackout extends AbstractEvent {
     boolean done = false;
 
     @Override
@@ -28,5 +28,10 @@ public class Level0Blackout implements AbstractEvent {
     @Override
     public boolean isDone() {
         return done;
+    }
+
+    @Override
+    public int duration() {
+        return 20;
     }
 }
