@@ -8,7 +8,6 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class Level2Ambience extends AbstractEvent {
-    boolean done = false;
     int duration = 200;
 
     @Override
@@ -32,16 +31,6 @@ public class Level2Ambience extends AbstractEvent {
 
     private void playLevel2Sound(World world, SoundEvent soundEvent){
         EventSounds.playLevel2Sound(world, soundEvent);
-    }
-
-    @Override
-    public void reset(World world) {
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
     }
 
     @Override

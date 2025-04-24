@@ -1,9 +1,9 @@
 package com.sp.mixin;
 
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.BackroomsLevels;
 import com.sp.init.ModDamageTypes;
 import com.sp.init.ModSounds;
+import com.sp.world.levels.custom.PoolroomsBackroomsLevel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.sound.SoundEvent;
@@ -26,9 +26,12 @@ public abstract class EntityMixin {
     @Shadow public abstract boolean damage(DamageSource source, float amount);
 
     @Inject(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateSwimming()V"))
-    private void acidWater(CallbackInfo ci){
-        WorldEvents events = InitializeComponents.EVENTS.get(this.world);
-        if(!events.isNoon()){
+    private void acidWater(CallbackInfo ci) {
+        if (!((BackroomsLevels.getLevel(this.world)) instanceof PoolroomsBackroomsLevel level)) {
+            return;
+        }
+
+        if(!level.isNoon()){
             if(this.isTouchingWater()){
                 this.damage(ModDamageTypes.of(world, ModDamageTypes.ACID_WATER), 1.0f);
             }

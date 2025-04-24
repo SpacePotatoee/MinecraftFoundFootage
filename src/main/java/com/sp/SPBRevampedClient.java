@@ -21,6 +21,8 @@ import com.sp.render.gui.StaminaBar;
 import com.sp.render.gui.TitleText;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
+import com.sp.world.levels.custom.Level2BackroomsLevel;
+import com.sp.world.levels.custom.PoolroomsBackroomsLevel;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
@@ -333,10 +335,12 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                 }
 
-                if (events.isLevel2Warp()) {
-                    definitions.define("WARP");
-                } else {
-                    definitions.remove("WARP");
+                if ((BackroomsLevels.getLevel(client.world)) instanceof Level2BackroomsLevel level) {
+                    if (level.isWarping()) {
+                        definitions.define("WARP");
+                    } else {
+                        definitions.remove("WARP");
+                    }
                 }
 
 
@@ -368,11 +372,16 @@ public class SPBRevampedClient implements ClientModInitializer {
 
             //*Just in case it become unsynced
             if(client.world != null){
-                if(!BackroomsLevels.isInBackrooms(client.world.getRegistryKey())){
+                if(!BackroomsLevels.isInBackrooms(client.world.getRegistryKey())) {
                     client.player.sendMessage(Text.translatable("noclip.hint"));
                 }
-                WorldEvents events = InitializeComponents.EVENTS.get(client.world);
-                PoolroomsDayCycle.dayTime = events.getCurrentPoolroomsTime();
+
+
+                if (!((BackroomsLevels.getLevel(client.world)) instanceof PoolroomsBackroomsLevel level)) {
+                    return;
+                }
+
+                PoolroomsDayCycle.dayTime = level.getTimeOfDay();
             }
 
         }));
@@ -464,9 +473,11 @@ public class SPBRevampedClient implements ClientModInitializer {
     }
 
     public static float getWarpTimer(World world) {
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
+        if (!(BackroomsLevels.getLevel(world) instanceof Level2BackroomsLevel level)) {
+            return 0;
+        }
 
-        if (events.isLevel2Warp() || tickTimer.getCurrentTick() != 0) {
+        if (level.isWarping() || tickTimer.getCurrentTick() != 0) {
             tickTimer.setOnOrOff(true);
             float x = tickTimer.getCurrentTick();
             float w = 0.03141592f;

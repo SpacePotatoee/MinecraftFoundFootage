@@ -1,7 +1,9 @@
 package com.sp.world.levels;
 
 import com.mojang.serialization.Codec;
+import com.sp.SPBRevamped;
 import com.sp.world.events.AbstractEvent;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -16,12 +18,13 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 public abstract class BackroomsLevel {
-    private String levelId;
-    private String modId = "spb-revamped";
-    private Codec<? extends ChunkGenerator> chunkGeneratorCodec;
-    private RegistryKey<World> worldKey;
-    private BlockPos spawnPos;
+    private final String levelId;
+    private final String modId;
+    private final Codec<? extends ChunkGenerator> chunkGeneratorCodec;
+    private final RegistryKey<World> worldKey;
+    private final BlockPos spawnPos;
     public Random random = new Random();
+    private boolean shouldSync = false;
     protected List<Supplier<AbstractEvent>> events = new ArrayList<>();
 
     public BackroomsLevel(String levelId, Codec<? extends ChunkGenerator> chunkGenerator, BlockPos spawnPos, RegistryKey<World> worldKey) {
@@ -29,6 +32,15 @@ public abstract class BackroomsLevel {
         this.chunkGeneratorCodec = chunkGenerator;
         this.spawnPos = spawnPos;
         this.worldKey = worldKey;
+        this.modId = SPBRevamped.MOD_ID;
+    }
+
+    public BackroomsLevel(String levelId, Codec<? extends ChunkGenerator> chunkGenerator, BlockPos spawnPos, RegistryKey<World> worldKey, String modId) {
+        this.levelId = levelId;
+        this.chunkGeneratorCodec = chunkGenerator;
+        this.spawnPos = spawnPos;
+        this.worldKey = worldKey;
+        this.modId = modId;
     }
 
     public void register() {
@@ -55,5 +67,19 @@ public abstract class BackroomsLevel {
         return this.events.get(random.nextInt(this.events.size())).get();
     }
 
+    public void justChanged() {
+        this.shouldSync = true;
+    }
+
     public abstract int nextEventDelay();
+
+    public abstract void writeToNbt(NbtCompound nbt);
+
+    public abstract void readFromNbt(NbtCompound nbt);
+
+    public boolean shouldSync() {
+        boolean shouldSync = this.shouldSync;
+        this.shouldSync = false;
+        return shouldSync;
+    }
 }

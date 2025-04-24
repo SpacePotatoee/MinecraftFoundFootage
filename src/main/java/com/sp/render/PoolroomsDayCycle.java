@@ -1,7 +1,7 @@
 package com.sp.render;
 
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.BackroomsLevels;
+import com.sp.world.levels.custom.PoolroomsBackroomsLevel;
 import foundry.veil.api.client.util.Easings;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -24,12 +24,16 @@ public class PoolroomsDayCycle {
 
     public static float advanceDayTime(World world) {
         if(world != null) {
-            WorldEvents events = InitializeComponents.EVENTS.get(world);
-            if(events.isSunsetTransition()) {
+            if (!((BackroomsLevels.getLevel(world)) instanceof PoolroomsBackroomsLevel level)) {
+                return 0;
+            }
+
+            if(level.isSunsetTransitioning()) {
+
                 if(!done) {
                     if (startTime == null) {
                         prevDayTime = dayTime;
-                        targetDayTime = events.getCurrentPoolroomsTime();
+                        targetDayTime = level.getTimeOfDay();
                         startTime = System.currentTimeMillis();
                     }
 
@@ -47,7 +51,7 @@ public class PoolroomsDayCycle {
             } else {
                 done = false;
             }
-            float currentTime = events.getCurrentPoolroomsTime();
+            float currentTime = level.getTimeOfDay();
 
             dayTime = currentTime;
             if(dayTime >= 1.0f){

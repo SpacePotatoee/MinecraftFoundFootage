@@ -1,17 +1,14 @@
 package com.sp.sounds;
 
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
+import com.sp.world.levels.custom.Level2BackroomsLevel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
 public class CreakingSoundInstance extends MovingSoundInstance {
@@ -28,10 +25,12 @@ public class CreakingSoundInstance extends MovingSoundInstance {
 
     @Override
     public void tick() {
-        RegistryKey<World> level = this.player.getWorld().getRegistryKey();
-        WorldEvents events = InitializeComponents.EVENTS.get(this.player.getWorld());
-        if(level != BackroomsLevels.LEVEL2_WORLD_KEY || this.player.isRemoved() || !events.isLevel2Warp()) {
-            if(!events.isLevel2Warp()){
+        if (!((BackroomsLevels.getLevel(player.getWorld())) instanceof Level2BackroomsLevel level)) {
+            return;
+        }
+
+        if(this.player.isRemoved() || !level.isWarping()) {
+            if(!level.isWarping()){
                 this.volume -= 0.01f;
             }else {
                 this.volume = 0.0f;

@@ -1,6 +1,5 @@
 package com.sp.entity.ik.parts.sever_limbs;
 
-import com.sp.clientWrapper.ClientWrapper;
 import com.sp.entity.ik.components.IKLegComponent;
 import com.sp.entity.ik.util.ArrayUtil;
 import net.fabricmc.api.EnvType;

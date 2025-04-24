@@ -3,9 +3,10 @@ package com.sp.sounds;
 import com.sp.SPBRevampedClient;
 import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
+import com.sp.world.levels.custom.Level0BackroomsLevel;
+import com.sp.world.levels.custom.Level1BackroomsLevel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
@@ -44,11 +45,19 @@ public class ThinFluorescentLightSoundInstance extends MovingSoundInstance {
         World world = this.entity.getWorld();
 
         if(world != null) {
-            WorldEvents events = InitializeComponents.EVENTS.get(world);
+            boolean blackedOut = false;
+
+            if ((BackroomsLevels.getLevel(world)) instanceof Level0BackroomsLevel level) {
+                blackedOut = level.getLightState() == Level0BackroomsLevel.LightState.BLACKOUT;
+            }
+
+            if ((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level) {
+                blackedOut = level.getLightState() == Level0BackroomsLevel.LightState.BLACKOUT;
+            }
+
             if (!this.entity.isRemoved() &&
                     entity.getPos().isWithinDistance(player.getPos(), 15.0f) &&
-                    !events.isLevel1Blackout() &&
-                    !events.isLevel2Blackout() &&
+                    !blackedOut &&
                     ((ThinFluorescentLightBlockEntity) entity).getCurrentState().get(ThinFluorescentLightBlock.ON) &&
                     !((ThinFluorescentLightBlockEntity) entity).getCurrentState().get(ThinFluorescentLightBlock.BLACKOUT) &&
                     !SPBRevampedClient.blackScreen) {

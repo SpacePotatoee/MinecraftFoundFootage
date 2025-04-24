@@ -2,9 +2,9 @@ package com.sp.sounds;
 
 import com.sp.SPBRevampedClient;
 import com.sp.block.entity.EmergencyLightBlockEntity;
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
+import com.sp.world.levels.custom.Level0BackroomsLevel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
@@ -44,11 +44,14 @@ public class EmergencyAlarmSoundInstance extends MovingSoundInstance {
     public void tick() {
         World world = this.entity.getWorld();
 
+        if (!((BackroomsLevels.getLevel(world)) instanceof Level0BackroomsLevel level)) {
+            return;
+        }
+
         if(world != null) {
-            WorldEvents events = InitializeComponents.EVENTS.get(world);
             if (!this.entity.isRemoved() &&
                     this.entity.getPos().isWithinDistance(player.getPos(), 80.0f) &&
-                    !events.isLevel0Blackout() &&
+                    level.getLightState() != Level0BackroomsLevel.LightState.BLACKOUT &&
                     !SPBRevampedClient.blackScreen)
             {
                 this.pitch = 1.0F;

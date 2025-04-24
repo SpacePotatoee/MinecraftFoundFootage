@@ -1,31 +1,30 @@
 package com.sp.world.events.level2;
 
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.BackroomsLevels;
 import com.sp.world.events.AbstractEvent;
+import com.sp.world.levels.custom.Level2BackroomsLevel;
 import net.minecraft.world.World;
 
 public class Level2Warp extends AbstractEvent {
-    boolean done = false;
-
     @Override
     public void init(World world) {
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-        events.setLevel2Warp(true);
+        if (!((BackroomsLevels.getLevel(world)) instanceof Level2BackroomsLevel level)) {
+            return;
+        }
+
+        level.setWarping(true);
     }
 
     @Override
     public void reset(World world) {
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-        events.setLevel2Warp(false);
-        done = true;
-    }
+        super.reset(world);
 
-    @Override
-    public boolean isDone() {
-        return done;
-    }
+        if (!((BackroomsLevels.getLevel(world)) instanceof Level2BackroomsLevel level)) {
+            return;
+        }
 
+        level.setWarping(false);
+    }
 
     @Override
     public int duration() {

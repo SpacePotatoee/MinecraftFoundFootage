@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(foundry.veil.impl.client.render.deferred.light.VanillaLightRenderer.class)
+@Mixin(value = foundry.veil.impl.client.render.deferred.light.VanillaLightRenderer.class, remap = false)
 public class VanillaLightRenderer {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lfoundry/veil/api/client/render/shader/program/ShaderProgram;setFloat(Ljava/lang/CharSequence;F)V"))

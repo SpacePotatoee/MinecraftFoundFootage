@@ -7,35 +7,19 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class PoolroomsAmbience extends AbstractEvent {
-    boolean done = false;
 
     @Override
     public void init(World world) {
         Random random = Random.create();
         int rand = random.nextBetween(1, 4);
-        SoundEvent soundEvent;
-        switch(rand){
-            case 1: soundEvent = ModSounds.POOLROOMS_SPLASH1;
-            break;
-            case 2: soundEvent = ModSounds.POOLROOMS_SPLASH2;
-            break;
-            case 3: soundEvent = ModSounds.POOLROOMS_DRIP1;
-            break;
-            default: soundEvent = ModSounds.POOLROOMS_DRIP2;
-            break;
-        }
+        SoundEvent soundEvent = switch (rand) {
+            case 1 -> ModSounds.POOLROOMS_SPLASH1;
+            case 2 -> ModSounds.POOLROOMS_SPLASH2;
+            case 3 -> ModSounds.POOLROOMS_DRIP1;
+            default -> ModSounds.POOLROOMS_DRIP2;
+        };
 
         playDistantSound(world, soundEvent);
-    }
-
-    @Override
-    public void reset(World world) {
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
     }
 
     @Override

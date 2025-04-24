@@ -1,29 +1,30 @@
 package com.sp.world.events.level1;
 
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.BackroomsLevels;
 import com.sp.world.events.AbstractEvent;
+import com.sp.world.levels.custom.Level0BackroomsLevel;
+import com.sp.world.levels.custom.Level1BackroomsLevel;
 import net.minecraft.world.World;
 
 public class Level1Flicker extends AbstractEvent {
-    boolean done = false;
-
     @Override
     public void init(World world) {
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-        events.setLevel1Flicker(true);
+        if (!((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level)) {
+            return;
+        }
+
+        level.setLightState(Level0BackroomsLevel.LightState.FLICKER);
     }
 
     @Override
     public void reset(World world) {
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-        events.setLevel1Flicker(false);
-        done = true;
-    }
+        super.reset(world);
 
-    @Override
-    public boolean isDone() {
-        return done;
+        if (!((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level)) {
+            return;
+        }
+
+        level.setLightState(Level0BackroomsLevel.LightState.ON);
     }
 
     @Override

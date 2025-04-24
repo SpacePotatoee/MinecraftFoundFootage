@@ -1,17 +1,14 @@
 package com.sp.sounds;
 
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
+import com.sp.world.levels.custom.PoolroomsBackroomsLevel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
 public class PoolroomsSunsetAmbienceSoundInstance extends MovingSoundInstance {
@@ -28,10 +25,11 @@ public class PoolroomsSunsetAmbienceSoundInstance extends MovingSoundInstance {
 
     @Override
     public void tick() {
-        RegistryKey<World> level = this.player.getWorld().getRegistryKey();
-        WorldEvents events = InitializeComponents.EVENTS.get(this.player.getWorld());
+        if (!((BackroomsLevels.getLevel(player.getWorld())) instanceof PoolroomsBackroomsLevel level)) {
+            return;
+        }
 
-        if(level != BackroomsLevels.POOLROOMS_WORLD_KEY || events.isNoon() || this.player.isRemoved()){
+        if(level.isNoon() || this.player.isRemoved()){
             this.setDone();
             this.repeat = true;
         }

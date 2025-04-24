@@ -1,21 +1,23 @@
 package com.sp.world.events.level0;
 
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
 import com.sp.world.events.AbstractEvent;
+import com.sp.world.levels.custom.Level0BackroomsLevel;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class Level0IntercomBasic extends AbstractEvent {
-    boolean done = false;
     boolean friend = false;
     int duration = 200;
 
     @Override
     public void init(World world) {
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-        int intercomCount = events.getIntercomCount();
+        if (!(BackroomsLevels.getLevel(world) instanceof Level0BackroomsLevel level)) {
+            return;
+        }
+
+        int intercomCount = level.getIntercomCount();
         Random random = Random.create();
 
         if (intercomCount <= 1) {
@@ -33,7 +35,7 @@ public class Level0IntercomBasic extends AbstractEvent {
         }
 
 
-        else{
+        else {
             int rand = random.nextBetween(1, 1);
             if (rand == 1) {
                 playSoundWithRandLocation(world, ModSounds.INTERCOM_FRIEND, 25, 20);
@@ -43,33 +45,26 @@ public class Level0IntercomBasic extends AbstractEvent {
                 playSoundWithRandLocation(world, ModSounds.INTERCOM_REVERSED, 25, 20);
             }
         }
-        events.addIntercomCount();
+
+        level.addIntercomCount();
     }
 
     @Override
     public void ticks(int ticks, World world) {
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
+        if (!(BackroomsLevels.getLevel(world) instanceof Level0BackroomsLevel level)) {
+            return;
+        }
+
         if (friend){
-            if(ticks == 460){
-                events.setLevel0Flicker(true);
+            if (ticks == 460){
+                level.setLightState(Level0BackroomsLevel.LightState.FLICKER);
             } else if (ticks == 528){
-                events.setLevel0Flicker(false);
-                events.setLevel0On(false);
+                level.setLightState(Level0BackroomsLevel.LightState.OFF);
                 playSound(world, ModSounds.LIGHTS_OUT);
             } else if (ticks == 656){
-                events.setLevel0On(true);
+                level.setLightState(Level0BackroomsLevel.LightState.ON);
             }
         }
-    }
-
-    @Override
-    public void reset(World world) {
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
     }
 
     @Override

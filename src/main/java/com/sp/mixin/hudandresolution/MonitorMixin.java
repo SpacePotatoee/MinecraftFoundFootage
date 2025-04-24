@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(Monitor.class)
+@Mixin(value = Monitor.class, remap = false)
 public class MonitorMixin {
 
     @Shadow @Final private List<VideoMode> videoModes;

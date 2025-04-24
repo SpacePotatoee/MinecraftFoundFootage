@@ -3,7 +3,9 @@ package com.sp.entity.custom;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.cca_stuff.SmilerComponent;
-import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.BackroomsLevels;
+import com.sp.world.levels.custom.Level0BackroomsLevel;
+import com.sp.world.levels.custom.Level1BackroomsLevel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
@@ -61,8 +63,11 @@ public class SmilerEntity extends MobEntity {
                 }
             }
 
-            WorldEvents events = InitializeComponents.EVENTS.get(this.getWorld());
-            if(!events.isLevel1Blackout()){
+            if (!((BackroomsLevels.getLevel(this.getWorld())) instanceof Level1BackroomsLevel level)) {
+                return;
+            }
+
+            if(level.getLightState() != Level0BackroomsLevel.LightState.BLACKOUT) {
                 this.discard();
             }
         }

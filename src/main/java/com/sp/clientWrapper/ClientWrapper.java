@@ -25,6 +25,10 @@ import com.sp.sounds.entity.SmilerAmbienceSoundInstance;
 import com.sp.sounds.entity.SmilerGlitchSoundInstance;
 import com.sp.sounds.pipes.GasPipeSoundInstance;
 import com.sp.sounds.pipes.WaterPipeSoundInstance;
+import com.sp.world.levels.custom.Level0BackroomsLevel;
+import com.sp.world.levels.custom.Level1BackroomsLevel;
+import com.sp.world.levels.custom.Level2BackroomsLevel;
+import com.sp.world.levels.custom.PoolroomsBackroomsLevel;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.deferred.light.AreaLight;
 import foundry.veil.api.client.render.deferred.light.PointLight;
@@ -232,15 +236,15 @@ public class ClientWrapper {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             ////AMBIENCE////
-            RegistryKey<World> level = playerComponent.player.getWorld().getRegistryKey();
+            RegistryKey<World> levelKey = playerComponent.player.getWorld().getRegistryKey();
             WorldEvents events = InitializeComponents.EVENTS.get(playerComponent.player.getWorld());
 
-            if ((level == BackroomsLevels.LEVEL1_WORLD_KEY || level == BackroomsLevels.LEVEL2_WORLD_KEY) && !soundManager.isPlaying(playerComponent.DeepAmbience)) {
+            if ((levelKey == BackroomsLevels.LEVEL1_WORLD_KEY || levelKey == BackroomsLevels.LEVEL2_WORLD_KEY) && !soundManager.isPlaying(playerComponent.DeepAmbience)) {
                 playerComponent.DeepAmbience = new AmbientSoundInstance(playerComponent.player);
                 soundManager.play(playerComponent.DeepAmbience);
             }
 
-            if (level == BackroomsLevels.LEVEL2_WORLD_KEY && !soundManager.isPlaying(playerComponent.WaterPipeAmbience) && !soundManager.isPlaying(playerComponent.GasPipeAmbience)) {
+            if (levelKey == BackroomsLevels.LEVEL2_WORLD_KEY && !soundManager.isPlaying(playerComponent.WaterPipeAmbience) && !soundManager.isPlaying(playerComponent.GasPipeAmbience)) {
                 playerComponent.WaterPipeAmbience = new WaterPipeSoundInstance(playerComponent.player);
                 playerComponent.GasPipeAmbience = new GasPipeSoundInstance(playerComponent.player);
 
@@ -248,25 +252,35 @@ public class ClientWrapper {
                 soundManager.play(playerComponent.GasPipeAmbience);
             }
 
-            if (level == BackroomsLevels.LEVEL2_WORLD_KEY && !soundManager.isPlaying(playerComponent.WarpAmbience) && events.isLevel2Warp()) {
-                playerComponent.WarpAmbience = new CreakingSoundInstance(playerComponent.player);
-                soundManager.play(playerComponent.WarpAmbience);
+            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld())) instanceof Level2BackroomsLevel level) {
+                if (levelKey == BackroomsLevels.LEVEL2_WORLD_KEY && !soundManager.isPlaying(playerComponent.WarpAmbience) && level.isWarping()) {
+                    playerComponent.WarpAmbience = new CreakingSoundInstance(playerComponent.player);
+                    soundManager.play(playerComponent.WarpAmbience);
+                }
             }
 
-            if (level == BackroomsLevels.POOLROOMS_WORLD_KEY && events.isNoon() && !soundManager.isPlaying(playerComponent.PoolroomsNoonAmbience)) {
-                playerComponent.PoolroomsNoonAmbience = new PoolroomsNoonAmbienceSoundInstance(playerComponent.player);
-                soundManager.play(playerComponent.PoolroomsNoonAmbience);
-            } else if (level == BackroomsLevels.POOLROOMS_WORLD_KEY && !events.isNoon() && !soundManager.isPlaying(playerComponent.PoolroomsSunsetAmbience)) {
-                playerComponent.PoolroomsSunsetAmbience = new PoolroomsSunsetAmbienceSoundInstance(playerComponent.player);
-                soundManager.play(playerComponent.PoolroomsSunsetAmbience);
+            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld())) instanceof PoolroomsBackroomsLevel level) {
+                if (level.isNoon() && !soundManager.isPlaying(playerComponent.PoolroomsNoonAmbience)) {
+                    playerComponent.PoolroomsNoonAmbience = new PoolroomsNoonAmbienceSoundInstance(playerComponent.player);
+                    soundManager.play(playerComponent.PoolroomsNoonAmbience);
+                }
             }
 
-            if (events.isLevel1Blackout() && !soundManager.isPlaying(playerComponent.SmilerAmbience)) {
-                playerComponent.SmilerAmbience = new SmilerAmbienceSoundInstance(playerComponent.player);
-                soundManager.play(playerComponent.SmilerAmbience);
+            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld())) instanceof PoolroomsBackroomsLevel level) {
+                if (!level.isNoon() && !soundManager.isPlaying(playerComponent.PoolroomsSunsetAmbience)) {
+                    playerComponent.PoolroomsSunsetAmbience = new PoolroomsSunsetAmbienceSoundInstance(playerComponent.player);
+                    soundManager.play(playerComponent.PoolroomsSunsetAmbience);
+                }
             }
 
-            if ((level == BackroomsLevels.INFINITE_FIELD_WORLD_KEY) && !soundManager.isPlaying(playerComponent.WindAmbience)) {
+            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld())) instanceof Level1BackroomsLevel level) {
+                if (level.getLightState() == Level0BackroomsLevel.LightState.BLACKOUT && !soundManager.isPlaying(playerComponent.SmilerAmbience)) {
+                    playerComponent.SmilerAmbience = new SmilerAmbienceSoundInstance(playerComponent.player);
+                    soundManager.play(playerComponent.SmilerAmbience);
+                }
+            }
+
+            if ((levelKey == BackroomsLevels.INFINITE_FIELD_WORLD_KEY) && !soundManager.isPlaying(playerComponent.WindAmbience)) {
                 playerComponent.WindAmbience = new InfiniteGrassAmbienceSoundInstance(playerComponent.player);
                 soundManager.play(playerComponent.WindAmbience);
             }

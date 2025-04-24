@@ -4,12 +4,17 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.world.World;
 
 public abstract class AbstractEvent {
+    boolean done = false;
 
     public abstract void init(World world);
 
-    public abstract void reset(World world);
+    public void reset(World world) {
+        done = true;
+    }
 
-    public abstract boolean isDone();
+    public boolean isDone() {
+        return done;
+    }
 
     public void end(World world){
         this.reset(world);
@@ -21,15 +26,15 @@ public abstract class AbstractEvent {
 
     }
 
-    protected void playSound(World world, SoundEvent soundEvent){
+    protected static void playSound(World world, SoundEvent soundEvent){
         EventSounds.playSound(world, soundEvent);
     }
 
-    protected void playSoundWithRandLocation(World world, SoundEvent soundEvent, int yLevel, int range){
+    protected static void playSoundWithRandLocation(World world, SoundEvent soundEvent, int yLevel, int range){
         EventSounds.playSoundWithRandLocation(world, soundEvent, yLevel, range);
     }
 
-    protected void playDistantSound(World world, SoundEvent soundEvent){
+    protected static void playDistantSound(World world, SoundEvent soundEvent){
         EventSounds.playDistantSound(world, soundEvent);
     }
 }

@@ -9,8 +9,10 @@ import com.sp.entity.ai.SlightlyBetterMobNavigation;
 import com.sp.entity.ai.goals.*;
 import com.sp.entity.ik.components.IKAnimatable;
 import com.sp.entity.ik.components.IKModelComponent;
+import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
 import com.sp.sounds.entity.SkinWalkerChaseSoundInstance;
+import com.sp.world.levels.custom.Level0BackroomsLevel;
 import foundry.veil.api.client.util.Easings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -189,6 +191,10 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         this.ticks++;
         this.getNavigation().stop();
 
+        if (!((BackroomsLevels.getLevel(this.getWorld())) instanceof Level0BackroomsLevel level)) {
+            return;
+        }
+
         if (this.ticks == 9){
             this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK, SoundCategory.HOSTILE, 10.0f, 1.0f);
         }
@@ -202,12 +208,11 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         }
 
         if (this.ticks ==  110){
-            events.setLevel0Flicker(true);
+            level.setLightState(Level0BackroomsLevel.LightState.FLICKER);
         }
 
         if (this.ticks == 195){
-            events.setLevel0Flicker(false);
-            events.setLevel0On(false);
+            level.setLightState(Level0BackroomsLevel.LightState.OFF);
 
             for(PlayerEntity player : this.getWorld().getPlayers()){
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
@@ -217,7 +222,7 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         }
 
         if (this.ticks >= 220){
-            events.setLevel0On(true);
+            level.setLightState(Level0BackroomsLevel.LightState.ON);
             this.component.setBeginReveal(false);
             this.component.setTrueForm(true);
 

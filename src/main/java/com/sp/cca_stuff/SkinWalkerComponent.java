@@ -1,6 +1,5 @@
 package com.sp.cca_stuff;
 
-import com.sp.clientWrapper.ClientWrapper;
 import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.ik.components.IKAnimatable;
 import com.sp.entity.ik.components.IKLegComponent;

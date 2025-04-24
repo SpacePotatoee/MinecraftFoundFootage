@@ -7,6 +7,8 @@ import com.sp.init.BackroomsLevels;
 import com.sp.init.ModEntities;
 import com.sp.init.ModSounds;
 import com.sp.world.events.AbstractEvent;
+import com.sp.world.levels.custom.Level0BackroomsLevel;
+import com.sp.world.levels.custom.Level1BackroomsLevel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -16,15 +18,18 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class Level1Blackout extends AbstractEvent {
-    boolean done = false;
     private int smilerSpawnDelay = 80;
 
     @Override
     public void init(World world) {
+        if (!((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level)) {
+            return;
+        }
+
         WorldEvents events = InitializeComponents.EVENTS.get(world);
-        if(!events.isLevel1Blackout()) {
-            events.setLevel1Blackout(true);
-            this.playSound(world, ModSounds.LIGHTS_OUT);
+        if(level.getLightState() != Level0BackroomsLevel.LightState.BLACKOUT) {
+            level.setLightState(Level0BackroomsLevel.LightState.BLACKOUT);
+            playSound(world, ModSounds.LIGHTS_OUT);
         }
     }
 
@@ -69,16 +74,16 @@ public class Level1Blackout extends AbstractEvent {
 
     @Override
     public void reset(World world) {
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-        events.setLevel1Blackout(false);
-        this.playSound(world, ModSounds.LIGHTS_ON);
-        done = true;
+        super.reset(world);
+
+        if (!((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level)) {
+            return;
+        }
+
+        level.setLightState(Level0BackroomsLevel.LightState.ON);
+        playSound(world, ModSounds.LIGHTS_ON);
     }
 
-    @Override
-    public boolean isDone() {
-        return done;
-    }
 
     @Override
     public int duration() {

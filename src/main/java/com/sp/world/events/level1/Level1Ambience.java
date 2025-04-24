@@ -7,35 +7,18 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class Level1Ambience extends AbstractEvent {
-    boolean done = false;
-
     @Override
     public void init(World world) {
         Random random = Random.create();
         int rand = random.nextBetween(1, 4);
-        SoundEvent soundEvent;
-        switch(rand){
-            case 1: soundEvent = ModSounds.LEVEL1_AMBIENCE1;
-            break;
-            case 2: soundEvent = ModSounds.LEVEL1_AMBIENCE2;
-            break;
-            case 3: soundEvent = ModSounds.LEVEL1_AMBIENCE3;
-            break;
-            default: soundEvent = ModSounds.LEVEL1_AMBIENCE4;
-            break;
-        }
+        SoundEvent soundEvent = switch (rand) {
+            case 1 -> ModSounds.LEVEL1_AMBIENCE1;
+            case 2 -> ModSounds.LEVEL1_AMBIENCE2;
+            case 3 -> ModSounds.LEVEL1_AMBIENCE3;
+            default -> ModSounds.LEVEL1_AMBIENCE4;
+        };
 
         playDistantSound(world, soundEvent);
-    }
-
-    @Override
-    public void reset(World world) {
-        done = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return done;
     }
 
     @Override

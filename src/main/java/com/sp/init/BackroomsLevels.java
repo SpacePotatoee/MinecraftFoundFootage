@@ -13,7 +13,6 @@ import net.minecraft.world.dimension.DimensionType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class BackroomsLevels {
     public static final RegistryKey<DimensionType> LEVEL0_DIM_TYPE = RegistryKey.of(RegistryKeys.DIMENSION_TYPE, new Identifier(SPBRevamped.MOD_ID, "level0_type"));
@@ -23,22 +22,22 @@ public class BackroomsLevels {
     public static final RegistryKey<World> POOLROOMS_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "poolrooms"));
     public static final RegistryKey<World> INFINITE_FIELD_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier(SPBRevamped.MOD_ID, "infinite_field"));
 
-    public static List<BackroomsLevel> BACKROOMS_LEVEL = new ArrayList<>();
+    public static List<BackroomsLevel> BACKROOMS_LEVELS = new ArrayList<>();
 
     public static void init() {
-        BACKROOMS_LEVEL.add(new Level0BackroomsLevel());
-        BACKROOMS_LEVEL.add(new Level1BackroomsLevel());
-        BACKROOMS_LEVEL.add(new Level2BackroomsLevel());
-        BACKROOMS_LEVEL.add(new PoolroomsBackroomsLevel());
-        BACKROOMS_LEVEL.add(new InfiniteGrassBackroomsLevel());
+        BACKROOMS_LEVELS.add(new Level0BackroomsLevel());
+        BACKROOMS_LEVELS.add(new Level1BackroomsLevel());
+        BACKROOMS_LEVELS.add(new Level2BackroomsLevel());
+        BACKROOMS_LEVELS.add(new PoolroomsBackroomsLevel());
+        BACKROOMS_LEVELS.add(new InfiniteGrassBackroomsLevel());
 
-        for (BackroomsLevel backroomsLevel : BACKROOMS_LEVEL) {
+        for (BackroomsLevel backroomsLevel : BACKROOMS_LEVELS) {
             backroomsLevel.register();
         }
     }
 
     public static BackroomsLevel getLevel(World world) {
-        for (BackroomsLevel backroomsLevel : BACKROOMS_LEVEL) {
+        for (BackroomsLevel backroomsLevel : BACKROOMS_LEVELS) {
             if (backroomsLevel.getWorldKey().equals(world.getRegistryKey())) {
                 return backroomsLevel;
             }
@@ -48,11 +47,11 @@ public class BackroomsLevels {
     }
 
     public static boolean isInBackrooms(RegistryKey<World> world){
-        return BACKROOMS_LEVEL.stream().anyMatch(level -> level.getWorldKey().equals(world));
+        return BACKROOMS_LEVELS.stream().anyMatch(level -> level.getWorldKey().equals(world));
     }
 
     public static BlockPos getCurrentLevelsOrigin(RegistryKey<World> world) {
-        for (BackroomsLevel backroomsLevel : BACKROOMS_LEVEL) {
+        for (BackroomsLevel backroomsLevel : BACKROOMS_LEVELS) {
             if (backroomsLevel.getWorldKey().equals(world)) {
                 return backroomsLevel.getSpawnPos();
             }

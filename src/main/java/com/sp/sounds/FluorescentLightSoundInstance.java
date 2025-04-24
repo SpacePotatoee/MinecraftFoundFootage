@@ -3,10 +3,10 @@ package com.sp.sounds;
 import com.sp.SPBRevampedClient;
 import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.block.entity.FluorescentLightBlockEntity;
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.BackroomsLevels;
 import com.sp.init.ModBlocks;
 import com.sp.init.ModSounds;
+import com.sp.world.levels.custom.Level0BackroomsLevel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
@@ -44,11 +44,14 @@ public class FluorescentLightSoundInstance extends MovingSoundInstance {
     public void tick() {
         World world = this.entity.getWorld();
 
+        if (!((BackroomsLevels.getLevel(player.getWorld())) instanceof Level0BackroomsLevel level)) {
+            return;
+        }
+
         if(world != null) {
-            WorldEvents events = InitializeComponents.EVENTS.get(world);
             if (!this.entity.isRemoved() &&
                 this.entity.getPos().isWithinDistance(player.getPos(), 16.0f) &&
-                !events.isLevel0Blackout() &&
+                level.getLightState() != Level0BackroomsLevel.LightState.BLACKOUT &&
                 ((FluorescentLightBlockEntity) entity).getCurrentState() == ModBlocks.FluorescentLight.getDefaultState().with(FluorescentLightBlock.ON, true) &&
                 !((FluorescentLightBlockEntity) entity).getCurrentState().get(FluorescentLightBlock.BLACKOUT) &&
                 !SPBRevampedClient.blackScreen)
