@@ -1,0 +1,142 @@
+{
+  "intro.backrooms": "Los Backrooms",
+  "intro.credit": "Un mod de ",
+
+  "itemgroup.spbrevamped": "Backrooms",
+
+  "flashlight.hint": "Presiona %s para prender o apagar la linterna",
+  "noclip.hint": "Sofócate con arena o grava para hacer noclip hacia los backrooms",
+
+  "block.spb-revamped.void_block": "Bloque Vacío",
+  "block.spb-revamped.ceiling_light": "Luz de Techo",
+  "block.spb-revamped.emergency_light": "Luz de Emergencia",
+
+  "block.spb-revamped.wall_block": "Bloque de Papel Tapiz",
+  "block.spb-revamped.wall_block_2": "Bloque de Papel Tapiz Manilla",
+  "block.spb-revamped.ceiling_tile": "Teja de Techo",
+  "block.spb-revamped.ghost_ceiling_tile": "Teja de Techo Fantasma",
+  "block.spb-revamped.carpet_block": "Bloque de Alfombra",
+  "block.spb-revamped.rug1": "Tapete 1",
+  "block.spb-revamped.rug2": "Tapete 2",
+
+  "block.spb-revamped.wooden_crate": "Caja de Madera",
+  "container.spb-revamped.wooden_crate": "Caja de Madera",
+
+  "block.spb-revamped.fluorescent_light": "Luz Fluorescente",
+  "block.spb-revamped.pool_sky": "Bloque de Cielo",
+  "block.spb-revamped.thin_fluorescent_light": "Luz Fluorescente Delgada",
+  "block.spb-revamped.bottom_trim": "Bisel Inferior",
+  "block.spb-revamped.chain_fence": "Reja de Cadena",
+  "block.spb-revamped.new_stairs": "Escaleras del Cubo de Escalera",
+
+  "block.spb-revamped.concrete1": "Concreto 1",
+  "block.spb-revamped.concrete2": "Concreto 2",
+  "block.spb-revamped.concrete5": "Concreto 5",
+  "block.spb-revamped.concrete6": "Concreto 6",
+  "block.spb-revamped.concrete7": "Concreto 7",
+  "block.spb-revamped.concrete9": "Concreto 9",
+  "block.spb-revamped.concrete9slab": "Losa de Concreto 9",
+  "block.spb-revamped.concrete10": "Concreto 10",
+  "block.spb-revamped.concrete11": "Concreto 11",
+  "block.spb-revamped.concrete12": "Concreto 12",
+  "block.spb-revamped.bricks": "Muro de Ladrillos",
+
+  "block.spb-revamped.thin_pipe": "Tubo Delgado",
+  "block.spb-revamped.thin_pipe_corner": "Esquina de Tubo Delgado",
+  "block.spb-revamped.pipe": "Tubo",
+  "block.spb-revamped.pipe_middle": "Tubo Central",
+  "block.spb-revamped.pipe_corner": "Esquina de Tubo",
+  "block.spb-revamped.big_pipe": "Tubo Grande",
+  "block.spb-revamped.big_pipe_middle": "Tubo Grande Central",
+  "block.spb-revamped.small_pipe_set": "Tubos Pequeños",
+
+  "block.spb-revamped.wall_text_1": "Pared Número 1",
+  "block.spb-revamped.wall_text_2": "Pared Número 2",
+  "block.spb-revamped.wall_text_3": "Pared Número 3",
+  "block.spb-revamped.wall_text_4": "Pared Número 4",
+  "block.spb-revamped.wall_text_5": "Pared Número 5",
+  "block.spb-revamped.wall_text_6": "Pared Número 6",
+  "block.spb-revamped.wall_text_7": "Pared Número 7",
+  "block.spb-revamped.wall_text_8": "Pared Número 8",
+  "block.spb-revamped.wall_text_99": "Pared Número 99",
+
+  "block.spb-revamped.arrow1": "Flecha 1",
+  "block.spb-revamped.arrow2": "Flecha 2",
+  "block.spb-revamped.arrow3": "Flecha 3",
+  "block.spb-revamped.arrow4": "Flecha 4",
+
+  "block.spb-revamped.pool_tiles": "Losetas de Alberca",
+  "block.spb-revamped.pool_tile_wall": "Losa Vertical de Alberca",
+  "block.spb-revamped.slope": "Rampa de Loseta de Alberca",
+
+  "block.spb-revamped.wall_small_1": "Dibujo de Mano en la Pared",
+  "block.spb-revamped.wall_small_2": "Dibujo de Cara en la Pared",
+  "block.spb-revamped.wall_drawing_door": "Dibujo de Puerta en la Pared",
+  "block.spb-revamped.wall_drawing_window": "Dibujo de Ventana en la Pared",
+
+  "item.spb-revamped.backshroom": "Hongos Back",
+  "item.spb-revamped.backshroom.tooltip": "Si no tienes nada más para comer",
+
+  "item.spb-revamped.canned_food": "Comida Enlatada",
+  "item.spb-revamped.canned_food.tooltip": "Puede estar echada a perder",
+
+  "spb-revamped.options.fullscreen.resolution": "Resolución VHS",
+
+  "spb-revamped.midnightconfig.category.video": "Opciones de Video",
+  "spb-revamped.midnightconfig.category.shaders": "Opciones de Shaders",
+  "spb-revamped.midnightconfig.enableVanillaLighting": "Activar Iluminación Vanilla",
+  "spb-revamped.midnightconfig.enableRealCamera": "Activar Cámara Realista",
+  "spb-revamped.midnightconfig.forceBackrooms": "Forzar Dentro de Backrooms",
+  "spb-revamped.midnightconfig.enableCameraRoll": "Activar Giro de Cámara",
+  "spb-revamped.midnightconfig.enableSmoothCamera": "Activar Cámara Suave",
+  "spb-revamped.midnightconfig.cameraSmoothing": "Multiplicador de Suavidad de Cámara",
+  "spb-revamped.midnightconfig.showHands": "Mostrar Mano Principal",
+  "spb-revamped.midnightconfig.useDefaultGUI": "Usar la Interfaz Predeterminada de Minecraft",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "Si tu monitor lo permite, actívalo para ver nuevas opciones de resolución completa en los ajustes de video. Le da un toque más tipo 'VHS'",
+  "spb-revamped.midnightconfig.enableVHSAspectRatio": "Usar Sólo Aspectos de VHS",
+
+  "spb-revamped.midnightconfig.enableVhsEffect": "Activar Efecto VHS",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "Multiplicador de Distorsión VHS",
+  "spb-revamped.midnightconfig.lookRollMultiplier": "Multiplicador de Giro de Vista",
+  "spb-revamped.midnightconfig.strafeRollMultiplier": "Multiplicador de Giro al Esquivar",
+  "spb-revamped.midnightconfig.lightRenderDistance": "Distancia de Renderizado de Luz (En Bloques)",
+
+  "spb-revamped.midnightconfig.enableShadows": "Activar Sombras",
+  "spb-revamped.midnightconfig.enableVolumetricLight": "Activar Luz Volumétrica",
+  "spb-revamped.midnightconfig.enablePuddles": "Activar Charcos",
+  "spb-revamped.midnightconfig.enableLevel1Fog": "Activar Niebla del Nivel 1",
+  "spb-revamped.midnightconfig.renderWaterReflections": "Activar Reflejos en el Agua",
+  "spb-revamped.midnightconfig.renderBlockReflections": "Activar Reflejos en Bloques (Solo losetas de las salas de alberca)",
+  "spb-revamped.midnightconfig.motionBlur": "Activar Desenfoque por Movimiento",
+  "spb-revamped.midnightconfig.motionBlurStrength": "Intensidad de Desenfoque por Movimiento",
+
+  "spb-revamped.midnightconfig.grassQuality": "Calidad del Pasto",
+  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "BAJA",
+  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MEDIA",
+  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "ALTA",
+  "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
+
+  "death.attack.acid": "¡%1$s se quemó en ácido!",
+  "death.attack.smiler": "¡%1$s fue eliminado por un Smiler!",
+
+  "spb-revamped.keybinds": "SPB-Revamped",
+  "key.spb-revamped.toggle_flashlight": "Prender/Apagar Linterna",
+  "key.spb-revamped.toggle_event": "Activar Evento",
+
+  "skinwalker.flavor-text.move1": "No puedes mover nada.",
+  "skinwalker.flavor-text.move2": "Ya no es tu cuerpo",
+
+  "skinwalker.flavor-text.inventory": "Ese ya no es tu inventario",
+
+  "skinwalker.flavor-text.leave": "No hay salida",
+
+  "skinwalker.flavor-text.chat": "Nadie puede oír tus gritos",
+
+  "skinwalker.flavor-text.taunt1": "Adelante",
+  "skinwalker.flavor-text.taunt2": "Intenta llamar a tus compas (T)",
+  "skinwalker.flavor-text.taunt3": "Por si no era obvio, ya te robaron la piel.",
+  "skinwalker.flavor-text.taunt4": "No seas gacho. No le mandes mensajes a los demás jugadores",
+
+  "spb-revamped.flashlight.wet1": "Tu linterna se mojó.",
+  "spb-revamped.flashlight.wet2": "Ya no funciona"
+}
