@@ -1,0 +1,142 @@
+{
+  "intro.backrooms": "Els Backrooms",
+  "intro.credit": "Un mod de ",
+
+  "itemgroup.spbrevamped": "Backrooms",
+
+  "flashlight.hint": "Prem %s per encendre o apagar la llanterna",
+  "noclip.hint": "Ofega't amb sorra o grava per fer noclip cap als backrooms",
+
+  "block.spb-revamped.void_block": "Bloc de Buit",
+  "block.spb-revamped.ceiling_light": "Llum de Sostre",
+  "block.spb-revamped.emergency_light": "Llum d'Emergència",
+
+  "block.spb-revamped.wall_block": "Bloc de Paper Pintat",
+  "block.spb-revamped.wall_block_2": "Bloc de Paper Pintat Groguenc",
+  "block.spb-revamped.ceiling_tile": "Rajola de Sostre",
+  "block.spb-revamped.ghost_ceiling_tile": "Rajola Fantasma de Sostre",
+  "block.spb-revamped.carpet_block": "Bloc de Catifa",
+  "block.spb-revamped.rug1": "Estora 1",
+  "block.spb-revamped.rug2": "Estora 2",
+
+  "block.spb-revamped.wooden_crate": "Caixa de Fusta",
+  "container.spb-revamped.wooden_crate": "Caixa de Fusta",
+
+  "block.spb-revamped.fluorescent_light": "Llum Fluorescent",
+  "block.spb-revamped.pool_sky": "Bloc de Cel",
+  "block.spb-revamped.thin_fluorescent_light": "Llum Fluorescent Prima",
+  "block.spb-revamped.bottom_trim": "Motllura Inferior",
+  "block.spb-revamped.chain_fence": "Reixa de Cadena",
+  "block.spb-revamped.new_stairs": "Escales del Cub d’Escales",
+
+  "block.spb-revamped.concrete1": "Formigó 1",
+  "block.spb-revamped.concrete2": "Formigó 2",
+  "block.spb-revamped.concrete5": "Formigó 5",
+  "block.spb-revamped.concrete6": "Formigó 6",
+  "block.spb-revamped.concrete7": "Formigó 7",
+  "block.spb-revamped.concrete9": "Formigó 9",
+  "block.spb-revamped.concrete9slab": "Losa de Formigó 9",
+  "block.spb-revamped.concrete10": "Formigó 10",
+  "block.spb-revamped.concrete11": "Formigó 11",
+  "block.spb-revamped.concrete12": "Formigó 12",
+  "block.spb-revamped.bricks": "Mur de Maons",
+
+  "block.spb-revamped.thin_pipe": "Tuberia Prima",
+  "block.spb-revamped.thin_pipe_corner": "Cantonada de Tuberia Prima",
+  "block.spb-revamped.pipe": "Tuberia",
+  "block.spb-revamped.pipe_middle": "Tuberia Central",
+  "block.spb-revamped.pipe_corner": "Cantonada de Tuberia",
+  "block.spb-revamped.big_pipe": "Tuberia Gran",
+  "block.spb-revamped.big_pipe_middle": "Tuberia Gran Central",
+  "block.spb-revamped.small_pipe_set": "Conjunt de Tuberies Petites",
+
+  "block.spb-revamped.wall_text_1": "Paret Número 1",
+  "block.spb-revamped.wall_text_2": "Paret Número 2",
+  "block.spb-revamped.wall_text_3": "Paret Número 3",
+  "block.spb-revamped.wall_text_4": "Paret Número 4",
+  "block.spb-revamped.wall_text_5": "Paret Número 5",
+  "block.spb-revamped.wall_text_6": "Paret Número 6",
+  "block.spb-revamped.wall_text_7": "Paret Número 7",
+  "block.spb-revamped.wall_text_8": "Paret Número 8",
+  "block.spb-revamped.wall_text_99": "Paret Número 99",
+
+  "block.spb-revamped.arrow1": "Fletxa 1",
+  "block.spb-revamped.arrow2": "Fletxa 2",
+  "block.spb-revamped.arrow3": "Fletxa 3",
+  "block.spb-revamped.arrow4": "Fletxa 4",
+
+  "block.spb-revamped.pool_tiles": "Rajoles de Piscina",
+  "block.spb-revamped.pool_tile_wall": "Rajola Vertical de Piscina",
+  "block.spb-revamped.slope": "Rampa de Piscina",
+
+  "block.spb-revamped.wall_small_1": "Dibuix de Mà a la Paret",
+  "block.spb-revamped.wall_small_2": "Dibuix de Cara a la Paret",
+  "block.spb-revamped.wall_drawing_door": "Dibuix de Porta a la Paret",
+  "block.spb-revamped.wall_drawing_window": "Dibuix de Finestra a la Paret",
+
+  "item.spb-revamped.backshroom": "Bolet Back",
+  "item.spb-revamped.backshroom.tooltip": "Si no tens res més per menjar",
+
+  "item.spb-revamped.canned_food": "Menjar enllaunat",
+  "item.spb-revamped.canned_food.tooltip": "Pot estar fet malbé",
+
+  "spb-revamped.options.fullscreen.resolution": "Resolució VHS",
+
+  "spb-revamped.midnightconfig.category.video": "Opcions de Vídeo",
+  "spb-revamped.midnightconfig.category.shaders": "Opcions de Shaders",
+  "spb-revamped.midnightconfig.enableVanillaLighting": "Activar Il·luminació Vanilla",
+  "spb-revamped.midnightconfig.enableRealCamera": "Activar Càmera Realista",
+  "spb-revamped.midnightconfig.forceBackrooms": "Forçar Entrada als Backrooms",
+  "spb-revamped.midnightconfig.enableCameraRoll": "Activar Rotació de Càmera",
+  "spb-revamped.midnightconfig.enableSmoothCamera": "Activar Càmera Suau",
+  "spb-revamped.midnightconfig.cameraSmoothing": "Multiplicador de Suavitat de Càmera",
+  "spb-revamped.midnightconfig.showHands": "Mostrar Mà Principal",
+  "spb-revamped.midnightconfig.useDefaultGUI": "Utilitzar Interfície per Defecte de Minecraft",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "Si el teu monitor ho permet, activa-ho per veure noves opcions de resolució VHS completa als ajustaments de vídeo.",
+  "spb-revamped.midnightconfig.enableVHSAspectRatio": "Utilitzar Només Formats VHS",
+
+  "spb-revamped.midnightconfig.enableVhsEffect": "Activar Efecte VHS",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "Multiplicador de Distorsió VHS",
+  "spb-revamped.midnightconfig.lookRollMultiplier": "Multiplicador de Rotació Visual",
+  "spb-revamped.midnightconfig.strafeRollMultiplier": "Multiplicador de Rotació en Desplaçament",
+  "spb-revamped.midnightconfig.lightRenderDistance": "Distància de Renderitzat de Llum (en blocs)",
+
+  "spb-revamped.midnightconfig.enableShadows": "Activar Ombres",
+  "spb-revamped.midnightconfig.enableVolumetricLight": "Activar Llum Volumètrica",
+  "spb-revamped.midnightconfig.enablePuddles": "Activar Bassals",
+  "spb-revamped.midnightconfig.enableLevel1Fog": "Activar Boira del Nivell 1",
+  "spb-revamped.midnightconfig.renderWaterReflections": "Activar Reflexos a l’Aigua",
+  "spb-revamped.midnightconfig.renderBlockReflections": "Activar Reflexos en Blocs (només rajoles de piscines)",
+  "spb-revamped.midnightconfig.motionBlur": "Activar Desenfocament per Moviment",
+  "spb-revamped.midnightconfig.motionBlurStrength": "Intensitat de Desenfocament per Moviment",
+
+  "spb-revamped.midnightconfig.grassQuality": "Qualitat de l’Herba",
+  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "BAIXA",
+  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MITJANA",
+  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "ALTA",
+  "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
+
+  "death.attack.acid": "%1$s s’ha cremat amb àcid!",
+  "death.attack.smiler": "%1$s ha estat eliminat per un Smiler!",
+
+  "spb-revamped.keybinds": "SPB-Revamped",
+  "key.spb-revamped.toggle_flashlight": "Encendre/Apagar Llanterna",
+  "key.spb-revamped.toggle_event": "Activar Esdeveniment",
+
+  "skinwalker.flavor-text.move1": "No pots moure res.",
+  "skinwalker.flavor-text.move2": "Ja no és el teu cos",
+
+  "skinwalker.flavor-text.inventory": "Aquest ja no és el teu inventari",
+
+  "skinwalker.flavor-text.leave": "No hi ha sortida",
+
+  "skinwalker.flavor-text.chat": "Ningú pot sentir els teus crits",
+
+  "skinwalker.flavor-text.taunt1": "Endavant",
+  "skinwalker.flavor-text.taunt2": "Prova de cridar als teus col·legues (T)",
+  "skinwalker.flavor-text.taunt3": "Per si no era obvi, ja t'han pres la pell.",
+  "skinwalker.flavor-text.taunt4": "No siguis dolent. No enviïs missatges als altres jugadors",
+
+  "spb-revamped.flashlight.wet1": "La teva llanterna s’ha mullat.",
+  "spb-revamped.flashlight.wet2": "Ja no funciona"
+}
