@@ -165,7 +165,7 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
 
         decoders.get(player.getUuid()).resetState();
 
-        if (ticks.get(player.getUuid()) > 40  && ticks.get(player.getUuid()) < 200) {
+        if (ticks.get(player.getUuid()) > 40  && ticks.get(player.getUuid()) < 600) {
             Random random = Random.create();
 
             Vector<short[]> soundList = new Vector<>();
@@ -177,7 +177,8 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
             if (soundList.size() < 20) {
                 soundList.add(totalSoundData.get(player.getUuid()));
             } else {
-                soundList.set(random.nextBetween(0, randomSpeakingList.size() - 1), totalSoundData.get(player.getUuid()));
+                soundList.remove(0);
+                soundList.add(totalSoundData.get(player.getUuid()));
             }
 
             randomSpeakingList.put(player.getUuid(), soundList);
