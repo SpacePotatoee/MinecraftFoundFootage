@@ -81,7 +81,6 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
                 continue;
             }
 
-            AL10.alSourcef(openALSoundEvent.getSource(), 4131, 0.9f);
             if (skinWalker.component.isInTrueForm()) {
                 AL10.alSourcei(openALSoundEvent.getSource(), 53248, 53251);
                 AL10.alSourcef(openALSoundEvent.getSource(), AL10.AL_PITCH, 0.8f);
