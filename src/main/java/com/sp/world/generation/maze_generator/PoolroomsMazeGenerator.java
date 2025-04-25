@@ -190,18 +190,21 @@ public class PoolroomsMazeGenerator {
                 cell.setSouth(false);
             }
         }
-        for(int i = 1; i < this.cols; i += 2) {
+
+        for(int i = 0; i < this.cols; i += 2) {
             CellWDoor cell = this.grid[this.cols - 1][i];
             if(cell != null) {
                 cell.setWest(false);
             }
         }
-        for(int i = this.cols - 2; i >= 0; i -= 2) {
+
+        for(int i = this.cols - 1; i >= 0; i -= 2) {
             CellWDoor cell = this.grid[i][this.cols - 1];
             if(cell != null) {
                 cell.setNorth(false);
             }
         }
+
         for(int i = this.cols - 1; i >= 0; i -= 2) {
             CellWDoor cell = this.grid[0][i];
             if(cell != null) {
