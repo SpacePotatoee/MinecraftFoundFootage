@@ -9,7 +9,10 @@ import de.maxhenkel.voicechat.api.audiochannel.AudioPlayer;
 import de.maxhenkel.voicechat.api.audiochannel.LocationalAudioChannel;
 import de.maxhenkel.voicechat.plugins.impl.ServerLevelImpl;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.random.Random;
+import java.util.Vector;
+import java.util.UUID;
 
 public class SpeakGoal extends Goal {
     private final Random random = Random.create(7585889L);
@@ -19,6 +22,26 @@ public class SpeakGoal extends Goal {
     public ServerLevelImpl serverLevel = null;
     public LocationalAudioChannel audioChannel;
     public AudioPlayer audioPlayer;
+    
+    // New conversation state variables
+    private enum ConversationState {
+        IDLE,      
+        INITIATING,
+        RESPONDING,
+        CONCLUDING      
+    }
+    
+    private ConversationState conversationState = ConversationState.IDLE;
+    private int conversationSegmentCount = 0;
+    private int maxConversationSegments = 0;
+    private static final int MIN_CONVERSATION_COOLDOWN = 240;
+    private static final int CONVERSATION_SEGMENT_DELAY = 40;
+    private int segmentDelay = 0;
+    
+    // Index tracking to avoid repeating the same sounds too often
+    private int lastSegmentIndex = -1;
+    private int[] recentlyUsedIndices = new int[5];
+    private int recentlyUsedCount = 0;
 
     public SpeakGoal(SkinWalkerEntity entity) {
         this.entity = entity;
@@ -32,7 +55,7 @@ public class SpeakGoal extends Goal {
 
     @Override
     public void start() {
-        this.actCooldown = getTickCount(40);
+        this.actCooldown = getTickCount(random.nextBetween(80, 240));
     }
 
     @Override
@@ -40,6 +63,7 @@ public class SpeakGoal extends Goal {
         if (this.audioPlayer != null) {
             this.audioPlayer.stopPlaying();
         }
+        this.conversationState = ConversationState.IDLE;
     }
 
     @Override
@@ -52,24 +76,144 @@ public class SpeakGoal extends Goal {
                 return;
             }
 
-            if (this.actCooldown > 0) {
-                this.actCooldown--;
-                return;
+            // Handle conversation state machine
+            switch (conversationState) {
+                case IDLE:
+                    if (this.actCooldown > 0) {
+                        this.actCooldown--;
+                        return;
+                    }
+                    
+                    if (random.nextFloat() < 0.3f) {
+                        this.actCooldown = getTickCount(random.nextBetween(120, 320));
+                        return;
+                    }
+                    
+                    startConversation();
+                    break;
+                    
+                case INITIATING:
+                case RESPONDING:
+                case CONCLUDING:
+
+                    handleConversation();
+                    break;
             }
-
-            this.playRandomPlayerSounds();
-
-            this.setRandomActCoolDown();
         }
     }
-
-    private void setRandomActCoolDown(){
-        this.actCooldown = getTickCount(random.nextBetween(60, 150));
+    
+    private void startConversation() {
+        // init convo params
+        conversationState = ConversationState.INITIATING;
+        maxConversationSegments = random.nextBetween(1, 4); // 1-4 segments cuz why not.
+        conversationSegmentCount = 0;
+        playConversationSegment();
     }
-
-    private void playRandomPlayerSounds() {
-        if (this.entity.getServer() == null) {
+    
+    private void handleConversation() {
+        if (segmentDelay > 0) {
+            segmentDelay--;
             return;
+        }
+        
+        if (audioPlayer == null || !audioPlayer.isPlaying()) {
+            conversationSegmentCount++;
+            
+            if (conversationSegmentCount >= maxConversationSegments) {
+                conversationState = ConversationState.CONCLUDING;
+                playConversationSegment();
+                
+                // end convo after final segment
+                conversationState = ConversationState.IDLE;
+                this.actCooldown = getTickCount(random.nextBetween(MIN_CONVERSATION_COOLDOWN, 500)); // Reduced max cooldown
+            } else {
+                // continue convo with next segment
+                conversationState = ConversationState.RESPONDING;
+                playConversationSegment();
+            }
+        }
+    }
+    
+    private void playConversationSegment() {
+        if (!isApiReady()) {
+            return;
+        }
+        
+        Vector<short[]> availableSegments = getAvailableVoiceSegments();
+        if (availableSegments == null || availableSegments.isEmpty()) {
+            return;
+        }
+        
+        short[] data = selectContextAppropriateSegment(availableSegments);
+        
+        // note to self, this is the voice effect for when in true form, not just overall lol.
+        if (this.component.isInTrueForm() && data != null && data.length > 0) {
+            data = demonizeVoice(data);
+        }
+        
+        playAudioSegment(data);
+        
+        // set delay before next segment
+        segmentDelay = CONVERSATION_SEGMENT_DELAY + random.nextBetween(-10, 20);
+    }
+    
+    private short[] selectContextAppropriateSegment(Vector<short[]> segments) {
+        int size = segments.size();
+        if (size <= 1) {
+            return segments.get(0);
+        }
+        
+        // avoid repeating recently used segments
+        int index;
+        int attempts = 0;
+        do {
+            index = random.nextInt(size);
+            attempts++;
+        } while (isRecentlyUsed(index) && attempts < 10);
+        
+        rememberUsedSegment(index);
+        
+        return segments.get(index);
+    }
+    
+    private boolean isRecentlyUsed(int index) {
+        if (index == lastSegmentIndex) {
+            return true;
+        }
+        
+        for (int i = 0; i < recentlyUsedCount; i++) {
+            if (recentlyUsedIndices[i] == index) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private void rememberUsedSegment(int index) {
+        lastSegmentIndex = index;
+        
+        recentlyUsedIndices[recentlyUsedCount % recentlyUsedIndices.length] = index;
+        recentlyUsedCount++;
+    }
+    
+    private Vector<short[]> getAvailableVoiceSegments() {
+        UUID targetPlayerUUID = this.component.getTargetPlayerUUID();
+        if (targetPlayerUUID == null || !BackroomsVoicechatPlugin.randomSpeakingList.containsKey(targetPlayerUUID)) {
+            return null;
+        }
+        
+        Vector<short[]> segments = BackroomsVoicechatPlugin.randomSpeakingList.get(targetPlayerUUID);
+        if (segments == null || segments.isEmpty()) {
+            return null;
+        }
+        
+        return segments;
+    }
+    
+    private boolean isApiReady() {
+        if (this.entity.getServer() == null) {
+            return false;
         }
 
         if (this.serverLevel == null) {
@@ -80,36 +224,16 @@ public class SpeakGoal extends Goal {
             this.serverLevel = new ServerLevelImpl(this.entity.getServer().getWorld(this.entity.getWorld().getRegistryKey()));
         }
 
+        return BackroomsVoicechatPlugin.voicechatApi != null;
+    }
+    
+    private void playAudioSegment(short[] data) {
         VoicechatServerApi api = BackroomsVoicechatPlugin.voicechatApi;
-
-        if (api == null) {
+        
+        if (api == null || data == null || data.length == 0) {
             return;
         }
-
-        if (BackroomsVoicechatPlugin.randomSpeakingList.isEmpty()) {
-            return;
-        }
-
-        if (!BackroomsVoicechatPlugin.randomSpeakingList.containsKey(this.component.getTargetPlayerUUID())) {
-            return;
-        }
-
-        if (BackroomsVoicechatPlugin.randomSpeakingList.get(this.component.getTargetPlayerUUID()) == null) {
-            return;
-        }
-
-        if (BackroomsVoicechatPlugin.randomSpeakingList.get(this.component.getTargetPlayerUUID()).isEmpty()) {
-            return;
-        }
-
-        short[] data = BackroomsVoicechatPlugin.randomSpeakingList.get(this.component.getTargetPlayerUUID()).get(random.nextBetween(0, BackroomsVoicechatPlugin.randomSpeakingList.get(this.component.getTargetPlayerUUID()).size() - 1));
-
-        if (this.component.isInTrueForm()) {
-            if(data != null && data.length > 0) {
-                data = demonizeVoice(data);
-            }
-        }
-
+        
         if (this.audioChannel == null) {
             this.audioChannel = api.createLocationalAudioChannel(this.entity.getUuid(), this.serverLevel, api.createPosition(this.entity.getX(), this.entity.getY(), this.entity.getZ()));
         }
@@ -120,11 +244,7 @@ public class SpeakGoal extends Goal {
 
         this.audioChannel.updateLocation(api.createPosition(this.entity.getX(), this.entity.getY(), this.entity.getZ()));
 
-        if (this.audioPlayer == null) {
-            this.audioPlayer = api.createAudioPlayer(this.audioChannel, api.createEncoder(), data);
-        }
-
-        if (!this.audioPlayer.isPlaying()) {
+        if (this.audioPlayer == null || !this.audioPlayer.isPlaying()) {
             this.audioPlayer = api.createAudioPlayer(this.audioChannel, api.createEncoder(), data);
             this.audioPlayer.startPlaying();
         }
@@ -142,9 +262,6 @@ public class SpeakGoal extends Goal {
                 data = bitCrush(data, 8);
                 break;
         }
-        //data = warpSpeed(data);
-        //data = reverseSegments(data);
-        //data = addStaticNoise(data);
 
         if (this.random.nextBetween(0, 3) < 2) {
             data = demonizeVoice(data);
@@ -185,52 +302,6 @@ public class SpeakGoal extends Goal {
 
         for (int i = 0; i < data.length; i++) {
             reversedData[i] = data[data.length - 1 - i];
-        }
-
-        return reversedData;
-    }
-
-    private short[] addStaticNoise(short[] data) {
-        short[] noisyData = new short[data.length];
-        System.arraycopy(data, 0, noisyData, 0, data.length);
-        for (int i = 0; i < noisyData.length; i++) {
-            if (this.random.nextDouble() < 0.1) {
-                noisyData[i] = (short) (this.random.nextInt(2000) - 1000);
-            }
-        }
-        return noisyData;
-    }
-
-    private short[] warpSpeed(short[] data) {
-        int chunkSize = 200;
-        float speedFactor = 0.8f + (float) this.random.nextDouble() * 0.4f;
-        short[] warpedData = new short[(int) (data.length * speedFactor)];
-
-        for (int i = 0, j = 0; i < data.length && j < warpedData.length; i += chunkSize, j += (int) (chunkSize * speedFactor)) {
-            int copyLength = Math.min(chunkSize, data.length - i);
-            System.arraycopy(data, i, warpedData, j, Math.min(copyLength, warpedData.length - j));
-        }
-
-        return warpedData;
-    }
-
-    private short[] reverseSegments(short[] data) {
-        short[] reversedData = new short[data.length];
-        System.arraycopy(data, 0, reversedData, 0, data.length);
-
-        int segmentSize = 500;
-        for (int i = 0; i < data.length; i += segmentSize * 2) {
-            if (this.random.nextBoolean()) {
-                int start = i;
-                int end = Math.min(i + segmentSize, data.length);
-                while (start < end) {
-                    short temp = reversedData[start];
-                    reversedData[start] = reversedData[end - 1];
-                    reversedData[end - 1] = temp;
-                    start++;
-                    end--;
-                }
-            }
         }
 
         return reversedData;
