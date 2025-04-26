@@ -317,8 +317,7 @@ public class ActNaturalGoal extends Goal {
                 this.currentActionCount++;
                 this.currentActionCooldown = random.nextBetween(5, 8);
             } else if (this.currentActionCount < 4) {
-                // then do a few small hand movements. idk why i but like, i think it looks better
-                this.entity.swingHand(random.nextBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND);
+                // Instead of swinging the hand, we can just have it pause
                 this.currentActionCount++;
                 this.currentActionCooldown = random.nextBetween(4, 8);
                 
