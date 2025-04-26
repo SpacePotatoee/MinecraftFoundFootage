@@ -89,7 +89,7 @@ public class ActNaturalGoal extends Goal {
             }
             
             if (this.randomAction == null) {
-                this.randomAction = random.nextBetween(1, 7);
+                this.randomAction = random.nextBetween(1, 6);
             }
             
             this.component.setCurrentlyActingNatural(true);
@@ -100,7 +100,6 @@ public class ActNaturalGoal extends Goal {
                 case 4: this.lookMultTick(); break;
                 case 5: this.scratchHeadTick(); break;
                 case 6: this.fidgetTick(); break;
-                case 7: this.randomPlayerPunchTick(); break;
             }
         }
     }
@@ -393,42 +392,5 @@ public class ActNaturalGoal extends Goal {
 
     private void setRandomActCoolDown(){
         this.actCooldown = getTickCount(random.nextBetween(40, 200));
-    }
-
-    // randomly punch at player for no fucking reason
-    private void randomPlayerPunchTick() {
-        if (this.currentActionCooldown <= 0) {
-            if (this.component.getFollowTarget() != null) {
-                // check if player is within attack range
-                double distanceSq = this.entity.squaredDistanceTo(this.component.getFollowTarget());
-                double attackRange = Math.pow(this.entity.getWidth() + 1.0, 2);
-                
-                if (distanceSq <= attackRange) {
-                    // look at player before punching
-                    this.entity.getLookControl().lookAt(
-                        this.component.getFollowTarget().getX(),
-                        this.component.getFollowTarget().getEyeY(),
-                        this.component.getFollowTarget().getZ()
-                    );
-                    
-                    // guarantee an attack happens
-                    this.entity.swingHand(Hand.MAIN_HAND);
-                    boolean attacked = this.entity.tryAttack(this.component.getFollowTarget());
-                    
-                    // and then try a second attack if we're in range for good measure :)
-                    if (attacked && random.nextFloat() < 0.4f) {
-                        this.entity.swingHand(Hand.MAIN_HAND);
-                        this.entity.tryAttack(this.component.getFollowTarget());
-                    }
-                }
-            }
-            
-            this.component.setCurrentlyActingNatural(false);
-            this.randomAction = null;
-            this.currentActionCount = 0;
-            this.setRandomActCoolDown();
-        } else {
-            this.currentActionCooldown--;
-        }
     }
 }
