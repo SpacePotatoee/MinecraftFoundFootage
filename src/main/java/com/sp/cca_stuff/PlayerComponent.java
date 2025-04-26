@@ -7,6 +7,7 @@ import com.sp.init.ModDamageTypes;
 import com.sp.init.ModSounds;
 import com.sp.mixininterfaces.ServerPlayNetworkSprint;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
+import com.sp.world.levels.BackroomsLevel;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
@@ -35,6 +36,7 @@ import net.minecraft.world.GameMode;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -60,6 +62,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private boolean playingGlitchSound;
     private boolean shouldNoClip;
     private boolean isTeleporting;
+    private int teleportingTimer = 60;
     private boolean isTeleportingToPoolrooms;
     private boolean readyForLevel1;
     private boolean readyForLevel2;
@@ -117,10 +120,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.isDoingCutscene = false;
 
         this.isTeleporting = false;
-        this.isTeleportingToPoolrooms = false;
-        this.readyForLevel1 = false;
-        this.readyForLevel2 = false;
-        this.readyForPoolrooms = false;
 
         this.isBeingCaptured = false;
         this.hasBeenCaptured = false;
@@ -187,6 +186,14 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 inventory1.set(i, itemStack);
             }
         }
+    }
+
+    public int getTeleportingTimer() {
+        return teleportingTimer;
+    }
+
+    public void setTeleportingTimer(int teleportingTimer) {
+        this.teleportingTimer = teleportingTimer;
     }
 
     public int getStamina() {
@@ -319,6 +326,18 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.talkingTooLoud = talkingTooLoud;
     }
 
+    public boolean isReadyForLevel1() {
+        return readyForLevel1;
+    }
+
+    public boolean isReadyForLevel2() {
+        return readyForLevel2;
+    }
+
+    public boolean isReadyForPoolrooms() {
+        return readyForPoolrooms;
+    }
+
     public void resetTalkingTooLoudTimer(){
         this.talkingTooLoudTimer = 20;
     }
@@ -423,9 +442,34 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         //*Cast him to the Backrooms
         if (checkBackroomsTeleport()) return;
 
-        //*Level 0 -> Level 1
-        checkLevel1Teleport();
+        BackroomsLevel level = BackroomsLevels.getLevel(this.player.getWorld());
 
+        if (level != null) {
+            List<BackroomsLevel.LevelTransition> teleports = level.checkForTransition(this, this.player.getWorld());
+
+            if (!teleports.isEmpty()) {
+                for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).predicate(this.player.getWorld(), this, BackroomsLevels.getLevel(this.player.getWorld()))) {
+                    if (crossDimensionTeleport.from().transitionOut(crossDimensionTeleport.to(), this, crossDimensionTeleport.world())) {
+                        if (teleportingTimer == -1) {
+                            teleportingTimer = 20;
+                        }
+
+                        if (teleportingTimer == 0) {
+                            TeleportTarget target = new TeleportTarget(crossDimensionTeleport.pos(), crossDimensionTeleport.playerComponent().player.getVelocity(), crossDimensionTeleport.playerComponent().player.getYaw(), crossDimensionTeleport.playerComponent().player.getPitch());
+                            FabricDimensions.teleport(crossDimensionTeleport.playerComponent().player, crossDimensionTeleport.world().getServer().getWorld(crossDimensionTeleport.to().getWorldKey()), target);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (teleportingTimer >= 0) {
+            teleportingTimer--;
+        }
+
+
+        /*
+        //*Level 0 -> Level 1
         //*Level 1 -> Level 2
         checkLevel2Teleport();
 
@@ -437,6 +481,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
         //*Grass Field -> OverWorld
         checkOverWroldReturnTeleport();
+        */
 
         //*Update Entity Visibility
         updateEntityVisibility();
@@ -477,13 +522,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.player.setSprinting(true);
             }
 
-
-
             if ((!player.isSneaking() && !player.isSprinting()) || this.isTired()) {
                 if(!attributeInstance.hasModifier(SLOW_SPEED_MODIFIER)) {
                     attributeInstance.addTemporaryModifier(SLOW_SPEED_MODIFIER);
                 }
-
             } else if(attributeInstance.hasModifier(SLOW_SPEED_MODIFIER)) {
                 attributeInstance.removeModifier(SLOW_SPEED_MODIFIER);
             }
@@ -532,6 +574,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         return false;
     }
 
+    /*
     private void checkLevel1Teleport() {
         if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
             ServerWorld level1 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL1_WORLD_KEY);
@@ -561,6 +604,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
         }
     }
+    */
 
     private void checkLevel2Teleport() {
         if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
@@ -764,20 +808,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 executorService.shutdown();
             }, 5500, TimeUnit.MILLISECONDS);
 
-        }
-    }
-
-    private Vec3d calculateLevel1TeleportCoords(PlayerEntity player){
-        if(this.currentTeleportChunkPos.x == player.getChunkPos().x && this.currentTeleportChunkPos.z == player.getChunkPos().z) {
-            int chunkX = this.currentTeleportChunkPos.getStartX();
-            int chunkZ = this.currentTeleportChunkPos.getStartZ();
-
-            double playerX = player.getPos().x;
-            double playerZ = player.getPos().z;
-
-            return new Vec3d(playerX - chunkX, player.getPos().y + 15, playerZ - chunkZ);
-        } else {
-            return new Vec3d(8.5, 36.5, 2.5);
         }
     }
 

@@ -88,7 +88,7 @@ public class PlayerManagerMixin {
                     BlockPos pos = lastDeathPos.get().getPos();
 
                     if (pos.getY() < 0){
-                        pos = BackroomsLevels.getCurrentLevelsOrigin(currentWorld.getRegistryKey());
+                        pos = BlockPos.ofFloored(BackroomsLevels.getCurrentLevelsOrigin(currentWorld.getRegistryKey()));
                     }
 
                     args.set(0, currentWorld.getRegistryKey());

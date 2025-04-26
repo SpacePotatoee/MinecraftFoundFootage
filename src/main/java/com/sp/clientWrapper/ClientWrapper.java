@@ -25,6 +25,7 @@ import com.sp.sounds.entity.SmilerAmbienceSoundInstance;
 import com.sp.sounds.entity.SmilerGlitchSoundInstance;
 import com.sp.sounds.pipes.GasPipeSoundInstance;
 import com.sp.sounds.pipes.WaterPipeSoundInstance;
+import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.custom.Level0BackroomsLevel;
 import com.sp.world.levels.custom.Level1BackroomsLevel;
 import com.sp.world.levels.custom.Level2BackroomsLevel;
@@ -55,9 +56,6 @@ import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import static com.sp.block.custom.ThinFluorescentLightBlock.FACE;
 import static com.sp.block.custom.ThinFluorescentLightBlock.FACING;
@@ -72,8 +70,9 @@ public class ClientWrapper {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             MinecraftClient client = MinecraftClient.getInstance();
             client.getSoundManager().play(new PositionedSoundInstance(ModSounds.SKINWALKER_FOOTSTEP, SoundCategory.HOSTILE, 10.0f, 1.0f, limb.random, limb.pos.x, limb.pos.y, limb.pos.z));
-            limb.playedStepSound = true;
         }
+
+        limb.playedStepSound = true;
     }
 
     public static void tickClientPlayerComponent(PlayerComponent playerComponent) {
@@ -178,19 +177,18 @@ public class ClientWrapper {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //Client side stuff for level 0 -> 1 and 1 -> 2 transitions
-            if (playerComponent.isTeleporting()) {
-                ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-                playerComponent.setTeleporting(false);
+            BackroomsLevel level1 = BackroomsLevels.getLevel(playerComponent.player.getWorld());
 
-                //Turn off the lights
-                client.player.playSound(ModSounds.LIGHTS_OUT, SoundCategory.AMBIENT, 1, 1);
-                SPBRevampedClient.getCutsceneManager().blackScreen.showBlackScreen(80, false, false);
+            if (level1 != null) {
+                List<BackroomsLevel.LevelTransition> teleports = level1.checkForTransition(playerComponent, playerComponent.player.getWorld());
 
-                //PlaySound after black screen is over
-                executorService.schedule(() -> {
-                    client.player.playSound(ModSounds.LIGHTS_ON, SoundCategory.AMBIENT, 1, 1);
-                    executorService.shutdown();
-                }, 4000, TimeUnit.MILLISECONDS);
+                if (!teleports.isEmpty() && playerComponent.getTeleportingTimer() >= 19) {
+                    for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).predicate(playerComponent.player.getWorld(), playerComponent, BackroomsLevels.getLevel(playerComponent.player.getWorld()))) {
+                        crossDimensionTeleport.from().transitionOut(crossDimensionTeleport.to(), playerComponent, crossDimensionTeleport.world());
+                    }
+
+                    playerComponent.setTeleportingTimer(18);
+                }
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

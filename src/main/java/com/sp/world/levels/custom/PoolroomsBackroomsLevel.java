@@ -1,19 +1,21 @@
 package com.sp.world.levels.custom;
 
+import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.BackroomsLevels;
 import com.sp.world.events.poolrooms.PoolroomsAmbience;
 import com.sp.world.events.poolrooms.PoolroomsSunset;
 import com.sp.world.generation.PoolroomsChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public class PoolroomsBackroomsLevel extends BackroomsLevel {
     public float timeOfDay = 0;
     public boolean sunsetTransitioning = false;
 
     public PoolroomsBackroomsLevel() {
-        super("poolrooms", PoolroomsChunkGenerator.CODEC, new BlockPos(15, 104, 16), BackroomsLevels.POOLROOMS_WORLD_KEY);
+        super("poolrooms", PoolroomsChunkGenerator.CODEC, new Vec3d(15, 104, 16), BackroomsLevels.POOLROOMS_WORLD_KEY);
     }
 
     @Override
@@ -61,5 +63,15 @@ public class PoolroomsBackroomsLevel extends BackroomsLevel {
     public void readFromNbt(NbtCompound nbt) {
         this.timeOfDay = nbt.getFloat("timeOfDay");
         this.sunsetTransitioning = nbt.getBoolean("sunsetTransitioning");
+    }
+
+    @Override
+    public boolean transitionOut(BackroomsLevel to, PlayerComponent playerComponent, World world) {
+        return true;
+    }
+
+    @Override
+    public void transitionIn(BackroomsLevel from, PlayerComponent playerComponent, World world) {
+
     }
 }

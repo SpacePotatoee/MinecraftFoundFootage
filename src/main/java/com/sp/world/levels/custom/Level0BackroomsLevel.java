@@ -1,6 +1,10 @@
 package com.sp.world.levels.custom;
 
+import com.sp.SPBRevampedClient;
+import com.sp.cca_stuff.InitializeComponents;
+import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.BackroomsLevels;
+import com.sp.init.ModSounds;
 import com.sp.world.events.AbstractEvent;
 import com.sp.world.events.level0.Level0Blackout;
 import com.sp.world.events.level0.Level0Flicker;
@@ -8,17 +12,28 @@ import com.sp.world.events.level0.Level0IntercomBasic;
 import com.sp.world.events.level0.Level0Music;
 import com.sp.world.generation.Level0ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class Level0BackroomsLevel extends BackroomsLevel {
+    ///execute in spb-revamped:level0 run tp 1063 15 24
+
     private int blackoutCount = 0;
     private int intercomCount = 0;
     private LightState lightState = LightState.ON;
 
     public Level0BackroomsLevel() {
-        super("level0", Level0ChunkGenerator.CODEC, new BlockPos(1, 22, 1), BackroomsLevels.LEVEL0_WORLD_KEY);
+        super("level0", Level0ChunkGenerator.CODEC, new Vec3d(8.5, 36.5, 2.5), BackroomsLevels.LEVEL0_WORLD_KEY);
     }
 
     @Override
@@ -28,6 +43,35 @@ public class Level0BackroomsLevel extends BackroomsLevel {
         events.add(Level0Flicker::new);
         events.add(Level0IntercomBasic::new);
         events.add(Level0Music::new);
+
+        this.registerTransition((world, playerComponent, from) -> {
+            List<CrossDimensionTeleport> playerList = new ArrayList<>();
+
+            if (from instanceof Level0BackroomsLevel && playerComponent.player.getPos().getY() <= 11 && playerComponent.player.isOnGround()) {
+                for (PlayerEntity player : playerComponent.player.getWorld().getPlayers()) {
+                    PlayerComponent otherPlayerComponent = InitializeComponents.PLAYER.get(player);
+                    if (player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
+                        playerList.add(new CrossDimensionTeleport(player.getWorld(), otherPlayerComponent, calculateLevel1TeleportCoords(player, player.getChunkPos()), BackroomsLevels.LEVEL0_BACKROOMS_LEVEL, BackroomsLevels.LEVEL1_BACKROOMS_LEVEL));
+                    }
+                }
+            }
+
+            return playerList;
+        }, "level0 -> level1");
+    }
+
+    private Vec3d calculateLevel1TeleportCoords(PlayerEntity player, ChunkPos chunkPos) {
+        if(chunkPos.x == player.getChunkPos().x && chunkPos.z == player.getChunkPos().z) {
+            int chunkX = chunkPos.getStartX();
+            int chunkZ = chunkPos.getStartZ();
+
+            double playerX = player.getPos().x;
+            double playerZ = player.getPos().z;
+
+            return new Vec3d(playerX - chunkX, player.getPos().y + 15, playerZ - chunkZ);
+        } else {
+            return new Vec3d(8.5, 36.5, 2.5);
+        }
     }
 
     @Override
@@ -63,6 +107,30 @@ public class Level0BackroomsLevel extends BackroomsLevel {
         this.blackoutCount = nbt.getInt("blackoutCount");
         this.intercomCount = nbt.getInt("intercomCount");
         this.lightState = LightState.valueOf(nbt.getString("lightState"));
+    }
+
+    @Override
+    public boolean transitionOut(BackroomsLevel to, PlayerComponent playerComponent, World world) {
+        if (world.isClient()) {
+            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+
+            //Turn off the lights
+            playerComponent.player.playSound(ModSounds.LIGHTS_OUT, SoundCategory.AMBIENT, 1, 1);
+            SPBRevampedClient.getCutsceneManager().blackScreen.showBlackScreen(80, false, false);
+
+            //PlaySound after black screen is over
+            executorService.schedule(() -> {
+                playerComponent.player.playSound(ModSounds.LIGHTS_ON, SoundCategory.AMBIENT, 1, 1);
+                executorService.shutdown();
+            }, 4000, TimeUnit.MILLISECONDS);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void transitionIn(BackroomsLevel from, PlayerComponent playerComponent, World world) {
+
     }
 
     public int getIntercomCount() {
