@@ -96,7 +96,7 @@ public class ActNaturalGoal extends Goal {
             switch (this.randomAction) {
                 case 1: this.sneakTick(); break;
                 case 2: this.strafeTick(); break;
-                case 3: this.lookAndPunchTick(); break;
+                case 3: this.lookAroundTick(); break;
                 case 4: this.lookMultTick(); break;
                 case 5: this.scratchHeadTick(); break;
                 case 6: this.fidgetTick(); break;
@@ -216,7 +216,7 @@ public class ActNaturalGoal extends Goal {
         }
     }
 
-    private void lookAndPunchTick() {
+    private void lookAroundTick() {
         this.component.setShouldLookAtTarget(false);
         if(this.randLookDir == null){
             float randX = rand.nextFloat(-45, 45);
@@ -230,7 +230,6 @@ public class ActNaturalGoal extends Goal {
                 if (random.nextFloat() < 0.3f) {
                     this.currentActionCooldown = random.nextBetween(4, 8);
                 } else {
-                    this.entity.swingHand(Hand.MAIN_HAND);
                     this.currentActionCount++;
                     this.currentActionCooldown = random.nextBetween(2, 5);
                 }
@@ -272,11 +271,6 @@ public class ActNaturalGoal extends Goal {
                 }
                 
                 lastLookDir = newLookDir;
-
-                // make it occasionally punch while looking around
-                if(random.nextFloat() < 0.15f){
-                    this.entity.swingHand(Hand.MAIN_HAND);
-                }
 
                 this.currentActionCount++;
                 this.currentActionCooldown = random.nextBetween(5, 15);
