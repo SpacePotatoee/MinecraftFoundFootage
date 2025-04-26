@@ -34,6 +34,9 @@ _If applicable, add screenshots to help illustrate the problem._
 - **Memory (RAM):**  
 - **Graphics Card (GPU):**  
 
+### **★ Mods**
+_Provide a screenshot of your mods folder here_
+
 ## **Additional Context**  
 _Add any other relevant details about the issue._  
 

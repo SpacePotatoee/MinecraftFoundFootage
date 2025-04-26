@@ -1,1 +1,1 @@
-![Minecraft Found Footage](https://github.com/SpacePotatoee/MinecraftFoundFootage/blob/main/MinecraftFoundFootage.png)
+![Minecraft Found Footage](https://github.com/SpacePotatoee/SPBackrooms-Revamped/blob/master/MinecraftFoundFootage.png)
