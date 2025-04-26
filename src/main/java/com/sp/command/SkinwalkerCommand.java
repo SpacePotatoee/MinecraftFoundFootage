@@ -55,16 +55,16 @@ public class SkinwalkerCommand {
         }
 
         for (ServerPlayerEntity target : targets) {
+            WorldEvents events = InitializeComponents.EVENTS.get(source.getWorld());
+            events.setActiveSkinwalkerTarget(target.getUuid());
             SkinWalkerEntity skinWalkerEntity = ModEntities.SKIN_WALKER_ENTITY.create(source.getWorld());
+
             if (skinWalkerEntity != null) {
                 PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
-                WorldEvents events = InitializeComponents.EVENTS.get(source.getWorld());
-
                 skinWalkerEntity.refreshPositionAndAngles((double) target.getX(), (double) target.getY(), (double) target.getZ(), target.getYaw(), target.getPitch());
                 skinWalkerEntity.setVelocity(target.getVelocity());
                 source.getWorld().spawnEntity(skinWalkerEntity);
                 events.activeSkinWalkerEntity = skinWalkerEntity;
-                events.setActiveSkinwalkerTarget(target.getUuid());
 
                 targetComponent.setPrevGameMode(target.interactionManager.getGameMode());
                 targetComponent.setBeingCaptured(true);
