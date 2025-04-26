@@ -32,6 +32,12 @@ public class ActNaturalGoal extends Goal {
     private int lookAtGroundCooldown = 0;
     private boolean isLookingAtGround = false;
     private int fidgetCounter = 0;
+    
+    // fidgety movement variables
+    private int fidgetyMovementCooldown = 0;
+    private int currentFidgetDuration = 0;
+    private boolean isFidgeting = false;
+    private int fidgetDirection = 0; // notes lol: 0=forward, 1=backward, 2=left, 3=right
 
     public ActNaturalGoal(SkinWalkerEntity entity) {
         this.entity = entity;
@@ -62,6 +68,9 @@ public class ActNaturalGoal extends Goal {
     @Override
     public void tick() {
         if(!this.entity.getWorld().isClient) {
+            // this is here so that the fidgety movements happen regardless of what action its doing
+            tickFidgetyMovements();
+            
             // Handle occasional idle state
             if (isIdling) {
                 idleTick();
@@ -89,7 +98,11 @@ public class ActNaturalGoal extends Goal {
             }
             
             if (this.randomAction == null) {
-                this.randomAction = random.nextBetween(1, 6);
+                if (random.nextFloat() < 0.4f) {
+                    this.randomAction = 7;
+                } else {
+                    this.randomAction = random.nextBetween(1, 6);
+                }
             }
             
             this.component.setCurrentlyActingNatural(true);
@@ -100,6 +113,7 @@ public class ActNaturalGoal extends Goal {
                 case 4: this.lookMultTick(); break;
                 case 5: this.scratchHeadTick(); break;
                 case 6: this.fidgetTick(); break;
+                case 7: this.fidgetyMovementTick(); break;
             }
         }
     }
@@ -122,6 +136,11 @@ public class ActNaturalGoal extends Goal {
                 eulerToVector(randX, randY), 
                 random.nextBetween(8, 15)
             );
+        }
+        
+        // this is to make the fidgety movements happen more often while idle. because people get fidgety when they're bored and standing still
+        if (random.nextFloat() < 0.1f) {
+            startRandomFidgetyMovement(random.nextBetween(5, 15));
         }
         
         // Rarely look at the ground
@@ -380,5 +399,108 @@ public class ActNaturalGoal extends Goal {
 
     private void setRandomActCoolDown(){
         this.actCooldown = getTickCount(random.nextBetween(40, 200));
+    }
+
+    // omg, a dedicated method for fidgety movements
+    private void fidgetyMovementTick() {
+        if (this.currentActionCooldown <= 0) {
+            if (this.currentActionCount < 8) {
+                // this is the W/A/S/D-like movement thingy.
+                // Works like this -> 0=forward, 1=backward, 2=left, 3=right, and 4=stop (briefly)
+                int moveType = random.nextBetween(0, 4);
+                
+                switch (moveType) {
+                    case 0: // Forward
+                        this.entity.forwardSpeed = rand.nextFloat(0.2f, 0.6f);
+                        this.entity.sidewaysSpeed = 0;
+                        break;
+                    case 1: // Backward
+                        this.entity.forwardSpeed = rand.nextFloat(-0.4f, -0.1f);
+                        this.entity.sidewaysSpeed = 0;
+                        break;
+                    case 2: // Left
+                        this.entity.sidewaysSpeed = rand.nextFloat(0.2f, 0.5f);
+                        this.entity.forwardSpeed = 0;
+                        break;
+                    case 3: // Right
+                        this.entity.sidewaysSpeed = rand.nextFloat(-0.5f, -0.2f);
+                        this.entity.forwardSpeed = 0;
+                        break;
+                    case 4: // Stop (brief pause)
+                        this.entity.sidewaysSpeed = 0;
+                        this.entity.forwardSpeed = 0;
+                        break;
+                }
+                
+                this.currentActionCount++;
+                this.currentActionCooldown = random.nextBetween(4, 12);
+            } else {
+                // ending the sequence thing
+                this.entity.forwardSpeed = 0;
+                this.entity.sidewaysSpeed = 0;
+                this.component.setCurrentlyActingNatural(false);
+                this.randomAction = null;
+                this.currentActionCount = 0;
+                this.setRandomActCoolDown();
+            }
+        } else {
+            this.currentActionCooldown--;
+        }
+    }
+    
+    // handling small random movements that can happen during any state
+    private void tickFidgetyMovements() {
+
+        if (!isFidgeting && fidgetyMovementCooldown <= 0) {
+            // 0.08f is basically an 8% chance per tick. if you didnt know that, now you do.
+            if (random.nextFloat() < 0.08f) {
+                startRandomFidgetyMovement(random.nextBetween(3, 8));
+            } else {
+                fidgetyMovementCooldown = random.nextBetween(5, 20);
+            }
+        }
+        
+
+        if (isFidgeting) {
+            applyFidgetyMovement();
+            
+            currentFidgetDuration--;
+            if (currentFidgetDuration <= 0) {
+                stopFidgetyMovement();
+                fidgetyMovementCooldown = random.nextBetween(10, 30);
+            }
+        } else {
+            fidgetyMovementCooldown--;
+        }
+    }
+    
+    private void startRandomFidgetyMovement(int duration) {
+        isFidgeting = true;
+        currentFidgetDuration = duration;
+        
+        fidgetDirection = random.nextInt(4); //again, it works like this -> 0=forward, 1=backward, 2=left, 3=right
+    }
+    
+    private void applyFidgetyMovement() {
+        switch (fidgetDirection) {
+            case 0: // Forward
+                this.entity.forwardSpeed = rand.nextFloat(0.1f, 0.3f);
+                break;
+            case 1: // Backward
+                this.entity.forwardSpeed = rand.nextFloat(-0.3f, -0.1f);
+                break;
+            case 2: // Left
+                this.entity.sidewaysSpeed = rand.nextFloat(0.1f, 0.3f);
+                break;
+            case 3: // Right
+                this.entity.sidewaysSpeed = rand.nextFloat(-0.3f, -0.1f);
+                break;
+        }
+    }
+    
+    private void stopFidgetyMovement() {
+        isFidgeting = false;
+        this.entity.forwardSpeed = 0;
+        this.entity.sidewaysSpeed = 0;
     }
 }
