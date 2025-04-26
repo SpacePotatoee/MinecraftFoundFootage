@@ -219,10 +219,10 @@ public class ActNaturalGoal extends Goal {
     private void lookAroundTick() {
         this.component.setShouldLookAtTarget(false);
         if(this.randLookDir == null){
-            float randX = rand.nextFloat(-45, 45);
-            float randY = rand.nextFloat(-180, 180);
+            float randX = rand.nextFloat(-20, 20);
+            float randY = rand.nextFloat(-40, 40);
             this.randLookDir = eulerToVector(randX, randY);
-            ((SkinWalkerEntity.SkinWalkerLookControl)this.entity.getLookControl()).lookAt(this.randLookDir, 5);
+            ((SkinWalkerEntity.SkinWalkerLookControl)this.entity.getLookControl()).lookAt(this.randLookDir, 18);
         }
 
         if(this.currentActionCooldown <= 0){
@@ -231,7 +231,7 @@ public class ActNaturalGoal extends Goal {
                     this.currentActionCooldown = random.nextBetween(4, 8);
                 } else {
                     this.currentActionCount++;
-                    this.currentActionCooldown = random.nextBetween(2, 5);
+                    this.currentActionCooldown = random.nextBetween(8, 15);
                 }
             } else {
                 this.component.setCurrentlyActingNatural(false);
@@ -251,29 +251,23 @@ public class ActNaturalGoal extends Goal {
 
         if(this.currentActionCooldown <= 0){
             if (this.currentActionCount < 5) {
-                // we do smoother head movement by blending between look directions
-                float randX = rand.nextFloat(-45, 45);
-                float randY = rand.nextFloat(-180, 180);
+                float randX = rand.nextFloat(-20, 20);
+                float randY = rand.nextFloat(-45, 45);
                 
-                // create a new random direction
                 Vec3d newLookDir = eulerToVector(randX, randY);
                 
-                // if we have a previous direction, blend between them
                 if (lastLookDir != null) {
-                    int lookSpeed = random.nextBetween(4, 9);
-                    if (this.currentActionCount > 2 && random.nextFloat() < 0.4f) {
-                        lookSpeed += 3;
-                    }
+                    int lookSpeed = random.nextBetween(12, 20);
                     
                     ((SkinWalkerEntity.SkinWalkerLookControl)this.entity.getLookControl()).lookAt(newLookDir, lookSpeed);
                 } else {
-                    ((SkinWalkerEntity.SkinWalkerLookControl)this.entity.getLookControl()).lookAt(newLookDir, 5);
+                    ((SkinWalkerEntity.SkinWalkerLookControl)this.entity.getLookControl()).lookAt(newLookDir, 15);
                 }
                 
                 lastLookDir = newLookDir;
 
                 this.currentActionCount++;
-                this.currentActionCooldown = random.nextBetween(5, 15);
+                this.currentActionCooldown = random.nextBetween(10, 25);
                 
                 if (random.nextFloat() < 0.2f) {
                     this.currentActionCooldown += random.nextBetween(5, 15);
