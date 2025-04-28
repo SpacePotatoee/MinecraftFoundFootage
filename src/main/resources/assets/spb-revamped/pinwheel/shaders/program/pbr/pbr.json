@@ -1,0 +1,5 @@
+{
+  "vertex": "spb-revamped:pbr/pbr",
+  "geometry": "spb-revamped:pbr/pbr",
+  "fragment": "spb-revamped:pbr/pbr"
+}

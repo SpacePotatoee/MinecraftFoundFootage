@@ -30,7 +30,7 @@ public class ModBlocks {
 
 
     public static final Block CarpetBlock = registerBlock("carpet_block",
-            new CarpetBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.CARPET)));
+            new Block(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.CARPET)));
 
     public static final Block CeilingTile = registerBlock("ceiling_tile",
             new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.CEILING_TILE)));
@@ -197,9 +197,6 @@ public class ModBlocks {
 
     public static final Block PoolTileWall = registerBlock("pool_tile_wall",
             new PoolTileWall(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).solid().noBlockBreakParticles()));
-
-    public static final Block Window = registerBlock("window",
-            new WindowBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).nonOpaque().noBlockBreakParticles()));
 
     public static final Block PoolTileSlope = registerBlock("slope",
             new PoolTileSlopeBlock(FabricBlockSettings.copyOf(Blocks.STONE).hardness(-1f).noBlockBreakParticles().nonOpaque().sounds(SprintBlockSoundGroup.CONCRETE)));

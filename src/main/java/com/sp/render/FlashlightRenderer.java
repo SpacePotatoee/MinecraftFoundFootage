@@ -16,7 +16,7 @@ import java.util.List;
 
 public class FlashlightRenderer {
     private final MinecraftClient client;
-    public final HashMap<AbstractClientPlayerEntity, ArrayList<AreaLight>> flashLightList2;
+    private final HashMap<AbstractClientPlayerEntity, ArrayList<AreaLight>> flashLightList2;
 
     public FlashlightRenderer(){
         this.client = MinecraftClient.getInstance();
@@ -76,8 +76,6 @@ public class FlashlightRenderer {
                 }
             }
         }
-
-
     }
 
     private void tryToRemoveFlashlight(AbstractClientPlayerEntity player){
@@ -88,6 +86,10 @@ public class FlashlightRenderer {
             }
             flashLightList2.remove(player);
         }
+    }
+
+    public void clearFlashlights(){
+        this.flashLightList2.clear();
     }
 
 }

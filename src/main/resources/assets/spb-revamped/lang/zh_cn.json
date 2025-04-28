@@ -92,6 +92,7 @@
 
   "death.attack.acid": "%1$s在酸液中灼伤！",
   "death.attack.smiler": "%1$s被笑魇杀害！",
+  "death.attack.skin_walker": "%1$s was killed by a Skin Walker!",
 
   "spb-revamped.keybinds": "SPB重制版",
   "key.spb-revamped.toggle_flashlight": "切换手电筒",

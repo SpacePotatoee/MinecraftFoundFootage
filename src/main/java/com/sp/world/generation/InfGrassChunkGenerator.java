@@ -38,7 +38,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public final class InfGrassChunkGenerator extends BackroomsChuckGenerator {
+public final class InfGrassChunkGenerator extends BackroomsChunkGenerator {
     public static final Codec<InfGrassChunkGenerator> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
@@ -50,7 +50,7 @@ public final class InfGrassChunkGenerator extends BackroomsChuckGenerator {
     Random random = Random.create();
 
     public InfGrassChunkGenerator(BiomeSource biomeSource, RegistryEntry<ChunkGeneratorSettings> settings) {
-        super(biomeSource);
+        super(biomeSource, 2);
         this.settings = settings;
     }
 

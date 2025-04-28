@@ -129,6 +129,7 @@
 
   "death.attack.acid": "%1$s сгорел в кислоте!",
   "death.attack.smiler": "%1$s был убит Улыбающимся!",
+  "death.attack.skin_walker": "%1$s was killed by a Skin Walker!",
 
   "spb-revamped.keybinds": "SPB-Revamped",
   "key.spb-revamped.toggle_flashlight": "Включить фонарик",

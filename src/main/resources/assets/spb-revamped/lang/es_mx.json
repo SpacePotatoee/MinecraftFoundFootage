@@ -118,6 +118,7 @@
 
   "death.attack.acid": "¡%1$s se quemó en ácido!",
   "death.attack.smiler": "¡%1$s fue eliminado por un Smiler!",
+  "death.attack.skin_walker": "¡%1$s fue eliminado por un Skin Walker!",
 
   "spb-revamped.keybinds": "SPB-Revamped",
   "key.spb-revamped.toggle_flashlight": "Prender/Apagar Linterna",

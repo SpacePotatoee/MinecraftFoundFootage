@@ -19,6 +19,8 @@ import com.sp.render.camera.CutsceneManager;
 import com.sp.render.grass.GrassRenderer;
 import com.sp.render.gui.StaminaBar;
 import com.sp.render.gui.TitleText;
+import com.sp.render.pbr.PbrRegistry;
+import com.sp.render.RenderLayers;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
 import com.sp.world.levels.custom.Level2BackroomsLevel;
@@ -98,17 +100,15 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         com.sp.Keybinds.initializeKeyBinds();
 
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ConcreteBlock11, RenderLayers.getConcreteLayer());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Bricks, RenderLayers.getBricksLayer());
+        PbrRegistry.registerPBR(ModBlocks.CarpetBlock,      new PbrRegistry.PbrMaterial(false, 0.7f,1.25f, 1024));
+        PbrRegistry.registerPBR(ModBlocks.CeilingTile,      new PbrRegistry.PbrMaterial(false, 0.7f,1.0f,  512));
+        PbrRegistry.registerPBR(ModBlocks.GhostCeilingTile, new PbrRegistry.PbrMaterial(false, 0.7f,1.0f,  512));
 
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.DIRT, RenderLayers.getDirtLayer());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CHAINFENCE, RenderLayers.getChainFence());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CeilingTile, RenderLayers.getCeilingTile());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.GhostCeilingTile, RenderLayers.getCeilingTile());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.CarpetBlock, RenderLayers.getCarpet());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WOODEN_CRATE, RenderLayers.getWoodenCrateLayer());
+        PbrRegistry.registerPBR(ModBlocks.ConcreteBlock11,  new PbrRegistry.PbrMaterial(true, 0.7f,16.0f,  2048));
+        PbrRegistry.registerPBR(ModBlocks.Bricks,           new PbrRegistry.PbrMaterial(true, 0.7f,5.0f,   2048));
+        PbrRegistry.registerPBR(ModBlocks.DIRT,             new PbrRegistry.PbrMaterial(true, 0.7f,3.0f,   1024));
+        PbrRegistry.registerPBR(ModBlocks.CHAINFENCE,       new PbrRegistry.PbrMaterial(true, 0.37f,2.8f,   1024));
+        PbrRegistry.registerPBR(ModBlocks.WOODEN_CRATE,     new PbrRegistry.PbrMaterial(true, 0.7f,1.0f,   1024));
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolroomsSkyBlock, RenderLayers.getPoolroomsSky());
 
@@ -392,7 +392,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             if (player != null) {
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                 playerComponent.setFlashLightOn(false);
-                flashlightRenderer.flashLightList2.clear();
+                flashlightRenderer.clearFlashlights();
                 playerComponent.setDoingCutscene(false);
             }
 
@@ -443,7 +443,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     VeilDeferredRenderer deferredRenderer = renderer.getDeferredRenderer();
                     LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
 
-                    if (shouldRenderCameraEffect()) {
+                    if (shouldRenderCameraEffect() && isInBackrooms()) {
                         if (client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY && client.world.getRegistryKey() != BackroomsLevels.INFINITE_FIELD_WORLD_KEY) {
                             lightRenderer.disableVanillaLight();
                         } else {
