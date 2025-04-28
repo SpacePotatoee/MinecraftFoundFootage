@@ -28,11 +28,11 @@ in float Depth;
 in mat3 TBN;
 
 const int MaxSteps = 75;
-//const float ZOOM = 1;
 
 void main() {
     vec4 color = vec4(0.0);
-    vec4 normalMap = vec4(0);
+    vec4 normalMap = vec4(0.0);
+    float dist = 0.0;
 
     //If height is disabled
     if(Enableheight == 0){
@@ -40,7 +40,7 @@ void main() {
         vec2 faceUV = getAccurateUV(repWorldPos, normal);
 
         vec2 zoomedUV = faceUV;
-        zoomedUV *= (0.00006101539 * Resolution) * vec2(2 * atlasAspectRatio, 2);
+        zoomedUV *= (0.00006101539 * Resolution) * vec2(2.0 * atlasAspectRatio, 2.0);
         zoomedUV += texCoordOffset;
 
         color = texture(Sampler0, zoomedUV) * vertexColor;
@@ -48,12 +48,12 @@ void main() {
         normalMap = (texture(Sampler1, zoomedUV) * 2.0 - 1.0);
         normalMap.rgb *= TBN;
     } else {
-        vec3 dir = Pos;
+        vec3 dir = normalize(Pos);
         vec3 worldNormal = abs(viewToWorldSpaceDirection(normal));
 
 
-        float dist = 0;
-        vec3 pos = vec3(0);
+//        float dist = 0;
+        vec3 pos = vec3(0.0);
         for(int i = 0; i < MaxSteps; i++) {
             pos = worldPos + dir * dist;
 
@@ -62,7 +62,7 @@ void main() {
             vec3 repeatedTexCoord = vec3(mod(texCoords.xy, Zoom)*1/Zoom, texCoords.z);
 
             vec2 zoomedUV2 = repeatedTexCoord.xy;
-            zoomedUV2 *= (0.00006101539 * Resolution) * vec2(2 * atlasAspectRatio, 2);
+            zoomedUV2 *= (0.00006101539 * Resolution) * vec2(2.0 * atlasAspectRatio, 2.0);
             zoomedUV2 += texCoordOffset;
 
             float heightMapDepth = ((1 - texture(Sampler3, zoomedUV2).r) * Depth) - 0.35;
@@ -72,8 +72,6 @@ void main() {
                 normalMap = texture(Sampler1, zoomedUV2) * 2.0 - 1.0;
                 normalMap.rgb *= TBN;
                 normalMap.r = normalMap.r;
-
-
                 break;
             }
 
@@ -81,11 +79,11 @@ void main() {
         }
     }
 
-if (color.a < 0.5) {
-discard;
-}
+    if (color.a < 0.1) {
+        discard;
+    }
 
-    fragAlbedo = vec4(color.rgb, 1.0);
+    fragAlbedo = vec4(color.rgb * (1.0 - dist*5), 1.0);
     fragNormal = vec4(normalMap.rgb, 1.0);
     fragMaterial = ivec4(BLOCK_SOLID, 0, 0, 1);
     fragLightSampler = vec4(texCoord2, 0.0, 1.0);

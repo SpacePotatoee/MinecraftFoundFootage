@@ -54,8 +54,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.random.Random;
@@ -100,15 +98,15 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         com.sp.Keybinds.initializeKeyBinds();
 
-        PbrRegistry.registerPBR(ModBlocks.CarpetBlock,      new PbrRegistry.PbrMaterial(false, 0.7f,1.25f, 1024));
-        PbrRegistry.registerPBR(ModBlocks.CeilingTile,      new PbrRegistry.PbrMaterial(false, 0.7f,1.0f,  512));
-        PbrRegistry.registerPBR(ModBlocks.GhostCeilingTile, new PbrRegistry.PbrMaterial(false, 0.7f,1.0f,  512));
+        PbrRegistry.registerPBR(ModBlocks.CarpetBlock,      new PbrRegistry.PbrMaterial(false, 0.0f,1.25f, 1024));
+        PbrRegistry.registerPBR(ModBlocks.CeilingTile,      new PbrRegistry.PbrMaterial(false, 0.0f,1.0f,  512));
+        PbrRegistry.registerPBR(ModBlocks.GhostCeilingTile, new PbrRegistry.PbrMaterial(false, 0.0f,1.0f,  512));
 
         PbrRegistry.registerPBR(ModBlocks.ConcreteBlock11,  new PbrRegistry.PbrMaterial(true, 0.7f,16.0f,  2048));
         PbrRegistry.registerPBR(ModBlocks.Bricks,           new PbrRegistry.PbrMaterial(true, 0.7f,5.0f,   2048));
-        PbrRegistry.registerPBR(ModBlocks.DIRT,             new PbrRegistry.PbrMaterial(true, 0.7f,3.0f,   1024));
-        PbrRegistry.registerPBR(ModBlocks.CHAINFENCE,       new PbrRegistry.PbrMaterial(true, 0.37f,2.8f,   1024));
-        PbrRegistry.registerPBR(ModBlocks.WOODEN_CRATE,     new PbrRegistry.PbrMaterial(true, 0.7f,1.0f,   1024));
+        PbrRegistry.registerPBR(ModBlocks.DIRT,             new PbrRegistry.PbrMaterial(true, 0.5f,3.0f,   1024));
+        PbrRegistry.registerPBR(ModBlocks.CHAINFENCE,       new PbrRegistry.PbrMaterial(true, 0.38f,2.8f,   1024));
+        PbrRegistry.registerPBR(ModBlocks.WOODEN_CRATE,     new PbrRegistry.PbrMaterial(true, 2.0f,1.0f,   1024));
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolroomsSkyBlock, RenderLayers.getPoolroomsSky());
 
@@ -260,7 +258,6 @@ public class SPBRevampedClient implements ClientModInitializer {
             }
 
             if (player != null && client.world != null) {
-                WorldEvents events = InitializeComponents.EVENTS.get(client.world);
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
 
                 if (VHS_POST.equals(name)) {
@@ -368,13 +365,9 @@ public class SPBRevampedClient implements ClientModInitializer {
             VeilDeferredRenderer renderer = VeilRenderSystem.renderer().getDeferredRenderer();
             renderer.reset();
 
-            client.player.sendMessage(Text.translatable("flashlight.hint", com.sp.Keybinds.toggleFlashlight.getBoundKeyLocalizedText().copyContentOnly().formatted(Formatting.BOLD, Formatting.UNDERLINE)));
-
             //*Just in case it become unsynced
             if(client.world != null){
-                if(!BackroomsLevels.isInBackrooms(client.world.getRegistryKey())) {
-                    client.player.sendMessage(Text.translatable("noclip.hint"));
-                }
+                HelpfulHintManager.sendMessages(client.player);
 
 
                 if (!((BackroomsLevels.getLevel(client.world)) instanceof PoolroomsBackroomsLevel level)) {
@@ -444,6 +437,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
 
                     if (shouldRenderCameraEffect() && isInBackrooms()) {
+                        HelpfulHintManager.disableSuffocateHint();
                         if (client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY && client.world.getRegistryKey() != BackroomsLevels.INFINITE_FIELD_WORLD_KEY) {
                             lightRenderer.disableVanillaLight();
                         } else {

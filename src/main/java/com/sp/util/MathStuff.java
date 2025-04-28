@@ -25,8 +25,8 @@ public class MathStuff {
      * Framerate Independent lerp
      * <a href="https://www.youtube.com/watch?v=LSNQuFEDOyQ">Learned from here</a>
      */
-    public static float Lerp(float source, float destination, float smoothingFactor, float tickDelta){
-        return MathHelper.lerp(1.0f - (float) Math.pow(smoothingFactor, tickDelta), source, destination);
+    public static float Lerp(float source, float destination, float smoothingFactor, float delta){
+        return MathHelper.lerp(1.0f - (float) Math.pow(smoothingFactor, delta), source, destination);
     }
 
     public static int millisecToTick(long l){

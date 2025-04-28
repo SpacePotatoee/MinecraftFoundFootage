@@ -76,7 +76,7 @@ public class SPBRevamped implements ModInitializer {
 		// Thanks Bob Mowzie
 		GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());
 		GeckoLib.initialize();
-		// !
+
 		PrAnCommonClass.init();
 
 		FabricDefaultAttributeRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerEntity.createSkinWalkerAttributes());

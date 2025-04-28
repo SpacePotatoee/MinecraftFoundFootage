@@ -35,6 +35,9 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = VIDEO)
     public static boolean useDefaultGUI = false;
 
+    @Entry(category = VIDEO)
+    public static boolean enableHint = true;
+
 
     @Comment(category = VIDEO)
     public static Comment spacer2;

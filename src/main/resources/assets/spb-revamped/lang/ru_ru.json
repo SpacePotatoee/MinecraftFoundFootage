@@ -103,6 +103,7 @@
   "spb-revamped.midnightconfig.cameraSmoothing": "Множитель сглаживания камеры",
   "spb-revamped.midnightconfig.showHands": "Показывать основную руку",
   "spb-revamped.midnightconfig.useDefaultGUI": "Use Minecraft's Default GUI",
+  "spb-revamped.midnightconfig.enableHint": "Enable the hint on world join",
   "spb-revamped.midnightconfig.VhsAspectRatioComment": "Если ваш монитор поддерживает это, включите данную опцию, и в настройках видео Minecraft появятся дополнительные параметры для полноэкранного разрешения. Это даст больше эффекта VHS",
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Включить только VHS-форматы",
 

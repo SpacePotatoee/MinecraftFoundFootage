@@ -92,6 +92,7 @@
   "spb-revamped.midnightconfig.cameraSmoothing": "Multiplicador de Suavitat de Càmera",
   "spb-revamped.midnightconfig.showHands": "Mostrar Mà Principal",
   "spb-revamped.midnightconfig.useDefaultGUI": "Utilitzar Interfície per Defecte de Minecraft",
+  "spb-revamped.midnightconfig.enableHint": "Enable the hint on world join",
   "spb-revamped.midnightconfig.VhsAspectRatioComment": "Si el teu monitor ho permet, activa-ho per veure noves opcions de resolució VHS completa als ajustaments de vídeo.",
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Utilitzar Només Formats VHS",
 

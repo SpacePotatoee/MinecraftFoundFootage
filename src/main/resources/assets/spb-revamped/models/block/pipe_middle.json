@@ -2,7 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [50, 50],
 	"textures": {
-		"6": "spb-revamped:block/rust4"
+		"6": "spb-revamped:block/rust4",
+		"particle": "spb-revamped:block/rust4"
 	},
 	"elements": [
 		{

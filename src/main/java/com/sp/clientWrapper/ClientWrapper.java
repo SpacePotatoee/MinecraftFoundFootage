@@ -17,6 +17,7 @@ import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.custom.SmilerEntity;
 import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
 import com.sp.init.BackroomsLevels;
+import com.sp.init.HelpfulHintManager;
 import com.sp.init.ModSounds;
 import com.sp.networking.InitializePackets;
 import com.sp.sounds.*;
@@ -201,6 +202,7 @@ public class ClientWrapper {
                 playerComponent.player.playSound(ModSounds.FLASHLIGHT_CLICK, 0.5f, 1);
                 if (notInTheseLevels) {
                     playerComponent.setFlashLightOn(!playerComponent.isFlashLightOn());
+                    HelpfulHintManager.disableFlashlightHint();
 
                     if (!playerComponent.player.isSpectator()) {
                         PacketByteBuf buffer = PacketByteBufs.create();

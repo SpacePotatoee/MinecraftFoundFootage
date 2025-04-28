@@ -92,6 +92,7 @@
   "spb-revamped.midnightconfig.cameraSmoothing": "Multiplicador de Suavidad de Cámara",
   "spb-revamped.midnightconfig.showHands": "Mostrar Mano Principal",
   "spb-revamped.midnightconfig.useDefaultGUI": "Usar la Interfaz Predeterminada de Minecraft",
+  "spb-revamped.midnightconfig.enableHint": "Enable the hint on world join",
   "spb-revamped.midnightconfig.VhsAspectRatioComment": "Si tu monitor lo permite, actívalo para ver nuevas opciones de resolución completa en los ajustes de video. Le da un toque más tipo 'VHS'",
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Usar Sólo Aspectos de VHS",
 

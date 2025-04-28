@@ -2,7 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"3": "spb-revamped:block/slope_texture"
+		"3": "spb-revamped:block/slope_texture",
+		"particle": "spb-revamped:block/pool_tiles"
 	},
 	"elements": [
 		{

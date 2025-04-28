@@ -105,6 +105,7 @@
   "spb-revamped.midnightconfig.cameraSmoothing": "Kamera Yumuşatma Çarpanı",
   "spb-revamped.midnightconfig.showHands": "Ana Eli Göster",
   "spb-revamped.midnightconfig.useDefaultGUI": "Minecraft'ın Varsayılan Arayüzünü Kullan",
+  "spb-revamped.midnightconfig.enableHint": "Enable the hint on world join",
   "spb-revamped.midnightconfig.VhsAspectRatioComment": "Monitörünüz destekliyorsa bunu etkinleştirin ve Minecraft'ın video ayarlarında tam ekran çözünürlüğü için farklı seçenekler göreceksiniz. Daha \"VHS\" hissi verir",
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Yalnızca VHS Görüntü Oranlarını Etkinleştir",
 
