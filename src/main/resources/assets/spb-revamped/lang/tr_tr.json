@@ -131,6 +131,7 @@
 
   "death.attack.acid": "%1$s Asitte yandı!",
   "death.attack.smiler": "%1$s Smiler tarafından öldürüldü!",
+  "death.attack.skin_walker": "%1$s Skin Walker tarafından öldürüldü!",
 
   "spb-revamped.keybinds": "SPB-Revamped",
   "key.spb-revamped.toggle_flashlight": "El fenerini aç/kapat",
