@@ -1,7 +1,10 @@
 package com.sp.world.generation;
 
+import com.sp.compat.modmenu.ConfigStuff;
+import com.sp.mixininterfaces.NewServerProperties;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
@@ -35,6 +38,14 @@ public abstract class BackroomsChunkGenerator extends ChunkGenerator {
     }
 
     public abstract void generate(StructureWorldAccess world, Chunk chunk);
+
+    protected int getExitSpawnRadius(StructureWorldAccess world){
+        if(world.getServer().isDedicated()) {
+            return ((NewServerProperties) ((MinecraftDedicatedServer)world.getServer()).getProperties()).getExitSpawnRadius();
+        } else {
+            return ConfigStuff.exitSpawnRadius;
+        }
+    }
 
     /**
      * When doing chunk generation, you normally can only change the blockstates within the current chunk (placement radius of 1).

@@ -18,27 +18,21 @@ public class ConfigDefinitions {
     public static boolean isEnableShadows() {
         return ConfigStuff.enableShadows;
     }
-
     public static boolean isEnableVolumetricLight() {
         return ConfigStuff.enableVolumetricLight;
     }
-
     public static boolean isEnablePuddles() {
         return ConfigStuff.enablePuddles;
     }
-
     public static boolean isEnableLevel1Fog() {
         return ConfigStuff.enableLevel1Fog;
     }
-
     public static boolean isRenderWaterReflections() {
         return ConfigStuff.renderWaterReflections;
     }
-
     public static boolean isRenderBlockReflections() {
         return ConfigStuff.renderBlockReflections;
     }
-
     public static boolean isMotionBlur() {
         return ConfigStuff.motionBlur;
     }

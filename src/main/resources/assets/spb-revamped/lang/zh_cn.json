@@ -56,8 +56,8 @@
   "spb-revamped.options.fullscreen.resolution": "VHS分辨率",
 
   "spb-revamped.midnightconfig.category.video": "视频设置",
-  "spb-revamped.midnightconfig.category.adminStuff": "管理设置",
   "spb-revamped.midnightconfig.category.shaders": "着色器设置",
+  "spb-revamped.midnightconfig.category.server": "Server Settings",
   "spb-revamped.midnightconfig.enableVanillaLighting": "启用原版光照",
   "spb-revamped.midnightconfig.enableRealCamera": "启用真实摄像机",
   "spb-revamped.midnightconfig.forceBackrooms": "强制进入后室",
@@ -90,6 +90,8 @@
   "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MEDIUM",
   "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "HIGH",
   "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
+
+  "spb-revamped.midnightconfig.exitSpawnRadius": "Exit Spawn Radius (In Blocks)",
 
   "death.attack.acid": "%1$s在酸液中灼伤！",
   "death.attack.smiler": "%1$s被笑魇杀害！",

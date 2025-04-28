@@ -12,6 +12,7 @@
     "PlayerEntityMixin",
     "PlaySprintSoundMixin",
     "ServerPlayerEntityMixin",
+    "ServerPropertiesHandlerMixin",
     "StructureBlockEntityMixin",
     "cutscene.PathAccessor",
     "respawnsystem.PlayerManagerMixin",

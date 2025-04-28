@@ -7,7 +7,7 @@ import eu.midnightdust.lib.config.MidnightConfig;
 public class ConfigStuff extends MidnightConfig {
     public static final String VIDEO = "video";
     public static final String SHADERS = "shaders";
-    public static final String GRASS = "grass";
+    public static final String SERVER = "server";
 
     @Entry(category = VIDEO)
     public static boolean enableRealCamera = true;
@@ -101,16 +101,9 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = SHADERS)
     public static GrassQuality grassQuality = GrassQuality.MEDIUM;
 
-//    @Entry(category = GRASS, min = 1, max = 20)
-//    public static float grassDensity = 10.0f;
 
-//    @Entry(category = GRASS, min = 0, max = 3)
-    public static float grassHeight = 1.0f;
 
-//    @Entry(category = GRASS, min = 1, max = 5)
-//    public static int meshResolution = 1;
-
-//    @Entry(category = GRASS, min = 0, max = 5000000)
-//    public static int grassCount = 5000000;
+    @Entry(category = SERVER, min = 1)
+    public static int exitSpawnRadius = 100;
 
 }

@@ -97,6 +97,7 @@
 
   "spb-revamped.midnightconfig.category.video": "Görüntü Ayarları",
   "spb-revamped.midnightconfig.category.shaders": "Shader Ayarları",
+  "spb-revamped.midnightconfig.category.server": "Server Settings",
   "spb-revamped.midnightconfig.enableVanillaLighting": "Vanilla Işıklandırmasını Etkinleştir",
   "spb-revamped.midnightconfig.enableRealCamera": "Gerçekçi Kamerayı Etkinleştir",
   "spb-revamped.midnightconfig.forceBackrooms": "Backrooms İçinde Zorla",
@@ -129,6 +130,8 @@
   "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "ORTA",
   "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "YÜKSEK",
   "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
+
+  "spb-revamped.midnightconfig.exitSpawnRadius": "Exit Spawn Radius (In Blocks)",
 
   "death.attack.acid": "%1$s Asitte yandı!",
   "death.attack.smiler": "%1$s Smiler tarafından öldürüldü!",

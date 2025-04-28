@@ -17,24 +17,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.HeightLimitView;
-import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.VerticalBlockSample;
-import net.minecraft.world.gen.noise.NoiseConfig;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 public class Level0ChunkGenerator extends BackroomsChunkGenerator {
     public static final Codec<Level0ChunkGenerator> CODEC = RecordCodecBuilder.create(
@@ -110,25 +98,22 @@ public class Level0ChunkGenerator extends BackroomsChunkGenerator {
                 }
             } else if (((float) chunk.getPos().x) % SPBRevamped.finalMazeSize == 0 && ((float) chunk.getPos().z) % SPBRevamped.finalMazeSize == 0) {
 
-                if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000)) {
+
+                if(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), this.getExitSpawnRadius(world))) {
                     if(megaRooms != 1){
-//                        exit = random.nextBetween(1,1);
-//                        if(exit == 1){
+                        roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level0/stairwell_0");
+                        structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
+                        optional = structureTemplateManager.getTemplate(roomIdentifier);
 
-                            roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level0/stairwell_0");
-                            structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
-                            optional = structureTemplateManager.getTemplate(roomIdentifier);
+                        if (optional.isPresent()) {
+                            optional.get().place(
+                                    world,
+                                    mutable.set(x + 15,4,z + 15),
+                                    mutable.set(x + 15,4,z + 15),
+                                    structurePlacementData, random, 2
+                            );
+                        }
 
-                            if (optional.isPresent()) {
-                                optional.get().place(
-                                        world,
-                                        mutable.set(x + 15,4,z + 15),
-                                        mutable.set(x + 15,4,z + 15),
-                                        structurePlacementData, random, 2
-                                );
-                            }
-
-//                        }
                     }
                 }
 

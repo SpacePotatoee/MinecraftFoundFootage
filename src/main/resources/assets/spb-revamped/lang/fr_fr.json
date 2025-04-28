@@ -84,6 +84,7 @@
 
   "spb-revamped.midnightconfig.category.video": "Paramètres Vidéo",
   "spb-revamped.midnightconfig.category.shaders": "Paramètres des Shaders",
+  "spb-revamped.midnightconfig.category.server": "Server Settings",
   "spb-revamped.midnightconfig.enableVanillaLighting": "Activer l'Éclairage Vanilla",
   "spb-revamped.midnightconfig.enableRealCamera": "Activer la Caméra Réaliste",
   "spb-revamped.midnightconfig.forceBackrooms": "Forcer l'Entrée dans les Backrooms",
@@ -116,6 +117,8 @@
   "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MOYENNE",
   "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "ÉLEVÉE",
   "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
+
+  "spb-revamped.midnightconfig.exitSpawnRadius": "Exit Spawn Radius (In Blocks)",
 
   "death.attack.acid": "%1$s a brûlé dans l'acide !",
   "death.attack.smiler": "%1$s a été tué par un Smiler !",
