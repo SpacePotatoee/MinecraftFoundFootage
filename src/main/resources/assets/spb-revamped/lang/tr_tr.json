@@ -1,0 +1,160 @@
+{
+  "intro.backrooms": "The Backrooms",
+  "intro.credit": "A Mod By ",
+
+  "itemgroup.spbrevamped": "Backrooms",
+
+  "flashlight.hint": "El fenerinizi kullanmak için %s tuşuna basın",
+  "noclip.hint": "Backrooms'a girmek için kendini kum veya çakılda boğ",
+
+  "block.spb-revamped.void_block": "Boşluk Bloğu",
+  "block.spb-revamped.ceiling_light": "Tavan Işığı",
+  "block.spb-revamped.emergency_light": "Acil Durum Işığı",
+
+  "block.spb-revamped.wall_block": "Duvar Kağıdı Bloğu",
+  "block.spb-revamped.wall_block_2": "Manila Duvar Kağıdı Bloğu",
+  "block.spb-revamped.ceiling_tile": "Tavan döşemesi",
+  "block.spb-revamped.ghost_ceiling_tile": "Hayalet Tavan döşemesi",
+  "block.spb-revamped.carpet_block": "Halı bloğu",
+  "block.spb-revamped.rug1": "Halı 1",
+  "block.spb-revamped.rug2": "Halı 2",
+
+
+  "block.spb-revamped.wooden_crate": "Tahta Kasa",
+  "container.spb-revamped.wooden_crate": "Tahta Kasa",
+
+
+  "block.spb-revamped.fluorescent_light": "Floresan Işık",
+  "block.spb-revamped.pool_sky": "Gökyüzü Bloğu",
+  "block.spb-revamped.thin_fluorescent_light": "İnce Floresan Işık",
+  "block.spb-revamped.bottom_trim": "Alt Döşeme",
+  "block.spb-revamped.chain_fence": "Zincir Çit",
+  "block.spb-revamped.new_stairs": "Merdiven boşluğu merdivenleri",
+
+
+  "block.spb-revamped.concrete1": "Beton 1",
+  "block.spb-revamped.concrete2": "Beton 2",
+  "block.spb-revamped.concrete5": "Beton 5",
+  "block.spb-revamped.concrete6": "Beton 6",
+  "block.spb-revamped.concrete7": "Beton 7",
+  "block.spb-revamped.concrete9": "Beton 9",
+  "block.spb-revamped.concrete9slab": "Beton 9 Basamak",
+  "block.spb-revamped.concrete10": "Beton 10",
+  "block.spb-revamped.concrete11": "Beton 11",
+  "block.spb-revamped.concrete12": "Beton 12",
+  "block.spb-revamped.bricks": "Tuğla Duvar",
+
+
+  "block.spb-revamped.thin_pipe": "İnce Boru",
+  "block.spb-revamped.thin_pipe_corner": "İnce Boru Köşesi",
+  "block.spb-revamped.pipe": "Boru",
+  "block.spb-revamped.pipe_middle": "Orta Borusu",
+  "block.spb-revamped.pipe_corner": "Köşe Borusu",
+  "block.spb-revamped.big_pipe": "Büyük Boru",
+  "block.spb-revamped.big_pipe_middle": "Büyük Orta Borusu",
+  "block.spb-revamped.small_pipe_set": "Küçük Borular",
+
+
+  "block.spb-revamped.wall_text_1": "Duvar Numarası 1",
+  "block.spb-revamped.wall_text_2": "Duvar Numarası 2",
+  "block.spb-revamped.wall_text_3": "Duvar Numarası 3",
+  "block.spb-revamped.wall_text_4": "Duvar Numarası 4",
+  "block.spb-revamped.wall_text_5": "Duvar Numarası 5",
+  "block.spb-revamped.wall_text_6": "Duvar Numarası 6",
+  "block.spb-revamped.wall_text_7": "Duvar Numarası 7",
+  "block.spb-revamped.wall_text_8": "Duvar Numarası 8",
+  "block.spb-revamped.wall_text_99": "Duvar Numarası 99",
+
+
+  "block.spb-revamped.arrow1": "Ok 1",
+  "block.spb-revamped.arrow2": "Ok 2",
+  "block.spb-revamped.arrow3": "Ok 3",
+  "block.spb-revamped.arrow4": "Ok 4",
+
+  "block.spb-revamped.pool_tiles": "Havuz Fayansları",
+  "block.spb-revamped.pool_tile_wall": "Havuz Fayans Dikey Basamak",
+  "block.spb-revamped.slope": "Havuz Fayans Eğimi",
+
+
+  "block.spb-revamped.wall_small_1": "El Duvar Çizimi",
+  "block.spb-revamped.wall_small_2": "Yüz Duvar Çizimi",
+  "block.spb-revamped.wall_drawing_door": "Kapı Duvar Çizimi",
+  "block.spb-revamped.wall_drawing_window": "Pencere Duvar Çizimi",
+
+  "block.spb-revamped.dirt": "Çimen Bloğu",
+  "block.spb-revamped.power_pole_top": "Elektrik Direği Üstü",
+  "block.spb-revamped.power_pole": "Elektrik Direği",
+
+  "item.spb-revamped.backshroom": "Backrooms Mantarı",
+  "item.spb-revamped.backshroom.tooltip": "Yiyecek başka bir şeyin yoksa",
+
+  "item.spb-revamped.canned_food": "Konserve Yemek",
+  "item.spb-revamped.canned_food.tooltip": "Bozulmuş olabilir",
+
+
+  "spb-revamped.options.fullscreen.resolution": "VHS Çözünürlüğü",
+
+
+  "spb-revamped.midnightconfig.category.video": "Görüntü Ayarları",
+  "spb-revamped.midnightconfig.category.shaders": "Shader Ayarları",
+  "spb-revamped.midnightconfig.enableVanillaLighting": "Vanilla Işıklandırmasını Etkinleştir",
+  "spb-revamped.midnightconfig.enableRealCamera": "Gerçekçi Kamerayı Etkinleştir",
+  "spb-revamped.midnightconfig.forceBackrooms": "Backrooms İçinde Zorla",
+  "spb-revamped.midnightconfig.enableCameraRoll": "Kamera Sarsılmasını Etkinleştir",
+  "spb-revamped.midnightconfig.enableSmoothCamera": "Kamera Yumuşatmayı Etkinleştir",
+  "spb-revamped.midnightconfig.cameraSmoothing": "Kamera Yumuşatma Çarpanı",
+  "spb-revamped.midnightconfig.showHands": "Ana Eli Göster",
+  "spb-revamped.midnightconfig.useDefaultGUI": "Minecraft'ın Varsayılan Arayüzünü Kullan",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "Monitörünüz destekliyorsa bunu etkinleştirin ve Minecraft'ın video ayarlarında tam ekran çözünürlüğü için farklı seçenekler göreceksiniz. Daha \"VHS\" hissi verir",
+  "spb-revamped.midnightconfig.enableVHSAspectRatio": "Yalnızca VHS Görüntü Oranlarını Etkinleştir",
+
+  "spb-revamped.midnightconfig.enableVhsEffect": "VHS Efektini Etkinleştir",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "VHS Bozulma Çarpanı",
+  "spb-revamped.midnightconfig.lookRollMultiplier": "Eğim Çarpanı",
+  "spb-revamped.midnightconfig.strafeRollMultiplier": "Yanal Eğim Çarpanı",
+  "spb-revamped.midnightconfig.lightRenderDistance": "Işık Gösterme Mesafesi (Blok Olarak)",
+
+  "spb-revamped.midnightconfig.enableShadows": "Gölgeleri Etkinleştir",
+  "spb-revamped.midnightconfig.enableVolumetricLight": "Volümetrik Işığı Etkinleştir",
+  "spb-revamped.midnightconfig.enablePuddles": "Su Birikintilerini Etkinleştir",
+  "spb-revamped.midnightconfig.enableLevel1Fog": "Seviye 1 Sisini Etkinleştir",
+  "spb-revamped.midnightconfig.renderWaterReflections": "Su Yansımalarını Etkinleştir",
+  "spb-revamped.midnightconfig.renderBlockReflections": "Blok Yansımalarını Etkinleştir (Sadece Havuz Fayansları için)",
+  "spb-revamped.midnightconfig.motionBlur": "Hareket Bulanıklığını Etkinleştir",
+  "spb-revamped.midnightconfig.motionBlurStrength": "Hareket Bulanıklığı Gücü",
+
+  "spb-revamped.midnightconfig.grassQuality": "Çimen Kalitesi",
+  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "AZ",
+  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "ORTA",
+  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "YÜKSEK",
+  "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
+
+  "death.attack.acid": "%1$s Asitte yandı!",
+  "death.attack.smiler": "%1$s Smiler tarafından öldürüldü!",
+  "death.attack.skin_walker": "%1$s Skin Walker tarafından öldürüldü!",
+
+  "spb-revamped.keybinds": "SPB-Revamped",
+  "key.spb-revamped.toggle_flashlight": "El fenerini aç/kapat",
+  "key.spb-revamped.toggle_event": "Etkinliği Değiştir",
+
+
+  "skinwalker.flavor-text.move1": "Hareket edemiyorsun. ",
+  "skinwalker.flavor-text.move2": "Bu artık senin vücudun değil",
+
+  "skinwalker.flavor-text.inventory": "Bu artık senin envanterin değil",
+
+  "skinwalker.flavor-text.leave": "Kaçış Yok",
+
+  "skinwalker.flavor-text.chat": "Çığlıklarını kimse duyamaz",
+
+  "skinwalker.flavor-text.taunt1": "Hadi devam et",
+  "skinwalker.flavor-text.taunt2": "Arkadaşlarını çağırmayı dene (T)",
+  "skinwalker.flavor-text.taunt3": "Hala fark etmediysen vücudun çalındı. ",
+  "skinwalker.flavor-text.taunt4": "Salak olma. Başka oyunculara DM atma",
+
+
+
+
+  "spb-revamped.flashlight.wet1": "El fenerin ıslandı. ",
+  "spb-revamped.flashlight.wet2": "Artık çalışmıyor"
+}
