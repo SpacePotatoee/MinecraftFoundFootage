@@ -1,6 +1,6 @@
 {
 	"textures": {
-		"0": "spb-revamped:block/pbr/color/chainfence/chain_fence"
+		"0": "spb-revamped:block/pbr/chain_fence/chain_fence_color"
 	},
 	"elements": [
 		{

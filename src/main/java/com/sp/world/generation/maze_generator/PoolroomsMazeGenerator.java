@@ -2,6 +2,9 @@ package com.sp.world.generation.maze_generator;
 
 import com.sp.SPBRevamped;
 import com.sp.init.ModBlocks;
+import com.sp.world.generation.maze_generator.cells.CellWDoor;
+import com.sp.world.generation.maze_generator.cells.HighVarCell;
+import com.sp.world.generation.maze_generator.cells.LowVarCell;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.StructurePlacementData;
@@ -193,14 +196,14 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
             }
         }
 
-        for(int i = 0; i < this.cols; i += 2) {
+        for(int i = 1; i < this.cols; i += 2) {
             CellWDoor cell = this.grid[this.cols - 1][i];
             if(cell != null) {
                 cell.setWest(false);
             }
         }
 
-        for(int i = this.cols - 1; i >= 0; i -= 2) {
+        for(int i = this.cols - 2; i >= 0; i -= 2) {
             CellWDoor cell = this.grid[i][this.cols - 1];
             if(cell != null) {
                 cell.setNorth(false);
@@ -391,7 +394,6 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
 
             }
         }
-
     }
 
     public void createMegaRoomList(List<String> megaRoomList){
@@ -404,9 +406,5 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
         megaRoomList.add("32x16");
         megaRoomList.add("32x24");
         megaRoomList.add("32x32");
-    }
-
-    private boolean isAirOrNull(BlockState blockState){
-        return blockState == Blocks.AIR.getDefaultState() || blockState == null;
     }
 }

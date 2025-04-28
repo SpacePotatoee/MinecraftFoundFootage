@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "spb-revamped:block/pbr/color/crate/wooden_crate"
+    "all": "spb-revamped:block/pbr/crate/crate_color"
   }
 }

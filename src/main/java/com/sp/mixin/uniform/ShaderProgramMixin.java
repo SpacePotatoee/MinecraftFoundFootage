@@ -14,46 +14,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ShaderProgram.class)
 public abstract class ShaderProgramMixin implements uniformTest {
-    @Override
-    public GlUniform getOrthoMatrix() {
-        return orthoMatrix;
-    }
-
-    @Override
-    public GlUniform getViewMatrix() {
-        return viewMatrix;
-    }
-
-    @Override
-    public GlUniform getLightAngle() {
-        return lightAngle;
-    }
 
     @Override
     public GlUniform getWarpAngle() {
         return warpAngle;
     }
 
-    @Unique
-    public GlUniform orthoMatrix;
+    @Override
+    public GlUniform getAtlasAspectRatio() {
+        return atlasAspectRatio;
+    }
 
-    @Unique
-    public GlUniform viewMatrix;
-
-    @Unique
-    public GlUniform lightAngle;
-
-    @Unique
-    public GlUniform warpAngle;
+    @Unique public GlUniform warpAngle;
+    @Unique public GlUniform atlasAspectRatio;
 
     @Shadow
     abstract GlUniform getUniform(String name);
 
-    @Inject(method = "<init>", at = @At("TAIL"))
+    //@Inject(method = "<init>", at = @At("TAIL"))
     public void ShaderProgram(ResourceFactory factory, String name, VertexFormat format, CallbackInfo ci){
-        this.orthoMatrix = this.getUniform("orthoMatrix");
-        this.viewMatrix = this.getUniform("viewRix");
-        this.lightAngle = this.getUniform("lightAngle");
         this.warpAngle = this.getUniform("warpAngle");
+        this.atlasAspectRatio = this.getUniform("atlasAspectRatio");
     }
 }

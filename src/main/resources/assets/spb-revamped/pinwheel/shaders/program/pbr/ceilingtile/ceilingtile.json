@@ -1,8 +1,0 @@
-{
-  "vertex": "spb-revamped:pbr/ceilingtile/ceilingtile",
-  "geometry": "spb-revamped:pbr/ceilingtile/ceilingtile",
-  "fragment": "spb-revamped:pbr/ceilingtile/ceilingtile",
-  "textures": {
-    "NormalMap": "spb-revamped:textures/shaders/ceilingtile/ceiling_tile_normal.png"
-  }
-}

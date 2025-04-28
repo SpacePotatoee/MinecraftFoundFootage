@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "spb-revamped:block/carpet_block"
+    "all": "spb-revamped:block/pbr/carpet/carpet_color"
   }
 }

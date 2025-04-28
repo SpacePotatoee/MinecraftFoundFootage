@@ -36,7 +36,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public final class Level2ChunkGenerator extends ChunkGenerator {
+public final class Level2ChunkGenerator extends BackroomsChunkGenerator {
     public static final Codec<Level2ChunkGenerator> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
@@ -53,9 +53,8 @@ public final class Level2ChunkGenerator extends ChunkGenerator {
         this.settings = settings;
     }
 
-
     @Override
-    public void generateFeatures(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
+    public void generate(StructureWorldAccess world, Chunk chunk) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
 
@@ -104,7 +103,6 @@ public final class Level2ChunkGenerator extends ChunkGenerator {
     }
 
 
-
     public Identifier getRoom(boolean dark){
         Random random = Random.create();
         int roomNumber = random.nextBetween(1,18);
@@ -123,74 +121,5 @@ public final class Level2ChunkGenerator extends ChunkGenerator {
         return CODEC;
     }
 
-
-    /* this method builds the shape of the terrain. it places stone everywhere, which will later be overwritten with grass, terracotta, snow, sand, etc
-         by the buildSurface method. it also is responsible for putting the water in oceans. it returns a CompletableFuture-- you'll likely want this to be delegated to worker threads. */
-    @Override
-    public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk) {
-        return CompletableFuture.completedFuture(chunk);
-    }
-
-
-    @Override
-    public int getSeaLevel() {
-        return 0;
-    }
-
-    /* the lowest value that blocks can be placed in the world. in a vanilla world, this is -64. */
-    @Override
-    public int getMinimumY() {
-        return 0;
-    }
-
-    /* this method returns the height of the terrain at a given coordinate. it's used for structure generation */
-    @Override
-    public int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world, NoiseConfig noiseConfig) {
-        return this.getWorldHeight();
-    }
-
-    /* this method returns a "core sample" of the world at a given coordinate. it's used for structure generation */
-    @Override
-    public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world, NoiseConfig noiseConfig) {
-        BlockState[] states = new BlockState[world.getHeight()];
-
-        for (int i = 0; i < states.length; i++) {
-            states[i] = Blocks.AIR.getDefaultState();
-        }
-
-        return new VerticalBlockSample(0, states);
-    }
-
-    /* this method adds text to the f3 menu. for NoiseChunkGenerator, it's the NoiseRouter line */
-    @Override
-    public void getDebugHudText(List<String> text, NoiseConfig noiseConfig, BlockPos pos) {
-    }
-
-    /* the distance between the highest and lowest points in the world. in vanilla, this is 384 (64+325) */
-    @Override
-    public int getWorldHeight() {
-        return 384;
-    }
-
-
-
-
-    /* the method that creates non-noise caves (i.e., all the caves we had before the caves and cliffs update) */
-    @Override
-    public void carve(ChunkRegion chunkRegion, long seed, NoiseConfig noiseConfig, BiomeAccess biomeAccess, StructureAccessor structureAccessor, Chunk chunk, GenerationStep.Carver carverStep) {
-    }
-
-    /* the method that places grass, dirt, and other things on top of the world, as well as handling the bedrock and deepslate layers,
-    as well as a few other miscellaneous things. without this method, your world is just a blank stone (or whatever your default block is) canvas (plus any ores, etc) */
-    @Override
-    public void buildSurface(ChunkRegion region, StructureAccessor structures, NoiseConfig noiseConfig, Chunk chunk) {
-
-    }
-
-    /* this method spawns entities in the world */
-    @Override
-    public void populateEntities(ChunkRegion region) {
-
-    }
 }
 

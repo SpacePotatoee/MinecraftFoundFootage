@@ -118,6 +118,7 @@
 
   "death.attack.acid": "%1$s a brûlé dans l'acide !",
   "death.attack.smiler": "%1$s a été tué par un Smiler !",
+  "death.attack.skin_walker": "%1$s a été tué par un Skin Walker!",
 
   "spb-revamped.keybinds": "SPB-Revamped",
   "key.spb-revamped.toggle_flashlight": "Allumer/Éteindre la Lampe Torche",

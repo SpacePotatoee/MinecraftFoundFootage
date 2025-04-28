@@ -8,13 +8,13 @@
     {
       "type": "filter",
       "pattern": {
-        "path": "(block/pbr/color)"
+        "path": "(_normal)"
       }
     },
     {
       "type": "filter",
       "pattern": {
-        "path": "(block/pbr/normal)"
+        "path": "(_color)"
       }
     },
     {

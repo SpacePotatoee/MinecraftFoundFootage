@@ -8,13 +8,13 @@
     {
       "type": "filter",
       "pattern": {
-        "path": "(block/pbr/height)"
+        "path": "(_height)"
       }
     },
     {
       "type": "filter",
       "pattern": {
-        "path": "(block/pbr/color)"
+        "path": "(_color)"
       }
     },
     {

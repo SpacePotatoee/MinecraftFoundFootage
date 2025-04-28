@@ -6,7 +6,7 @@ import net.minecraft.util.math.random.Random;
 import org.joml.Vector3f;
 
 /**
- * Generates the samples for the SSAO Shader<p>
+ * Pre Generates the samples for the SSAO Shader<p>
  * This saves A LOT of processing power
  */
 public class SSAOSamples {

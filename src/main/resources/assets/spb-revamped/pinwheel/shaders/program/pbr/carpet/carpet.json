@@ -1,8 +1,0 @@
-{
-  "vertex": "spb-revamped:pbr/carpet/carpet",
-  "geometry": "spb-revamped:pbr/carpet/carpet",
-  "fragment": "spb-revamped:pbr/carpet/carpet",
-  "textures": {
-    "NormalMap": "spb-revamped:textures/shaders/carpet/carpet_normal.png"
-  }
-}

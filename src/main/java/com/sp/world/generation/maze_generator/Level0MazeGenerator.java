@@ -1,6 +1,9 @@
 package com.sp.world.generation.maze_generator;
 
 import com.sp.init.ModBlocks;
+import com.sp.world.generation.maze_generator.cells.CellWDoor;
+import com.sp.world.generation.maze_generator.cells.HighVarCell;
+import com.sp.world.generation.maze_generator.cells.LowVarCell;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -214,11 +217,5 @@ public class Level0MazeGenerator extends MazeGenerator {
     public void removeWalls(CellWDoor currentCell, CellWDoor neighbor) {
 
     }
-
-    private boolean isAirOrNull(BlockState blockState){
-        return blockState == Blocks.AIR.getDefaultState() || blockState == null;
-    }
-
-
 }
 

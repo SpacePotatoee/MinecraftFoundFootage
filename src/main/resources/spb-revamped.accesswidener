@@ -38,3 +38,5 @@ accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$Rebui
 accessible method net/minecraft/entity/player/PlayerInventory addStack (Lnet/minecraft/item/ItemStack;)I
 accessible field com/mojang/blaze3d/systems/RenderSystem$ShapeIndexBuffer id I
 accessible method com/mojang/blaze3d/systems/RenderSystem$ShapeIndexBuffer grow (I)V
+accessible method net/minecraft/client/texture/SpriteAtlasTexture getHeight ()I
+accessible method net/minecraft/client/texture/SpriteAtlasTexture getWidth ()I

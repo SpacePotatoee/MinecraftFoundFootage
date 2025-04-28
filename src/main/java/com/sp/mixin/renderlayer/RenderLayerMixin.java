@@ -15,14 +15,15 @@ public class RenderLayerMixin {
     @ModifyReturnValue(method = "getBlockLayers", at = @At("RETURN"))
     private static List<RenderLayer> addRenderLayer(List<RenderLayer> original){
         List<RenderLayer> list = new ArrayList<>(original);
-        list.add(RenderLayers.getConcreteLayer());
-        list.add(RenderLayers.getBricksLayer());
-        list.add(RenderLayers.getChainFence());
-        list.add(RenderLayers.getCeilingTile());
-        list.add(RenderLayers.getCarpet());
-        list.add(RenderLayers.getWoodenCrateLayer());
+//        list.add(RenderLayers.getConcreteLayer());
+//        list.add(RenderLayers.getBricksLayer());
+//        list.add(RenderLayers.getChainFence());
+//        list.add(RenderLayers.getCeilingTile());
+//        list.add(RenderLayers.getCarpet());
+//        list.add(RenderLayers.getWoodenCrateLayer());
         list.add(RenderLayers.getPoolroomsSky());
-        list.add(RenderLayers.getDirtLayer());
+        list.add(RenderLayers.getPbrLayer());
+//        list.add(RenderLayers.getDirtLayer());
         return list;
     }
 

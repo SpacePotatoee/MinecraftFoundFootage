@@ -111,7 +111,7 @@ public class ShadowMapRenderer {
             accessor.invokeRenderLayer(RenderLayer.getCutout(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
             accessor.invokeRenderLayer(RenderLayer.getCutoutMipped(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
             accessor.invokeRenderLayer(RenderLayer.getSolid(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
-            accessor.invokeRenderLayer(RenderLayers.getCarpet(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
+//            accessor.invokeRenderLayer(RenderLayers.getCarpet(), shadowModelView, cameraPos.x, cameraPos.y, cameraPos.z, shadowProjMat);
 
 
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);

@@ -118,6 +118,7 @@
 
   "death.attack.acid": "%1$s s’ha cremat amb àcid!",
   "death.attack.smiler": "%1$s ha estat eliminat per un Smiler!",
+  "death.attack.skin_walker": "%1$s ha estat eliminat per un Skin Walker!",
 
   "spb-revamped.keybinds": "SPB-Revamped",
   "key.spb-revamped.toggle_flashlight": "Encendre/Apagar Llanterna",

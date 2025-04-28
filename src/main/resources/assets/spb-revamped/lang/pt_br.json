@@ -129,6 +129,7 @@
 
   "death.attack.acid": "%1$s derreteu em Ácido!",
   "death.attack.smiler": "%1$s foi morto por um Smiler!",
+  "death.attack.skin_walker": "%1$s foi morto por um Skin Walker!",
 
   "spb-revamped.keybinds": "SPB-Revamped",
   "key.spb-revamped.toggle_flashlight": "Ligar Lanterna",

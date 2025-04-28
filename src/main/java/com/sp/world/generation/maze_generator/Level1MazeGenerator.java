@@ -2,6 +2,9 @@ package com.sp.world.generation.maze_generator;
 
 import com.sp.SPBRevamped;
 import com.sp.init.ModBlocks;
+import com.sp.world.generation.maze_generator.cells.CellWDoor;
+import com.sp.world.generation.maze_generator.cells.HighVarCell;
+import com.sp.world.generation.maze_generator.cells.LowVarCell;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.StructurePlacementData;
@@ -262,10 +265,6 @@ public class Level1MazeGenerator extends MazeGenerator {
                         structurePlacementData, random, 16));
             }
         }
-    }
-
-    private boolean isAirOrNull(BlockState blockState){
-        return blockState == Blocks.AIR.getDefaultState() || blockState == null;
     }
 }
 
