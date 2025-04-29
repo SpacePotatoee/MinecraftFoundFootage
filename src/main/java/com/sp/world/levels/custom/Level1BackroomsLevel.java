@@ -1,6 +1,7 @@
 package com.sp.world.levels.custom;
 
 import com.sp.SPBRevampedClient;
+import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
@@ -9,11 +10,14 @@ import com.sp.world.events.level1.Level1Blackout;
 import com.sp.world.events.level1.Level1Flicker;
 import com.sp.world.generation.Level1ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +36,35 @@ public class Level1BackroomsLevel extends BackroomsLevel {
         events.add(Level1Blackout::new);
         events.add(Level1Flicker::new);
         events.add(Level1Ambience::new);
+
+        this.registerTransition((world, playerComponent, from) -> {
+            List<CrossDimensionTeleport> playerList = new ArrayList<>();
+
+            if (from instanceof Level1BackroomsLevel && playerComponent.player.getPos().getY() <= 12 && playerComponent.player.isOnGround()) {
+                for (PlayerEntity player : playerComponent.player.getWorld().getPlayers()) {
+                    PlayerComponent otherPlayerComponent = InitializeComponents.PLAYER.get(player);
+                    if (player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
+                        playerList.add(new CrossDimensionTeleport(player.getWorld(), otherPlayerComponent, calculateLevel2TeleportCoords(player, player.getChunkPos()), BackroomsLevels.LEVEL1_BACKROOMS_LEVEL, BackroomsLevels.LEVEL2_BACKROOMS_LEVEL));
+                    }
+                }
+            }
+
+            return playerList;
+        }, "level1 -> level2");
+    }
+
+    private Vec3d calculateLevel2TeleportCoords(PlayerEntity player, ChunkPos chunkPos) {
+        if(chunkPos.x == player.getChunkPos().x && chunkPos.z == player.getChunkPos().z) {
+            int chunkX = chunkPos.getStartX();
+            int chunkZ = chunkPos.getStartZ();
+
+            double playerX = player.getPos().x;
+            double playerZ = player.getPos().z;
+
+            return new Vec3d((playerX - chunkX) - 1, player.getPos().y + 8, playerZ - chunkZ);
+        } else {
+            return this.getSpawnPos();
+        }
     }
 
     @Override
@@ -51,27 +84,32 @@ public class Level1BackroomsLevel extends BackroomsLevel {
     }
 
     @Override
-    public boolean transitionOut(BackroomsLevel to, PlayerComponent playerComponent, World world) {
-        if (world.isClient()) {
+    public boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
+        if (crossDimensionTeleport.world().isClient()) {
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
             //Turn off the lights
-            playerComponent.player.playSound(ModSounds.LIGHTS_OUT, SoundCategory.AMBIENT, 1, 1);
+            crossDimensionTeleport.playerComponent().player.playSound(ModSounds.LIGHTS_OUT, SoundCategory.AMBIENT, 1, 1);
             SPBRevampedClient.getCutsceneManager().blackScreen.showBlackScreen(80, false, false);
 
             //PlaySound after black screen is over
             executorService.schedule(() -> {
-                playerComponent.player.playSound(ModSounds.LIGHTS_ON, SoundCategory.AMBIENT, 1, 1);
+                crossDimensionTeleport.playerComponent().player.playSound(ModSounds.LIGHTS_ON, SoundCategory.AMBIENT, 1, 1);
                 executorService.shutdown();
             }, 4000, TimeUnit.MILLISECONDS);
         }
 
-        return true;
+        return crossDimensionTeleport.playerComponent().player.isOnGround();
     }
 
     @Override
-    public void transitionIn(BackroomsLevel from, PlayerComponent playerComponent, World world) {
+    public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
 
+    }
+
+    @Override
+    public int getTransitionDuration() {
+        return 30;
     }
 
     public void setLightState(Level0BackroomsLevel.LightState lightState) {

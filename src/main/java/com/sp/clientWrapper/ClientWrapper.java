@@ -8,9 +8,7 @@ import com.sp.block.custom.ThinFluorescentLightBlock;
 import com.sp.block.entity.EmergencyLightBlockEntity;
 import com.sp.block.entity.FluorescentLightBlockEntity;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
-import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
-import com.sp.cca_stuff.WorldEvents;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.client.SkinWalkerCapturedFlavorText;
 import com.sp.entity.custom.SkinWalkerEntity;
@@ -177,20 +175,21 @@ public class ClientWrapper {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            //Client side stuff for level 0 -> 1 and 1 -> 2 transitions
-            BackroomsLevel level1 = BackroomsLevels.getLevel(playerComponent.player.getWorld());
+            //Client side stuff for level 0 -> 1 and 1 -> 2 and so on.
+            BackroomsLevel backroomsLevel = BackroomsLevels.getLevel(playerComponent.player.getWorld());
 
-            if (level1 != null) {
-                List<BackroomsLevel.LevelTransition> teleports = level1.checkForTransition(playerComponent, playerComponent.player.getWorld());
+            if (backroomsLevel != null) {
+                List<BackroomsLevel.LevelTransition> teleports = backroomsLevel.checkForTransition(playerComponent, playerComponent.player.getWorld());
 
-                if (!teleports.isEmpty() && playerComponent.getTeleportingTimer() >= 19) {
+                if (!teleports.isEmpty() && playerComponent.getTeleportingTimer() >= backroomsLevel.getTransitionDuration() - 1) {
                     for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).predicate(playerComponent.player.getWorld(), playerComponent, BackroomsLevels.getLevel(playerComponent.player.getWorld()))) {
-                        crossDimensionTeleport.from().transitionOut(crossDimensionTeleport.to(), playerComponent, crossDimensionTeleport.world());
+                        crossDimensionTeleport.from().transitionOut(crossDimensionTeleport);
                     }
 
-                    playerComponent.setTeleportingTimer(18);
+                    playerComponent.setTeleportingTimer(backroomsLevel.getTransitionDuration() - 2);
                 }
             }
+
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -237,7 +236,6 @@ public class ClientWrapper {
 
             ////AMBIENCE////
             RegistryKey<World> levelKey = playerComponent.player.getWorld().getRegistryKey();
-            WorldEvents events = InitializeComponents.EVENTS.get(playerComponent.player.getWorld());
 
             if ((levelKey == BackroomsLevels.LEVEL1_WORLD_KEY || levelKey == BackroomsLevels.LEVEL2_WORLD_KEY) && !soundManager.isPlaying(playerComponent.DeepAmbience)) {
                 playerComponent.DeepAmbience = new AmbientSoundInstance(playerComponent.player);

@@ -110,27 +110,32 @@ public class Level0BackroomsLevel extends BackroomsLevel {
     }
 
     @Override
-    public boolean transitionOut(BackroomsLevel to, PlayerComponent playerComponent, World world) {
-        if (world.isClient()) {
+    public boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
+        if (crossDimensionTeleport.world().isClient()) {
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
             //Turn off the lights
-            playerComponent.player.playSound(ModSounds.LIGHTS_OUT, SoundCategory.AMBIENT, 1, 1);
+            crossDimensionTeleport.playerComponent().player.playSound(ModSounds.LIGHTS_OUT, SoundCategory.AMBIENT, 1, 1);
             SPBRevampedClient.getCutsceneManager().blackScreen.showBlackScreen(80, false, false);
 
             //PlaySound after black screen is over
             executorService.schedule(() -> {
-                playerComponent.player.playSound(ModSounds.LIGHTS_ON, SoundCategory.AMBIENT, 1, 1);
+                crossDimensionTeleport.playerComponent().player.playSound(ModSounds.LIGHTS_ON, SoundCategory.AMBIENT, 1, 1);
                 executorService.shutdown();
             }, 4000, TimeUnit.MILLISECONDS);
         }
 
-        return true;
+        return crossDimensionTeleport.playerComponent().player.isOnGround();
     }
 
     @Override
-    public void transitionIn(BackroomsLevel from, PlayerComponent playerComponent, World world) {
+    public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
 
+    }
+
+    @Override
+    public int getTransitionDuration() {
+        return 30;
     }
 
     public int getIntercomCount() {

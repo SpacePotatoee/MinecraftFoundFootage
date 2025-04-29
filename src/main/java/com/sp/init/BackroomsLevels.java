@@ -27,6 +27,7 @@ public class BackroomsLevels {
     public static final BackroomsLevel LEVEL2_BACKROOMS_LEVEL = new Level2BackroomsLevel();
     public static final BackroomsLevel POOLROOMS_BACKROOMS_LEVEL = new PoolroomsBackroomsLevel();
     public static final BackroomsLevel INFINITE_FIELD_BACKROOMS_LEVEL = new InfiniteGrassBackroomsLevel();
+    public static final BackroomsLevel OVERWORLD_REPRESENTING_BACKROOMS_LEVEL = new OverworldRepresentingBackroomsLevel();
 
     public static List<BackroomsLevel> BACKROOMS_LEVELS = new ArrayList<>();
 
@@ -36,6 +37,7 @@ public class BackroomsLevels {
         BACKROOMS_LEVELS.add(LEVEL2_BACKROOMS_LEVEL);
         BACKROOMS_LEVELS.add(POOLROOMS_BACKROOMS_LEVEL);
         BACKROOMS_LEVELS.add(INFINITE_FIELD_BACKROOMS_LEVEL);
+        BACKROOMS_LEVELS.add(OVERWORLD_REPRESENTING_BACKROOMS_LEVEL);
 
         for (BackroomsLevel backroomsLevel : BACKROOMS_LEVELS) {
             backroomsLevel.register();

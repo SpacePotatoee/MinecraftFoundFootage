@@ -87,8 +87,21 @@ public abstract class BackroomsLevel {
 
     public abstract int nextEventDelay();
 
+    /**
+     * Called when the level needs to be synced or saved to disk.
+     * Here you can put anything you want to save to the NBT.
+     * You do <b>not</b> needing to make a NbtCompound first. That is handled by the WorldEvents class.
+     * <b>NOTE</b>: You should not only save data here which you want to <b>save</b> to disk but also which you want to <b>sync</b>.
+     * @param nbt the NbtCompound to save in, assigned by the WorldEvents class.
+     */
     public abstract void writeToNbt(NbtCompound nbt);
 
+    /**
+     * Called when the level is loaded from disk.
+     * Here you can read anything you want to load from the NBT into your level.
+     * You do <b>not</b> needing to step down into an NbtCompound first. That is handled by the WorldEvents class.
+     * @param nbt the NbtCompound to load in, assigned by the WorldEvents class.
+     */
     public abstract void readFromNbt(NbtCompound nbt);
 
     public boolean shouldSync() {
@@ -99,11 +112,20 @@ public abstract class BackroomsLevel {
 
     /**
      * Called when transitioning out of this level.
-     * @return If the teleportation can happen now. Just return false if you want to delay the teleportation.
+     * This method is called on the server first and then on the next frame on the client,
+     * which will then skip the transitionTime one tick ahead to avoid being called twice.
+     * <b>Note:</b> this will be called once on the server and every tick on the server. If you only want to have this run once then just check if <code>the teleportingTimer == -1</code>
+     * @return If the teleportation can happen now. Just return false if you can't teleport the player. This should be used carefully, since it can lead a failed teleport.
      */
-    public abstract boolean transitionOut(BackroomsLevel to, PlayerComponent playerComponent, World world);
+    public abstract boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport);
 
-    public abstract void transitionIn(BackroomsLevel from, PlayerComponent playerComponent, World world);
+    /**
+     * Called when transitioning in to this level.
+     * It is called first on client at <code>teleportingTimer == 1</code>,
+     * then the method will be called on the server later when <code>teleportingTimer == 0</code>.
+     * <b>Note:</b> this may lead to the method being called multiple times, so be careful with the code you put in here.
+     */
+    public abstract void transitionIn(CrossDimensionTeleport crossDimensionTeleport);
 
     protected void registerTransition(LevelTransition transition, String name) {
         this.transitions.put(name, transition);
@@ -112,6 +134,11 @@ public abstract class BackroomsLevel {
     protected void unregisterTransition(String name) {
         this.transitions.remove(name);
     }
+
+    /**
+     * the time it takes form the first trigger of the transition to the teleportation (if transitionOut returns true)
+     */
+    public abstract int getTransitionDuration();
 
     public interface LevelTransition {
         List<CrossDimensionTeleport> predicate(World world, PlayerComponent playerComponent, BackroomsLevel from);

@@ -1,20 +1,46 @@
 package com.sp.world.levels.custom;
 
+import com.sp.SPBRevamped;
+import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.BackroomsLevels;
 import com.sp.world.events.level2.Level2Ambience;
 import com.sp.world.events.level2.Level2Warp;
 import com.sp.world.generation.Level2ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Level2BackroomsLevel extends BackroomsLevel {
+    ///execute in spb-revamped:level2 run tp 0 20 990
     private boolean isWarping = false;
 
     public Level2BackroomsLevel() {
-        super("level2", Level2ChunkGenerator.CODEC, new Vec3d(0, 21, 8), BackroomsLevels.LEVEL2_WORLD_KEY);
+        super("level2", Level2ChunkGenerator.CODEC, new Vec3d(16, 106, 16), BackroomsLevels.LEVEL2_WORLD_KEY);
+
+        this.registerTransition((world, playerComponent, from) -> {
+
+            List<CrossDimensionTeleport> playerList = new ArrayList<>();
+
+            if (from instanceof Level2BackroomsLevel && Math.abs(playerComponent.player.getPos().getZ()) >= 1000) {
+                for (PlayerEntity player : playerComponent.player.getWorld().getPlayers()) {
+                    PlayerComponent otherPlayerComponent = InitializeComponents.PLAYER.get(player);
+                    if (player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+                        playerList.add(new CrossDimensionTeleport(player.getWorld(), otherPlayerComponent, this.getSpawnPos(), BackroomsLevels.LEVEL2_BACKROOMS_LEVEL, BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL));
+                    }
+                }
+            }
+
+            return playerList;
+        }, "level2 -> poolrooms");
     }
 
     @Override
@@ -49,12 +75,47 @@ public class Level2BackroomsLevel extends BackroomsLevel {
     }
 
     @Override
-    public boolean transitionOut(BackroomsLevel to, PlayerComponent playerComponent, World world) {
+    public boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
+        if (crossDimensionTeleport.world().isClient()) {
+            return true;
+        }
+
+        if (crossDimensionTeleport.playerComponent().getTeleportingTimer() == -1) {
+            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+
+            executorService.schedule(() -> {
+                crossDimensionTeleport.playerComponent().setShouldNoClip(true);
+                crossDimensionTeleport.playerComponent().sync();
+                executorService.shutdown();
+            }, 4500, TimeUnit.MILLISECONDS);
+
+            //Turn Player screen to Black
+            executorService.schedule(() -> {
+                SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) crossDimensionTeleport.playerComponent().player, 20, true, false);
+                executorService.shutdown();
+            }, 4800, TimeUnit.MILLISECONDS);
+
+            //After the screen turns black THEN teleport
+            executorService.schedule(() -> {
+                //this.readyForPoolrooms = true;
+                crossDimensionTeleport.playerComponent().setShouldNoClip(false);
+                crossDimensionTeleport.playerComponent().setTeleportingTimer(0);
+                crossDimensionTeleport.playerComponent().sync();
+                executorService.shutdown();
+            }, 5500, TimeUnit.MILLISECONDS);
+        }
+
+
         return true;
     }
 
     @Override
-    public void transitionIn(BackroomsLevel from, PlayerComponent playerComponent, World world) {
+    public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
 
+    }
+
+    @Override
+    public int getTransitionDuration() {
+        return 110;
     }
 }

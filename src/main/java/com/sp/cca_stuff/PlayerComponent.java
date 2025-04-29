@@ -8,6 +8,7 @@ import com.sp.init.ModSounds;
 import com.sp.mixininterfaces.ServerPlayNetworkSprint;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.world.levels.BackroomsLevel;
+import com.sp.world.levels.custom.Level2BackroomsLevel;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
@@ -29,18 +30,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import static com.sp.SPBRevamped.SLOW_SPEED_MODIFIER;
 
@@ -61,16 +56,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private boolean isDoingCutscene;
     private boolean playingGlitchSound;
     private boolean shouldNoClip;
-    private boolean isTeleporting;
-    private int teleportingTimer = 60;
-    private boolean isTeleportingToPoolrooms;
-    private boolean readyForLevel1;
-    private boolean readyForLevel2;
-    private boolean readyForPoolrooms;
-    private ChunkPos currentTeleportChunkPos;
+    private int teleportingTimer;
 
     public int suffocationTimer;
-    private int level2Timer;
     private boolean shouldDoStatic;
 
     private boolean isBeingCaptured;
@@ -119,8 +107,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
         this.isDoingCutscene = false;
 
-        this.isTeleporting = false;
-
         this.isBeingCaptured = false;
         this.hasBeenCaptured = false;
         this.isBeingReleased = false;
@@ -137,16 +123,17 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.talkingTooLoudTimer = 20;
 
         this.suffocationTimer = 0;
-        this.level2Timer = 200;
 
         this.canSeeActiveSkinWalker = false;
 
         this.glitchTimer = 0.0f;
         this.shouldGlitch = false;
         this.glitchTick = 0;
+
+        this.teleportingTimer = -1;
     }
 
-    private void savePlayerInventory() {
+    public void savePlayerInventory() {
         PlayerInventory inventory = this.player.getInventory();
         DefaultedList<ItemStack> mainInventory = inventory.main;
         DefaultedList<ItemStack> armorInventory = inventory.armor;
@@ -194,6 +181,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     public void setTeleportingTimer(int teleportingTimer) {
         this.teleportingTimer = teleportingTimer;
+        this.justChanged();
     }
 
     public int getStamina() {
@@ -238,30 +226,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         isDoingCutscene = doingCutscene;
     }
 
-    public boolean isTeleporting() {
-        return isTeleporting;
-    }
-    public void setTeleporting(boolean teleporting) {
-        isTeleporting = teleporting;
-    }
-
-    public void setReadyForLevel1(boolean readyForLevel1) {
-        this.readyForLevel1 = readyForLevel1;
-    }
-
-    public void setReadyForLevel2(boolean readyForLevel2) {
-        this.readyForLevel2 = readyForLevel2;
-    }
-
-    public void setReadyForPoolrooms(boolean readyForPoolrooms) {
-        this.readyForPoolrooms = readyForPoolrooms;
-    }
-
     public boolean isTeleportingToPoolrooms() {
-        return isTeleportingToPoolrooms;
-    }
-    public void setTeleportingToPoolrooms(boolean teleportingToPoolrooms) {
-        isTeleportingToPoolrooms = teleportingToPoolrooms;
+        return BackroomsLevels.getLevel(this.player.getWorld()) instanceof Level2BackroomsLevel && this.teleportingTimer > 0;
     }
 
     public boolean shouldNoClip() {
@@ -326,18 +292,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.talkingTooLoud = talkingTooLoud;
     }
 
-    public boolean isReadyForLevel1() {
-        return readyForLevel1;
-    }
-
-    public boolean isReadyForLevel2() {
-        return readyForLevel2;
-    }
-
-    public boolean isReadyForPoolrooms() {
-        return readyForPoolrooms;
-    }
-
     public void resetTalkingTooLoudTimer(){
         this.talkingTooLoudTimer = 20;
     }
@@ -374,8 +328,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.shouldRender = tag.getBoolean("shouldRender");
         this.isDoingCutscene = tag.getBoolean("isDoingCutscene");
         this.playingGlitchSound = tag.getBoolean("playingGlitchSound");
-        this.isTeleporting = tag.getBoolean("isTeleporting");
-        this.isTeleportingToPoolrooms = tag.getBoolean("isTeleportingToPoolrooms");
         this.shouldNoClip = tag.getBoolean("shouldNoClip");
         this.shouldDoStatic = tag.getBoolean("shouldDoStatic");
         this.isBeingCaptured = tag.getBoolean("isBeingCaptured");
@@ -384,6 +336,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.shouldBeMuted = tag.getBoolean("shouldBeMuted");
         this.shouldGlitch = tag.getBoolean("shouldGlitch");
         this.shouldInflictGlitchDamage = tag.getBoolean("shouldInflictGlitchDamage");
+        this.teleportingTimer = tag.getInt("teleportingTimer");
     }
 
     @Override
@@ -393,8 +346,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         tag.putBoolean("shouldRender", this.shouldRender);
         tag.putBoolean("isDoingCutscene", this.isDoingCutscene);
         tag.putBoolean("playingGlitchSound", this.playingGlitchSound);
-        tag.putBoolean("isTeleporting", this.isTeleporting);
-        tag.putBoolean("isTeleportingToPoolrooms", this.isTeleportingToPoolrooms);
         tag.putBoolean("shouldNoClip", this.shouldNoClip);
         tag.putBoolean("shouldDoStatic", this.shouldDoStatic);
         tag.putBoolean("isBeingCaptured", this.isBeingCaptured);
@@ -403,6 +354,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         tag.putBoolean("shouldBeMuted", this.shouldBeMuted);
         tag.putBoolean("shouldGlitch", this.shouldGlitch);
         tag.putBoolean("shouldInflictGlitchDamage", this.shouldInflictGlitchDamage);
+        tag.putInt("teleportingTimer", this.teleportingTimer);
     }
 
     public void sync(){
@@ -449,14 +401,15 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
             if (!teleports.isEmpty()) {
                 for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).predicate(this.player.getWorld(), this, BackroomsLevels.getLevel(this.player.getWorld()))) {
-                    if (crossDimensionTeleport.from().transitionOut(crossDimensionTeleport.to(), this, crossDimensionTeleport.world())) {
+                    if (crossDimensionTeleport.from().transitionOut(crossDimensionTeleport)) {
                         if (teleportingTimer == -1) {
-                            teleportingTimer = 20;
+                            this.setTeleportingTimer(level.getTransitionDuration());
                         }
 
                         if (teleportingTimer == 0) {
                             TeleportTarget target = new TeleportTarget(crossDimensionTeleport.pos(), crossDimensionTeleport.playerComponent().player.getVelocity(), crossDimensionTeleport.playerComponent().player.getYaw(), crossDimensionTeleport.playerComponent().player.getPitch());
                             FabricDimensions.teleport(crossDimensionTeleport.playerComponent().player, crossDimensionTeleport.world().getServer().getWorld(crossDimensionTeleport.to().getWorldKey()), target);
+                            crossDimensionTeleport.to().transitionIn(crossDimensionTeleport);
                         }
                     }
                 }
@@ -464,7 +417,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         }
 
         if (teleportingTimer >= 0) {
-            teleportingTimer--;
+            this.setTeleportingTimer(teleportingTimer - 1);
         }
 
 
@@ -539,7 +492,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     }
 
     private boolean checkBackroomsTeleport() {
-        if(this.player.isInsideWall()) {
+        if (this.player.isInsideWall()) {
             if (this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
                 suffocationTimer++;
                 if (suffocationTimer == 1) {
@@ -572,129 +525,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             suffocationTimer = 0;
         }
         return false;
-    }
-
-    /*
-    private void checkLevel1Teleport() {
-        if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-            ServerWorld level1 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL1_WORLD_KEY);
-
-            if (this.readyForLevel1) {
-                this.currentTeleportChunkPos = this.player.getChunkPos();
-                for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                    if(players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(players);
-                        playerComponent.setReadyForLevel1(false);
-
-                        TeleportTarget target = new TeleportTarget(calculateLevel1TeleportCoords(players), players.getVelocity(), players.getYaw(), players.getPitch());
-                        FabricDimensions.teleport(players, level1, target);
-                    }
-                }
-                this.currentTeleportChunkPos = null;
-            }
-
-            if (this.player.getPos().getY() <= 11 && this.player.isOnGround() && this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                if (!this.isTeleporting() && !this.readyForLevel1) {
-                    for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                        if (players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL0_WORLD_KEY) {
-                            teleportPlayer(players, 1);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    */
-
-    private void checkLevel2Teleport() {
-        if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-            ServerWorld level2 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL2_WORLD_KEY);
-
-            if (this.readyForLevel2) {
-                this.currentTeleportChunkPos = this.player.getChunkPos();
-                for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                    if(players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(players);
-                        playerComponent.setReadyForLevel1(false);
-
-                        TeleportTarget target = new TeleportTarget(calculateLevel2TeleportCoords(players), players.getVelocity(), players.getYaw(), players.getPitch());
-                        FabricDimensions.teleport(players, level2, target);
-                    }
-                }
-                this.currentTeleportChunkPos = null;
-            }
-
-            if (this.player.getPos().getY() <= 12.5 && this.player.isOnGround()) {
-                if (!this.isTeleporting() && !this.readyForLevel2) {
-                    for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                        if (players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                            teleportPlayer(players, 2);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void checkPoolroomsTeleport() {
-        if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-            ServerWorld poolrooms = this.player.getWorld().getServer().getWorld(BackroomsLevels.POOLROOMS_WORLD_KEY);
-
-            if (Math.abs(this.player.getPos().getZ()) >= 1000) {
-                this.level2Timer--;
-                if(level2Timer <= 0){
-                    if (!this.isTeleporting() && !this.readyForPoolrooms) {
-                        startLevel2Teleport(this.player);
-                    }
-                    if (this.readyForPoolrooms) {
-                        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-                            TeleportTarget target = new TeleportTarget(new Vec3d(16, 106, 16), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-                            FabricDimensions.teleport(this.player, poolrooms, target);
-                        }
-                        this.readyForPoolrooms = false;
-                    }
-                }
-            } else {
-                this.level2Timer = 200;
-                this.readyForPoolrooms = false;
-            }
-        }
-    }
-
-    private void checkGrassFieldsTeleport() {
-        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY && this.player.getWorld().getLightLevel(this.player.getBlockPos()) == 0 && this.player.getPos().y < 60 && this.player.getPos().y > 52){
-            this.player.fallDistance = 0;
-            if(this.player instanceof ServerPlayerEntity) {
-                SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) this.player, 60, true, false);
-                ServerWorld grassField = this.player.getWorld().getServer().getWorld(BackroomsLevels.INFINITE_FIELD_WORLD_KEY);
-                TeleportTarget target = new TeleportTarget(new Vec3d(0, 32, 0), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-                FabricDimensions.teleport(this.player, grassField, target);
-            }
-        }
-    }
-
-    private void checkOverWroldReturnTeleport() {
-        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY && this.player.getPos().y > 57.5 && this.player.isOnGround()){
-            if(this.player instanceof ServerPlayerEntity) {
-                BlockPos blockPos = ((ServerPlayerEntity)this.player).getSpawnPointPosition();
-                float f = ((ServerPlayerEntity)this.player).getSpawnAngle();
-                boolean bl = ((ServerPlayerEntity)this.player).isSpawnForced();
-                ServerWorld serverWorld = this.player.getWorld().getServer().getWorld(World.OVERWORLD);
-                Optional<Vec3d> optional;
-                if (serverWorld != null && blockPos != null) {
-                    optional = PlayerEntity.findRespawnPosition(serverWorld, blockPos, f, bl, true);
-                } else {
-                    optional = Optional.empty();
-                }
-
-                SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) this.player, 60, true, false);
-                ServerWorld overworld = this.player.getWorld().getServer().getWorld(World.OVERWORLD);
-                BlockPos blockPos1 = overworld.getSpawnPos();
-                TeleportTarget target = new TeleportTarget(optional.orElseGet(() -> Vec3d.of(blockPos1)), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-                this.loadPlayerSavedInventory();
-                FabricDimensions.teleport(this.player, overworld, target);
-            }
-        }
     }
 
     private void updateEntityVisibility() {
@@ -738,90 +568,23 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         }
     }
 
+    public void justChanged() {
+        this.sync();
+    }
 
     private void shouldSync() {
         boolean sync = false;
 
-        if(this.prevFlashLightOn != this.flashLightOn){
+        if (this.prevFlashLightOn != this.flashLightOn) {
             sync = true;
         }
 
-        if(sync){
+        if (sync) {
             this.sync();
         }
     }
 
     private void getPrevSettings() {
         this.prevFlashLightOn = this.flashLightOn;
-    }
-
-    private void teleportPlayer(PlayerEntity players, int destLevel){
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(players);
-
-        if(!playerComponent.isTeleporting()) {
-            playerComponent.setTeleporting(true);
-            playerComponent.sync();
-
-            executorService.schedule(() -> {
-                switch (destLevel){
-                    case 1: playerComponent.setReadyForLevel1(true); break;
-                    case 2: playerComponent.setReadyForLevel2(true); break;
-                }
-                playerComponent.setTeleporting(false);
-                executorService.shutdown();
-            }, 2500, TimeUnit.MILLISECONDS);
-        }
-    }
-
-    private void startLevel2Teleport(PlayerEntity players){
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(players);
-
-        if(!playerComponent.isTeleportingToPoolrooms()) {
-            //First send the signal to start the camera Shake
-            playerComponent.setTeleportingToPoolrooms(true);
-            playerComponent.sync();
-
-            //Shake the Camera of each player
-//            SPBRevamped.sendCameraShakePacket((ServerPlayerEntity) players, 100, 1, Easings.Easing.linear, true);
-
-            //Then Noclip
-            executorService.schedule(() -> {
-                playerComponent.setShouldNoClip(true);
-                playerComponent.sync();
-                executorService.shutdown();
-            }, 4500, TimeUnit.MILLISECONDS);
-
-            //Turn Player screen to Black
-            executorService.schedule(() -> {
-                SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) players, 20, true, false);
-                executorService.shutdown();
-            }, 4800, TimeUnit.MILLISECONDS);
-
-            //After the screen turns black THEN teleport
-            executorService.schedule(() -> {
-                this.readyForPoolrooms = true;
-                playerComponent.setTeleportingToPoolrooms(false);
-                playerComponent.setShouldNoClip(false);
-                playerComponent.sync();
-                executorService.shutdown();
-            }, 5500, TimeUnit.MILLISECONDS);
-
-        }
-    }
-
-    private Vec3d calculateLevel2TeleportCoords(PlayerEntity player){
-        if(this.player.getChunkPos().equals(player.getChunkPos())) {
-            int chunkX = this.currentTeleportChunkPos.getStartX();
-            int chunkZ = this.currentTeleportChunkPos.getStartZ();
-
-            double playerX = player.getPos().x;
-            double playerZ = player.getPos().z;
-
-            return new Vec3d((playerX - chunkX) - 1, player.getPos().y + 8, playerZ - chunkZ);
-        } else {
-            return new Vec3d(11.5, 29, 7.5);
-        }
     }
 }
