@@ -31,6 +31,7 @@ uniform mat4 orthographMatrix;
 uniform mat4 IShadowViewMatrix;
 uniform float sunsetTimer;
 uniform int blockReflections;
+uniform vec3 cameraBobOffset;
 
 in vec2 texCoord;
 out vec4 fragColor;
@@ -95,7 +96,7 @@ vec2 rayMarch(vec3 dir, vec3 origin, float ditherMult){
 }
 
 vec4 getReflection(vec4 fragColor, vec4 normal, float depth, vec2 texCoord, vec3 viewPos, float ditherMult){
-    vec3 reflected = normalize(reflect(normalize(viewPos), normalize(normal.rgb)));
+    vec3 reflected = normalize(reflect(normalize(viewPos + cameraBobOffset), normalize(normal.rgb)));
     vec3 worldSpace = viewToWorldSpace(viewPos);
     vec3 jitter = (hash(worldSpace) * 2.0 - 1.0) * ditherMult;
     vec2 projectedCoord = rayMarch(jitter + reflected * max(rayStep, -viewPos.z), viewPos, ditherMult);

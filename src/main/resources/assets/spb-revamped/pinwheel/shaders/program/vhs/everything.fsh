@@ -41,6 +41,7 @@ uniform int TogglePuddles;
 uniform float GameTime;
 uniform float sunsetTimer;
 uniform vec3 shadowColor;
+uniform vec3 cameraBobOffset;
 
 #define FOG_COLOR vec4(0.8, 0.8, 0.8, 1.0)
 
@@ -85,7 +86,7 @@ void main() {
 		#ifdef PUDDLES
 		if (!(compat.a > 0.0) && !(compat2.a > 0.0) && !isEntity(TransparentMat)){
 			if (TogglePuddles == 1){
-				color = getPuddles(color, texCoord, vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), DiffuseSampler0, TransparentDepthSampler, NoiseTexture, NoiseTexture2);
+				color = getPuddles(color, texCoord, vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), cameraBobOffset, DiffuseSampler0, TransparentDepthSampler, NoiseTexture, NoiseTexture2);
 			}
 		}
 		#endif

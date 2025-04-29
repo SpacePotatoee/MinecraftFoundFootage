@@ -21,6 +21,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -110,7 +111,9 @@ public abstract class GameRendererMixin {
         return deg;
     }
 
-    /// FIXME: Why are we doing this. Why are we overwriting this method? Space please tell me? best of wishes Chaos
+    /// Why are we doing this. Why are we overwriting this method? Space please tell me? best of wishes -Chaos
+
+    /// Dearest Chaos, Becasue I can -SpacePotato
 
     /**
      * @author
@@ -123,7 +126,11 @@ public abstract class GameRendererMixin {
             float f = playerEntity.horizontalSpeed - playerEntity.prevHorizontalSpeed;
             float g = -(playerEntity.horizontalSpeed + f * tickDelta);
             float h = MathHelper.lerp(tickDelta, playerEntity.prevStrideDistance, playerEntity.strideDistance);
-            matrices.translate(MathHelper.sin(g * (float) Math.PI) * h * 0.5F, -Math.abs(MathHelper.cos(g * (float) Math.PI) * h), 0.0F);
+
+            Vector3f cameraBob = new Vector3f(MathHelper.sin(g * (float) Math.PI) * h * 0.5F, -Math.abs(MathHelper.cos(g * (float) Math.PI) * h), 0.0F);
+            matrices.translate(cameraBob.x, cameraBob.y, cameraBob.z);
+            SPBRevampedClient.cameraBobOffset = new Vector3f(cameraBob);
+
             matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0F));
             float multiplier = 5.0f;
             if (ConfigStuff.enableRealCamera) {
@@ -132,15 +139,6 @@ public abstract class GameRendererMixin {
             matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(g * (float) Math.PI - 0.2F) * h) * multiplier));
         }
     }
-
-
-    //@Inject(method = "getFov", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
-//    private void getFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
-//        if(SPBRevampedClient.isInBackrooms()){
-//            cir.setReturnValue(85.0);
-//        }
-//        cir.setReturnValue(SPBRevampedClient.doCameraZoom(cir.getReturnValue(), this.client, camera.getFocusedEntity()));
-//    }
 
 
     @Inject(method = {

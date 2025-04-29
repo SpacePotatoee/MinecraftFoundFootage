@@ -66,8 +66,8 @@ vec2 rayMarch(vec3 dir, vec3 origin, sampler2D DepthSampler){
     return projectedCoords.xy;
 }
 
-vec4 getReflection(vec4 fragColor, vec4 normal, vec3 viewPos, float jitterMult, sampler2D DiffuseSampler0, sampler2D DepthSampler){
-    vec3 reflected = normalize(reflect(normalize(viewPos), normalize(normal.rgb)));
+vec4 getReflection(vec4 fragColor, vec4 normal, vec3 viewPos, vec3 cameraBobOffset, float jitterMult, sampler2D DiffuseSampler0, sampler2D DepthSampler){
+    vec3 reflected = normalize(reflect(normalize(viewPos + cameraBobOffset), normalize(normal.rgb)));
     vec3 worldSpace = viewToWorldSpace(viewPos);
     vec3 jitter = (hash(worldSpace) * 2.0 - 1.0) * jitterMult;
     vec2 projectedCoord = rayMarch(jitter + reflected * max(rayStep, -viewPos.z), viewPos, DepthSampler);
@@ -87,7 +87,7 @@ vec4 getReflection(vec4 fragColor, vec4 normal, vec3 viewPos, float jitterMult, 
     return mix(fragColor, mix(fragColor, vec4(reflectedTexture, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0.0, 1.0));
 }
 
-vec4 getPuddles(vec4 fragColor, vec2 texCoord, vec4 normal, sampler2D DiffuseSampler0, sampler2D DepthSampler, sampler2D NoiseTexture, sampler2D NoiseTexture2){
+vec4 getPuddles(vec4 fragColor, vec2 texCoord, vec4 normal, vec3 cameraBobOffset, sampler2D DiffuseSampler0, sampler2D DepthSampler, sampler2D NoiseTexture, sampler2D NoiseTexture2){
     vec4 color = fragColor;
     vec4 mainTexture = texture(DiffuseSampler0, texCoord);
     float depth = texture(DepthSampler, texCoord).r;
@@ -105,13 +105,13 @@ vec4 getPuddles(vec4 fragColor, vec2 texCoord, vec4 normal, sampler2D DiffuseSam
 
         //perfect reflections
         if (noise.r < 0.5){
-            color = getReflection(color, normal, viewSpace, 0.02, DiffuseSampler0, DepthSampler);
+            color = getReflection(color, normal, viewSpace, cameraBobOffset, 0.02, DiffuseSampler0, DepthSampler);
             color = mix(color, mainTexture, noise) - (noise * 0.02);
             color -= (1.0 - noise) * 0.1;
         }
         //Dithered reflections
         else if (noise.r < 0.8){
-            color = getReflection(color, normal, viewSpace, 0.4, DiffuseSampler0, DepthSampler);
+            color = getReflection(color, normal, viewSpace, cameraBobOffset, 0.4, DiffuseSampler0, DepthSampler);
             color = mix(color, mainTexture, noise) - (noise * 0.02);
             color -= (1.0 - noise) * 0.1;
         }

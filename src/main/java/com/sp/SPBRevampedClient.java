@@ -59,6 +59,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.Vector;
 
@@ -77,6 +78,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
     static boolean inBackrooms = false;
     public static Camera camera;
+    public static Vector3f cameraBobOffset;
 
     public static TickTimer tickTimer = new TickTimer();
     public static boolean blackScreen;
@@ -105,7 +107,7 @@ public class SPBRevampedClient implements ClientModInitializer {
         PbrRegistry.registerPBR(ModBlocks.ConcreteBlock11,  new PbrRegistry.PbrMaterial(true, 0.7f,16.0f,  2048));
         PbrRegistry.registerPBR(ModBlocks.Bricks,           new PbrRegistry.PbrMaterial(true, 0.7f,5.0f,   2048));
         PbrRegistry.registerPBR(ModBlocks.DIRT,             new PbrRegistry.PbrMaterial(true, 0.5f,3.0f,   1024));
-        PbrRegistry.registerPBR(ModBlocks.CHAINFENCE,       new PbrRegistry.PbrMaterial(true, 0.38f,2.8f,   1024));
+        PbrRegistry.registerPBR(ModBlocks.CHAINFENCE,       new PbrRegistry.PbrMaterial(true, 0.36f,2.8f,   1024));
         PbrRegistry.registerPBR(ModBlocks.WOODEN_CRATE,     new PbrRegistry.PbrMaterial(true, 2.0f,1.0f,   1024));
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolroomsSkyBlock, RenderLayers.getPoolroomsSky());

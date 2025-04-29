@@ -33,10 +33,10 @@ void main() {
     vec4 color = vec4(0.0);
     vec4 normalMap = vec4(0.0);
     float dist = 0.0;
-
+    vec3 repWorldPos = mod(worldPos, Zoom) *1 / Zoom;
     //If height is disabled
     if(Enableheight == 0){
-        vec3 repWorldPos = mod(worldPos, Zoom) *1 / Zoom;
+
         vec2 faceUV = getAccurateUV(repWorldPos, normal);
 
         vec2 zoomedUV = faceUV;
@@ -55,13 +55,11 @@ void main() {
 //        float dist = 0;
         vec3 pos = vec3(0.0);
         for(int i = 0; i < MaxSteps; i++) {
-            pos = worldPos + dir * dist;
+            pos = repWorldPos + dir * dist;
 
-            vec3 texCoords = vec3((pos.zx * worldNormal.g) + (vec2(pos.x, -pos.y) * worldNormal.b) + (-pos.zy * worldNormal.r), dist);
+            vec3 texCoords = vec3(getAccurateUV(pos, normal), dist);
 
-            vec3 repeatedTexCoord = vec3(mod(texCoords.xy, Zoom)*1/Zoom, texCoords.z);
-
-            vec2 zoomedUV2 = repeatedTexCoord.xy;
+            vec2 zoomedUV2 = texCoords.xy;
             zoomedUV2 *= (0.00006101539 * Resolution) * vec2(2.0 * atlasAspectRatio, 2.0);
             zoomedUV2 += texCoordOffset;
 
@@ -75,7 +73,7 @@ void main() {
                 break;
             }
 
-            dist += 0.002;
+            dist += 0.001;
         }
     }
 

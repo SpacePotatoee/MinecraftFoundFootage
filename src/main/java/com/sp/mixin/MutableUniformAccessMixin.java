@@ -9,21 +9,24 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.Window;
 import net.minecraft.screen.PlayerScreenHandler;
 import org.joml.Matrix4fc;
+import org.joml.Vector3fc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(value = MutableUniformAccess.class, remap = false)
 public interface MutableUniformAccessMixin {
-    @Shadow public abstract void setVector(CharSequence name, float x, float y);
+    @Shadow void setVector(CharSequence name, float x, float y);
 
-    @Shadow public abstract void setFloat(CharSequence name, float value);
+    @Shadow void setFloat(CharSequence name, float value);
 
-    @Shadow public abstract void setMatrix(CharSequence name, Matrix4fc value);
+    @Shadow void setMatrix(CharSequence name, Matrix4fc value);
 
-    @Shadow public abstract void setInt(CharSequence name, int value);
+    @Shadow void setInt(CharSequence name, int value);
 
-    @Shadow public abstract void setVector(CharSequence name, float[] values);
+    @Shadow void setVector(CharSequence name, float[] values);
+
+    @Shadow void setVector(CharSequence name, Vector3fc value);
 
     /**
      * @author SpacePotato
@@ -41,6 +44,7 @@ public interface MutableUniformAccessMixin {
         this.setInt("FogShape", RenderSystem.getShaderFogShape().getId());
         this.setMatrix("TextureMatrix", RenderSystem.getTextureMatrix());
         this.setFloat("GameTime", RenderSystem.getShaderGameTime());
+        this.setVector("cameraBobOffset", SPBRevampedClient.cameraBobOffset);
 
         MinecraftClient client = MinecraftClient.getInstance();
         Window window = client.getWindow();
