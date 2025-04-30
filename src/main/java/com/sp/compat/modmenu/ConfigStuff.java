@@ -104,6 +104,6 @@ public class ConfigStuff extends MidnightConfig {
 
 
     @Entry(category = SERVER, min = 1)
-    public static int exitSpawnRadius = 100;
+    public static int exitSpawnRadius = 300;
 
 }

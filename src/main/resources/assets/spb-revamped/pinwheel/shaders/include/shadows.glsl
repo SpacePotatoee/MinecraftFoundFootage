@@ -99,12 +99,9 @@ vec4 getShadow(vec4 incolor, vec2 texCoord, vec3 viewPos, vec4 normal, vec2 Scre
 
             shadowSum /= pow(2.0 * SHADOW_SAMPLES + 1.0, 2.0);
             color.rgb *= (clamp(1.0 - shadowSum, 1.0 - SHADOW_STRENGTH, 1.0));
-    //        color.rgb = (color.rgb * (1.0 - SHADOW_STRENGTH));
-    //        color.rgb *= step(shadowDepth, shadowSampler);
         }
         else {
             color.rgb = (color.rgb * (SHADOW_STRENGTH));
-    //        color.rgb = vec3(0);
         }
     } else {
         color.rgb = (color.rgb * (SHADOW_STRENGTH));
@@ -152,7 +149,7 @@ vec3 getVolumetricLight(vec4 incolor, vec2 texCoord, vec3 viewPos, vec2 ScreenSi
 
 
             if (shadowDepth < shadowSampler){
-                brightness += 0.0001;
+                brightness += 0.0002;
                 dist += 0.01;
             } else {
                 dist += 0.2;

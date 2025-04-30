@@ -118,7 +118,7 @@ void main() {
         materialNormal = worldToViewSpaceDirection(materialNormal);
     }
 
-    if(color.a < 0.1){
+    if(color.a < 0.4){
         discard;
     }
 

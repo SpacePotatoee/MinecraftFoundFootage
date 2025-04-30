@@ -53,7 +53,13 @@ void main() {
     vertexColor = Color;
     texCoord0 = UV0;
     texCoord2 = minecraft_sample_lightmap_coords(UV2);
-    lightmapColor = pow(texture(Sampler2, texCoord2), vec4(1));
+
+    float multiplier = 1.0;
+    #ifdef POOLROOMS
+        multiplier = 3.0;
+    #endif
+
+    lightmapColor = pow(texture(Sampler2, texCoord2), vec4(multiplier));
     normal = NormalMat * Normal;
     blockMaterial = BlockMaterial1;
 }

@@ -1,4 +1,4 @@
-package com.sp.mixin;
+package com.sp.mixin.lightmap;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.sp.init.BackroomsLevels;
@@ -18,7 +18,7 @@ public class PoolroomsSkylightColor {
     @Redirect(method = {"update"}, at = @At(value = "INVOKE", target = "Lorg/joml/Vector3f;lerp(Lorg/joml/Vector3fc;F)Lorg/joml/Vector3f;", ordinal = 0))
     private Vector3f fixWeirdBlueDarknessAndChangeSunlightColor(Vector3f instance, Vector3fc other, float t, @Local ClientWorld clientWorld) {
         float f = clientWorld.getSkyBrightness(1.0F);
-        Vector3f baseColor = new Vector3f(f, f, f);
+        Vector3f baseColor = new Vector3f(f);
 
         if(clientWorld.getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
             return baseColor.mul(PoolroomsDayCycle.getLightColor());

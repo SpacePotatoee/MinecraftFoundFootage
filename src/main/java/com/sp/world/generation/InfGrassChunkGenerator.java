@@ -93,7 +93,7 @@ public final class InfGrassChunkGenerator extends BackroomsChunkGenerator {
         } else {
             float rand = random.nextFloat();
             if (rand < 0.01f) {
-                roomIdentifier = this.randFeature(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), 1000));
+                roomIdentifier = this.randFeature(!chunk.getPos().getBlockPos(0,20,0).isWithinDistance(new Vec3i(0,20,0), this.getExitSpawnRadius(world)));
 
                 optional = structureTemplateManager.getTemplate(roomIdentifier);
 

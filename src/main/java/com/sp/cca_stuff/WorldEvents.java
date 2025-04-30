@@ -72,8 +72,8 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     @Override
     public void readFromNbt(NbtCompound tag) {
         for (BackroomsLevel level: BackroomsLevels.BACKROOMS_LEVELS) {
-            if (tag.contains(level.getLevelId())) {
-                level.readFromNbt(tag.getCompound(level.getLevelId()));
+            if (this.world.getRegistryKey() == level.getWorldKey()) {
+                level.readFromNbt(tag);
             }
         }
 
@@ -83,11 +83,9 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     @Override
     public void writeToNbt(NbtCompound tag) {
         for (BackroomsLevel level: BackroomsLevels.BACKROOMS_LEVELS) {
-            NbtCompound levelNbt = new NbtCompound();
-
-            tag.put(level.getLevelId(), levelNbt);
-
-            level.writeToNbt(levelNbt);
+            if (this.world.getRegistryKey() == level.getWorldKey()) {
+                level.writeToNbt(tag);
+            }
         }
 
         tag.putUuid("activeSkinwalkerTarget", this.activeSkinwalkerTarget);

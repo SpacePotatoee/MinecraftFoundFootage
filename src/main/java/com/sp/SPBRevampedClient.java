@@ -69,7 +69,9 @@ public class SPBRevampedClient implements ClientModInitializer {
     private static final CutsceneManager cutsceneManager = new CutsceneManager();
     private static final CameraShake cameraShake = new CameraShake();
     private final FlashlightRenderer flashlightRenderer = new FlashlightRenderer();
+
     private static final Identifier VHS_POST = new Identifier(SPBRevamped.MOD_ID, "vhs");
+
     private static final Identifier SSAO = new Identifier(SPBRevamped.MOD_ID, "vhs/ssao");
     private static final Identifier EVERYTHING_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/everything");
     private static final Identifier POST_VHS = new Identifier(SPBRevamped.MOD_ID, "vhs/vhs_post");

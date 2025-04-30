@@ -55,7 +55,7 @@ public class BackroomsLevels {
     }
 
     public static boolean isInBackrooms(RegistryKey<World> world){
-        return BACKROOMS_LEVELS.stream().anyMatch(level -> level.getWorldKey().equals(world));
+        return BACKROOMS_LEVELS.stream().anyMatch(level -> level.getWorldKey().equals(world) && level.getWorldKey() != World.OVERWORLD);
     }
 
     public static Vec3d getCurrentLevelsOrigin(RegistryKey<World> world) {

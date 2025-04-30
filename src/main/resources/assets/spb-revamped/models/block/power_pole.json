@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"2": "spb-revamped:block/empty_texture",
-		"particle": "spb-revamped:block/empty_texture"
+		"2": "spb-revamped:block/power_pole_texture",
+		"particle": "spb-revamped:block/power_pole_texture"
 	},
 	"elements": [
 		{

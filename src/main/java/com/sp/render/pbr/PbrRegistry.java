@@ -11,7 +11,7 @@ public abstract class PbrRegistry {
 
 
     /**
-     * Call this method in you'r client's {@code onInitialize()} method to render PBR textures on the specified block<br>
+     * Call this method in your client's {@code onInitialize()} method to render PBR textures on the specified block<br>
      * Put all of your textures into {@code textures/pbr/<name of your block>} <br>
      * <br>
      * Then in that folder, you need the block's<br>

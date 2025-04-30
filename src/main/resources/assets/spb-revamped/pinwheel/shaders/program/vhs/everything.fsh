@@ -135,11 +135,11 @@ void main() {
 
 		//Do this after the water
 		#ifdef VOLUMETRIC_LIGHT
-		if(OpaqueMat != 15){
-			if(ShadowToggle == 1) {
-				color.rgb = getVolumetricLight(color, texCoord, transparentViewPos, ScreenSize, viewMatrix, orthographMatrix, ShadowSampler, sunsetTimer, shadowColor);
-			}
-		}
+			#ifdef POOLROOMS
+				if(OpaqueMat != 15) {
+					color.rgb = getVolumetricLight(color, texCoord, transparentViewPos, ScreenSize, viewMatrix, orthographMatrix, ShadowSampler, sunsetTimer, shadowColor);
+				}
+			#endif
 		#endif
 
 

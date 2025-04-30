@@ -4,7 +4,8 @@
   "definitions": [
     "VOLUMETRIC_LIGHT",
     "PUDDLES",
-    "LEVEL1_FOG"
+    "LEVEL1_FOG",
+    "POOLROOMS"
   ]
 }
 

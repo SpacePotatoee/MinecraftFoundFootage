@@ -384,19 +384,9 @@
       "spb-revamped:infinite_grass/infinite_grass_soundevent7"
     ]
   },
-  "snapsnap": {
-    "sounds": [
-      "spb-revamped:snapsnap"
-    ]
-  },
   "emergency_light_alarm": {
     "sounds": [
       "spb-revamped:emergency_light_alarm"
-    ]
-  },
-  "entering_the_backrooms_alarm": {
-    "sounds": [
-      "spb-revamped:entering_the_backrooms_alarm"
     ]
   }
 }

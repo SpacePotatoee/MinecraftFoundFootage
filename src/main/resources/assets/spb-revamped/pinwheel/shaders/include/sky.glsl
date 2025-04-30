@@ -23,8 +23,8 @@ vec4 getSky(vec2 texCoord, float sunsetTimer, float GameTime, sampler2D CloudNoi
     vec3 color = vec3(0.0);
     vec3 rd = viewDirFromUv(texCoord);
 
-    vec2 uv = (rd.xz * 0.5) / rd.y + GameTime * 10.0 + VeilCamera.CameraPosition.xz * 0.01;
-    vec2 uv2 = (rd.xz * 0.7) / rd.y - GameTime * 10.0 + VeilCamera.CameraPosition.xz * 0.01;
+    vec2 uv = (rd.xz * 0.5) / rd.y + GameTime * 10.0 + VeilCamera.CameraPosition.xz * 0.005;
+    vec2 uv2 = (rd.xz * 0.7) / rd.y - GameTime * 10.0 + VeilCamera.CameraPosition.xz * 0.005;
 
     vec4 noise = texture(CloudNoise1, uv);
     vec4 noise2 = texture(CloudNoise2, uv2);
