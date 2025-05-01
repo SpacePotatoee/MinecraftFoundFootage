@@ -56,6 +56,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.Matrix4f;
@@ -337,7 +338,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }
 
                 if ((BackroomsLevels.getLevel(client.world)) instanceof Level2BackroomsLevel level) {
-                    if (level.isWarping()) {
+                    if (level.isWarping() || !finishedWarp(client.world)) {
                         definitions.define("WARP");
                     } else {
                         definitions.remove("WARP");
@@ -417,6 +418,16 @@ public class SPBRevampedClient implements ClientModInitializer {
                     timer.addCurrentTick();
                 }
             }
+
+            //Fixes Minecraft spectating not loading chunks bug
+            MinecraftClient client1 = MinecraftClient.getInstance();
+            PlayerEntity player = client1.player;
+            if(player != null) {
+                if (player != client1.getCameraEntity()) {
+                    Vec3d pos = client1.getCameraEntity().getPos();
+                    player.setPosition(pos);
+                }
+            }
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) ->{
@@ -480,7 +491,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             float x = tickTimer.getCurrentTick();
             float w = 0.03141592f;
             float result = MathStuff.mod((x * w) * 0.002f, w);
-            if (result == 0) {
+            if (result == 0 || (!level.isWarping() && result == 0.03141592f/2)) {
                 tickTimer.resetToZero();
             }
             return result;
@@ -491,10 +502,16 @@ public class SPBRevampedClient implements ClientModInitializer {
         }
     }
 
-    public static void sendGlitchDamagePacket(boolean shouldDamage) {
+    public static boolean finishedWarp(World world) {
+        float warp = getWarpTimer(world);
+        return warp == 0 || warp == 0.03141592f/2;
+    }
+
+    public static void sendComponentSyncPacket(boolean writeBoolean, String component) {
         PacketByteBuf buffer = PacketByteBufs.create();
-        buffer.writeBoolean(shouldDamage);
-        ClientPlayNetworking.send(InitializePackets.GLITCH_DAMAGE_SYNC, buffer);
+        buffer.writeBoolean(writeBoolean);
+        buffer.writeString(component);
+        ClientPlayNetworking.send(InitializePackets.COMPONENT_SYNC, buffer);
     }
 
     public static boolean isInBackrooms() {

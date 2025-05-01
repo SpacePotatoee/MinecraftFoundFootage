@@ -206,9 +206,7 @@ public class CutsceneManager {
         this.startTime = 0L;
         playerComponent.setDoingCutscene(false);
 
-        PacketByteBuf buffer = PacketByteBufs.create();
-        buffer.writeBoolean(playerComponent.isDoingCutscene());
-        ClientPlayNetworking.send(InitializePackets.CUTSCENE_SYNC, buffer);
+        SPBRevampedClient.sendComponentSyncPacket(playerComponent.isDoingCutscene(), "cutscene");
 
     }
 

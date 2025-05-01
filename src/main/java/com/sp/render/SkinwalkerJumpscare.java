@@ -1,15 +1,12 @@
 package com.sp.render;
 
+import com.sp.SPBRevampedClient;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.ModSounds;
-import com.sp.networking.InitializePackets;
 import com.sp.util.ExtraUtils;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.random.Random;
 
@@ -52,9 +49,7 @@ public class SkinwalkerJumpscare {
             started = false;
             startTime = 0L;
 
-            PacketByteBuf buffer = PacketByteBufs.create();
-            buffer.writeBoolean(component.isBeingCaptured());
-            ClientPlayNetworking.send(InitializePackets.BEING_CAPTURED_SYNC, buffer);
+            SPBRevampedClient.sendComponentSyncPacket(component.isBeingCaptured(), "beingCaptured");
 
             program.setInt("Jumpscare", 0);
             program.setInt("CreepyFace1", 0);

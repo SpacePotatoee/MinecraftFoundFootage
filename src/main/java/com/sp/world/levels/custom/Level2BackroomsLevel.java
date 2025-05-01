@@ -40,12 +40,9 @@ public class Level2BackroomsLevel extends BackroomsLevel {
             }
 
             if (from instanceof Level2BackroomsLevel && Math.abs(playerComponent.player.getPos().getZ()) >= exitRadius) {
-                for (PlayerEntity player : playerComponent.player.getWorld().getPlayers()) {
-                    PlayerComponent otherPlayerComponent = InitializeComponents.PLAYER.get(player);
-                    if (player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-                        playerList.add(new CrossDimensionTeleport(player.getWorld(), otherPlayerComponent, this.getSpawnPos(), BackroomsLevels.LEVEL2_BACKROOMS_LEVEL, BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL));
+                    if (playerComponent.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+                        playerList.add(new CrossDimensionTeleport(playerComponent.player.getWorld(), playerComponent, this.getSpawnPos(), BackroomsLevels.LEVEL2_BACKROOMS_LEVEL, BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL));
                     }
-                }
             }
 
             return playerList;

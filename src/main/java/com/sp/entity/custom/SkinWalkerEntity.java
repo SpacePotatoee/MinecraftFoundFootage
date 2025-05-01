@@ -102,9 +102,9 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
     public static DefaultAttributeContainer.Builder createSkinWalkerAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 1000F)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 10000F)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 1000.0F)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.30f)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.32f)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 12.0f);
     }
 

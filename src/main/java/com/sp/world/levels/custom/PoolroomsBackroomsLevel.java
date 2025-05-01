@@ -34,12 +34,9 @@ public class PoolroomsBackroomsLevel extends BackroomsLevel {
 
             List<CrossDimensionTeleport> playerList = new ArrayList<>();
             if (from instanceof PoolroomsBackroomsLevel && playerComponent.player.getWorld().getLightLevel(playerComponent.player.getBlockPos()) == 0 && playerComponent.player.getPos().y < 60 && playerComponent.player.getPos().y > 52) {
-                for (PlayerEntity player : playerComponent.player.getWorld().getPlayers()) {
-                    PlayerComponent otherPlayerComponent = InitializeComponents.PLAYER.get(player);
-                    if (player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                        playerList.add(new CrossDimensionTeleport(player.getWorld(), otherPlayerComponent, this.getSpawnPos(), BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL, BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL));
+                    if (playerComponent.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
+                        playerList.add(new CrossDimensionTeleport(playerComponent.player.getWorld(), playerComponent, this.getSpawnPos(), BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL, BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL));
                     }
-                }
             }
 
             return playerList;

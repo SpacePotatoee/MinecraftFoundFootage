@@ -1,5 +1,6 @@
 package com.sp.sounds;
 
+import com.sp.SPBRevampedClient;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
 import com.sp.world.levels.custom.Level2BackroomsLevel;
@@ -29,7 +30,7 @@ public class CreakingSoundInstance extends MovingSoundInstance {
             return;
         }
 
-        if(this.player.isRemoved() || !level.isWarping()) {
+        if(this.player.isRemoved() || (!level.isWarping() && SPBRevampedClient.finishedWarp(player.getWorld()))) {
             if(!level.isWarping()){
                 this.volume -= 0.01f;
             }else {

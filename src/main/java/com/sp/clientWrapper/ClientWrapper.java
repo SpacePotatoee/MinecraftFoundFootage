@@ -114,7 +114,7 @@ public class ClientWrapper {
                     if (!playerComponent.shouldInflictGlitchDamage) {
                         playerComponent.shouldInflictGlitchDamage = true;
 //                                System.out.println("SENT TRUE TO: " + playerComponent.player.getName().toString());
-                        SPBRevampedClient.sendGlitchDamagePacket(true);
+                        SPBRevampedClient.sendComponentSyncPacket(true, "glitch");
                     }
                 }
 
@@ -132,7 +132,7 @@ public class ClientWrapper {
                     if (playerComponent.shouldInflictGlitchDamage) {
                         playerComponent.shouldInflictGlitchDamage = false;
 //                                System.out.println("SENT FALSE TO: " + playerComponent.player.getName().toString());
-                        SPBRevampedClient.sendGlitchDamagePacket(false);
+                        SPBRevampedClient.sendComponentSyncPacket(false, "glitch");
                     }
                 }
             }
@@ -204,9 +204,7 @@ public class ClientWrapper {
                     HelpfulHintManager.disableFlashlightHint();
 
                     if (!playerComponent.player.isSpectator()) {
-                        PacketByteBuf buffer = PacketByteBufs.create();
-                        buffer.writeBoolean(playerComponent.isFlashLightOn());
-                        ClientPlayNetworking.send(InitializePackets.FL_SYNC, buffer);
+                        SPBRevampedClient.sendComponentSyncPacket(playerComponent.isFlashLightOn(), "flashlight");
                     }
                 } else {
                     playerComponent.setFlashLightOn(false);
@@ -216,17 +214,13 @@ public class ClientWrapper {
                 if (playerComponent.isFlashLightOn()) {
                     playerComponent.setFlashLightOn(false);
 
-                    PacketByteBuf buffer = PacketByteBufs.create();
-                    buffer.writeBoolean(playerComponent.isFlashLightOn());
-                    ClientPlayNetworking.send(InitializePackets.FL_SYNC, buffer);
+                    SPBRevampedClient.sendComponentSyncPacket(playerComponent.isFlashLightOn(), "flashlight");
                 }
             }
 
             if (!notInTheseLevels) {
                 if (playerComponent.isFlashLightOn()) {
-                    PacketByteBuf buffer = PacketByteBufs.create();
-                    buffer.writeBoolean(false);
-                    ClientPlayNetworking.send(InitializePackets.FL_SYNC, buffer);
+                    SPBRevampedClient.sendComponentSyncPacket(false, "flashlight");
                 }
                 playerComponent.setFlashLightOn(false);
             }
@@ -438,9 +432,9 @@ public class ClientWrapper {
             double distance;
 
             if (world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-                distance = ConfigStuff.lightRenderDistance < 32 ? ConfigStuff.lightRenderDistance : 32;
+                distance = Math.min(ConfigStuff.getLightRenderDistance(), 32);
             } else {
-                distance = ConfigStuff.lightRenderDistance;
+                distance = ConfigStuff.getLightRenderDistance();
             }
 
             boolean withinDistance = pos.isWithinDistance(playerPos, distance);
@@ -546,7 +540,7 @@ public class ClientWrapper {
             }
 
             Vec3d playerPos = player.getPos();
-            boolean withinDistance = pos.isWithinDistance(playerPos, ConfigStuff.lightRenderDistance);
+            boolean withinDistance = pos.isWithinDistance(playerPos, ConfigStuff.getLightRenderDistance());
             if (withinDistance) {
                 if (!state.get(FluorescentLightBlock.COPY) &&
                         state.get(FluorescentLightBlock.ON) &&

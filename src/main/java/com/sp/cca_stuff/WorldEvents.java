@@ -32,13 +32,12 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
     private UUID nullUUID = UUID.randomUUID();
     private UUID activeSkinwalkerTarget;
-    private UUID prevActiveSkinwalkerTarget;
     public SkinWalkerEntity activeSkinWalkerEntity;
 
-    private boolean done;
+    public boolean done;
     private int tick;
 
-    public WorldEvents(World world){
+    public WorldEvents(World world) {
         this.world = world;
         this.ticks = 0;
         this.delay = 1800;
@@ -65,7 +64,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         this.sync();
     }
 
-    public void sync(){
+    public void sync() {
         InitializeComponents.EVENTS.sync(this.world);
     }
 
@@ -78,6 +77,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         }
 
         this.activeSkinwalkerTarget = tag.getUuid("activeSkinwalkerTarget");
+        this.done = tag.getBoolean("skinwalkerDone");
     }
 
     @Override
@@ -89,6 +89,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         }
 
         tag.putUuid("activeSkinwalkerTarget", this.activeSkinwalkerTarget);
+        tag.putBoolean("skinwalkerDone", this.done);
     }
 
     @Override
@@ -192,6 +193,10 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         if (done || this.world.getRegistryKey() != BackroomsLevels.LEVEL0_WORLD_KEY) {
             return;
         }
+
+        if(this.activeSkinWalkerEntity != null){
+            return;
+        }
         //Thank goodness for https://stackoverflow.com/questions/2776176/get-minvalue-of-a-mapkey-double
         Map.Entry<UUID, Float> min = null;
         for (Map.Entry<UUID, Float> entry : BackroomsVoicechatPlugin.speakingTime.entrySet()) {
@@ -248,7 +253,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
             return;
         }
 
-        skinWalkerEntity.refreshPositionAndAngles((double) target.getX(), (double) target.getY(), (double) target.getZ(), target.getYaw(), target.getPitch());
+        skinWalkerEntity.refreshPositionAndAngles(target.getX(), target.getY(), target.getZ(), target.getYaw(), target.getPitch());
         skinWalkerEntity.setVelocity(target.getVelocity());
         this.world.spawnEntity(skinWalkerEntity);
         this.activeSkinWalkerEntity = skinWalkerEntity;
@@ -262,6 +267,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         ((ServerPlayerEntity) target).changeGameMode(GameMode.SPECTATOR);
         ((ServerPlayerEntity) target).setCameraEntity(skinWalkerEntity);
         this.done = true;
+        this.sync();
     }
 
     private void tickWorldEvents() {

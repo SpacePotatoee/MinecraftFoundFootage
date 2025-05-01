@@ -2,7 +2,6 @@ package com.sp;
 
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
-import com.sp.command.BlackScreenCommand;
 import com.sp.command.EventCommand;
 import com.sp.command.GimmeMyInventoryBack;
 import com.sp.command.SkinwalkerCommand;
@@ -67,8 +66,6 @@ public class SPBRevamped implements ModInitializer {
 		ModBlockEntities.registerAllBlockEntities();
 		MidnightConfig.init(MOD_ID, ConfigStuff.class);
 
-		CommandRegistrationCallback.EVENT.register(BlackScreenCommand::register);
-//		CommandRegistrationCallback.EVENT.register(CastToTheBackroomsCommand::register);
 		CommandRegistrationCallback.EVENT.register(EventCommand::register);
 		CommandRegistrationCallback.EVENT.register(GimmeMyInventoryBack::register);
 		CommandRegistrationCallback.EVENT.register(SkinwalkerCommand::register);
@@ -147,5 +144,13 @@ public class SPBRevamped implements ModInitializer {
 		buffer.writeFloat(volume);
 		buffer.writeFloat(pitch);
 		ServerPlayNetworking.send(player, InitializePackets.SOUND, buffer);
+	}
+
+	public static void sendLevelTransitionLightsOutPacket(ServerPlayerEntity player, int time) {
+		PlayerComponent component = InitializeComponents.PLAYER.get(player);
+		component.setTeleporting(true);
+		PacketByteBuf buffer = PacketByteBufs.create();
+		buffer.writeInt(time);
+		ServerPlayNetworking.send(player, InitializePackets.LEVEL_TRANSITION_LIGHTSOUT, buffer);
 	}
 }

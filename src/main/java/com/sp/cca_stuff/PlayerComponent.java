@@ -57,6 +57,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private boolean playingGlitchSound;
     private boolean shouldNoClip;
     private int teleportingTimer;
+    private boolean isTeleporting;
 
     public int suffocationTimer;
     private boolean shouldDoStatic;
@@ -182,6 +183,13 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public void setTeleportingTimer(int teleportingTimer) {
         this.teleportingTimer = teleportingTimer;
         this.justChanged();
+    }
+
+    public boolean isTeleporting() {
+        return isTeleporting;
+    }
+    public void setTeleporting(boolean teleporting) {
+        isTeleporting = teleporting;
     }
 
     public int getStamina() {

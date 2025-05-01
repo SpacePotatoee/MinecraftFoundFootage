@@ -34,16 +34,14 @@ void main() {
     chunkOffset = ChunkOffset + cameraPos;
     pos = playerSpaceToWorldSpace(pos);
 
-
-
     #ifdef WARP
     dist *= 0.03 * sin(warpAngle * 200.0);
     #else
     dist *= 0;
     #endif
-    pos -= vec3(0.5, 21.0, 0.0);
+    pos -= vec3(0.5, 21.5, 0.0);
 	pos = vec3((pos.x*cos(dist)) - (pos.y * sin(dist)),(pos.y  * cos(dist)) + (pos.x * sin(dist)),pos.z);
-    pos += vec3(0.5, 21.0, 0.0);
+    pos += vec3(0.5, 21.5, 0.0);
 
     pos = pos - cameraPos;
 

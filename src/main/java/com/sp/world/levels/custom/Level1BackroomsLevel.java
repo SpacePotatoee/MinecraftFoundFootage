@@ -1,10 +1,9 @@
 package com.sp.world.levels.custom;
 
-import com.sp.SPBRevampedClient;
+import com.sp.SPBRevamped;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.BackroomsLevels;
-import com.sp.init.ModSounds;
 import com.sp.world.events.level1.Level1Ambience;
 import com.sp.world.events.level1.Level1Blackout;
 import com.sp.world.events.level1.Level1Flicker;
@@ -12,15 +11,12 @@ import com.sp.world.generation.Level1ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Level1BackroomsLevel extends BackroomsLevel {
     private Level0BackroomsLevel.LightState lightState = Level0BackroomsLevel.LightState.ON;
@@ -44,7 +40,7 @@ public class Level1BackroomsLevel extends BackroomsLevel {
                 for (PlayerEntity player : playerComponent.player.getWorld().getPlayers()) {
                     PlayerComponent otherPlayerComponent = InitializeComponents.PLAYER.get(player);
                     if (player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                        playerList.add(new CrossDimensionTeleport(player.getWorld(), otherPlayerComponent, calculateLevel2TeleportCoords(player, player.getChunkPos()), BackroomsLevels.LEVEL1_BACKROOMS_LEVEL, BackroomsLevels.LEVEL2_BACKROOMS_LEVEL));
+                        playerList.add(new CrossDimensionTeleport(player.getWorld(), otherPlayerComponent, calculateLevel2TeleportCoords(player, playerComponent.player.getChunkPos()), BackroomsLevels.LEVEL1_BACKROOMS_LEVEL, BackroomsLevels.LEVEL2_BACKROOMS_LEVEL));
                     }
                 }
             }
@@ -85,18 +81,10 @@ public class Level1BackroomsLevel extends BackroomsLevel {
 
     @Override
     public boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
-        if (crossDimensionTeleport.world().isClient()) {
-            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-
-            //Turn off the lights
-            crossDimensionTeleport.playerComponent().player.playSound(ModSounds.LIGHTS_OUT, SoundCategory.AMBIENT, 1, 1);
-            SPBRevampedClient.getCutsceneManager().blackScreen.showBlackScreen(80, false, false);
-
-            //PlaySound after black screen is over
-            executorService.schedule(() -> {
-                crossDimensionTeleport.playerComponent().player.playSound(ModSounds.LIGHTS_ON, SoundCategory.AMBIENT, 1, 1);
-                executorService.shutdown();
-            }, 4000, TimeUnit.MILLISECONDS);
+        if (!crossDimensionTeleport.world().isClient()) {
+            if(!crossDimensionTeleport.playerComponent().isTeleporting()) {
+                SPBRevamped.sendLevelTransitionLightsOutPacket((ServerPlayerEntity) crossDimensionTeleport.playerComponent().player, 80);
+            }
         }
 
         return crossDimensionTeleport.playerComponent().player.isOnGround();

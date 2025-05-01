@@ -86,7 +86,6 @@ void raymarchLightPole(inout vec4 color, inout vec3 normal) {
 
         if(d <= 0.001){
             color = texture(Sampler0, texCoord0);
-//            color = vec4(0.5);
 
             normal.xz = normalize(rayPos.xz - (floor(rayPos.xz) + 0.5));
             normal.y = 0.0;

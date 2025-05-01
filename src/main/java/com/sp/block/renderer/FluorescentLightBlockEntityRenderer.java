@@ -53,6 +53,6 @@ public class FluorescentLightBlockEntityRenderer implements BlockEntityRenderer<
 
     @Override
     public int getRenderDistance() {
-        return (int) ConfigStuff.lightRenderDistance;
+        return (int) ConfigStuff.getLightRenderDistance();
     }
 }

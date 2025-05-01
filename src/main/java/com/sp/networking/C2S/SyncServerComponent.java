@@ -8,14 +8,25 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class CutsceneSync {
+public class SyncServerComponent {
+
     public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender){
-        boolean isDoingCutscene = buf.readBoolean();
+        boolean readBoolean = buf.readBoolean();
+        String component = buf.readString();
 
         server.execute(()->{
             PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-            playerComponent.setDoingCutscene(isDoingCutscene);
+
+            switch (component) {
+                case "beingCaptured": playerComponent.setBeingCaptured(readBoolean); break;
+                case "cutscene": playerComponent.setDoingCutscene(readBoolean); break;
+                case "flashlight": playerComponent.setFlashLightOn(readBoolean); break;
+                case "glitch": playerComponent.setShouldInflictGlitchDamage(readBoolean); break;
+                case "teleporting": playerComponent.setTeleporting(readBoolean); break;
+            }
+
             playerComponent.sync();
         });
     }
+
 }

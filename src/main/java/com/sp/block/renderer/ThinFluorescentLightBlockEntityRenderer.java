@@ -95,6 +95,6 @@ public class ThinFluorescentLightBlockEntityRenderer implements BlockEntityRende
 
     @Override
     public int getRenderDistance() {
-        return (int) ConfigStuff.lightRenderDistance;
+        return (int) ConfigStuff.getLightRenderDistance();
     }
 }

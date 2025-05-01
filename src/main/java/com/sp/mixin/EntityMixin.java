@@ -38,16 +38,6 @@ public abstract class EntityMixin {
         }
     }
 
-
-    /*
-    @Redirect(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;shouldSpawnSprintingParticles()Z"))
-    private boolean noSprintingParticles(Entity instance) {
-
-
-        return instance.shouldSpawnSprintingParticles() && !SPBRevampedClient.isInBackrooms();
-    }
-*/
-
     @Inject(method = "getSwimSound", at = @At("RETURN"), cancellable = true)
     private void newSwimSound(CallbackInfoReturnable<SoundEvent> cir){
         cir.setReturnValue(ModSounds.SWIM);

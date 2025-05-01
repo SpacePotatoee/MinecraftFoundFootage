@@ -2,6 +2,7 @@ package com.sp.compat.modmenu;
 
 import com.sp.render.grass.GrassQuality;
 import eu.midnightdust.lib.config.MidnightConfig;
+import net.minecraft.client.MinecraftClient;
 
 
 public class ConfigStuff extends MidnightConfig {
@@ -60,6 +61,10 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = SHADERS, min = 10)
     public static int lightRenderDistance = 100;
 
+    public static int getLightRenderDistance() {
+        return lightRenderDistance;
+    }
+
 
     @Comment(category = SHADERS)
     public static Comment spacer3;
@@ -103,7 +108,7 @@ public class ConfigStuff extends MidnightConfig {
 
 
 
-    @Entry(category = SERVER, min = 1)
+    @Entry(category = SERVER, min = 200, max = 1000)
     public static int exitSpawnRadius = 300;
 
 }

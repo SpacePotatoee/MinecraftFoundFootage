@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
-    ///execute in spb-revamped:infinite_field run tp @s 12.65 54.69 -1229.11 -272.66 -9.75
 
     public InfiniteGrassBackroomsLevel() {
         super("inf_grass", InfGrassChunkGenerator.CODEC, new Vec3d(0, 31, 0), BackroomsLevels.INFINITE_FIELD_WORLD_KEY);
@@ -78,15 +77,13 @@ public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
 
     @Override
     public boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
-        SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) crossDimensionTeleport.playerComponent().player, 60, true, false);
         crossDimensionTeleport.playerComponent().loadPlayerSavedInventory();
-
         return true;
     }
 
     @Override
     public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
-
+        SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) crossDimensionTeleport.playerComponent().player, 60, true, false);
     }
 
     @Override
