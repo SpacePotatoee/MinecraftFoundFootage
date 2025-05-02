@@ -4,8 +4,8 @@
 
   "itemgroup.spbrevamped": "Закулисье",
 
-  "flashlight.hint": "Press %s to toggle your flashlight",
-  "noclip.hint": "Suffocate yourself in sand or gravel to noclip into the backrooms",
+  "flashlight.hint": "Нажмите %s, чтобы включить/выключить фонарик",
+  "noclip.hint": "Задохнитесь в песке или гравии, чтобы пройти сквозь стены в Закулисье",
 
   "block.spb-revamped.void_block": "Блок пустоты",
   "block.spb-revamped.ceiling_light": "Потолочный светильник",
@@ -94,7 +94,7 @@
 
   "spb-revamped.midnightconfig.category.video": "Настройки видео",
   "spb-revamped.midnightconfig.category.shaders": "Настройки шейдеров",
-  "spb-revamped.midnightconfig.category.server": "Server Settings",
+  "spb-revamped.midnightconfig.category.server": "Настройки сервера",
   "spb-revamped.midnightconfig.enableVanillaLighting": "Включить ванильное освещение",
   "spb-revamped.midnightconfig.enableRealCamera": "Включить реалистичную камеру",
   "spb-revamped.midnightconfig.forceBackrooms": "Принудительно в Закулисье",
@@ -102,13 +102,13 @@
   "spb-revamped.midnightconfig.enableSmoothCamera": "Включить плавное движение камеры",
   "spb-revamped.midnightconfig.cameraSmoothing": "Множитель сглаживания камеры",
   "spb-revamped.midnightconfig.showHands": "Показывать основную руку",
-  "spb-revamped.midnightconfig.useDefaultGUI": "Use Minecraft's Default GUI",
-  "spb-revamped.midnightconfig.enableHint": "Enable the hint on world join",
-  "spb-revamped.midnightconfig.VhsAspectRatioComment": "Если ваш монитор поддерживает это, включите данную опцию, и в настройках видео Minecraft появятся дополнительные параметры для полноэкранного разрешения. Это даст больше эффекта VHS",
+  "spb-revamped.midnightconfig.useDefaultGUI": "Использовать стандартный GUI Minecraft",
+  "spb-revamped.midnightconfig.enableHint": "Включить подсказку при входе в мир",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "Если ваш монитор поддерживает это, включите данную опцию, и в настройках видео Minecraft появятся дополнительные параметры для полноэкранного разрешения. Это даст больше эффекта VHS.",
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Включить только VHS-форматы",
 
-  "spb-revamped.midnightconfig.enableVhsEffect": "Включить шейдер Vhs",
-  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "VHS Distortion Multiplier",
+  "spb-revamped.midnightconfig.enableVhsEffect": "Включить шейдер VHS",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "Множитель искажений VHS",
   "spb-revamped.midnightconfig.lookRollMultiplier": "Множитель наклона при повороте",
   "spb-revamped.midnightconfig.strafeRollMultiplier": "Множитель наклона при движении",
   "spb-revamped.midnightconfig.lightRenderDistance": "Дальность прорисовки освещения (в блоках)",
@@ -122,17 +122,17 @@
   "spb-revamped.midnightconfig.motionBlur": "Включить размытие в движении",
   "spb-revamped.midnightconfig.motionBlurStrength": "Сила размытия в движении",
 
-  "spb-revamped.midnightconfig.grassQuality": "Grass Quality",
+  "spb-revamped.midnightconfig.grassQuality": "Качество травы",
   "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "LOW",
   "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MEDIUM",
   "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "HIGH",
   "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
 
-  "spb-revamped.midnightconfig.exitSpawnRadius": "Exit Spawn Radius (In Blocks)",
+  "spb-revamped.midnightconfig.exitSpawnRadius": "Радиус выхода из спавна (в блоках)",
 
   "death.attack.acid": "%1$s сгорел в кислоте!",
   "death.attack.smiler": "%1$s был убит Улыбающимся!",
-  "death.attack.skin_walker": "%1$s was killed by a Skin Walker!",
+  "death.attack.skin_walker": "%1$s был убит Кожекрадом!",
 
   "spb-revamped.keybinds": "SPB-Revamped",
   "key.spb-revamped.toggle_flashlight": "Включить фонарик",
@@ -140,21 +140,18 @@
 
 
   "skinwalker.flavor-text.move1": "Ты не можешь двигаться. ",
-  "skinwalker.flavor-text.move2": "Это больше не твое тело",
+  "skinwalker.flavor-text.move2": "Это больше не твое тело.",
 
-  "skinwalker.flavor-text.inventory": "Это больше не твой инвентарь",
+  "skinwalker.flavor-text.inventory": "Это больше не твой инвентарь.",
 
-  "skinwalker.flavor-text.leave": "Отсюда нет выхода",
+  "skinwalker.flavor-text.leave": "Отсюда нет выхода.",
 
-  "skinwalker.flavor-text.chat": "Никто не услышит твой крик",
+  "skinwalker.flavor-text.chat": "Никто не услышит твой крик.",
 
   "skinwalker.flavor-text.taunt1": "Давай, попробуй.",
   "skinwalker.flavor-text.taunt2": "Попробуй позвать друзей (T).",
-  "skinwalker.flavor-text.taunt3": "Если ты ещё не понял, твой скин уже забрали. ",
+  "skinwalker.flavor-text.taunt3": "Если ты ещё не понял, твою кожу уже забрали. ",
   "skinwalker.flavor-text.taunt4": "Не будь придурком. Не пиши другим игрокам в ЛС.",
-
-
-
 
   "spb-revamped.flashlight.wet1": "Твой фонарь промок. ",
   "spb-revamped.flashlight.wet2": "Больше он не работает."
