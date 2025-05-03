@@ -55,13 +55,7 @@ public class VertexBufferMixin implements RenderIndirectExtension {
         } else {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.indexBufferId);
             glDrawElementsIndirect(this.getDrawMode(this.drawMode.glMode), this.indexType.glType, 0);
-//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
-
-
-//        GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
-//            System.err.println("GL DEBUG: " + GLDebugMessageCallback.getMessage(length, message));
-//        }, 0);
 
     }
 }

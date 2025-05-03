@@ -70,7 +70,7 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
             return;
         }
 
-        List<SkinWalkerEntity> skinWalkerList = client.player.getWorld().getEntitiesByClass(SkinWalkerEntity.class, client.player.getBoundingBox().expand(100), EntityPredicates.VALID_LIVING_ENTITY);
+        List<SkinWalkerEntity> skinWalkerList = client.player.getWorld().getEntitiesByClass(SkinWalkerEntity.class, client.player.getBoundingBox().expand(50), EntityPredicates.VALID_LIVING_ENTITY);
 
         if (skinWalkerList.isEmpty()) {
             return;

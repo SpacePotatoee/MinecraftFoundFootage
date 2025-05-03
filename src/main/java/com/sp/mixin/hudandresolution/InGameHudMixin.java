@@ -60,6 +60,13 @@ public class InGameHudMixin {
         }
     }
 
+    @Inject(method = {"renderHotbarItem"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V", ordinal = 1, shift = At.Shift.AFTER))
+    private void itemCountFix(DrawContext context, int x, int y, float f, PlayerEntity player, ItemStack stack, int seed, CallbackInfo ci){
+        if (!ConfigStuff.useDefaultGUI) {
+            context.getMatrices().translate(0, this.hotbarPosition, 0);
+        }
+    }
+
     @Inject(method = {"renderHotbarItem"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;III)V"))
     private void hotbarSlide2(DrawContext context, int x, int y, float f, PlayerEntity player, ItemStack stack, int seed, CallbackInfo ci){
         if (SPBRevampedClient.shouldRenderCameraEffect()) {
