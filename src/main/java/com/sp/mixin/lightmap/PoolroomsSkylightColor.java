@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = LightmapTextureManager.class, remap = false)
+@Mixin(LightmapTextureManager.class)
 public class PoolroomsSkylightColor {
 
     //This is done so that the Darkrooms stay the same color instead of also changing with the day night cycle

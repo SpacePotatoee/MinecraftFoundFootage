@@ -13,29 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(value = Monitor.class, remap = false)
+@Mixin(Monitor.class)
 public class MonitorMixin {
 
     @Shadow @Final private List<VideoMode> videoModes;
     @Unique private static Integer maxRefreshRate = null;
-
-//    @Inject(method = "populateVideoModes", at = @At(value = "INVOKE", target = "Ljava/util/List;clear()V", shift = At.Shift.AFTER))
-//    private void clearList(CallbackInfo ci){
-////        VhsAspectRatio.vhsAspectRatiosList.clear();
-//        System.out.println("========================================================================================");
-//    }
-//
-//    @Inject(method = "populateVideoModes", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER))
-//    private void get43AspectRatios(CallbackInfo ci, @Local VideoMode videoMode){
-//        if ((float) videoMode.getWidth() / (float)videoMode.getHeight() == 1.3333334f){
-//            System.out.println(videoMode.asString());
-//            if(MinecraftClient.getInstance().getWindow() != null)
-//            System.out.println(MinecraftClient.getInstance().getWindow().getRefreshRate());
-//            DisplayMode.get
-////            System.out.println((float) videoMode.getWidth() / videoMode.getHeight());
-//            VhsAspectRatio.vhsAspectRatiosList.add(videoMode);
-//        }
-//    }
 
     @Inject(method = "populateVideoModes", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwGetMonitorPos(J[I[I)V"))
     private void get43AspectRatios(CallbackInfo ci){
