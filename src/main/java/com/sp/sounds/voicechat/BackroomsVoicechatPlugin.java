@@ -70,22 +70,25 @@ public class BackroomsVoicechatPlugin implements VoicechatPlugin {
             return;
         }
 
-        List<SkinWalkerEntity> skinWalkerList = client.player.getWorld().getEntitiesByClass(SkinWalkerEntity.class, client.player.getBoundingBox().expand(50), EntityPredicates.VALID_LIVING_ENTITY);
+        try {
+            List<SkinWalkerEntity> skinWalkerList = client.player.getWorld().getEntitiesByClass(SkinWalkerEntity.class, client.player.getBoundingBox().expand(50), EntityPredicates.VALID_LIVING_ENTITY);
 
-        if (skinWalkerList.isEmpty()) {
-            return;
-        }
-
-        for (SkinWalkerEntity skinWalker : skinWalkerList) {
-            if (!skinWalker.getUuid().equals(channelID)) {
-                continue;
+            if (skinWalkerList.isEmpty()) {
+                return;
             }
 
-//            AL10.alSourcef(openALSoundEvent.getSource(), 4131, 0.9f);
-            if (skinWalker.component.isInTrueForm()) {
-                AL10.alSourcei(openALSoundEvent.getSource(), 53248, 53251);
-                AL10.alSourcef(openALSoundEvent.getSource(), AL10.AL_PITCH, 0.8f);
+            for (SkinWalkerEntity skinWalker : skinWalkerList) {
+                if (!skinWalker.getUuid().equals(channelID)) {
+                    continue;
+                }
+
+                if (skinWalker.component.isInTrueForm()) {
+                    AL10.alSourcei(openALSoundEvent.getSource(), 53248, 53251);
+                    AL10.alSourcef(openALSoundEvent.getSource(), AL10.AL_PITCH, 0.8f);
+                }
             }
+        } catch (Exception e) {
+            SPBRevamped.LOGGER.error("Error pitching down the Skinwalker's Voice: {}", String.valueOf(e));
         }
     }
 
