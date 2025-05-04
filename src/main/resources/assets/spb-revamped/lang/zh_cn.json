@@ -1,25 +1,49 @@
 {
+  "intro.backrooms": "The Backrooms",
+  "intro.credit": "模组作者 ",
+
   "itemgroup.spbrevamped": "后室",
 
-  "flashlight.hint": "Press %s to toggle your flashlight",
-  "noclip.hint": "Suffocate yourself in sand or gravel to noclip into the backrooms",
+  "flashlight.hint": "按下 %s 控制手电筒",
+  "noclip.hint": "在沙子或砂土中窒息可触发穿模，进入后室",
+  
+  "block.spb-revamped.void_block": "虚空方块",
+  "block.spb-revamped.ceiling_light": "吊灯",
+  "block.spb-revamped.emergency_light": "应急灯",
 
   "block.spb-revamped.wall_block": "壁纸方块",
   "block.spb-revamped.wall_block_2": "马尼拉壁纸方块",
   "block.spb-revamped.ceiling_tile": "天花板瓷砖方块",
+  "block.spb-revamped.ghost_ceiling_tile": "幽灵天花板瓷砖方块",
   "block.spb-revamped.carpet_block": "地毯方块",
+  "block.spb-revamped.rug1": "地毯1",
+  "block.spb-revamped.rug2": "地毯2",
+
+
+  "block.spb-revamped.wooden_crate": "板条箱",
+  "container.spb-revamped.wooden_crate": "板条箱",
+
 
   "block.spb-revamped.fluorescent_light": "荧光灯",
-  "block.spb-revamped.poolrooms_window": "泳池房窗格方块",
-  "block.spb-revamped.window": "窗格方块",
-  "block.spb-revamped.thin_fluorescent_light": "细型荧光灯",
+  "block.spb-revamped.pool_sky": "天空方块",
+  "block.spb-revamped.thin_fluorescent_light": "细荧光灯",
   "block.spb-revamped.bottom_trim": "底部装饰边",
+  "block.spb-revamped.chain_fence": "锁链栅栏",
+  "block.spb-revamped.new_stairs": "楼梯间阶梯",
 
-  "block.spb-revamped.concrete6": "混凝土6",
-  "block.spb-revamped.concrete7": "混凝土7",
-  "block.spb-revamped.concrete9": "混凝土9",
-  "block.spb-revamped.concrete9slab": "混凝土9台阶",
-  "block.spb-revamped.concrete11": "混凝土11",
+
+  "block.spb-revamped.concrete1": "混凝土 1",
+  "block.spb-revamped.concrete2": "混凝土 2",
+  "block.spb-revamped.concrete5": "混凝土 5",
+  "block.spb-revamped.concrete6": "混凝土 6",
+  "block.spb-revamped.concrete7": "混凝土 7",
+  "block.spb-revamped.concrete9": "混凝土 9",
+  "block.spb-revamped.concrete9slab": "混凝土 9 台阶",
+  "block.spb-revamped.concrete10": "混凝土 10",
+  "block.spb-revamped.concrete11": "混凝土 11",
+  "block.spb-revamped.concrete12": "混凝土 12",
+  "block.spb-revamped.bricks": "砖墙",
+
 
   "block.spb-revamped.thin_pipe": "细管道",
   "block.spb-revamped.thin_pipe_corner": "细管道弯头",
@@ -30,48 +54,61 @@
   "block.spb-revamped.big_pipe_middle": "大型中间管道",
   "block.spb-revamped.small_pipe_set": "小型管道组",
 
-  "block.spb-revamped.wall_text_1": "墙壁数字1",
-  "block.spb-revamped.wall_text_2": "墙壁数字2",
-  "block.spb-revamped.wall_text_3": "墙壁数字3",
-  "block.spb-revamped.wall_text_4": "墙壁数字4",
-  "block.spb-revamped.wall_text_5": "墙壁数字5",
-  "block.spb-revamped.wall_text_6": "墙壁数字6",
-  "block.spb-revamped.wall_text_7": "墙壁数字7",
-  "block.spb-revamped.wall_text_8": "墙壁数字8",
-  "block.spb-revamped.wall_text_99": "墙壁数字99",
 
-  "block.spb-revamped.arrow1": "箭头1",
-  "block.spb-revamped.arrow2": "箭头2",
-  "block.spb-revamped.arrow3": "箭头3",
-  "block.spb-revamped.arrow4": "箭头4",
+  "block.spb-revamped.wall_text_1": "墙壁数字 1",
+  "block.spb-revamped.wall_text_2": "墙壁数字 2",
+  "block.spb-revamped.wall_text_3": "墙壁数字 3",
+  "block.spb-revamped.wall_text_4": "墙壁数字 4",
+  "block.spb-revamped.wall_text_5": "墙壁数字 5",
+  "block.spb-revamped.wall_text_6": "墙壁数字 6",
+  "block.spb-revamped.wall_text_7": "墙壁数字 7",
+  "block.spb-revamped.wall_text_8": "墙壁数字 8",
+  "block.spb-revamped.wall_text_99": "墙壁数字 99",
 
-  "block.spb-revamped.wall_small_1": "墙壁手绘图案-手",
-  "block.spb-revamped.wall_small_2": "墙壁手绘图案-脸",
-  "block.spb-revamped.wall_drawing_door": "墙壁手绘门",
-  "block.spb-revamped.wall_drawing_window": "墙壁手绘窗",
+
+  "block.spb-revamped.arrow1": "箭头 1",
+  "block.spb-revamped.arrow2": "箭头 2",
+  "block.spb-revamped.arrow3": "箭头 3",
+  "block.spb-revamped.arrow4": "箭头 4",
+
+  "block.spb-revamped.pool_tiles": "泳池瓷砖",
+  "block.spb-revamped.pool_tile_wall": "泳池瓷砖竖板",
+  "block.spb-revamped.slope": "泳池斜坡",
+
+
+  "block.spb-revamped.wall_small_1": "墙壁手绘图案 手",
+  "block.spb-revamped.wall_small_2": "墙壁手绘图案 脸",
+  "block.spb-revamped.wall_drawing_door": "墙壁手绘图案 门",
+  "block.spb-revamped.wall_drawing_window": "墙壁手绘图案 窗",
+
 
   "item.spb-revamped.backshroom": "后菇",
-  "item.spb-revamped.canned_food": "罐装龙肉",
+  "item.spb-revamped.backshroom.tooltip": "如果实在没别的东西吃",
+
+  "item.spb-revamped.canned_food": "罐头食品",
+  "item.spb-revamped.canned_food.tooltip": "可能变质了",
+
 
   "spb-revamped.options.fullscreen.resolution": "VHS分辨率",
 
+
   "spb-revamped.midnightconfig.category.video": "视频设置",
   "spb-revamped.midnightconfig.category.shaders": "着色器设置",
-  "spb-revamped.midnightconfig.category.server": "Server Settings",
+  "spb-revamped.midnightconfig.category.server": "服务器设置",
   "spb-revamped.midnightconfig.enableVanillaLighting": "启用原版光照",
-  "spb-revamped.midnightconfig.enableRealCamera": "启用真实摄像机",
+  "spb-revamped.midnightconfig.enableRealCamera": "启用真实视角",
   "spb-revamped.midnightconfig.forceBackrooms": "强制进入后室",
-  "spb-revamped.midnightconfig.enableCameraRoll": "启用摄像机晃动",
-  "spb-revamped.midnightconfig.enableSmoothCamera": "启用平滑镜头",
-  "spb-revamped.midnightconfig.cameraSmoothing": "镜头平滑系数",
+  "spb-revamped.midnightconfig.enableCameraRoll": "启用视角晃动",
+  "spb-revamped.midnightconfig.enableSmoothCamera": "启用平滑视角",
+  "spb-revamped.midnightconfig.cameraSmoothing": "视角平滑系数",
   "spb-revamped.midnightconfig.showHands": "显示主手",
-  "spb-revamped.midnightconfig.useDefaultGUI": "Use Minecraft's Default GUI",
-  "spb-revamped.midnightconfig.enableHint": "Enable the hint on world join",
-  "spb-revamped.midnightconfig.VhsAspectRatioComment": "如果显示器支持，启用后可在全屏分辨率设置中选择VHS风格的纵横比",
+  "spb-revamped.midnightconfig.useDefaultGUI": "使用Minecraft默认GUI",
+  "spb-revamped.midnightconfig.enableHint": "启用加入世界时提示",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "若显示器支持，启用后可在全屏分辨率设置中选择VHS风格的纵横比",
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "仅启用VHS纵横比",
 
   "spb-revamped.midnightconfig.enableVhsEffect": "启用VHS特效",
-  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "VHS Distortion Multiplier",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "VHS失真系数",
   "spb-revamped.midnightconfig.lookRollMultiplier": "视角倾斜系数",
   "spb-revamped.midnightconfig.strafeRollMultiplier": "平移倾斜系数",
   "spb-revamped.midnightconfig.lightRenderDistance": "光照渲染距离（方块）",
@@ -79,25 +116,46 @@
   "spb-revamped.midnightconfig.enableShadows": "启用阴影",
   "spb-revamped.midnightconfig.enableVolumetricLight": "启用体积光",
   "spb-revamped.midnightconfig.enablePuddles": "启用积水效果",
-  "spb-revamped.midnightconfig.enableLevel1Fog": "启用 level 1 雾气",
+  "spb-revamped.midnightconfig.enableLevel1Fog": "启用 Level 1 雾气",
   "spb-revamped.midnightconfig.renderWaterReflections": "启用水面反射",
   "spb-revamped.midnightconfig.renderBlockReflections": "启用方块反射（仅泳池房瓷砖）",
   "spb-revamped.midnightconfig.motionBlur": "启用动态模糊",
   "spb-revamped.midnightconfig.motionBlurStrength": "动态模糊强度",
 
-  "spb-revamped.midnightconfig.grassQuality": "Grass Quality",
-  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "LOW",
-  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MEDIUM",
-  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "HIGH",
-  "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
+  "spb-revamped.midnightconfig.grassQuality": "草地质量",
+  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "低",
+  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "中",
+  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "高",
+  "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "极致",
 
-  "spb-revamped.midnightconfig.exitSpawnRadius": "Exit Spawn Radius (In Blocks)",
+  "spb-revamped.midnightconfig.exitSpawnRadius": "出口生成半径（方块）",
 
-  "death.attack.acid": "%1$s在酸液中灼伤！",
-  "death.attack.smiler": "%1$s被笑魇杀害！",
-  "death.attack.skin_walker": "%1$s was killed by a Skin Walker!",
+  "death.attack.acid": "%1$s 在酸液中烧死了！",
+  "death.attack.smiler": "%1$s 被笑魇杀害！",
+  "death.attack.skin_walker": "%1$s 被窃皮者杀害！",
 
   "spb-revamped.keybinds": "SPB重制版",
   "key.spb-revamped.toggle_flashlight": "切换手电筒",
-  "key.spb-revamped.toggle_event": "切换事件"
+  "key.spb-revamped.toggle_event": "切换事件",
+
+
+  "skinwalker.flavor-text.move1": "你无法移动  ",
+  "skinwalker.flavor-text.move2": "这不再是你的身体了",
+
+  "skinwalker.flavor-text.inventory": "物品栏已不属于你",
+
+  "skinwalker.flavor-text.leave": "无处可逃",
+
+  "skinwalker.flavor-text.chat": "没人能听到你的尖叫",
+
+  "skinwalker.flavor-text.taunt1": "继续啊",
+  "skinwalker.flavor-text.taunt2": "试试呼唤你的朋友（按T）",
+  "skinwalker.flavor-text.taunt3": "如果还不够明显的话——你的皮肤已经被偷走了",
+  "skinwalker.flavor-text.taunt4": "别犯傻，不要偷偷告诉其他玩家",
+
+
+
+
+  "spb-revamped.flashlight.wet1": "手电筒进水了  ",
+  "spb-revamped.flashlight.wet2": "它失效了"
 }
