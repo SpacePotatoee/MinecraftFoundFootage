@@ -95,14 +95,14 @@ public class Level1MazeGenerator extends MazeGenerator {
             }
         }
 
-        for(int i = 0; i < this.cols; i += 2) {
+        for(int i = 1; i < this.cols; i += 2) {
             HighVarCell cell = this.grid[this.cols - 1][i];
             if(cell != null) {
                 cell.setWest(false);
             }
         }
 
-        for(int i = this.cols - 1; i >= 0; i -= 2) {
+        for(int i = this.cols - 2; i >= 0; i -= 2) {
             HighVarCell cell = this.grid[i][this.cols - 1];
             if(cell != null) {
                 cell.setNorth(false);
