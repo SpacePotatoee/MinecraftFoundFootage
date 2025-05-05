@@ -1,0 +1,161 @@
+{
+  "intro.backrooms": "The Backrooms",
+  "intro.credit": "模組作者 ",
+
+  "itemgroup.spbrevamped": "後室",
+
+  "flashlight.hint": "按下 %s 控制手電筒",
+  "noclip.hint": "在沙子或砂土中窒息可觸發穿模，進入後室",
+  
+  "block.spb-revamped.void_block": "虛空方塊",
+  "block.spb-revamped.ceiling_light": "吊燈",
+  "block.spb-revamped.emergency_light": "應急燈",
+
+  "block.spb-revamped.wall_block": "壁紙方塊",
+  "block.spb-revamped.wall_block_2": "馬尼拉壁紙方塊",
+  "block.spb-revamped.ceiling_tile": "天花板瓷磚方塊",
+  "block.spb-revamped.ghost_ceiling_tile": "幽靈天花板瓷磚方塊",
+  "block.spb-revamped.carpet_block": "地毯方塊",
+  "block.spb-revamped.rug1": "地毯 1",
+  "block.spb-revamped.rug2": "地毯 2",
+
+
+  "block.spb-revamped.wooden_crate": "板條箱",
+  "container.spb-revamped.wooden_crate": "板條箱",
+
+
+  "block.spb-revamped.fluorescent_light": "螢光燈",
+  "block.spb-revamped.pool_sky": "天空方塊",
+  "block.spb-revamped.thin_fluorescent_light": "細螢光燈",
+  "block.spb-revamped.bottom_trim": "底部裝飾邊",
+  "block.spb-revamped.chain_fence": "鎖鏈柵欄",
+  "block.spb-revamped.new_stairs": "樓梯間階梯",
+
+
+  "block.spb-revamped.concrete1": "混凝土 1",
+  "block.spb-revamped.concrete2": "混凝土 2",
+  "block.spb-revamped.concrete5": "混凝土 5",
+  "block.spb-revamped.concrete6": "混凝土 6",
+  "block.spb-revamped.concrete7": "混凝土 7",
+  "block.spb-revamped.concrete9": "混凝土 9",
+  "block.spb-revamped.concrete9slab": "混凝土 9 台階",
+  "block.spb-revamped.concrete10": "混凝土 10",
+  "block.spb-revamped.concrete11": "混凝土 11",
+  "block.spb-revamped.concrete12": "混凝土 12",
+  "block.spb-revamped.bricks": "磚牆",
+
+
+  "block.spb-revamped.thin_pipe": "細管道",
+  "block.spb-revamped.thin_pipe_corner": "細管道彎頭",
+  "block.spb-revamped.pipe": "管道",
+  "block.spb-revamped.pipe_middle": "中間管道",
+  "block.spb-revamped.pipe_corner": "管道彎頭",
+  "block.spb-revamped.big_pipe": "大型管道",
+  "block.spb-revamped.big_pipe_middle": "大型中間管道",
+  "block.spb-revamped.small_pipe_set": "小型管道組",
+
+
+  "block.spb-revamped.wall_text_1": "牆壁數字 1",
+  "block.spb-revamped.wall_text_2": "牆壁數字 2",
+  "block.spb-revamped.wall_text_3": "牆壁數字 3",
+  "block.spb-revamped.wall_text_4": "牆壁數字 4",
+  "block.spb-revamped.wall_text_5": "牆壁數字 5",
+  "block.spb-revamped.wall_text_6": "牆壁數字 6",
+  "block.spb-revamped.wall_text_7": "牆壁數字 7",
+  "block.spb-revamped.wall_text_8": "牆壁數字 8",
+  "block.spb-revamped.wall_text_99": "牆壁數字 99",
+
+
+  "block.spb-revamped.arrow1": "箭頭 1",
+  "block.spb-revamped.arrow2": "箭頭 2",
+  "block.spb-revamped.arrow3": "箭頭 3",
+  "block.spb-revamped.arrow4": "箭頭 4",
+
+  "block.spb-revamped.pool_tiles": "泳池瓷磚",
+  "block.spb-revamped.pool_tile_wall": "泳池瓷磚豎板",
+  "block.spb-revamped.slope": "泳池斜坡",
+
+
+  "block.spb-revamped.wall_small_1": "牆壁手繪圖案 手",
+  "block.spb-revamped.wall_small_2": "牆壁手繪圖案 臉",
+  "block.spb-revamped.wall_drawing_door": "牆壁手繪圖案 門",
+  "block.spb-revamped.wall_drawing_window": "牆壁手繪圖案 窗",
+
+
+  "item.spb-revamped.backshroom": "後菇",
+  "item.spb-revamped.backshroom.tooltip": "如果實在沒別的東西吃",
+
+  "item.spb-revamped.canned_food": "罐頭食品",
+  "item.spb-revamped.canned_food.tooltip": "可能變質了",
+
+
+  "spb-revamped.options.fullscreen.resolution": "VHS解析度",
+
+
+  "spb-revamped.midnightconfig.category.video": "視訊設定",
+  "spb-revamped.midnightconfig.category.shaders": "著色器設定",
+  "spb-revamped.midnightconfig.category.server": "伺服器設定",
+  "spb-revamped.midnightconfig.enableVanillaLighting": "啟用原版光照",
+  "spb-revamped.midnightconfig.enableRealCamera": "啟用真實視角",
+  "spb-revamped.midnightconfig.forceBackrooms": "強制進入後室",
+  "spb-revamped.midnightconfig.enableCameraRoll": "啟用視角晃動",
+  "spb-revamped.midnightconfig.enableSmoothCamera": "啟用平滑視角",
+  "spb-revamped.midnightconfig.cameraSmoothing": "視角平滑係數",
+  "spb-revamped.midnightconfig.showHands": "顯示主手",
+  "spb-revamped.midnightconfig.useDefaultGUI": "使用Minecraft預設GUI",
+  "spb-revamped.midnightconfig.enableHint": "啟用加入世界時提示",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "若顯示器支援，啟用後可在全螢幕解析度設定中選擇VHS風格的縱橫比",
+  "spb-revamped.midnightconfig.enableVHSAspectRatio": "僅啟用VHS縱橫比",
+
+  "spb-revamped.midnightconfig.enableVhsEffect": "啟用VHS特效",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "VHS失真係數",
+  "spb-revamped.midnightconfig.lookRollMultiplier": "視角傾斜係數",
+  "spb-revamped.midnightconfig.strafeRollMultiplier": "平移傾斜係數",
+  "spb-revamped.midnightconfig.lightRenderDistance": "光照渲染距離（方塊）",
+
+  "spb-revamped.midnightconfig.enableShadows": "啟用陰影",
+  "spb-revamped.midnightconfig.enableVolumetricLight": "啟用體積光",
+  "spb-revamped.midnightconfig.enablePuddles": "啟用積水效果",
+  "spb-revamped.midnightconfig.enableLevel1Fog": "啟用 Level 1 霧氣",
+  "spb-revamped.midnightconfig.renderWaterReflections": "啟用水面反射",
+  "spb-revamped.midnightconfig.renderBlockReflections": "啟用方塊反射（僅泳池房瓷磚）",
+  "spb-revamped.midnightconfig.motionBlur": "啟用動態模糊",
+  "spb-revamped.midnightconfig.motionBlurStrength": "動態模糊強度",
+
+  "spb-revamped.midnightconfig.grassQuality": "草地品質",
+  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "低",
+  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "中",
+  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "高",
+  "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "極致",
+
+  "spb-revamped.midnightconfig.exitSpawnRadius": "出口生成半徑（方塊）",
+
+  "death.attack.acid": "%1$s 在酸液中燒死了！",
+  "death.attack.smiler": "%1$s 被笑靨殺害！",
+  "death.attack.skin_walker": "%1$s 被竊皮者殺害！",
+
+  "spb-revamped.keybinds": "SPB重製版",
+  "key.spb-revamped.toggle_flashlight": "切換手電筒",
+  "key.spb-revamped.toggle_event": "切換事件",
+
+
+  "skinwalker.flavor-text.move1": "你無法移動  ",
+  "skinwalker.flavor-text.move2": "這不再是你的身體了",
+
+  "skinwalker.flavor-text.inventory": "物品欄已不屬於你",
+
+  "skinwalker.flavor-text.leave": "無處可逃",
+
+  "skinwalker.flavor-text.chat": "沒人能聽到你的尖叫",
+
+  "skinwalker.flavor-text.taunt1": "繼續啊",
+  "skinwalker.flavor-text.taunt2": "試試呼喚你的朋友（按T）",
+  "skinwalker.flavor-text.taunt3": "如果還不夠明顯的話——你的皮膚已經被偷走了",
+  "skinwalker.flavor-text.taunt4": "別犯傻，不要偷偷告訴其他玩家",
+
+
+
+
+  "spb-revamped.flashlight.wet1": "手電筒進水了  ",
+  "spb-revamped.flashlight.wet2": "它失效了"
+}
