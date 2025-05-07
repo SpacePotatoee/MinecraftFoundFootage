@@ -50,7 +50,7 @@ public class SPBRevamped implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
             PrAnCommonClass.isDev = true;
             PrAnCommonClass.shouldRenderDebugLegs = true;
             PrAnCommonClass.LOGGER.info("Started in a development environment. Debug renderers will be activated by default.");
