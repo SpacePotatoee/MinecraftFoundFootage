@@ -12,8 +12,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.nio.ByteBuffer;
 
@@ -26,21 +25,9 @@ public abstract class AreaLightMixin extends Light implements InstancedLight, Po
     @Shadow @Final private static float MAX_ANGLE_SIZE;
     @Shadow protected float distance;
 
-    @Inject(method = "store", at = @At("HEAD"), cancellable = true)
-    private void lightFix(ByteBuffer buffer, CallbackInfo ci){
-        ci.cancel();
-        this.matrix.getFloats(buffer.position(), buffer);
-        buffer.position(buffer.position() + Float.BYTES * 16);
-
-        buffer.putFloat(this.color.x() * this.brightness);
-        buffer.putFloat(this.color.y() * this.brightness);
-        buffer.putFloat(this.color.z() * this.brightness);
-
-        this.size.get(buffer.position(), buffer);
-        buffer.position(buffer.position() + Float.BYTES * 2);
-
-        buffer.putFloat((float) MathHelper.clamp((int) (this.angle * MAX_ANGLE_SIZE), 0, 65535));
-        buffer.putFloat(this.distance);
+    @Redirect(method = "store", at = @At(value = "INVOKE", target = "Ljava/nio/ByteBuffer;putShort(S)Ljava/nio/ByteBuffer;"))
+    private ByteBuffer lightFix(ByteBuffer instance, short i){
+        return instance.putFloat((float) MathHelper.clamp((int) (this.angle * MAX_ANGLE_SIZE), 0, 65535));
     }
 
 }

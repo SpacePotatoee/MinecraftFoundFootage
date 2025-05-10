@@ -1,5 +1,7 @@
 package com.sp.mixin.skinstolen;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.entity.client.SkinWalkerCapturedFlavorText;
@@ -11,7 +13,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends Screen {
@@ -21,8 +22,8 @@ public abstract class GameMenuScreenMixin extends Screen {
     }
 
     //You can't escape
-    @Redirect(method = "initWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget;builder(Lnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;)Lnet/minecraft/client/gui/widget/ButtonWidget$Builder;", ordinal = 1))
-    private ButtonWidget.Builder noEscape(Text message, ButtonWidget.PressAction onPress){
+    @WrapOperation(method = "initWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget;builder(Lnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;)Lnet/minecraft/client/gui/widget/ButtonWidget$Builder;", ordinal = 1))
+    private ButtonWidget.Builder noEscape(Text message, ButtonWidget.PressAction onPress, Operation<ButtonWidget.Builder> original){
         MinecraftClient client1 = MinecraftClient.getInstance();
         if(client1.player != null) {
             PlayerComponent component = InitializeComponents.PLAYER.get(client1.player);
@@ -35,6 +36,6 @@ public abstract class GameMenuScreenMixin extends Screen {
             }
         }
 
-        return new ButtonWidget.Builder(message, onPress);
+        return original.call(message, onPress);
     }
 }

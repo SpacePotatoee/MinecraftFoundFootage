@@ -1,5 +1,9 @@
 package com.sp.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
 import com.sp.compat.modmenu.ConfigStuff;
@@ -18,11 +22,13 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -111,33 +117,19 @@ public abstract class GameRendererMixin {
         return deg;
     }
 
-    /// Why are we doing this. Why are we overwriting this method? Space please tell me? best of wishes -Chaos
+    @WrapOperation(method = "bobView", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V"))
+    private void storeBobOffset(MatrixStack instance, float x, float y, float z, Operation<Void> original) {
+        original.call(instance, x, y, z);
+        SPBRevampedClient.cameraBobOffset = new Vector3f(x, y, z);
+    }
 
-    /// Dearest Chaos, Becasue I can -SpacePotato
-
-    /**
-     * @author
-     * @reason
-     */
-    @Overwrite
-    private void bobView(MatrixStack matrices, float tickDelta){
-        if (this.client.getCameraEntity() instanceof PlayerEntity) {
-            PlayerEntity playerEntity = (PlayerEntity)this.client.getCameraEntity();
-            float f = playerEntity.horizontalSpeed - playerEntity.prevHorizontalSpeed;
-            float g = -(playerEntity.horizontalSpeed + f * tickDelta);
-            float h = MathHelper.lerp(tickDelta, playerEntity.prevStrideDistance, playerEntity.strideDistance);
-
-            Vector3f cameraBob = new Vector3f(MathHelper.sin(g * (float) Math.PI) * h * 0.5F, -Math.abs(MathHelper.cos(g * (float) Math.PI) * h), 0.0F);
-            matrices.translate(cameraBob.x, cameraBob.y, cameraBob.z);
-            SPBRevampedClient.cameraBobOffset = new Vector3f(cameraBob);
-
-            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0F));
-            float multiplier = 5.0f;
-            if (ConfigStuff.enableRealCamera) {
-                multiplier = 10.0f;
-            }
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(g * (float) Math.PI - 0.2F) * h) * multiplier));
+    @ModifyExpressionValue(method = "bobView", at = @At(value = "CONSTANT", args = "floatValue=5.0"))
+    private float useRealCameraMultiplier(float original) {
+        if (ConfigStuff.enableRealCamera) {
+            return 10f;
         }
+
+        return original;
     }
 
 
@@ -185,11 +177,9 @@ public abstract class GameRendererMixin {
         cir.setReturnValue(shader.toShaderInstance());
     }
 
-    @Redirect(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Camera;F)V"))
-    private void redirect(GameRenderer instance, MatrixStack matrices, Camera camera, float tickDelta) {
-        if(!SPBRevampedClient.getCutsceneManager().isPlaying){
-            this.renderHand(matrices, camera, tickDelta);
-        }
+    @WrapWithCondition(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Camera;F)V"))
+    private boolean redirect(GameRenderer instance, MatrixStack matrices, Camera camera, float tickDelta) {
+        return !SPBRevampedClient.getCutsceneManager().isPlaying;
     }
 
     @Redirect(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;getReachDistance()F"))

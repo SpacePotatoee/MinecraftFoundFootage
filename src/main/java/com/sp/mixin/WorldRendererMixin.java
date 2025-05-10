@@ -1,5 +1,6 @@
 package com.sp.mixin;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevampedClient;
 import com.sp.init.BackroomsLevels;
@@ -18,7 +19,6 @@ import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static org.lwjgl.opengl.GL11C.*;
@@ -83,9 +83,9 @@ public abstract class WorldRendererMixin {
     }
 
 
-    @Redirect(method = "processWorldEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundManager;play(Lnet/minecraft/client/sound/SoundInstance;)V"))
-    private void stopTravelSound(SoundManager instance, SoundInstance sound){
-
+    @WrapWithCondition(method = "processWorldEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundManager;play(Lnet/minecraft/client/sound/SoundInstance;)V"))
+    private boolean stopTravelSound(SoundManager instance, SoundInstance sound){
+        return false;
     }
 
 }
