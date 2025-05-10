@@ -1,5 +1,7 @@
 package com.sp.mixin.respawnsystem;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.sp.init.BackroomsLevels;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -10,7 +12,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DeathScreen.class)
@@ -40,8 +41,8 @@ public abstract class DeathScreenMixin extends Screen {
 
 
     //Remove the functionality of the respawn button
-    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget;builder(Lnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;)Lnet/minecraft/client/gui/widget/ButtonWidget$Builder;", ordinal = 0))
-    private ButtonWidget.Builder disableRespawnButton(Text message, ButtonWidget.PressAction onPress){
+    @WrapOperation(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget;builder(Lnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;)Lnet/minecraft/client/gui/widget/ButtonWidget$Builder;", ordinal = 0))
+    private ButtonWidget.Builder disableRespawnButton(Text message, ButtonWidget.PressAction onPress, Operation<ButtonWidget.Builder> original){
         if (this.isInBackrooms()) {
             return new ButtonWidget.Builder(message, button -> {
                 firstTimeDead = false;
@@ -49,12 +50,12 @@ public abstract class DeathScreenMixin extends Screen {
             });
         }
 
-        return new ButtonWidget.Builder(message, onPress);
+        return original.call(message, onPress);
     }
 
     //Remove the functionality of the title screen button
-    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget;builder(Lnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;)Lnet/minecraft/client/gui/widget/ButtonWidget$Builder;", ordinal = 1))
-    private ButtonWidget.Builder disableTitleScreenButton(Text message, ButtonWidget.PressAction onPress){
+    @WrapOperation(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget;builder(Lnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;)Lnet/minecraft/client/gui/widget/ButtonWidget$Builder;", ordinal = 1))
+    private ButtonWidget.Builder disableTitleScreenButton(Text message, ButtonWidget.PressAction onPress, Operation<ButtonWidget.Builder> original){
         if (this.isInBackrooms()) {
             return new ButtonWidget.Builder(message, button -> {
                 firstTimeDead = false;
@@ -62,7 +63,7 @@ public abstract class DeathScreenMixin extends Screen {
             });
         }
 
-        return new ButtonWidget.Builder(message, onPress);
+        return original.call(message, onPress);
     }
 
 
