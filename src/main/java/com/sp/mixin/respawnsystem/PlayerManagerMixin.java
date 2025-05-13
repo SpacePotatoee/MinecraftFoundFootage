@@ -1,7 +1,8 @@
 package com.sp.mixin.respawnsystem;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.sp.init.BackroomsLevels;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -19,7 +20,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -37,34 +37,34 @@ public class PlayerManagerMixin {
         this.targetPlayer = player;
     }
 
-    @Redirect(method = "respawnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;getSpawnPointPosition()Lnet/minecraft/util/math/BlockPos;"))
-    private BlockPos setSpawnPointPos(ServerPlayerEntity instance){
+    @WrapOperation(method = "respawnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;getSpawnPointPosition()Lnet/minecraft/util/math/BlockPos;"))
+    private BlockPos setSpawnPointPos(ServerPlayerEntity instance, Operation<BlockPos> original){
         if(BackroomsLevels.isInBackrooms(targetPlayer.getWorld().getRegistryKey())) {
             return targetPlayer.getLastDeathPos().isPresent() ? targetPlayer.getLastDeathPos().get().getPos() : instance.getSpawnPointPosition();
         }
-        return instance.getSpawnPointPosition();
+        return original.call(instance);
     }
 
 
-    @Redirect(method = "respawnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getWorld(Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/server/world/ServerWorld;"))
-    private @Nullable ServerWorld getCurrentWorld(MinecraftServer instance, RegistryKey<World> key){
+    @WrapOperation(method = "respawnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getWorld(Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/server/world/ServerWorld;"))
+    private @Nullable ServerWorld getCurrentWorld(MinecraftServer instance, RegistryKey<World> key, Operation<ServerWorld> original){
         if(BackroomsLevels.isInBackrooms(targetPlayer.getWorld().getRegistryKey())) {
             return instance.getWorld(targetPlayer.getWorld().getRegistryKey());
         }
 
-        return instance.getWorld(key);
+        return original.call(instance, key);
     }
 
 
 
-    @Redirect(method = "respawnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;findRespawnPosition(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;FZZ)Ljava/util/Optional;"))
-    private Optional<Vec3d> respawn(ServerWorld world, BlockPos pos, float angle, boolean forced, boolean alive){
+    @WrapOperation(method = "respawnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;findRespawnPosition(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;FZZ)Ljava/util/Optional;"))
+    private Optional<Vec3d> respawn(ServerWorld world, BlockPos pos, float angle, boolean forced, boolean alive, Operation<Optional<Vec3d>> original){
         if(BackroomsLevels.isInBackrooms(targetPlayer.getWorld().getRegistryKey())) {
             if (targetPlayer.getLastDeathPos().isPresent()) {
                 return Optional.of(targetPlayer.getLastDeathPos().get().getPos().toCenterPos());
             }
         }
-        return PlayerEntity.findRespawnPosition(world, pos, angle, forced, alive);
+        return original.call(world, pos, angle, forced, alive);
     }
 
 
