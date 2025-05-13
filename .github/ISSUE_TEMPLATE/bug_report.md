@@ -24,7 +24,7 @@ _A clear and concise description of what you expected to happen._
 _If applicable, add screenshots to help illustrate the problem._  
 
 ## **★ System Information**  
-
+> ***We do not support mobile usage***
 ### **★ Desktop**  
 - **Operating System:** _(e.g., Windows, Linux, macOS)_  
 - **OS Version:** _(e.g., Windows 8.1, Ubuntu 20.04 LTS, macOS Monterey 12.0)_  
