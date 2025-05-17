@@ -122,13 +122,13 @@
   "spb-revamped.midnightconfig.motionBlur": "Habilitar Desfoque de Movimento",
   "spb-revamped.midnightconfig.motionBlurStrength": "Intensidade do Desfoque de Movimento",
 
-  "spb-revamped.midnightconfig.grassQuality": "Grass Quality",
-  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "LOW",
-  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MEDIUM",
-  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "HIGH",
+  "spb-revamped.midnightconfig.grassQuality": "Qualidade da Grama",
+  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "BAIXA",
+  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MÉDIA",
+  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "ALTA",
   "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
 
-  "spb-revamped.midnightconfig.exitSpawnRadius": "Exit Spawn Radius (In Blocks)",
+  "spb-revamped.midnightconfig.exitSpawnRadius": "Raio de Aparecimento da Saída (em Blocos)",
 
   "death.attack.acid": "%1$s derreteu em Ácido!",
   "death.attack.smiler": "%1$s foi morto por um Smiler!",
