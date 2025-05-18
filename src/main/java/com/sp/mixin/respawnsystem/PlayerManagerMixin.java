@@ -61,6 +61,10 @@ public class PlayerManagerMixin {
     private Optional<Vec3d> respawn(ServerWorld world, BlockPos pos, float angle, boolean forced, boolean alive){
         if(BackroomsLevels.isInBackrooms(targetPlayer.getWorld().getRegistryKey())) {
             if (targetPlayer.getLastDeathPos().isPresent()) {
+                Vec3d lastDeathPos = targetPlayer.getLastDeathPos().get().getPos().toCenterPos();
+                if(lastDeathPos.y < 0){
+                    return Optional.of(BlockPos.ofFloored(BackroomsLevels.getCurrentLevelsOrigin(world.getRegistryKey())).toCenterPos());
+                }
                 return Optional.of(targetPlayer.getLastDeathPos().get().getPos().toCenterPos());
             }
         }
