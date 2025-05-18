@@ -127,11 +127,11 @@ public abstract class BackroomsLevel {
      */
     public abstract void transitionIn(CrossDimensionTeleport crossDimensionTeleport);
 
-    protected void registerTransition(LevelTransition transition, String name) {
+    public void registerTransition(LevelTransition transition, String name) {
         this.transitions.put(name, transition);
     }
 
-    protected void unregisterTransition(String name) {
+    public void unregisterTransition(String name) {
         this.transitions.remove(name);
     }
 

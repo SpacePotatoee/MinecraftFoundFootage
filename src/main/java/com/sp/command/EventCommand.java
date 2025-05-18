@@ -208,7 +208,7 @@ public class EventCommand {
 
     private static void setEvent(WorldEvents events, World world, AbstractEvent activeEvent) {
         if (events.getActiveEvent() != null) {
-            events.getActiveEvent().end(world);
+            events.getActiveEvent().finish(world);
         }
         events.setActiveEvent(activeEvent);
         activeEvent.init(world);

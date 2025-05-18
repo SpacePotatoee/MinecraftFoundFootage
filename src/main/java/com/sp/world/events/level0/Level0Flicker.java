@@ -16,8 +16,8 @@ public class Level0Flicker extends AbstractEvent {
     }
 
     @Override
-    public void reset(World world) {
-        super.reset(world);
+    public void finish(World world) {
+        super.finish(world);
 
         if (!(BackroomsLevels.getLevel(world) instanceof Level0BackroomsLevel level)) {
             return;

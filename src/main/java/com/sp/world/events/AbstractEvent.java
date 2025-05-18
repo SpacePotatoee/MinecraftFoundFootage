@@ -8,16 +8,12 @@ public abstract class AbstractEvent {
 
     public abstract void init(World world);
 
-    public void reset(World world) {
+    public void finish(World world) {
         done = true;
     }
 
     public boolean isDone() {
         return done;
-    }
-
-    public void end(World world){
-        this.reset(world);
     }
 
     public abstract int duration();

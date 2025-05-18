@@ -294,7 +294,7 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
         }
 
         if (activeEvent.duration() <= ticks) {
-            activeEvent.reset(this.world);
+            activeEvent.finish(this.world);
             if (activeEvent.isDone()) activeEvent = null;
         } else {
             activeEvent.ticks(ticks, this.world);

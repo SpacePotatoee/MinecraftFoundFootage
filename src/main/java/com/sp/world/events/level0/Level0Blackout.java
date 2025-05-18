@@ -20,8 +20,8 @@ public class Level0Blackout extends AbstractEvent {
     }
 
     @Override
-    public void reset(World world) {
-        super.reset(world);
+    public void finish(World world) {
+        super.finish(world);
         if (!(BackroomsLevels.getLevel(world) instanceof Level0BackroomsLevel level)) {
             return;
         }

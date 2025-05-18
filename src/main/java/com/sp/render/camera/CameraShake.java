@@ -40,6 +40,8 @@ public class CameraShake {
             if (player != null) {
                 float playerSpeed = (player.horizontalSpeed - player.prevHorizontalSpeed) * 6;
 
+                if (player.isFallFlying()) playerSpeed /= 6; // https://github.com/SpacePotatoee/MinecraftFoundFootage/issues/101
+
                 this.traumaGoal = MathHelper.clamp(0.6 * playerSpeed, 0.5, 1.5f);
                 this.noiseSpeedGoal = MathHelper.clamp(0.25 * playerSpeed, 0.1, 1.0f);
                 this.amplitude = 4;

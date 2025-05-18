@@ -26,7 +26,6 @@ public class Level1Blackout extends AbstractEvent {
             return;
         }
 
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
         if(level.getLightState() != Level0BackroomsLevel.LightState.BLACKOUT) {
             level.setLightState(Level0BackroomsLevel.LightState.BLACKOUT);
             playSound(world, ModSounds.LIGHTS_OUT);
@@ -73,8 +72,8 @@ public class Level1Blackout extends AbstractEvent {
     }
 
     @Override
-    public void reset(World world) {
-        super.reset(world);
+    public void finish(World world) {
+        super.finish(world);
 
         if (!((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level)) {
             return;
