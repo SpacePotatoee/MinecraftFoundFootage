@@ -30,7 +30,7 @@ public class ModBlocks {
 
 
     public static final Block CarpetBlock = registerBlock("carpet_block",
-            new Block(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.CARPET)));
+            new CarpetBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.CARPET)));
 
     public static final Block CeilingTile = registerBlock("ceiling_tile",
             new Block(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).hardness(-1f).solid().noBlockBreakParticles().sounds(SprintBlockSoundGroup.CEILING_TILE)));

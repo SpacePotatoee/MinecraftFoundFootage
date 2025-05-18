@@ -40,7 +40,7 @@ void main() {
         vec2 faceUV = getAccurateUV(repWorldPos, normal);
 
         vec2 zoomedUV = faceUV;
-        zoomedUV *= (0.00006101539 * Resolution) * vec2(2.0 * atlasAspectRatio, 2.0);
+        zoomedUV *= (0.00012207031 * Resolution - 0.0001) * vec2(2.0 * atlasAspectRatio, 2.0);
         zoomedUV += texCoordOffset;
 
         color = texture(Sampler0, zoomedUV) * vertexColor;
@@ -60,7 +60,7 @@ void main() {
             vec3 texCoords = vec3(getAccurateUV(pos, normal), dist);
 
             vec2 zoomedUV2 = texCoords.xy;
-            zoomedUV2 *= (0.00006101539 * Resolution) * vec2(2.0 * atlasAspectRatio, 2.0);
+            zoomedUV2 *= (0.00012207031 * Resolution - 0.0001) * vec2(2.0 * atlasAspectRatio, 2.0);
             zoomedUV2 += texCoordOffset;
 
             float heightMapDepth = ((1 - texture(Sampler3, zoomedUV2).r) * Depth) - 0.35;
