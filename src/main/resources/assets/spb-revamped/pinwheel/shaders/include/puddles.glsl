@@ -80,11 +80,25 @@ vec4 getReflection(vec4 fragColor, vec4 normal, vec3 viewPos, vec3 cameraBobOffs
 
     float ReflectionMultiplier = screenEdgefactor * (reflected.z);
 
-    if(Luminance >= 1){
+    if (Luminance >= 1) {
         return mix(fragColor, mix(fragColor, vec4(reflectedTexture * 20, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0.0, 1.0));
     }
 
     return mix(fragColor, mix(fragColor, vec4(reflectedTexture, 1.0) * clamp(-ReflectionMultiplier, 0.0, 1.0), -ReflectionMultiplier), clamp(REFLECTIVITY, 0.0, 1.0));
+}
+
+vec4 getReflection(vec4 fragColor, vec2 texCoord, vec4 normal, vec3 cameraBobOffset, sampler2D DiffuseSampler0, sampler2D DepthSampler, int strength) {
+    vec4 color = fragColor;
+    vec4 mainTexture = texture(DiffuseSampler0, texCoord);
+    float depth = texture(DepthSampler, texCoord).r;
+    vec3 viewSpace = viewPosFromDepth(depth, texCoord);
+    vec3 worldSpace = viewToWorldSpace(viewSpace);
+
+    color = getReflection(color, normal, viewSpace, cameraBobOffset, 0.02, DiffuseSampler0, DepthSampler) / strength;
+    color = mix(color, mainTexture, 0.9) - (0.9 * 0.02);
+    color -= (1.0 - 0.7) * 0.1;
+
+    return color;
 }
 
 vec4 getPuddles(vec4 fragColor, vec2 texCoord, vec4 normal, vec3 cameraBobOffset, sampler2D DiffuseSampler0, sampler2D DepthSampler, sampler2D NoiseTexture, sampler2D NoiseTexture2){

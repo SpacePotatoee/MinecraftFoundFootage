@@ -64,12 +64,15 @@ public class Level1MazeGenerator extends MazeGenerator {
                 BlockState blockState2 = world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 26, y + ((this.size - 1) * y) + this.originY));
 
                 if(this.isAirOrNull(blockState1) && this.isAirOrNull(blockState2)) {
-                    grid[x][y] = new HighVarCell(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
+                    grid[x][y] = new HighVarCell(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, ModBlocks.WALL_BLOCK.getDefaultState().with(BOTTOM, false), y, x);
                 }
             }
         }
 
         this.currentCell = grid[0][0];
+        if (this.currentCell == null) {
+            return;
+        }
         currentCell.setVisited(true);
         cellStack.push(currentCell);
 

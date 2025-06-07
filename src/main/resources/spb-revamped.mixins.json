@@ -47,6 +47,7 @@
     "arealightfix.AreaLightRendererMixin",
     "customatlas.BakedModelManagerMixin",
     "cutscene.ClientPlayerEntityMixin",
+    "cutscene.ClientPlayerInteractionManagerMixin",
     "cutscene.MinecraftClientMixin",
     "disableloadingscreen.DownloadingTerrainScreenMixin",
     "disableloadingscreen.MinecraftClientMixin",
@@ -72,6 +73,6 @@
     "respawnsystem.LivingEntityRendererMixin",
     "skinstolen.ChatScreenMixin",
     "skinstolen.GameMenuScreenMixin",
-    "skinstolen.MinecraftClientMixin",
+    "skinstolen.MinecraftClientMixin"
   ]
 }

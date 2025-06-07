@@ -3,13 +3,16 @@ package com.sp.render.grass;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevamped;
+import com.sp.SPBRevampedClient;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.mixininterfaces.RenderIndirectExtension;
+import com.sp.world.levels.custom.Level324Backroomslevel;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
 import foundry.veil.api.client.render.framebuffer.AdvancedFbo;
 import foundry.veil.api.client.render.framebuffer.VeilFramebuffers;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -44,7 +47,13 @@ public class GrassRenderer {
     private int lastMeshResolution;
     private ByteBuffer cmd;
 
-    private final float grassHeight = 1.0f;
+    private float getGrassHeight() {
+        if (SPBRevampedClient.getCurrentBackroomsLevel() instanceof Level324Backroomslevel) {
+            return 1.5f;
+        }
+
+        return 1;
+    }
 
     public static final VertexFormat POSITION_NORMAL = new VertexFormat(
             ImmutableMap.<String, VertexFormatElement>builder()
@@ -116,7 +125,7 @@ public class GrassRenderer {
 
         shader.setFloat("GameTime", RenderSystem.getShaderGameTime());
         shader.setInt("NumOfInstances", floor(sqrt(ConfigStuff.grassQuality.getCount())));
-        shader.setFloat("grassHeight", grassHeight);
+        shader.setFloat("grassHeight", getGrassHeight());
         shader.setFloat("density", ConfigStuff.grassQuality.getDensity());
 
 //        int prevTexture = RenderSystem.getShaderTexture(0);
@@ -249,15 +258,15 @@ public class GrassRenderer {
         float xStep = 0.1f/segments;
 
         for(int i = 0; i < segments; i++){
-            bufferBuilder.vertex(0.6-xStep*(i+1),grassHeight/segments*(i+1),0).normal(0,0,1).next();
-            bufferBuilder.vertex(0.4+xStep*(i+1),grassHeight/segments*(i+1),0).normal(0,0,1).next();
-            bufferBuilder.vertex(0.4+xStep*(i),grassHeight/segments*i,0)      .normal(0,0,1).next();
-            bufferBuilder.vertex(0.6-xStep*(i),grassHeight/segments*i,0)      .normal(0,0,1).next();
+            bufferBuilder.vertex(0.6-xStep*(i+1),getGrassHeight()/segments*(i+1),0).normal(0,0,1).next();
+            bufferBuilder.vertex(0.4+xStep*(i+1),getGrassHeight()/segments*(i+1),0).normal(0,0,1).next();
+            bufferBuilder.vertex(0.4+xStep*(i),getGrassHeight()/segments*i,0)      .normal(0,0,1).next();
+            bufferBuilder.vertex(0.6-xStep*(i),getGrassHeight()/segments*i,0)      .normal(0,0,1).next();
 
-            bufferBuilder.vertex(0.6-xStep*(i),grassHeight/segments*i,0)      .normal(0,0,-1).next();
-            bufferBuilder.vertex(0.4+xStep*(i),grassHeight/segments*i,0)      .normal(0,0,-1).next();
-            bufferBuilder.vertex(0.4+xStep*(i+1),grassHeight/segments*(i+1),0).normal(0,0,-1).next();
-            bufferBuilder.vertex(0.6-xStep*(i+1),grassHeight/segments*(i+1),0).normal(0,0,-1).next();
+            bufferBuilder.vertex(0.6-xStep*(i),getGrassHeight()/segments*i,0)      .normal(0,0,-1).next();
+            bufferBuilder.vertex(0.4+xStep*(i),getGrassHeight()/segments*i,0)      .normal(0,0,-1).next();
+            bufferBuilder.vertex(0.4+xStep*(i+1),getGrassHeight()/segments*(i+1),0).normal(0,0,-1).next();
+            bufferBuilder.vertex(0.6-xStep*(i+1),getGrassHeight()/segments*(i+1),0).normal(0,0,-1).next();
         }
     }
 

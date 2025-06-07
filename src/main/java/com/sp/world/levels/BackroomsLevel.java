@@ -4,10 +4,13 @@ import com.mojang.serialization.Codec;
 import com.sp.SPBRevamped;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.world.events.AbstractEvent;
+import com.sp.world.events.EmptyEvent;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -66,7 +69,48 @@ public abstract class BackroomsLevel {
         return spawnPos;
     }
 
+
+    /**
+     * If the level allows the torch to be used.
+     * @return a BoolTextPair containing the value and a message to display to the player.
+     */
+    public BoolTextPair allowsTorch() {
+        return new BoolTextPair(true, Text.translatable("Flashlight is allowed in this level."));
+    }
+
+    /**
+     * If the level renders the sky.
+     * Also look at {@link #rendersClouds()}.
+     * @return if the sky renders.
+     */
+    public boolean rendersSky() {
+        return true;
+    }
+
+    /**
+     * If the level renders the sky.
+     * Also look at {@link #rendersSky()}.
+     * @return if the sky renders.
+     */
+    public boolean rendersClouds() {
+        return true;
+    }
+
+    /**
+     * @return If the level has vanilla lighting.
+     * Without vanilla lighting, the level will be completely dark without light sources like the torch.
+     */
+    public boolean hasVanillaLighting() {
+        return false;
+    }
+
+    public record BoolTextPair(boolean value, MutableText string) {}
+
     public AbstractEvent getRandomEvent(World world) {
+        if (this.events.isEmpty()) {
+            return new EmptyEvent();
+        }
+
         return this.events.get(random.nextInt(this.events.size())).get();
     }
 
@@ -114,7 +158,7 @@ public abstract class BackroomsLevel {
      * Called when transitioning out of this level.
      * This method is called on the server first and then on the next frame on the client,
      * which will then skip the transitionTime one tick ahead to avoid being called twice.
-     * <b>Note:</b> this will be called once on the server and every tick on the server. If you only want to have this run once then just check if <code>the teleportingTimer == -1</code>
+     * <b>Note:</b> this will be called once on the client and every tick on the server. If you only want to have this run once then just check if <code>the teleportingTimer == -1</code> but remember to return true.
      * @return If the teleportation can happen now. Just return false if you can't teleport the player. This should be used carefully, since it can lead a failed teleport.
      */
     public abstract boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport);

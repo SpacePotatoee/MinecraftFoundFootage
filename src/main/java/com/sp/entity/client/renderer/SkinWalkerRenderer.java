@@ -9,6 +9,7 @@ import com.sp.entity.custom.SkinWalkerEntity;
 import com.sp.entity.ik.model.GeckoLib.GeoModelAccessor;
 import com.sp.entity.ik.model.GeckoLib.MowzieGeoBone;
 import com.sp.entity.ik.parts.sever_limbs.ServerLimb;
+import com.sp.render.RenderLayers;
 import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.render.OverlayTexture;
@@ -21,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -31,6 +33,7 @@ import software.bernie.geckolib.util.RenderUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntity> {
@@ -382,5 +385,15 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
         renderChildBones(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 
         poseStack.pop();
+    }
+
+    @Override
+    protected @Nullable RenderLayer getRenderTypeOverrideForBone(GeoBone bone, SkinWalkerEntity animatable, Identifier texturePath, VertexConsumerProvider bufferSource, float partialTick) {
+        if (Objects.equals(bone.getName(), "head") && InitializeComponents.SKIN_WALKER.get(animatable).isInTrueForm()) {
+            return RenderLayers.getDistortedEntity(texturePath);
+        }
+
+
+        return super.getRenderTypeOverrideForBone(bone, animatable, texturePath, bufferSource, partialTick);
     }
 }

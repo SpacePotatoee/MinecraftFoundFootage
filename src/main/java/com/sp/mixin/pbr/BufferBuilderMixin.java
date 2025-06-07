@@ -1,6 +1,7 @@
 package com.sp.mixin.pbr;
 
 import com.sp.mixininterfaces.BlockMaterial;
+import com.sp.render.VertexFormats;
 import com.sp.render.pbr.BlockIdMap;
 import com.sp.render.pbr.PbrRegistry;
 import net.minecraft.block.Block;

@@ -9,6 +9,8 @@ import com.sp.world.generation.PoolroomsChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -20,6 +22,16 @@ public class PoolroomsBackroomsLevel extends BackroomsLevel {
 
     public PoolroomsBackroomsLevel() {
         super("poolrooms", PoolroomsChunkGenerator.CODEC, new Vec3d(0, 32, 0), BackroomsLevels.POOLROOMS_WORLD_KEY);
+    }
+
+    @Override
+    public boolean rendersClouds() {
+        return false;
+    }
+
+    @Override
+    public boolean rendersSky() {
+        return false;
     }
 
     @Override
@@ -54,6 +66,16 @@ public class PoolroomsBackroomsLevel extends BackroomsLevel {
 
     public float getTimeOfDay() {
         return timeOfDay;
+    }
+
+    @Override
+    public BoolTextPair allowsTorch() {
+        return new BoolTextPair(false, Text.translatable("spb-revamped.flashlight.wet1").append(Text.translatable("spb-revamped.flashlight.wet2").formatted(Formatting.RED)));
+    }
+
+    @Override
+    public boolean hasVanillaLighting() {
+        return true;
     }
 
     public void setTimeOfDay(float timeOfDay) {

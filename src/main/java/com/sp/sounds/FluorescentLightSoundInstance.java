@@ -52,7 +52,7 @@ public class FluorescentLightSoundInstance extends MovingSoundInstance {
             if (!this.entity.isRemoved() &&
                 this.entity.getPos().isWithinDistance(player.getPos(), 16.0f) &&
                 level.getLightState() != Level0BackroomsLevel.LightState.BLACKOUT &&
-                ((FluorescentLightBlockEntity) entity).getCurrentState() == ModBlocks.FluorescentLight.getDefaultState().with(FluorescentLightBlock.ON, true) &&
+                ((FluorescentLightBlockEntity) entity).getCurrentState() == ModBlocks.FLUORESCENT_LIGHT.getDefaultState().with(FluorescentLightBlock.ON, true) &&
                 !((FluorescentLightBlockEntity) entity).getCurrentState().get(FluorescentLightBlock.BLACKOUT) &&
                 !SPBRevampedClient.blackScreen)
             {

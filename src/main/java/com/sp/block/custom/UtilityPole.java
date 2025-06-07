@@ -8,12 +8,15 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 
 public class UtilityPole extends Block {
-    public UtilityPole(Settings settings) {
+    private final int size;
+
+    public UtilityPole(Settings settings, int size) {
         super(settings);
+        this.size = Math.min(size, 8);
     }
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return Block.createCuboidShape(5, 0, 5, 11, 16, 11);
+        return Block.createCuboidShape(size, 0, size, 16-size, 16, 16-size);
     }
 }

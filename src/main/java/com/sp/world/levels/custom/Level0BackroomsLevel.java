@@ -29,7 +29,17 @@ public class Level0BackroomsLevel extends BackroomsLevel {
     private LightState lightState = LightState.ON;
 
     public Level0BackroomsLevel() {
-        super("level0", Level0ChunkGenerator.CODEC, new Vec3d(8.5, 36.5, 2.5), BackroomsLevels.LEVEL0_WORLD_KEY);
+        super("level0", Level0ChunkGenerator.CODEC, new Vec3d(0, 21, 0), BackroomsLevels.LEVEL0_WORLD_KEY);
+    }
+
+    @Override
+    public boolean rendersClouds() {
+        return false;
+    }
+
+    @Override
+    public boolean rendersSky() {
+        return false;
     }
 
     @Override

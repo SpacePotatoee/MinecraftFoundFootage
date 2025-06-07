@@ -83,8 +83,26 @@ void main() {
 		uint OpaqueMat = texture(OpaqueMatSampler, texCoord).r;
 		uint TransparentMat = texture(TransparentMatSampler, texCoord).r;
 
+		#ifdef BLOCK_REFLECTIONS
+		if (OpaqueMat == 22) {
+			color = getReflection(color, texCoord, vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), cameraBobOffset, DiffuseSampler0, TransparentDepthSampler, 1);
+		}
+
+		if (OpaqueMat == 23) {
+			color = getReflection(color, texCoord, vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), cameraBobOffset, DiffuseSampler0, TransparentDepthSampler, 10);
+		}
+
+		if (OpaqueMat == 25) {
+			color = getReflection(color, texCoord, vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), cameraBobOffset, DiffuseSampler0, TransparentDepthSampler, 1);
+		}
+
+		if (OpaqueMat == 26) {
+			color = getReflection(color, texCoord, vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), cameraBobOffset, DiffuseSampler0, TransparentDepthSampler, 20);
+		}
+		#endif
+
 		#ifdef PUDDLES
-		if (!(compat.a > 0.0) && !(compat2.a > 0.0) && !isEntity(TransparentMat)){
+		if ((!(compat.a > 0.0) && !(compat2.a > 0.0) && !isEntity(TransparentMat)) || OpaqueMat == 22) {
 			if (TogglePuddles == 1){
 				color = getPuddles(color, texCoord, vec4(worldToViewSpaceDirection(normalize(vec3(0.0,1.0,0.0))), 1.0), cameraBobOffset, DiffuseSampler0, TransparentDepthSampler, NoiseTexture, NoiseTexture2);
 			}

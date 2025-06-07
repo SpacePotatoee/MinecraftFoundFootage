@@ -27,7 +27,7 @@ public class InfiniteGrassAmbienceSoundInstance extends MovingSoundInstance {
     @Override
     public void tick() {
         RegistryKey<World> level = this.player.getWorld().getRegistryKey();
-        if((level != BackroomsLevels.INFINITE_FIELD_WORLD_KEY) || this.player.isRemoved()){
+        if((level != BackroomsLevels.INFINITE_FIELD_WORLD_KEY && level != BackroomsLevels.LEVEL324_WORLD_KEY) || this.player.isRemoved()){
             this.setDone();
         }
     }

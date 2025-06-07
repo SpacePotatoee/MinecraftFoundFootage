@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "spb-revamped:block/pbr/dirt/dirt_color"
+    "all": "spb-revamped:block/dirt_color"
   }
 }

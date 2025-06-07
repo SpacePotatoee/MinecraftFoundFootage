@@ -22,6 +22,7 @@ import java.util.List;
 public class SmilerEntity extends MobEntity {
     private final SmilerComponent component;
     private int finalTicks;
+    private float liveTime;
 
     public SmilerEntity(EntityType<? extends MobEntity> entityType, World world) {
         super(entityType, world);
@@ -33,6 +34,7 @@ public class SmilerEntity extends MobEntity {
             this.component.sync();
         }
         this.finalTicks = 20;
+        this.liveTime = 100;
     }
 
     @Override
@@ -43,18 +45,31 @@ public class SmilerEntity extends MobEntity {
     @Override
     public void tick() {
         if(!this.getWorld().isClient) {
-            if(!this.component.shouldDisappear() && this.getWorld().getClosestPlayer(this, 15) != null) {
-                List<? extends PlayerEntity> playerList = this.getWorld().getPlayers(TargetPredicate.createNonAttackable().setBaseMaxDistance(15), this, this.getBoundingBox().expand(15, 1, 15));
+            if(!this.component.shouldDisappear()) {
+                if (this.getWorld().getClosestPlayer(this, 15) != null) {
+                    List<? extends PlayerEntity> playerList = this.getWorld().getPlayers(TargetPredicate.createNonAttackable().setBaseMaxDistance(15), this, this.getBoundingBox().expand(15, 1, 15));
 
-                for(PlayerEntity player : playerList) {
-                    if (this.shouldDisappear(player)) {
-                        this.component.setShouldDisappear(true);
-                        this.component.sync();
-                        break;
+                    for (PlayerEntity player : playerList) {
+                        if (this.shouldDisappear(player)) {
+                            this.component.setShouldDisappear(true);
+                            this.component.sync();
+                            break;
+                        }
                     }
+                } else {
+                    this.component.setShouldDisappear(true);
+                    this.component.sync();
                 }
 
+                if (this.liveTime > 0) {
+                    this.liveTime--;
+                } else {
+                    this.component.setShouldDisappear(true);
+                    this.component.sync();
+                }
             }
+
+
 
             if(this.component.shouldDisappear()) {
                 this.finalTicks--;

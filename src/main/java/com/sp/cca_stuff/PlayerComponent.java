@@ -2,9 +2,8 @@ package com.sp.cca_stuff;
 
 import com.sp.SPBRevamped;
 import com.sp.clientWrapper.ClientWrapper;
-import com.sp.init.BackroomsLevels;
-import com.sp.init.ModDamageTypes;
-import com.sp.init.ModSounds;
+import com.sp.entity.custom.SmilerEntity;
+import com.sp.init.*;
 import com.sp.mixininterfaces.ServerPlayNetworkSprint;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.world.levels.BackroomsLevel;
@@ -30,12 +29,14 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Random;
 
 import static com.sp.SPBRevamped.SLOW_SPEED_MODIFIER;
 
@@ -45,6 +46,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     private final SimpleInventory playerSavedMainInventory = new SimpleInventory(36);
     private SimpleInventory playerSavedArmorInventory = new SimpleInventory(4);
     private SimpleInventory playerSavedOffhandInventory = new SimpleInventory(1);
+    private Random random = new Random();
+
+    private int smilerSpawnDelay = 80;
 
     private int stamina;
     private boolean tired;
@@ -415,8 +419,14 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                         }
 
                         if (teleportingTimer == 0) {
+                            ServerWorld destination = crossDimensionTeleport.world().getServer().getWorld(crossDimensionTeleport.to().getWorldKey());
                             TeleportTarget target = new TeleportTarget(crossDimensionTeleport.pos(), crossDimensionTeleport.playerComponent().player.getVelocity(), crossDimensionTeleport.playerComponent().player.getYaw(), crossDimensionTeleport.playerComponent().player.getPitch());
-                            FabricDimensions.teleport(crossDimensionTeleport.playerComponent().player, crossDimensionTeleport.world().getServer().getWorld(crossDimensionTeleport.to().getWorldKey()), target);
+
+                            if (crossDimensionTeleport.to() == BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL && this.player.getWorld().getGameRules().getBoolean(ModGamerules.STUCK_IN_BACKROOMS)) {
+                                destination = crossDimensionTeleport.world().getServer().getWorld(BackroomsLevels.LEVEL0_BACKROOMS_LEVEL.getWorldKey());
+                                target = new TeleportTarget(BackroomsLevels.LEVEL0_BACKROOMS_LEVEL.getSpawnPos(), crossDimensionTeleport.playerComponent().player.getVelocity(), crossDimensionTeleport.playerComponent().player.getYaw(), crossDimensionTeleport.playerComponent().player.getPitch());
+                            }
+                            FabricDimensions.teleport(crossDimensionTeleport.playerComponent().player, destination, target);
                             crossDimensionTeleport.to().transitionIn(crossDimensionTeleport);
                         }
                     }
@@ -428,21 +438,9 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             this.setTeleportingTimer(teleportingTimer - 1);
         }
 
-
-        /*
-        //*Level 0 -> Level 1
-        //*Level 1 -> Level 2
-        checkLevel2Teleport();
-
-        //*Level 2 -> Poolrooms
-        checkPoolroomsTeleport();
-
-        //*Poolrooms -> Grass Field
-        checkGrassFieldsTeleport();
-
-        //*Grass Field -> OverWorld
-        checkOverWroldReturnTeleport();
-        */
+        if (BackroomsLevels.getLevel(player.getWorld()) == BackroomsLevels.LEVEL324_BACKROOMS_LEVEL && player.getPos().subtract(0, 64, 0).lengthSquared() > 10000 && player.getPos().y > 60) {
+            summonSmilers();
+        }
 
         //*Update Entity Visibility
         updateEntityVisibility();
@@ -452,6 +450,23 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         }
         
         shouldSync();
+    }
+
+    private void summonSmilers() {
+        if (this.smilerSpawnDelay < 0) {
+            SmilerEntity smiler = ModEntities.SMILER_ENTITY.create(this.player.getWorld());
+
+            BlockPos.Mutable mutable = new BlockPos.Mutable();
+            float randomAngle = random.nextFloat() * 360.0f;
+            Vec3d spawnPos = new Vec3d(0, 0, 15).rotateY(randomAngle).add(player.getPos());
+            if (!this.player.getWorld().getBlockState(mutable.set(spawnPos.x, spawnPos.y, spawnPos.z)).blocksMovement()) {
+                smiler.refreshPositionAndAngles(Math.floor(spawnPos.x) + 0.5f, spawnPos.y, Math.floor(spawnPos.z) + 0.5f, 0.0f, 0.0f);
+                this.player.getWorld().spawnEntity(smiler);
+                smilerSpawnDelay = 80;
+            }
+        }
+
+        smilerSpawnDelay--;
     }
 
     private void updateStamina() {

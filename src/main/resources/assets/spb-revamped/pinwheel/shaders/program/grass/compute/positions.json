@@ -1,3 +1,7 @@
 {
-  "compute": "spb-revamped:grass/compute/positions"
+  "compute": "spb-revamped:grass/compute/positions",
+  "definitions": [
+    "INFINITE_FIELD",
+    "LEVEL324"
+  ]
 }

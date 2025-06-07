@@ -13,19 +13,20 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.CarpetBlock);
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ConcreteBlock1);
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ConcreteBlock2);
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ConcreteBlock5);
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ConcreteBlock6);
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ConcreteBlock7);
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ConcreteBlock10);
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ConcreteBlock11);
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ConcreteBlock12);
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.PoolTiles);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.CARPET_BLOCK);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.CONCRETE_BLOCK_1);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.CONCRETE_BLOCK_2);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.CONCRETE_BLOCK_5);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.CONCRETE_BLOCK_6);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.CONCRETE_BLOCK_7);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.CONCRETE_BLOCK_10);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.CONCRETE_BLOCK_11);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ROAD);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.CONCRETE_BLOCK_12);
+        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.POOL_TILES);
 
-        BlockStateModelGenerator.BlockTexturePool concretePool = blockStateModelGenerator.registerCubeAllModelTexturePool(ModBlocks.ConcreteBlock9);
-        concretePool.slab(ModBlocks.ConcreteBlock9Slab);
+        BlockStateModelGenerator.BlockTexturePool concretePool = blockStateModelGenerator.registerCubeAllModelTexturePool(ModBlocks.CONCRETE_BLOCK_9);
+        concretePool.slab(ModBlocks.CONCRETE_BLOCK_9_SLAB);
 
     }
 

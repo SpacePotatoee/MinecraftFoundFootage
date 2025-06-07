@@ -1,7 +1,20 @@
 {
   "variants": {
-    "": {
-      "model": "spb-revamped:block/fluorescent_light"
+    "facing=north": {
+      "model": "spb-revamped:block/window",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "spb-revamped:block/window",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "spb-revamped:block/window",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "spb-revamped:block/window",
+      "y": 180
     }
   }
 }

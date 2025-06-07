@@ -2,6 +2,7 @@ package com.sp.world.events.level1;
 
 import com.sp.init.BackroomsLevels;
 import com.sp.world.events.AbstractEvent;
+import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.custom.Level0BackroomsLevel;
 import com.sp.world.levels.custom.Level1BackroomsLevel;
 import net.minecraft.world.World;

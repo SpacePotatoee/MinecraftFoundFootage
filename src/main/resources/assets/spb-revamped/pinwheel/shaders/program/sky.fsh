@@ -26,6 +26,7 @@ void main() {
     fragMaterial = ivec4(15, 0, 0, 1);
     fragLightSampler = vec4(1.0);
     fragLightMap = vec4(10.0);
+
 }
 
 

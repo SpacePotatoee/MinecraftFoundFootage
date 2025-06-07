@@ -37,25 +37,25 @@ public class DrawingMarkerBlockEntity extends BlockEntity {
         if (rand2 == 1 && !blockState.get(DrawingMarker.TYPE)) {
             switch (rand) {
                 case 2:
-                    world.setBlockState(pos, ModBlocks.WallArrow2.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
+                    world.setBlockState(pos, ModBlocks.WALL_ARROW_2.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
                     break;
                 case 3:
-                    world.setBlockState(pos, ModBlocks.WallArrow3.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
+                    world.setBlockState(pos, ModBlocks.WALL_ARROW_3.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
                     break;
                 case 4:
-                    world.setBlockState(pos, ModBlocks.WallArrow4.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
+                    world.setBlockState(pos, ModBlocks.WALL_ARROW_4.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
                     break;
                 default:
-                    world.setBlockState(pos, ModBlocks.WallArrow1.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
+                    world.setBlockState(pos, ModBlocks.WALL_ARROW_1.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
                     break;
             }
         } else if (rand2 == 1 && blockState.get(DrawingMarker.TYPE)) {
             switch (rand) {
                 case 2, 4:
-                    world.setBlockState(pos, ModBlocks.WallSmall1.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
+                    world.setBlockState(pos, ModBlocks.WALL_SMALL_1.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
                     break;
                 default:
-                    world.setBlockState(pos, ModBlocks.WallSmall2.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
+                    world.setBlockState(pos, ModBlocks.WALL_SMALL_2.getDefaultState().with(WallText.FACING, blockState.get(DrawingMarker.FACING)));
                     break;
             }
         } else {

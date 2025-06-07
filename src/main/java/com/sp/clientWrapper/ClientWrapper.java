@@ -5,9 +5,11 @@ import com.sp.SPBRevampedClient;
 import com.sp.block.custom.EmergencyLightBlock;
 import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.block.custom.ThinFluorescentLightBlock;
+import com.sp.block.custom.TinyFluorescentLightBlock;
 import com.sp.block.entity.EmergencyLightBlockEntity;
 import com.sp.block.entity.FluorescentLightBlockEntity;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
+import com.sp.block.entity.TinyFluorescentLightBlockEntity;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.client.SkinWalkerCapturedFlavorText;
@@ -45,8 +47,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -195,11 +195,12 @@ public class ClientWrapper {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //Flashlight
-            boolean notInTheseLevels = playerComponent.player.getWorld().getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY && playerComponent.player.getWorld().getRegistryKey() != BackroomsLevels.INFINITE_FIELD_WORLD_KEY;
+
+
 
             if (Keybinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen && !playerComponent.hasBeenCaptured && !playerComponent.isBeingCaptured()) {
                 playerComponent.player.playSound(ModSounds.FLASHLIGHT_CLICK, 0.5f, 1);
-                if (notInTheseLevels) {
+                if (backroomsLevel.allowsTorch().value()) {
                     playerComponent.setFlashLightOn(!playerComponent.isFlashLightOn());
                     HelpfulHintManager.disableFlashlightHint();
 
@@ -208,7 +209,7 @@ public class ClientWrapper {
                     }
                 } else {
                     playerComponent.setFlashLightOn(false);
-                    playerComponent.player.sendMessage(Text.translatable("spb-revamped.flashlight.wet1").append(Text.translatable("spb-revamped.flashlight.wet2").formatted(Formatting.RED)), true);
+                    playerComponent.player.sendMessage(backroomsLevel.allowsTorch().string(), true);
                 }
             } else if (playerComponent.hasBeenCaptured && playerComponent.isBeingCaptured()) {
                 if (playerComponent.isFlashLightOn()) {
@@ -218,7 +219,7 @@ public class ClientWrapper {
                 }
             }
 
-            if (!notInTheseLevels) {
+            if (!backroomsLevel.allowsTorch().value()) {
                 if (playerComponent.isFlashLightOn()) {
                     SPBRevampedClient.sendComponentSyncPacket(false, "flashlight");
                 }
@@ -272,7 +273,7 @@ public class ClientWrapper {
                 }
             }
 
-            if ((levelKey == BackroomsLevels.INFINITE_FIELD_WORLD_KEY) && !soundManager.isPlaying(playerComponent.WindAmbience)) {
+            if ((levelKey == BackroomsLevels.INFINITE_FIELD_WORLD_KEY || levelKey == BackroomsLevels.LEVEL324_WORLD_KEY) && !soundManager.isPlaying(playerComponent.WindAmbience)) {
                 playerComponent.WindAmbience = new InfiniteGrassAmbienceSoundInstance(playerComponent.player);
                 soundManager.play(playerComponent.WindAmbience);
             }
@@ -499,6 +500,80 @@ public class ClientWrapper {
                         }
 
                         if (world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+                            block.pointLight
+                                    .setColor(200, 200, 255)
+                                    .setBrightness(0.005f);
+                        }
+                    }
+                } else {
+                    if (block.pointLight != null) {
+                        VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(block.pointLight);
+                        block.pointLight = null;
+                    }
+                }
+            } else {
+                if (block.pointLight != null) {
+                    VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(block.pointLight);
+                    block.pointLight = null;
+                }
+            }
+        }
+    }
+
+
+    public static void doClientSideTinyFluorescentsTick(World world, BlockPos pos, BlockState state, java.util.Random random1, Vec3d position, TinyFluorescentLightBlockEntity block) {
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+        if (player != null) {
+            Vec3d playerPos = player.getPos();
+            double distance;
+
+            if (world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+                distance = Math.min(ConfigStuff.getLightRenderDistance(), 32);
+            } else {
+                distance = ConfigStuff.getLightRenderDistance();
+            }
+
+            boolean withinDistance = pos.isWithinDistance(playerPos, distance);
+
+            if (withinDistance) {
+                if (!state.get(ThinFluorescentLightBlock.COPY) && pos.isWithinDistance(playerPos, 15.0f)) {
+                    if (block.prevOn != world.getBlockState(pos).get(ThinFluorescentLightBlock.ON)) {
+                        MinecraftClient.getInstance().getSoundManager().play(new PositionedSoundInstance(ModSounds.LIGHT_BLINK, SoundCategory.AMBIENT, 0.2F, random1.nextFloat(0.9f, 1.1f), block.random, pos));
+                    }
+                }
+
+                if (!state.get(ThinFluorescentLightBlock.COPY) && state.get(ThinFluorescentLightBlock.ON) && !state.get(ThinFluorescentLightBlock.BLACKOUT)) {
+
+                    if (!block.isPlayingSound() && pos.isWithinDistance(playerPos, 15.0f) && !SPBRevampedClient.blackScreen) {
+                        MinecraftClient.getInstance().getSoundManager().play(new TinyFluorescentLightSoundInstance(block, player));
+                        block.setPlayingSound(true);
+                    }
+
+                    if (block.pointLight == null) {
+                        block.pointLight = new PointLight();
+                        VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(block.pointLight
+                                .setRadius(18f)
+                                .setBrightness(0.0024f)
+                        );
+
+                        block.pointLight.setPosition(position.x, position.y, position.z);
+
+                        block.pointLight.setColor(255, 255, 255);
+
+                        if (world.getRegistryKey().equals(BackroomsLevels.POOLROOMS_WORLD_KEY)) {
+                            block.pointLight
+                                    .setColor(175, 175, 255)
+                                    .setBrightness(0.0035f);
+                        }
+
+                        if (world.getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
+                            block.pointLight
+                                    .setColor(200, 200, 255)
+                                    .setBrightness(0.005f);
+                        }
+
+                        if (world.getRegistryKey().equals(BackroomsLevels.LEVEL0_WORLD_KEY)) {
                             block.pointLight
                                     .setColor(200, 200, 255)
                                     .setBrightness(0.005f);

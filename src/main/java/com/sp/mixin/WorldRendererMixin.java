@@ -3,6 +3,7 @@ package com.sp.mixin;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevampedClient;
 import com.sp.init.BackroomsLevels;
+import com.sp.init.ModBlocks;
 import com.sp.render.pbr.BlockIdMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -45,30 +46,22 @@ public abstract class WorldRendererMixin {
 
     @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true)
     public void renderSky(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback, CallbackInfo ci) {
-        PlayerEntity player = MinecraftClient.getInstance().player;
-        if (player != null){
-            if(player.getWorld().getDimensionKey() == BackroomsLevels.LEVEL0_DIM_TYPE || player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY){
-                ci.cancel();
-            }
-
+        if (!SPBRevampedClient.getCurrentBackroomsLevel().rendersSky()) {
+            ci.cancel();
         }
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void initBlockIDs(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci){
-        if(!BlockIdMap.init) {
+    private void initBlockIDs(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci) {
+        if (!BlockIdMap.init) {
             BlockIdMap.init();
         }
     }
 
     @Inject(method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FDDD)V", at = @At("HEAD"), cancellable = true)
     public void renderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo ci) {
-        PlayerEntity player = MinecraftClient.getInstance().player;
-        if (player != null){
-            if(player.getWorld().getDimensionKey() == BackroomsLevels.LEVEL0_DIM_TYPE || player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY){
-                ci.cancel();
-            }
-
+        if (!SPBRevampedClient.getCurrentBackroomsLevel().rendersClouds()) {
+            ci.cancel();
         }
     }
 

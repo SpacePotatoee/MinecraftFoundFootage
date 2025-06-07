@@ -5,7 +5,8 @@
     "VOLUMETRIC_LIGHT",
     "PUDDLES",
     "LEVEL1_FOG",
-    "POOLROOMS"
+    "POOLROOMS",
+    "BLOCK_REFLECTIONS"
   ]
 }
 

@@ -57,7 +57,7 @@ public class FluorescentLightBlockEntity extends BlockEntity {
     }
 
     public void tick(World world, BlockPos pos, BlockState state) {
-        if (world.getBlockState(pos).getBlock() != ModBlocks.FluorescentLight) {
+        if (world.getBlockState(pos).getBlock() != ModBlocks.FLUORESCENT_LIGHT) {
             return;
         }
 
@@ -70,7 +70,7 @@ public class FluorescentLightBlockEntity extends BlockEntity {
                 if (world.getBlockState(pos.down()) != Blocks.AIR.getDefaultState()) {
                     world.removeBlockEntity(pos);
                     world.getWorldChunk(pos).blockEntityNbts.remove(pos);
-                    world.setBlockState(pos, ModBlocks.CeilingTile.getDefaultState());
+                    world.setBlockState(pos, ModBlocks.CEILING_TILE.getDefaultState());
                     return;
                 }
             }
@@ -80,9 +80,9 @@ public class FluorescentLightBlockEntity extends BlockEntity {
             BlockState westState = world.getBlockState(pos.west());
             int northOWest = 0;
 
-            if (northState.getBlock() == ModBlocks.FluorescentLight) {
+            if (northState.getBlock() == ModBlocks.FLUORESCENT_LIGHT) {
                 northOWest = 1;
-            } else if (westState.getBlock() == ModBlocks.FluorescentLight) {
+            } else if (westState.getBlock() == ModBlocks.FLUORESCENT_LIGHT) {
                 northOWest = 2;
             }
 
@@ -94,7 +94,7 @@ public class FluorescentLightBlockEntity extends BlockEntity {
                 }
             } else {
                 if (state.get(FluorescentLightBlock.COPY)) {
-                    world.setBlockState(pos, ModBlocks.FluorescentLight.getDefaultState().with(FluorescentLightBlock.COPY, false));
+                    world.setBlockState(pos, ModBlocks.FLUORESCENT_LIGHT.getDefaultState().with(FluorescentLightBlock.COPY, false));
                 }
 
                 if (!((BackroomsLevels.getLevel(this.getWorld())) instanceof Level0BackroomsLevel level)) {

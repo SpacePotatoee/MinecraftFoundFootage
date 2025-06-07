@@ -1,5 +1,8 @@
 #include veil:camera
+#include veil:blend
+#include veil:deferred_utils
 #include spb-revamped:common
+#include spb-revamped:puddles
 
 #line 0 2
 #define BLOCK_SOLID 0
@@ -18,6 +21,12 @@
 #define BREAKING 11
 #define CLOUD 12
 #define WORLD_BORDER 13
+
+#define POWERPOLE 20
+#define EMERGENCY_LIGHT 19
+#define PLASTIC 22
+#define SIGNPOLE 24
+#define WINDOW 25
 
 bool isBlock(uint material) {
     return material >= BLOCK_SOLID  && material <= BLOCK_TRANSLUCENT;
@@ -42,10 +51,13 @@ layout(location = 5) out vec4 fragLightMap;
 
 #line 31 0
 
+uniform sampler2D DiffuseSampler0;
+uniform sampler2D TransparentDepthSampler;
 uniform sampler2D Sampler0;
 uniform sampler2D PoleTexture;
 
 uniform vec4 ColorModulator;
+uniform vec3 cameraBobOffset;
 
 in vec4 vertexColor;
 in vec2 texCoord0;
@@ -72,7 +84,7 @@ float map(vec3 p) {
     return sdCappedCylinder(p, 9, 0.15);
 }
 
-void raymarchLightPole(inout vec4 color, inout vec3 normal) {
+void raymarchLightPole(inout vec4 color, inout vec3 normal, float size) {
     color = vec4(0.0);
     vec3 rayOrigin = playerSpaceToWorldSpace(localPos);
     vec3 rayDir = normalize(localPos);
@@ -92,7 +104,7 @@ void raymarchLightPole(inout vec4 color, inout vec3 normal) {
             break;
         }
 
-        if(distance(rayPos, rayOrigin) > 0.5){
+        if(distance(rayPos, rayOrigin) > size){
             break;
         }
     }
@@ -109,24 +121,34 @@ void main() {
     }
 
     vec3 materialNormal = normal;
-    if(Mat == 20){
+
+    if(Mat == POWERPOLE){
         color = vec4(0.0);
         materialNormal = vec3(0.0);
-        raymarchLightPole(color, materialNormal);
+        raymarchLightPole(color, materialNormal, 0.5);
         color.rgb *= dot(materialNormal, vec3(1,0,0)) * 0.5 + 0.5;
         materialNormal = worldToViewSpaceDirection(materialNormal);
     }
+
+    /*
+    if(Mat == SIGNPOLE){
+        color = vec4(0.0);
+        materialNormal = vec3(0.0);
+        raymarchLightPole(color, materialNormal, 0.9);
+        color.rgb *= dot(materialNormal, vec3(1,0,0)) * 0.5 + 0.5;
+        materialNormal = worldToViewSpaceDirection(materialNormal);
+    }
+    */
 
     if(color.a < 0.4){
         discard;
     }
 
     vec4 LightmapColor = lightmapColor;
-    if(Mat == 19) {
+    if (Mat == EMERGENCY_LIGHT) {
         LightmapColor = vec4(1);
         color = texture(Sampler0, texCoord0);
     }
-
 
     fragAlbedo = vec4(color.rgb, 1.0);
     fragNormal = vec4(materialNormal, 1.0);

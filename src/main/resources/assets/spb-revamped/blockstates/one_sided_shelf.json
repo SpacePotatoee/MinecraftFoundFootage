@@ -1,0 +1,104 @@
+{
+  "variants": {
+    "facing=east,stuff=0": {
+      "model": "spb-revamped:block/shelf_stuff1",
+      "y": 270
+    },
+    "facing=north,stuff=0": {
+      "model": "spb-revamped:block/shelf_stuff1",
+      "y": 180
+    },
+    "facing=south,stuff=0": {
+      "model": "spb-revamped:block/shelf_stuff1"
+    },
+    "facing=west,stuff=0": {
+      "model": "spb-revamped:block/shelf_stuff1",
+      "y": 90
+    },
+
+
+    "facing=east,stuff=1": {
+      "model": "spb-revamped:block/shelf_stuff2",
+      "y": 270
+    },
+    "facing=north,stuff=1": {
+      "model": "spb-revamped:block/shelf_stuff2",
+      "y": 180
+    },
+    "facing=south,stuff=1": {
+      "model": "spb-revamped:block/shelf_stuff2"
+    },
+    "facing=west,stuff=1": {
+      "model": "spb-revamped:block/shelf_stuff2",
+      "y": 90
+    },
+
+
+    "facing=east,stuff=2": {
+      "model": "spb-revamped:block/shelf_stuff3",
+      "y": 270
+    },
+    "facing=north,stuff=2": {
+      "model": "spb-revamped:block/shelf_stuff3",
+      "y": 180
+    },
+    "facing=south,stuff=2": {
+      "model": "spb-revamped:block/shelf_stuff3"
+    },
+    "facing=west,stuff=2": {
+      "model": "spb-revamped:block/shelf_stuff3",
+      "y": 90
+    },
+
+
+    "facing=east,stuff=3": {
+      "model": "spb-revamped:block/shelf_stuff4",
+      "y": 270
+    },
+    "facing=north,stuff=3": {
+      "model": "spb-revamped:block/shelf_stuff4",
+      "y": 180
+    },
+    "facing=south,stuff=3": {
+      "model": "spb-revamped:block/shelf_stuff4"
+    },
+    "facing=west,stuff=3": {
+      "model": "spb-revamped:block/shelf_stuff4",
+      "y": 90
+    },
+
+
+    "facing=east,stuff=4": {
+      "model": "spb-revamped:block/shelf_stuff5",
+      "y": 270
+    },
+    "facing=north,stuff=4": {
+      "model": "spb-revamped:block/shelf_stuff5",
+      "y": 180
+    },
+    "facing=south,stuff=4": {
+      "model": "spb-revamped:block/shelf_stuff5"
+    },
+    "facing=west,stuff=4": {
+      "model": "spb-revamped:block/shelf_stuff5",
+      "y": 90
+    },
+
+
+    "facing=east,stuff=5": {
+      "model": "spb-revamped:block/shelf_stuff6",
+      "y": 270
+    },
+    "facing=north,stuff=5": {
+      "model": "spb-revamped:block/shelf_stuff6",
+      "y": 180
+    },
+    "facing=south,stuff=5": {
+      "model": "spb-revamped:block/shelf_stuff6"
+    },
+    "facing=west,stuff=5": {
+      "model": "spb-revamped:block/shelf_stuff6",
+      "y": 90
+    }
+  }
+}

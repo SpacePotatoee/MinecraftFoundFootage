@@ -9,6 +9,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -89,5 +91,15 @@ public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
     @Override
     public int getTransitionDuration() {
         return 0;
+    }
+
+    @Override
+    public BoolTextPair allowsTorch() {
+        return new BoolTextPair(false, Text.translatable("spb-revamped.flashlight.wet1").append(Text.translatable("spb-revamped.flashlight.wet2").formatted(Formatting.RED)));
+    }
+
+    @Override
+    public boolean hasVanillaLighting() {
+        return true;
     }
 }

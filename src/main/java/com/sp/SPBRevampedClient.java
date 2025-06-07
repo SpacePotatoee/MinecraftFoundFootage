@@ -1,7 +1,10 @@
 package com.sp;
 
-import com.sp.block.renderer.FluorescentLightBlockEntityRenderer;
-import com.sp.block.renderer.ThinFluorescentLightBlockEntityRenderer;
+import com.sp.block.client.renderer.FluorescentLightBlockEntityRenderer;
+import com.sp.block.client.renderer.GasPumpBlockRenderer;
+import com.sp.block.client.renderer.ThinFluorescentLightBlockEntityRenderer;
+import com.sp.block.client.renderer.TinyFluorescentLightBlockEntityRenderer;
+import com.sp.block.entity.TinyFluorescentLightBlockEntity;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.cca_stuff.WorldEvents;
@@ -19,9 +22,11 @@ import com.sp.render.camera.CutsceneManager;
 import com.sp.render.grass.GrassRenderer;
 import com.sp.render.gui.StaminaBar;
 import com.sp.render.gui.TitleText;
+import com.sp.render.pbr.BlockIdMap;
 import com.sp.render.pbr.PbrRegistry;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
+import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.custom.Level2BackroomsLevel;
 import com.sp.world.levels.custom.PoolroomsBackroomsLevel;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
@@ -108,48 +113,43 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         com.sp.Keybinds.initializeKeyBinds();
 
-        PbrRegistry.registerPBR(ModBlocks.CarpetBlock,      new PbrRegistry.PbrMaterial(false, 0.0f,1.25f, 1024));
-        PbrRegistry.registerPBR(ModBlocks.CeilingTile,      new PbrRegistry.PbrMaterial(false, 0.0f,1.0f,  512));
-        PbrRegistry.registerPBR(ModBlocks.GhostCeilingTile, new PbrRegistry.PbrMaterial(false, 0.0f,1.0f,  512));
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POOLROOMS_SKY_BLOCK, RenderLayers.getPoolroomsSky());
 
-        PbrRegistry.registerPBR(ModBlocks.ConcreteBlock11,  new PbrRegistry.PbrMaterial(true, 0.7f,16.0f,  2048));
-        PbrRegistry.registerPBR(ModBlocks.Bricks,           new PbrRegistry.PbrMaterial(true, 0.7f,5.0f,   2048));
-        PbrRegistry.registerPBR(ModBlocks.DIRT,             new PbrRegistry.PbrMaterial(true, 0.5f,3.0f,   1024));
-        PbrRegistry.registerPBR(ModBlocks.CHAINFENCE,       new PbrRegistry.PbrMaterial(true, 0.36f,2.8f,   1024));
-        PbrRegistry.registerPBR(ModBlocks.WOODEN_CRATE,     new PbrRegistry.PbrMaterial(true, 2.0f,1.0f,   1024));
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.PoolroomsSkyBlock, RenderLayers.getPoolroomsSky());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.BottomTrim, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText1, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText2, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText3, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText4, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText5, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText6, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText7, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText8, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallText99, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallArrow1, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallArrow2, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallArrow3, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallArrow4, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallSmall1, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallSmall2, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallDrawingDoor, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WallDrawingWindow, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Rug1, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.Rug2, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.BOTTOM_TRIM, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_TEXT_1, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_TEXT_2, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_TEXT_3, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_TEXT_4, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_TEXT_5, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_TEXT_6, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_TEXT_7, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_TEXT_8, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_TEXT_99, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_ARROW_1, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_ARROW_2, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_ARROW_3, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_ARROW_4, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_SMALL_1, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_SMALL_2, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_DRAWING_DOOR, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_DRAWING_WINDOW, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.RUG_1, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.RUG_2, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.GAS_PUMP, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.RED_METAL_CASING, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WINDOW, RenderLayer.getTranslucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.SCHLEUSE, RenderLayer.getTranslucent());
 
         BlockEntityRendererFactories.register(ModBlockEntities.FLUORESCENT_LIGHT_BLOCK_ENTITY, FluorescentLightBlockEntityRenderer::new);
         BlockEntityRendererFactories.register(ModBlockEntities.THIN_FLUORESCENT_LIGHT_BLOCK_ENTITY, ThinFluorescentLightBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(ModBlockEntities.TINY_FLUORESCENT_LIGHT_BLOCK_ENTITY, TinyFluorescentLightBlockEntityRenderer::new);
 
         EntityRendererRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerRenderer::new);
         EntityRendererRegistry.register(ModEntities.SMILER_ENTITY, SmilerRenderer::new);
 
         EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SMILER, SmilerModel::getTexturedModelData);
 
-
+        BlockEntityRendererFactories.register(ModBlockEntities.GAS_PUMP_ENTITY, GasPumpBlockRenderer::new);
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
@@ -159,6 +159,33 @@ public class SPBRevampedClient implements ClientModInitializer {
 
             @Override
             public void reload(ResourceManager manager) {
+                BlockIdMap.registerBlockID((blockIdMap) -> {
+                    blockIdMap.put(ModBlocks.POOL_TILES, 18);
+                    blockIdMap.put(ModBlocks.CEILINGLIGHT, 15);
+                    blockIdMap.put(ModBlocks.EMERGENCY_LIGHT, 19);
+                    blockIdMap.put(ModBlocks.POWER_POLE, 20);
+                    blockIdMap.put(ModBlocks.PLASTIC, 22);
+                    blockIdMap.put(ModBlocks.PILLAR, 22);
+                    blockIdMap.put(ModBlocks.RED_METAL_CASING, 23);
+                    blockIdMap.put(ModBlocks.POLE, 24);
+                    blockIdMap.put(ModBlocks.WINDOW, 25);
+                    blockIdMap.put(ModBlocks.FLOOR_TILING, 26);
+                });
+
+                PbrRegistry.registerPBR(ModBlocks.CARPET_BLOCK,      new PbrRegistry.PbrMaterial(false, 0.0f,1.25f, 1024));
+                PbrRegistry.registerPBR(ModBlocks.CEILING_TILE,      new PbrRegistry.PbrMaterial(false, 0.0f,1.0f,  512));
+                PbrRegistry.registerPBR(ModBlocks.GHOST_CEILING_TILE, new PbrRegistry.PbrMaterial(false, 0.0f,1.0f,  512));
+
+                PbrRegistry.registerPBR(ModBlocks.CONCRETE_BLOCK_11,  new PbrRegistry.PbrMaterial(true, 0.4f,8.0f,  1024));
+                PbrRegistry.registerPBR(ModBlocks.BRICKS,           new PbrRegistry.PbrMaterial(true, 0.4f,5.0f,   2048));
+                //PbrRegistry.registerPBR(ModBlocks.DIRT,             new PbrRegistry.PbrMaterial(true, 0.5f,3.0f,   128));
+                PbrRegistry.registerPBR(ModBlocks.CHAINFENCE,       new PbrRegistry.PbrMaterial(true, 0.21f,2.8f,   1024));
+                PbrRegistry.registerPBR(ModBlocks.WOODEN_CRATE,     new PbrRegistry.PbrMaterial(true, 9.9f,1.0f,   1024));
+                PbrRegistry.registerPBR(ModBlocks.ROAD,             new PbrRegistry.PbrMaterial(true, 0.37f,8.0f,   1024));
+                PbrRegistry.registerPBR(ModBlocks.FLOOR_TILING,     new PbrRegistry.PbrMaterial(true, 0.37f,8.0f,   1024));
+
+                BlockIdMap.init = false;
+
                 if (System.getProperty("os.name").toLowerCase().contains("mac")) {
                     SPBRevamped.LOGGER.error("This mod is not compatible with MacOS. Please use Windows or Linux (wayland).");
                     MinecraftClient.getInstance().getToastManager().add(new SystemToast(SystemToast.Type.UNSECURE_SERVER_WARNING, Text.of("Potential Incompatibility found"), Text.of("This mod is not compatible with MacOS. Please use Windows or Linux (wayland).")));
@@ -195,7 +222,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     }
                 }
 
-                if (clientWorld.getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY) {
+                if (clientWorld.getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY || clientWorld.getRegistryKey() == BackroomsLevels.LEVEL324_WORLD_KEY) {
                     if (stage == Stage.AFTER_SOLID_BLOCKS) {
                         if (this.grassRenderer == null) {
                             this.grassRenderer = new GrassRenderer();
@@ -475,7 +502,10 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                     if (shouldRenderCameraEffect() && isInBackrooms()) {
                         HelpfulHintManager.disableSuffocateHint();
-                        if (client.world.getRegistryKey() != BackroomsLevels.POOLROOMS_WORLD_KEY && client.world.getRegistryKey() != BackroomsLevels.INFINITE_FIELD_WORLD_KEY) {
+
+                        BackroomsLevel level = BackroomsLevels.getLevel(client.player.getWorld());
+
+                        if (!level.hasVanillaLighting()) {
                             lightRenderer.disableVanillaLight();
                         } else {
                             lightRenderer.enableVanillaLight();
@@ -554,5 +584,9 @@ public class SPBRevampedClient implements ClientModInitializer {
 
     public static CameraShake getCameraShake() {
         return cameraShake;
+    }
+
+    public static BackroomsLevel getCurrentBackroomsLevel() {
+        return BackroomsLevels.getLevel(MinecraftClient.getInstance().world);
     }
 }

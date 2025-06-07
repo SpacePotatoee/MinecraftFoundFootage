@@ -18,6 +18,7 @@ vec3 BloomLod(float scale, vec2 offset){
 void main(){
 	vec4 color = texture(DiffuseSampler0, texCoord);
 
+    fragColor = color;
 
     color = vec4(0.0, 0.0, 0.0, 1.0);
     float scale = 2.0;
@@ -30,8 +31,8 @@ void main(){
 
     float Brightness = 1.00 * dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
     float handDepth = texture(HandDepth, texCoord).r;
-    
-	
+
+
 	if(Brightness >= 1.0){
         fragColor = vec4(color.rgb, 1.0);
     }

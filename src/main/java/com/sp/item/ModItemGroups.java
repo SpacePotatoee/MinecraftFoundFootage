@@ -15,79 +15,92 @@ public class ModItemGroups {
     public static final ItemGroup BACKROOMS_GROUP = Registry.register(Registries.ITEM_GROUP,
             new Identifier(SPBRevamped.MOD_ID, "spbrevamped"),
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.spbrevamped"))
-                    .icon(() -> new ItemStack(ModBlocks.WallBlock)).entries((displayContext, entries) -> {
-                        entries.add(ModBlocks.VoidBlock);
+                    .icon(() -> new ItemStack(ModBlocks.WALL_BLOCK)).entries((displayContext, entries) -> {
+                        entries.add(ModBlocks.VOID_BLOCK);
                         entries.add(ModBlocks.CEILINGLIGHT);
-                        entries.add(ModBlocks.EmergencyLight);
+                        entries.add(ModBlocks.EMERGENCY_LIGHT);
                         entries.add(ModItems.BACKSHROOM);
                         entries.add(ModItems.CANNED_FOOD);
-                        entries.add(ModBlocks.WallBlock);
-                        entries.add(ModBlocks.WallBlock2);
-                        entries.add(ModBlocks.CeilingTile);
-                        entries.add(ModBlocks.GhostCeilingTile);
-                        entries.add(ModBlocks.CarpetBlock);
+                        entries.add(ModBlocks.WALL_BLOCK);
+                        entries.add(ModBlocks.WALL_BLOCK_2);
+                        entries.add(ModBlocks.CEILING_TILE);
+                        entries.add(ModBlocks.GHOST_CEILING_TILE);
+                        entries.add(ModBlocks.CARPET_BLOCK);
 
-                        entries.add(ModBlocks.FluorescentLight);
-                        entries.add(ModBlocks.ThinFluorescentLight);
+                        entries.add(ModBlocks.FLUORESCENT_LIGHT);
+                        entries.add(ModBlocks.THIN_FLUORESCENT_LIGHT);
 
                         entries.add(ModBlocks.WOODEN_CRATE);
                         entries.add(ModBlocks.CHAINFENCE);
                         entries.add(ModBlocks.NEWSTAIRS);
-                        entries.add(ModBlocks.BottomTrim);
-                        entries.add(ModBlocks.ConcreteBlock1);
-                        entries.add(ModBlocks.ConcreteBlock2);
-                        entries.add(ModBlocks.ConcreteBlock5);
-                        entries.add(ModBlocks.ConcreteBlock6);
-                        entries.add(ModBlocks.ConcreteBlock7);
-                        entries.add(ModBlocks.ConcreteBlock9);
-                        entries.add(ModBlocks.ConcreteBlock9Slab);
-                        entries.add(ModBlocks.ConcreteBlock10);
-                        entries.add(ModBlocks.ConcreteBlock11);
-                        entries.add(ModBlocks.ConcreteBlock12);
-                        entries.add(ModBlocks.Bricks);
+                        entries.add(ModBlocks.BOTTOM_TRIM);
+                        entries.add(ModBlocks.CONCRETE_BLOCK_1);
+                        entries.add(ModBlocks.CONCRETE_BLOCK_2);
+                        entries.add(ModBlocks.CONCRETE_BLOCK_5);
+                        entries.add(ModBlocks.CONCRETE_BLOCK_6);
+                        entries.add(ModBlocks.CONCRETE_BLOCK_7);
+                        entries.add(ModBlocks.CONCRETE_BLOCK_9);
+                        entries.add(ModBlocks.CONCRETE_BLOCK_9_SLAB);
+                        entries.add(ModBlocks.CONCRETE_BLOCK_10);
+                        entries.add(ModBlocks.CONCRETE_BLOCK_11);
+                        entries.add(ModBlocks.CONCRETE_BLOCK_12);
+                        entries.add(ModBlocks.BRICKS);
 
-                        entries.add(ModBlocks.ThinPipe);
-                        entries.add(ModBlocks.ThinPipeCorner);
-                        entries.add(ModBlocks.Pipe);
-                        entries.add(ModBlocks.PipeMiddle);
-                        entries.add(ModBlocks.BigPipe);
-                        entries.add(ModBlocks.BigPipeMiddle);
-                        entries.add(ModBlocks.SmallPipeSet);
-                        entries.add(ModBlocks.PipeCorner);
+                        entries.add(ModBlocks.THIN_PIPE);
+                        entries.add(ModBlocks.THIN_PIPE_CORNER);
+                        entries.add(ModBlocks.PIPE);
+                        entries.add(ModBlocks.PIPE_MIDDLE);
+                        entries.add(ModBlocks.BIG_PIPE);
+                        entries.add(ModBlocks.BIG_PIPE_MIDDLE);
+                        entries.add(ModBlocks.SMALL_PIPE_SET);
+                        entries.add(ModBlocks.PIPE_CORNER);
 
-                        entries.add(ModBlocks.WallText1);
-                        entries.add(ModBlocks.WallText2);
-                        entries.add(ModBlocks.WallText3);
-                        entries.add(ModBlocks.WallText4);
-                        entries.add(ModBlocks.WallText5);
-                        entries.add(ModBlocks.WallText6);
-                        entries.add(ModBlocks.WallText7);
-                        entries.add(ModBlocks.WallText8);
-                        entries.add(ModBlocks.WallText99);
+                        entries.add(ModBlocks.WALL_TEXT_1);
+                        entries.add(ModBlocks.WALL_TEXT_2);
+                        entries.add(ModBlocks.WALL_TEXT_3);
+                        entries.add(ModBlocks.WALL_TEXT_4);
+                        entries.add(ModBlocks.WALL_TEXT_5);
+                        entries.add(ModBlocks.WALL_TEXT_6);
+                        entries.add(ModBlocks.WALL_TEXT_7);
+                        entries.add(ModBlocks.WALL_TEXT_8);
+                        entries.add(ModBlocks.WALL_TEXT_99);
 
-                        entries.add(ModBlocks.WallArrow1);
-                        entries.add(ModBlocks.WallArrow2);
-                        entries.add(ModBlocks.WallArrow3);
-                        entries.add(ModBlocks.WallArrow4);
-                        entries.add(ModBlocks.WallSmall1);
-                        entries.add(ModBlocks.WallSmall2);
-                        entries.add(ModBlocks.WallDrawingDoor);
-                        entries.add(ModBlocks.WallDrawingWindow);
+                        entries.add(ModBlocks.WALL_ARROW_1);
+                        entries.add(ModBlocks.WALL_ARROW_2);
+                        entries.add(ModBlocks.WALL_ARROW_3);
+                        entries.add(ModBlocks.WALL_ARROW_4);
+                        entries.add(ModBlocks.WALL_SMALL_1);
+                        entries.add(ModBlocks.WALL_SMALL_2);
+                        entries.add(ModBlocks.WALL_DRAWING_DOOR);
+                        entries.add(ModBlocks.WALL_DRAWING_WINDOW);
 
-                        entries.add(ModBlocks.Rug1);
-                        entries.add(ModBlocks.Rug2);
+                        entries.add(ModBlocks.RUG_1);
+                        entries.add(ModBlocks.RUG_2);
 
-                        entries.add(ModBlocks.PoolroomsSkyBlock);
-                        entries.add(ModBlocks.PoolTiles);
-                        entries.add(ModBlocks.PoolTileWall);
-                        entries.add(ModBlocks.PoolTileSlope);
+                        entries.add(ModBlocks.POOLROOMS_SKY_BLOCK);
+                        entries.add(ModBlocks.POOL_TILES);
+                        entries.add(ModBlocks.POOL_TILE_WALL);
+                        entries.add(ModBlocks.POOL_TILE_SLOPE);
 
                         entries.add(ModBlocks.POWER_POLE_TOP);
                         entries.add(ModBlocks.POWER_POLE);
                         entries.add(ModBlocks.DIRT);
 
-
-
+                        entries.add(ModItems.GAS_PUMP);
+                        entries.add(ModBlocks.ROAD);
+                        entries.add(ModBlocks.RED_DIRT);
+                        entries.add(ModBlocks.PLASTIC);
+                        entries.add(ModBlocks.NONE_REFLECTIVE_PLASTIC);
+                        entries.add(ModBlocks.RED_METAL_CASING);
+                        entries.add(ModBlocks.PILLAR);
+                        entries.add(ModBlocks.POLE);
+                        entries.add(ModBlocks.LAMP);
+                        entries.add(ModBlocks.WINDOW);
+                        entries.add(ModBlocks.SCHLEUSE);
+                        entries.add(ModBlocks.TINY_FLUORESCENT_LIGHT);
+                        entries.add(ModBlocks.FLOOR_TILING);
+                        entries.add(ModBlocks.DOUBLE_SIDED_SHELF);
+                        entries.add(ModBlocks.ONE_SIDED_SHELF);
 
 
                     }).build());

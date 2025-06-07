@@ -52,8 +52,10 @@ return vec4(disty);
 }
 
 void main() {
+
     vec2 uv = BarrelDistortionCoordinates(texCoord);
     //    vec2 uv = texCoord;
+
     vec4 Distortion = texture(DiffuseSampler0, uv);
     vec4 viginette = Viginette(uv);
 
@@ -115,6 +117,7 @@ void main() {
     }
 
     //VHS POSST EFFECTS
+
     fragColor.rgb = rgb2yuv(fragColor.rgb);
     fragColor.rgb += (fragColor.rgb * vec3((hash12(uv * 260.23535 + GameTime * 70.0) + hash12(uv * 737.36346 + GameTime * 100.0)) * 2.0 - 1.0)) * 0.05;
     fragColor.r += step(0.99994, (hash12(uv * 260.23535 + GameTime * 70.0))) * 10.0;

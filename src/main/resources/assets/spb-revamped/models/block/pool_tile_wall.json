@@ -1,9 +1,8 @@
 {
 	"credit": "Made with Blockbench",
-	"texture_size": [32, 32],
 	"textures": {
-		"1": "spb-revamped:block/pool_tiles_wall_texture",
-		"particle": "spb-revamped:block/pool_tiles_wall_texture"
+		"1": "spb-revamped:block/pool_tiles",
+		"particle": "spb-revamped:block/pool_tiles"
 	},
 	"elements": [
 		{
@@ -11,12 +10,12 @@
 			"to": [16, 16, 16],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 8, 8], "texture": "#1"},
-				"east": {"uv": [0, 8, 3.20313, 16], "texture": "#1"},
-				"south": {"uv": [0, 0, 8, 8], "texture": "#1"},
-				"west": {"uv": [0, 8, 3.20313, 16], "texture": "#1"},
-				"up": {"uv": [16, 3.20313, 8, 0], "texture": "#1"},
-				"down": {"uv": [16, 0, 8, 3.20313], "texture": "#1"}
+				"north": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"east": {"uv": [0, 0, 6.40626, 16], "texture": "#1"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"west": {"uv": [0, 0, 6.40626, 16], "texture": "#1"},
+				"up": {"uv": [16, 6.40626, 0, 0], "texture": "#1"},
+				"down": {"uv": [16, 0, 0, 6.40626], "texture": "#1"}
 			}
 		}
 	],

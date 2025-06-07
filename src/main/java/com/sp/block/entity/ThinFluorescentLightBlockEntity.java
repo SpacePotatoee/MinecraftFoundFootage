@@ -52,7 +52,7 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
     }
 
     public void tick(World world, BlockPos pos, BlockState state) {
-        if (world.getBlockState(pos).getBlock() != ModBlocks.ThinFluorescentLight) {
+        if (world.getBlockState(pos).getBlock() != ModBlocks.THIN_FLUORESCENT_LIGHT) {
             return;
         }
 
@@ -69,11 +69,11 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
             BlockState downState = world.getBlockState(pos.down());
             int northOWest = 0;
 
-            if (northState.getBlock() == ModBlocks.ThinFluorescentLight) {
+            if (northState.getBlock() == ModBlocks.THIN_FLUORESCENT_LIGHT) {
                 northOWest = 1;
-            } else if (westState.getBlock() == ModBlocks.ThinFluorescentLight) {
+            } else if (westState.getBlock() == ModBlocks.THIN_FLUORESCENT_LIGHT) {
                 northOWest = 2;
-            } else if (downState.getBlock() == ModBlocks.ThinFluorescentLight) {
+            } else if (downState.getBlock() == ModBlocks.THIN_FLUORESCENT_LIGHT) {
                 northOWest = 3;
             }
 

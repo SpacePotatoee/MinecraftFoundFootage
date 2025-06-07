@@ -103,5 +103,9 @@ void main(){
         color = linear_fog(color, length(viewPos), -10, 90, vec4(vec3(0.8), 1.0));
     #endif
 
+    #ifdef LEVEL324
+        color = linear_fog(color, length(viewPos), -10, 90, vec4(vec3(0), 1));
+    #endif
+
     fragColor = color;
 }

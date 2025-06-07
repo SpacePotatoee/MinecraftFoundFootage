@@ -61,14 +61,15 @@ void main() {
     vec3 tangent = vec3(invDet * (deltaUV1.y * edge0 - deltaUV0.y * edge1));
     vec3 biTangent = vec3(invDet * (-deltaUV1.x * edge0 + deltaUV0.x * edge1));
 
-    vec3 T = normalize((VeilCamera.ViewMat * vec4(tangent, 0.0)).xyz);
-    vec3 B = normalize((VeilCamera.ViewMat * vec4(biTangent, 0.0)).xyz);
-    vec3 N = normall[1];
-    TBN = mat3(T, B, N);
-    TBN = transpose(TBN);
 
 
     for(int i = 0; i < 3; i++){
+        vec3 T = normalize((VeilCamera.ViewMat * vec4(tangent, 0.0)).xyz);
+        vec3 B = normalize((VeilCamera.ViewMat * vec4(biTangent, 0.0)).xyz);
+        vec3 N = normall[i];
+        TBN = mat3(T, B, N);
+        TBN = transpose(TBN);
+
         gl_Position = ProjMat * ModelViewMat * gl_in[i].gl_Position;
         vertexColor = VertexColor[i];
         texCoord0 = TexCoord0[i];

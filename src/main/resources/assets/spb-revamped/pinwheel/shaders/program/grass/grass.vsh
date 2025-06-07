@@ -77,6 +77,11 @@ void main() {
     localPos = (pos - cameraPos) + offset;
 
 
+    float windStrength = 1;
+
+    #ifdef LEVEL324
+        //windStrength = 1.5;
+    #endif
 
     vec3 worldPos = localPos + VeilCamera.CameraPosition;
     float grassGradient = getGrassHeightGradient(pos.y);
@@ -84,8 +89,8 @@ void main() {
     float heightTexture = clamp((texture(WindNoise, (WorldPos.xz * 0.1)).r * texture(WindNoise, (WorldPos.xz * 0.01)).r), 0.0, 1.0);
     heightTexture = 2.5 * (heightTexture - 0.5) + 0.5;
     localPos.y += heightTexture * grassGradient;
-    localPos.xz -= 2 * (grassGradient * grassGradient) * windtexture * (grassHeight + heightTexture);
-    tempNormal.y = 2 * (grassGradient * grassGradient) * windtexture * (grassHeight + heightTexture);
+    localPos.xz -= 2 * (grassGradient * grassGradient) * (windtexture * windStrength) * (grassHeight + heightTexture);
+    tempNormal.y = 2 * (grassGradient * grassGradient) * (windtexture * windStrength) * (grassHeight + heightTexture);
 
     normal = tempNormal;
 

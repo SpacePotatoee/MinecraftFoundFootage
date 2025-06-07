@@ -164,7 +164,7 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
 
                 BlockState blockState = world.getBlockState(mutable.set(xPos, 18, yPos));
                 if(this.isAirOrNull(blockState)) {
-                    grid[x][y] = new CellWDoor(yPos, xPos, this.size, ModBlocks.WallBlock.getDefaultState().with(BOTTOM, false), y, x);
+                    grid[x][y] = new CellWDoor(yPos, xPos, this.size, ModBlocks.WALL_BLOCK.getDefaultState().with(BOTTOM, false), y, x);
                 }
             }
         }

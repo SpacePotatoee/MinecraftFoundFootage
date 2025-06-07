@@ -63,9 +63,9 @@ void main() {
             zoomedUV2 *= (0.00012207031 * Resolution - 0.0001) * vec2(2.0 * atlasAspectRatio, 2.0);
             zoomedUV2 += texCoordOffset;
 
-            float heightMapDepth = ((1 - texture(Sampler3, zoomedUV2).r) * Depth) - 0.35;
+            float heightMapDepth = ((1 - texture(Sampler3, zoomedUV2).r) * Depth) - 0.2;
 
-            if(texCoords.z >= heightMapDepth){
+            if (texCoords.z >= heightMapDepth) {
                 color = texture(Sampler0, zoomedUV2) * vertexColor;
                 normalMap = texture(Sampler1, zoomedUV2) * 2.0 - 1.0;
                 normalMap.rgb *= TBN;

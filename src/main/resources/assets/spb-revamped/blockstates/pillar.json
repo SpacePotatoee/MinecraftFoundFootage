@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "spb-revamped:block/pillar"
+    },
+    "facing=south": {
+      "model": "spb-revamped:block/pillar",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "spb-revamped:block/pillar",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "spb-revamped:block/pillar",
+      "y": 90
+    }
+  }
+}

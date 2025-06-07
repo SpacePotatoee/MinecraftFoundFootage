@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"texture_size": [1000, 1000],
+	"texture_size": [1000, 2000],
 	"textures": {
 		"0": "spb-revamped:block/arrow1"
 	},
@@ -10,10 +10,10 @@
 			"to": [27, 15, 15.95],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#0"},
-				"east": {"uv": [0, 0, 0, 0.288], "texture": "#missing"},
-				"south": {"uv": [16, 0, 0, 16], "texture": "#0"},
-				"west": {"uv": [0, 0, 0, 0.288], "texture": "#missing"},
+				"north": {"uv": [0, 0, 16, 8], "texture": "#0"},
+				"east": {"uv": [0, 0, 0, 0.144], "texture": "#missing"},
+				"south": {"uv": [16, 0, 0, 8], "texture": "#0"},
+				"west": {"uv": [0, 0, 0, 0.144], "texture": "#missing"},
 				"up": {"uv": [0, 0, 0.608, 0], "texture": "#missing"},
 				"down": {"uv": [0, 0, 0.608, 0], "texture": "#missing"}
 			}
@@ -43,7 +43,6 @@
 			"scale": [0.25, 0.25, 0.25]
 		},
 		"gui": {
-			"rotation": [0, 0, 0],
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"fixed": {

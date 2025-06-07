@@ -62,13 +62,13 @@ public class Level0ChunkGenerator extends BackroomsChunkGenerator {
                 for(int i = 0; i < 16; i++) {
                     for(int j = 0; j < 16; j++){
                         if(i == 0 && j == 0){
-                            world.setBlockState(mutable.set(i, 25, j), ModBlocks.GhostCeilingTile.getDefaultState(), 16);
+                            world.setBlockState(mutable.set(i, 25, j), ModBlocks.GHOST_CEILING_TILE.getDefaultState(), 16);
                         } else {
-                            world.setBlockState(mutable.set(i, 25, j), ModBlocks.CeilingTile.getDefaultState(), 16);
+                            world.setBlockState(mutable.set(i, 25, j), ModBlocks.CEILING_TILE.getDefaultState(), 16);
                         }
                     }
                 }
-                world.setBlockState(mutable.set(0, 25, 0), ModBlocks.GhostCeilingTile.getDefaultState(), 16);
+                world.setBlockState(mutable.set(0, 25, 0), ModBlocks.GHOST_CEILING_TILE.getDefaultState(), 16);
 
                 roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "level0/megaroom1");
                 structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);

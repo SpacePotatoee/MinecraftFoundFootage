@@ -7,6 +7,7 @@ import com.sp.init.ModEntities;
 import com.sp.init.ModSounds;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.world.events.AbstractEvent;
+import com.sp.world.events.EmptyEvent;
 import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.custom.Level0BackroomsLevel;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;

@@ -4,6 +4,7 @@ import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.command.EventCommand;
 import com.sp.command.GimmeMyInventoryBack;
+import com.sp.command.LevelCommand;
 import com.sp.command.SkinwalkerCommand;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.custom.SkinWalkerEntity;
@@ -65,8 +66,10 @@ public class SPBRevamped implements ModInitializer {
 		ModBlocks.init();
 		ModBlockEntities.registerAllBlockEntities();
 		MidnightConfig.init(MOD_ID, ConfigStuff.class);
+		ModGamerules.registerGamerules();
 
 		CommandRegistrationCallback.EVENT.register(EventCommand::register);
+		CommandRegistrationCallback.EVENT.register(LevelCommand::register);
 		CommandRegistrationCallback.EVENT.register(GimmeMyInventoryBack::register);
 		CommandRegistrationCallback.EVENT.register(SkinwalkerCommand::register);
 
