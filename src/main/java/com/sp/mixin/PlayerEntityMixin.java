@@ -29,8 +29,6 @@ public abstract class PlayerEntityMixin extends Entity {
 
         if (playerComponent.shouldNoClip()) {
             this.noClip = playerComponent.shouldNoClip();
-        } else {
-            this.noClip = this.isSpectator();
         }
     }
 
