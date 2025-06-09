@@ -16,8 +16,8 @@ import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
 public class EmergencyAlarmSoundInstance extends MovingSoundInstance {
-    private BlockEntity entity;
-    private PlayerEntity player;
+    private final BlockEntity entity;
+    private final PlayerEntity player;
 
     public EmergencyAlarmSoundInstance(BlockEntity entity, PlayerEntity player) {
         super(ModSounds.EMERGENCY_LIGHT_ALARM, SoundCategory.BLOCKS, SoundInstance.createRandom());
@@ -44,22 +44,22 @@ public class EmergencyAlarmSoundInstance extends MovingSoundInstance {
     public void tick() {
         World world = this.entity.getWorld();
 
-        if (!((BackroomsLevels.getLevel(world)) instanceof Level0BackroomsLevel level)) {
-            return;
-        }
-
-        if(world != null) {
-            if (!this.entity.isRemoved() &&
-                    this.entity.getPos().isWithinDistance(player.getPos(), 80.0f) &&
-                    level.getLightState() != Level0BackroomsLevel.LightState.BLACKOUT &&
-                    !SPBRevampedClient.blackScreen)
-            {
-                this.pitch = 1.0F;
-                this.volume = 10.0F;
-            } else {
-                this.setDone();
-                ((EmergencyLightBlockEntity) entity).setEmergencyAlarm(false);
+        BackroomsLevels.getLevel(world).ifPresent((backroomsLevel -> {
+            if (backroomsLevel instanceof Level0BackroomsLevel level) {
+                if(world != null) {
+                    if (!this.entity.isRemoved() &&
+                            this.entity.getPos().isWithinDistance(player.getPos(), 80.0f) &&
+                            level.getLightState() != Level0BackroomsLevel.LightState.BLACKOUT &&
+                            !SPBRevampedClient.blackScreen)
+                    {
+                        this.pitch = 1.0F;
+                        this.volume = 10.0F;
+                    } else {
+                        this.setDone();
+                        ((EmergencyLightBlockEntity) entity).setEmergencyAlarm(false);
+                    }
+                }
             }
-        }
+        }));
     }
 }

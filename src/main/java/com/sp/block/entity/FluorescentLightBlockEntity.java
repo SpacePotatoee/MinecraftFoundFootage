@@ -97,7 +97,7 @@ public class FluorescentLightBlockEntity extends BlockEntity {
                     world.setBlockState(pos, ModBlocks.FLUORESCENT_LIGHT.getDefaultState().with(FluorescentLightBlock.COPY, false));
                 }
 
-                if (!((BackroomsLevels.getLevel(this.getWorld())) instanceof Level0BackroomsLevel level)) {
+                if (!((BackroomsLevels.getLevel(this.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level0BackroomsLevel level)) {
                     return;
                 }
                 //Turn off if Blackout Event is active

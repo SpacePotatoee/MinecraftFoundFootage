@@ -18,8 +18,8 @@ import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
 public class FluorescentLightSoundInstance extends MovingSoundInstance {
-    private BlockEntity entity;
-    private PlayerEntity player;
+    private final BlockEntity entity;
+    private final PlayerEntity player;
 
     public FluorescentLightSoundInstance(BlockEntity entity, PlayerEntity player) {
         super(ModSounds.FLUORESCENT_LIGHT_HUM, SoundCategory.BLOCKS, SoundInstance.createRandom());
@@ -44,7 +44,7 @@ public class FluorescentLightSoundInstance extends MovingSoundInstance {
     public void tick() {
         World world = this.entity.getWorld();
 
-        if (!((BackroomsLevels.getLevel(player.getWorld())) instanceof Level0BackroomsLevel level)) {
+        if (!((BackroomsLevels.getLevel(player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level0BackroomsLevel level)) {
             return;
         }
 

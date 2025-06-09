@@ -78,7 +78,7 @@ public class SmilerEntity extends MobEntity {
                 }
             }
 
-            if (!((BackroomsLevels.getLevel(this.getWorld())) instanceof Level1BackroomsLevel level)) {
+            if (!((BackroomsLevels.getLevel(this.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level1BackroomsLevel level)) {
                 return;
             }
 

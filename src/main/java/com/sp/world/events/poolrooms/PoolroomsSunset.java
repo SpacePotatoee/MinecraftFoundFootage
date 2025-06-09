@@ -12,34 +12,37 @@ import net.minecraft.world.World;
 public class PoolroomsSunset extends AbstractEvent {
     @Override
     public void init(World world) {
-        if (!(BackroomsLevels.getLevel(world) instanceof PoolroomsBackroomsLevel level)) {
-            return;
-        }
 
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-        float currentDayTime = PoolroomsDayCycle.getDayTime(world);
-        level.setSunsetTransitioning(true);
-        level.setTimeOfDay(level.getTimeOfDay() + 0.25f);
-        events.sync();
+        BackroomsLevels.getLevel(world).ifPresent(backroomsLevel -> {
+            if (!(backroomsLevel instanceof PoolroomsBackroomsLevel level)) {
+                return;
+            }
 
-        if(currentDayTime == 0.0) playSound(world, ModSounds.SUNSET_TRANSITION);
-        else if (currentDayTime == 0.25 || currentDayTime == 0.5) playSound(world, ModSounds.MIDNIGHT_TRANSITION);
-        else playSound(world, ModSounds.SUNSET_TRANSITION_END);
+            WorldEvents events = InitializeComponents.EVENTS.get(world);
+            float currentDayTime = PoolroomsDayCycle.getDayTime(world);
+            level.setSunsetTransitioning(true);
+            level.setTimeOfDay(level.getTimeOfDay() + 0.25f);
+            events.sync();
+
+            if(currentDayTime == 0.0) playSound(world, ModSounds.SUNSET_TRANSITION);
+            else if (currentDayTime == 0.25 || currentDayTime == 0.5) playSound(world, ModSounds.MIDNIGHT_TRANSITION);
+            else playSound(world, ModSounds.SUNSET_TRANSITION_END);
+        });
     }
 
     @Override
     public void finish(World world) {
         super.finish(world);
 
-        if (!(BackroomsLevels.getLevel(world) instanceof PoolroomsBackroomsLevel level)) {
-            return;
-        }
+        BackroomsLevels.getLevel(world).ifPresent(backroomsLevel -> {
+            if (backroomsLevel instanceof PoolroomsBackroomsLevel level) {
+                WorldEvents events = InitializeComponents.EVENTS.get(world);
 
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
-
-        level.setTimeOfDay(level.getTimeOfDay() >= 1.0f ? 0.0f : level.getTimeOfDay());
-        level.setSunsetTransitioning(false);
-        events.sync();
+                level.setTimeOfDay(level.getTimeOfDay() >= 1.0f ? 0.0f : level.getTimeOfDay());
+                level.setSunsetTransitioning(false);
+                events.sync();
+            }
+        });
     }
 
     @Override

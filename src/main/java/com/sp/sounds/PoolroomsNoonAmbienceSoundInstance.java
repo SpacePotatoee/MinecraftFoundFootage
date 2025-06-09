@@ -25,7 +25,7 @@ public class PoolroomsNoonAmbienceSoundInstance extends MovingSoundInstance {
 
     @Override
     public void tick() {
-        if (!((BackroomsLevels.getLevel(player.getWorld())) instanceof PoolroomsBackroomsLevel level)) {
+        if (!((BackroomsLevels.getLevel(player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof PoolroomsBackroomsLevel level)) {
             return;
         }
 

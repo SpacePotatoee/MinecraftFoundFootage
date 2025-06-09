@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 public class Level2Warp extends AbstractEvent {
     @Override
     public void init(World world) {
-        if (!((BackroomsLevels.getLevel(world)) instanceof Level2BackroomsLevel level)) {
+        if (!((BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level2BackroomsLevel level)) {
             return;
         }
 
@@ -19,7 +19,7 @@ public class Level2Warp extends AbstractEvent {
     public void finish(World world) {
         super.finish(world);
 
-        if (!((BackroomsLevels.getLevel(world)) instanceof Level2BackroomsLevel level)) {
+        if (!((BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level2BackroomsLevel level)) {
             return;
         }
 

@@ -2,8 +2,6 @@ package com.sp.block.entity;
 
 import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.block.custom.ThinFluorescentLightBlock;
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModBlockEntities;
 import com.sp.init.ModBlocks;
@@ -41,7 +39,7 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
 
     @Override
     public void markRemoved() {
-        if (this.getWorld().isClient){
+        if (this.getWorld() != null && this.getWorld().isClient){
             if(pointLight != null) {
                 VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(pointLight);
                 pointLight = null;
@@ -57,7 +55,6 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
         }
 
         Vec3d position = pos.toCenterPos();
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
         Random random = Random.create();
         java.util.Random random1 = new java.util.Random();
         this.currentState = state;
@@ -93,11 +90,11 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                 //Turn off if Blackout Event is active
                 boolean blackouted = false;
 
-                if ((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level) {
+                if ((BackroomsLevels.getLevel(world)).orElse(BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL) instanceof Level1BackroomsLevel level) {
                     blackouted = level.getLightState() == Level0BackroomsLevel.LightState.BLACKOUT;
                 }
 
-                if ((BackroomsLevels.getLevel(world)) instanceof Level0BackroomsLevel level) {
+                if ((BackroomsLevels.getLevel(world)).orElse(BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL) instanceof Level0BackroomsLevel level) {
                     if (level.getLightState() == Level0BackroomsLevel.LightState.BLACKOUT) {
                         blackouted = true;
                     }
@@ -111,7 +108,7 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                     world.setBlockState(pos, world.getBlockState(pos).with(ThinFluorescentLightBlock.BLACKOUT, false));
                 }
 
-                if ((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level && level.getLightState() == Level0BackroomsLevel.LightState.FLICKER && !state.get(ThinFluorescentLightBlock.BLACKOUT)) {
+                if ((BackroomsLevels.getLevel(world)).orElse(BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL) instanceof Level1BackroomsLevel level && level.getLightState() == Level0BackroomsLevel.LightState.FLICKER && !state.get(ThinFluorescentLightBlock.BLACKOUT)) {
                     if (ticks % randInt == 0) {
                         int i = random.nextBetween(1, 2);
                         if (i == 1) {
@@ -126,8 +123,6 @@ public class ThinFluorescentLightBlockEntity extends BlockEntity {
                     }
                 }
             }
-
-
         }
 
         if (world.isClient) {

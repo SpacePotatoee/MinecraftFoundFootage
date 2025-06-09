@@ -41,7 +41,7 @@ public class TinyFluorescentLightBlockEntity extends BlockEntity {
 
     @Override
     public void markRemoved() {
-        if (this.getWorld().isClient){
+        if (this.getWorld() != null && this.getWorld().isClient){
             if(pointLight != null) {
                 VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().removeLight(pointLight);
                 pointLight = null;
@@ -57,7 +57,6 @@ public class TinyFluorescentLightBlockEntity extends BlockEntity {
         }
 
         Vec3d position = pos.toCenterPos();
-        WorldEvents events = InitializeComponents.EVENTS.get(world);
         Random random = Random.create();
         java.util.Random random1 = new java.util.Random();
         this.currentState = state;
@@ -71,11 +70,11 @@ public class TinyFluorescentLightBlockEntity extends BlockEntity {
             //Turn off if Blackout Event is active
             boolean blackouted = false;
 
-            if ((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level) {
+            if ((BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level1BackroomsLevel level) {
                 blackouted = level.getLightState() == Level0BackroomsLevel.LightState.BLACKOUT;
             }
 
-            if ((BackroomsLevels.getLevel(world)) instanceof Level0BackroomsLevel level) {
+            if ((BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level0BackroomsLevel level) {
                 if (level.getLightState() == Level0BackroomsLevel.LightState.BLACKOUT) {
                     blackouted = true;
                 }
@@ -89,7 +88,7 @@ public class TinyFluorescentLightBlockEntity extends BlockEntity {
                 world.setBlockState(pos, world.getBlockState(pos).with(TinyFluorescentLightBlock.BLACKOUT, false));
             }
 
-            if ((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level && level.getLightState() == Level0BackroomsLevel.LightState.FLICKER && !state.get(TinyFluorescentLightBlock.BLACKOUT)) {
+            if ((BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level1BackroomsLevel level && level.getLightState() == Level0BackroomsLevel.LightState.FLICKER && !state.get(TinyFluorescentLightBlock.BLACKOUT)) {
                 if (ticks % randInt == 0) {
                     int i = random.nextBetween(1, 2);
                     if (i == 1) {

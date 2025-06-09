@@ -2,6 +2,7 @@ package com.sp.init;
 
 import com.sp.SPBRevamped;
 import com.sp.world.levels.BackroomsLevel;
+import com.sp.world.levels.WorldRepresentingBackroomsLevel;
 import com.sp.world.levels.custom.*;
 import com.sp.world.levels.custom.vanilla_representing.OverworldRepresentingBackroomsLevel;
 import net.minecraft.registry.RegistryKey;
@@ -49,18 +50,22 @@ public class BackroomsLevels {
         }
     }
 
-    public static BackroomsLevel getLevel(World world) {
+    public static boolean isInBackroomsLevel(World world, BackroomsLevel level) {
+        return getLevel(world).map(backroomsLevel -> backroomsLevel.equals(level)).orElse(false);
+    }
+
+    public static Optional<BackroomsLevel> getLevel(World world) {
         for (BackroomsLevel backroomsLevel : BACKROOMS_LEVELS) {
             if (backroomsLevel.getWorldKey().equals(world.getRegistryKey())) {
-                return backroomsLevel;
+                return Optional.of(backroomsLevel);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public static boolean isInBackrooms(RegistryKey<World> world){
-        return BACKROOMS_LEVELS.stream().anyMatch(level -> level.getWorldKey().equals(world) && level.getWorldKey() != World.OVERWORLD);
+        return BACKROOMS_LEVELS.stream().anyMatch(level -> level.getWorldKey().equals(world) && !(level instanceof WorldRepresentingBackroomsLevel));
     }
 
     public static Vec3d getCurrentLevelsOrigin(RegistryKey<World> world) {

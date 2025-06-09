@@ -5,7 +5,6 @@ import com.sp.SPBRevampedClient;
 import com.sp.block.custom.EmergencyLightBlock;
 import com.sp.block.custom.FluorescentLightBlock;
 import com.sp.block.custom.ThinFluorescentLightBlock;
-import com.sp.block.custom.TinyFluorescentLightBlock;
 import com.sp.block.entity.EmergencyLightBlockEntity;
 import com.sp.block.entity.FluorescentLightBlockEntity;
 import com.sp.block.entity.ThinFluorescentLightBlockEntity;
@@ -176,18 +175,16 @@ public class ClientWrapper {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //Client side stuff for level 0 -> 1 and 1 -> 2 and so on.
-            BackroomsLevel backroomsLevel = BackroomsLevels.getLevel(playerComponent.player.getWorld());
+            BackroomsLevel backroomsLevel = BackroomsLevels.getLevel(playerComponent.player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL);
 
-            if (backroomsLevel != null) {
-                List<BackroomsLevel.LevelTransition> teleports = backroomsLevel.checkForTransition(playerComponent, playerComponent.player.getWorld());
+            List<BackroomsLevel.LevelTransition> teleports = backroomsLevel.checkForTransition(playerComponent, playerComponent.player.getWorld());
 
-                if (!teleports.isEmpty() && playerComponent.getTeleportingTimer() >= backroomsLevel.getTransitionDuration() - 1) {
-                    for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).predicate(playerComponent.player.getWorld(), playerComponent, BackroomsLevels.getLevel(playerComponent.player.getWorld()))) {
-                        crossDimensionTeleport.from().transitionOut(crossDimensionTeleport);
-                    }
-
-                    playerComponent.setTeleportingTimer(backroomsLevel.getTransitionDuration() - 2);
+            if (!teleports.isEmpty() && playerComponent.getTeleportingTimer() >= backroomsLevel.getTransitionDuration() - 1) {
+                for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).predicate(playerComponent.player.getWorld(), playerComponent, backroomsLevel)) {
+                    crossDimensionTeleport.from().transitionOut(crossDimensionTeleport);
                 }
+
+                playerComponent.setTeleportingTimer(backroomsLevel.getTransitionDuration() - 2);
             }
 
 
@@ -245,28 +242,28 @@ public class ClientWrapper {
                 soundManager.play(playerComponent.GasPipeAmbience);
             }
 
-            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld())) instanceof Level2BackroomsLevel level) {
+            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level2BackroomsLevel level) {
                 if (levelKey == BackroomsLevels.LEVEL2_WORLD_KEY && !soundManager.isPlaying(playerComponent.WarpAmbience) && level.isWarping()) {
                     playerComponent.WarpAmbience = new CreakingSoundInstance(playerComponent.player);
                     soundManager.play(playerComponent.WarpAmbience);
                 }
             }
 
-            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld())) instanceof PoolroomsBackroomsLevel level) {
+            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof PoolroomsBackroomsLevel level) {
                 if (level.isNoon() && !soundManager.isPlaying(playerComponent.PoolroomsNoonAmbience)) {
                     playerComponent.PoolroomsNoonAmbience = new PoolroomsNoonAmbienceSoundInstance(playerComponent.player);
                     soundManager.play(playerComponent.PoolroomsNoonAmbience);
                 }
             }
 
-            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld())) instanceof PoolroomsBackroomsLevel level) {
+            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof PoolroomsBackroomsLevel level) {
                 if (!level.isNoon() && !soundManager.isPlaying(playerComponent.PoolroomsSunsetAmbience)) {
                     playerComponent.PoolroomsSunsetAmbience = new PoolroomsSunsetAmbienceSoundInstance(playerComponent.player);
                     soundManager.play(playerComponent.PoolroomsSunsetAmbience);
                 }
             }
 
-            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld())) instanceof Level1BackroomsLevel level) {
+            if ((BackroomsLevels.getLevel(playerComponent.player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level1BackroomsLevel level) {
                 if (level.getLightState() == Level0BackroomsLevel.LightState.BLACKOUT && !soundManager.isPlaying(playerComponent.SmilerAmbience)) {
                     playerComponent.SmilerAmbience = new SmilerAmbienceSoundInstance(playerComponent.player);
                     soundManager.play(playerComponent.SmilerAmbience);

@@ -18,8 +18,8 @@ import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
 public class ThinFluorescentLightSoundInstance extends MovingSoundInstance {
-    private BlockEntity entity;
-    private PlayerEntity player;
+    private final BlockEntity entity;
+    private final PlayerEntity player;
 
     public ThinFluorescentLightSoundInstance(BlockEntity entity, PlayerEntity player) {
         super(ModSounds.FLUORESCENT_LIGHT_HUM2, SoundCategory.BLOCKS, SoundInstance.createRandom());
@@ -47,11 +47,11 @@ public class ThinFluorescentLightSoundInstance extends MovingSoundInstance {
         if(world != null) {
             boolean blackedOut = false;
 
-            if ((BackroomsLevels.getLevel(world)) instanceof Level0BackroomsLevel level) {
+            if ((BackroomsLevels.getLevel(world)).orElse(BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL) instanceof Level0BackroomsLevel level) {
                 blackedOut = level.getLightState() == Level0BackroomsLevel.LightState.BLACKOUT;
             }
 
-            if ((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level) {
+            if ((BackroomsLevels.getLevel(world)).orElse(BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL) instanceof Level1BackroomsLevel level) {
                 blackedOut = level.getLightState() == Level0BackroomsLevel.LightState.BLACKOUT;
             }
 

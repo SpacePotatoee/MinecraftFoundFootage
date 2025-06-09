@@ -3,10 +3,12 @@ package com.sp.mixin;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.cca_stuff.WorldEvents;
+import com.sp.init.BackroomsLevels;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -43,6 +45,14 @@ public abstract class PlayerEntityMixin extends Entity {
         PlayerEntity player = (PlayerEntity) (Object) this;
 
         WorldEvents events = InitializeComponents.EVENTS.get(player.getWorld());
+
+        if (damageSource.isOf(DamageTypes.OUT_OF_WORLD)) {
+            if (BackroomsLevels.getLevel(player.getWorld()).isPresent()) {
+                player.setPosition(0, 100, 0);
+            } else {
+                player.setPosition(BackroomsLevels.getLevel(player.getWorld()).get().getSpawnPos());
+            }
+        }
 
         if (playerComponent.hasBeenCaptured() || playerComponent.isBeingCaptured() || events.activeSkinWalkerEntity.getTarget() == player) {
             if (this.getWorld() instanceof ServerWorld) {

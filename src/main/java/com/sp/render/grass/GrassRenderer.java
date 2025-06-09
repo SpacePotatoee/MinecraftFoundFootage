@@ -5,14 +5,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevamped;
 import com.sp.SPBRevampedClient;
 import com.sp.compat.modmenu.ConfigStuff;
+import com.sp.init.BackroomsLevels;
 import com.sp.mixininterfaces.RenderIndirectExtension;
-import com.sp.world.levels.custom.Level324Backroomslevel;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.VeilRenderer;
 import foundry.veil.api.client.render.framebuffer.AdvancedFbo;
 import foundry.veil.api.client.render.framebuffer.VeilFramebuffers;
 import foundry.veil.api.client.render.shader.program.ShaderProgram;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -48,7 +47,7 @@ public class GrassRenderer {
     private ByteBuffer cmd;
 
     private float getGrassHeight() {
-        if (SPBRevampedClient.getCurrentBackroomsLevel() instanceof Level324Backroomslevel) {
+        if (SPBRevampedClient.isInLevel(BackroomsLevels.LEVEL324_BACKROOMS_LEVEL)) {
             return 1.5f;
         }
 

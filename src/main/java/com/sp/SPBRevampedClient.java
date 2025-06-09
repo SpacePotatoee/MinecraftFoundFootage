@@ -4,7 +4,6 @@ import com.sp.block.client.renderer.FluorescentLightBlockEntityRenderer;
 import com.sp.block.client.renderer.GasPumpBlockRenderer;
 import com.sp.block.client.renderer.ThinFluorescentLightBlockEntityRenderer;
 import com.sp.block.client.renderer.TinyFluorescentLightBlockEntityRenderer;
-import com.sp.block.entity.TinyFluorescentLightBlockEntity;
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
 import com.sp.cca_stuff.WorldEvents;
@@ -72,6 +71,7 @@ import net.minecraft.world.World;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import java.util.Optional;
 import java.util.Vector;
 
 
@@ -386,14 +386,15 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                 }
 
-                if ((BackroomsLevels.getLevel(client.world)) instanceof Level2BackroomsLevel level) {
-                    if (level.isWarping() || !finishedWarp(client.world)) {
-                        definitions.define("WARP");
-                    } else {
-                        definitions.remove("WARP");
+                BackroomsLevels.getLevel(client.world).ifPresent((backroomsLevel -> {
+                    if (backroomsLevel instanceof Level2BackroomsLevel level) {
+                        if (level.isWarping() || !finishedWarp(client.world)) {
+                            definitions.define("WARP");
+                        } else {
+                            definitions.remove("WARP");
+                        }
                     }
-                }
-
+                }));
 
                 ConfigDefinitions.definitions.forEach((s, aBoolean) -> {
                     if(aBoolean.get()){
@@ -424,11 +425,12 @@ public class SPBRevampedClient implements ClientModInitializer {
                 HelpfulHintManager.sendMessages(client.player);
 
 
-                if (!((BackroomsLevels.getLevel(client.world)) instanceof PoolroomsBackroomsLevel level)) {
-                    return;
-                }
+                BackroomsLevels.getLevel(client.world).ifPresent((backroomsLevel -> {
+                    if (backroomsLevel instanceof PoolroomsBackroomsLevel poolroomsBackroomsLevel) {
+                        PoolroomsDayCycle.dayTime = poolroomsBackroomsLevel.getTimeOfDay();
+                    }
+                }));
 
-                PoolroomsDayCycle.dayTime = level.getTimeOfDay();
             }
 
         }));
@@ -472,7 +474,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             MinecraftClient client1 = MinecraftClient.getInstance();
             PlayerEntity player = client1.player;
             if(player != null) {
-                if (player != client1.getCameraEntity()) {
+                if (player != client1.getCameraEntity() && client1.getCameraEntity() != null) {
                     Vec3d pos = client1.getCameraEntity().getPos();
                     player.setPosition(pos);
                 }
@@ -503,7 +505,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     if (shouldRenderCameraEffect() && isInBackrooms()) {
                         HelpfulHintManager.disableSuffocateHint();
 
-                        BackroomsLevel level = BackroomsLevels.getLevel(client.player.getWorld());
+                        BackroomsLevel level = BackroomsLevels.getLevel(client.player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL);
 
                         if (!level.hasVanillaLighting()) {
                             lightRenderer.disableVanillaLight();
@@ -534,7 +536,7 @@ public class SPBRevampedClient implements ClientModInitializer {
     }
 
     public static float getWarpTimer(World world) {
-        if (!(BackroomsLevels.getLevel(world) instanceof Level2BackroomsLevel level)) {
+        if (!(BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL) instanceof Level2BackroomsLevel level)) {
             return 0;
         }
 
@@ -586,7 +588,11 @@ public class SPBRevampedClient implements ClientModInitializer {
         return cameraShake;
     }
 
-    public static BackroomsLevel getCurrentBackroomsLevel() {
+    public static Optional<BackroomsLevel> getCurrentBackroomsLevel() {
         return BackroomsLevels.getLevel(MinecraftClient.getInstance().world);
+    }
+
+    public static boolean isInLevel(BackroomsLevel level) {
+        return BackroomsLevels.isInBackroomsLevel(MinecraftClient.getInstance().world, level);
     }
 }

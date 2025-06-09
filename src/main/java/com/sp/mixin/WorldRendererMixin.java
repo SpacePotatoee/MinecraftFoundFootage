@@ -2,9 +2,8 @@ package com.sp.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevampedClient;
-import com.sp.init.BackroomsLevels;
-import com.sp.init.ModBlocks;
 import com.sp.render.pbr.BlockIdMap;
+import com.sp.world.levels.BackroomsLevel;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
@@ -14,7 +13,6 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,7 +44,7 @@ public abstract class WorldRendererMixin {
 
     @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true)
     public void renderSky(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback, CallbackInfo ci) {
-        if (!SPBRevampedClient.getCurrentBackroomsLevel().rendersSky()) {
+        if (!SPBRevampedClient.getCurrentBackroomsLevel().map(BackroomsLevel::rendersSky).orElse(true)) {
             ci.cancel();
         }
     }
@@ -60,7 +58,7 @@ public abstract class WorldRendererMixin {
 
     @Inject(method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FDDD)V", at = @At("HEAD"), cancellable = true)
     public void renderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo ci) {
-        if (!SPBRevampedClient.getCurrentBackroomsLevel().rendersClouds()) {
+        if (!SPBRevampedClient.getCurrentBackroomsLevel().map(BackroomsLevel::rendersClouds).orElse(true)) {
             ci.cancel();
         }
     }

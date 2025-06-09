@@ -6,11 +6,8 @@ import foundry.veil.api.client.util.Easings;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.joml.Vector3f;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PoolroomsDayCycle {
-    private static final Logger log = LoggerFactory.getLogger(PoolroomsDayCycle.class);
     public static float dayTime = 0.0f;
     private static float prevDayTime = 0.0f;
     private static float targetDayTime = 0.0f;
@@ -24,7 +21,7 @@ public class PoolroomsDayCycle {
 
     public static float advanceDayTime(World world) {
         if(world != null) {
-            if (!((BackroomsLevels.getLevel(world)) instanceof PoolroomsBackroomsLevel level)) {
+            if (!((BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof PoolroomsBackroomsLevel level)) {
                 return 0;
             }
 

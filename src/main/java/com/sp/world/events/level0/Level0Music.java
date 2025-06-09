@@ -12,7 +12,7 @@ public class Level0Music extends AbstractEvent {
 
     @Override
     public void init(World world) {
-        if (!(BackroomsLevels.getLevel(world) instanceof Level0BackroomsLevel level)) {
+        if (!(BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL) instanceof Level0BackroomsLevel level)) {
             return;
         }
 

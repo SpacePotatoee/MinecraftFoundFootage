@@ -27,15 +27,18 @@ public abstract class EntityMixin {
 
     @Inject(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateSwimming()V"))
     private void acidWater(CallbackInfo ci) {
-        if (!((BackroomsLevels.getLevel(this.world)) instanceof PoolroomsBackroomsLevel level)) {
-            return;
-        }
 
-        if(!level.isNoon()){
-            if(this.isTouchingWater()){
-                this.damage(ModDamageTypes.of(world, ModDamageTypes.ACID_WATER), 1.0f);
+        BackroomsLevels.getLevel(world).ifPresent(backroomsLevel -> {
+            if (!(backroomsLevel instanceof PoolroomsBackroomsLevel level)) {
+                return;
             }
-        }
+
+            if(!level.isNoon()){
+                if(this.isTouchingWater()){
+                    this.damage(ModDamageTypes.of(world, ModDamageTypes.ACID_WATER), 1.0f);
+                }
+            }
+        });
     }
 
     @Inject(method = "getSwimSound", at = @At("RETURN"), cancellable = true)

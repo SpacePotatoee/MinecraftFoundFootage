@@ -7,7 +7,6 @@ import com.sp.init.ModEntities;
 import com.sp.init.ModSounds;
 import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
 import com.sp.world.events.AbstractEvent;
-import com.sp.world.events.EmptyEvent;
 import com.sp.world.levels.BackroomsLevel;
 import com.sp.world.levels.custom.Level0BackroomsLevel;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
@@ -22,16 +21,17 @@ import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent {
-    private World world;
+    private final World world;
 
     private AbstractEvent activeEvent;
     public int ticks;
     private int delay;
 
-    private UUID nullUUID = UUID.randomUUID();
+    private static final UUID nullUUID = UUID.randomUUID();
     private UUID activeSkinwalkerTarget;
     public SkinWalkerEntity activeSkinWalkerEntity;
 
@@ -109,10 +109,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     }
 
     private void shouldReleasePlayer() {
-        if (!(BackroomsLevels.getLevel(world) instanceof Level0BackroomsLevel level0BackroomsLevel)) {
-            return;
-        }
-
         if (this.getActiveSkinwalkerTarget() != null && this.activeSkinWalkerEntity == null) {
             ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
             PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
@@ -145,45 +141,50 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
             return;
         }
 
-        PlayerComponent targetComponent = InitializeComponents.PLAYER.get(this.getActiveSkinwalkerTarget());
-        ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
-        tick++;
 
-        if (this.tick == 1) {
-            level0BackroomsLevel.setLightState(Level0BackroomsLevel.LightState.FLICKER);
-        }
+        BackroomsLevels.getLevel(world).ifPresent((backroomsLevel -> {
+            if (backroomsLevel instanceof Level0BackroomsLevel level0BackroomsLevel) {
+                PlayerComponent targetComponent = InitializeComponents.PLAYER.get(this.getActiveSkinwalkerTarget());
+                ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
+                tick++;
 
-        if (this.tick == 80) {
-            level0BackroomsLevel.setLightState(Level0BackroomsLevel.LightState.OFF);
+                if (this.tick == 1) {
+                    level0BackroomsLevel.setLightState(Level0BackroomsLevel.LightState.FLICKER);
+                }
 
-            targetComponent.setBeingReleased(true);
-            targetComponent.sync();
+                if (this.tick == 80) {
+                    level0BackroomsLevel.setLightState(Level0BackroomsLevel.LightState.OFF);
 
-            SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
+                    targetComponent.setBeingReleased(true);
+                    targetComponent.sync();
 
-            target.changeGameMode(targetComponent.getPrevGameMode() != null ? targetComponent.getPrevGameMode() : GameMode.SURVIVAL);
-            target.setCameraEntity(target);
+                    SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
 
-            for (PlayerEntity player : this.world.getPlayers()) {
-                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                playerComponent.setFlashLightOn(false);
-                playerComponent.sync();
+                    target.changeGameMode(targetComponent.getPrevGameMode() != null ? targetComponent.getPrevGameMode() : GameMode.SURVIVAL);
+                    target.setCameraEntity(target);
+
+                    for (PlayerEntity player : this.world.getPlayers()) {
+                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+                        playerComponent.setFlashLightOn(false);
+                        playerComponent.sync();
+                    }
+                    this.activeSkinWalkerEntity.discard();
+                }
+
+                if (this.tick >= 105) {
+                    level0BackroomsLevel.setLightState(Level0BackroomsLevel.LightState.ON);
+                    targetComponent.setBeingReleased(false);
+                    targetComponent.setHasBeenCaptured(false);
+                    targetComponent.setShouldBeMuted(false);
+                    targetComponent.sync();
+                    this.activeSkinWalkerEntity = null;
+                }
             }
-            this.activeSkinWalkerEntity.discard();
-        }
-
-        if (this.tick >= 105) {
-            level0BackroomsLevel.setLightState(Level0BackroomsLevel.LightState.ON);
-            targetComponent.setBeingReleased(false);
-            targetComponent.setHasBeenCaptured(false);
-            targetComponent.setShouldBeMuted(false);
-            targetComponent.sync();
-            this.activeSkinWalkerEntity = null;
-        }
+        }));
     }
 
     private void tickSkinWalkerCapturing() {
-        if (!(BackroomsLevels.getLevel(world) instanceof Level0BackroomsLevel level0BackroomsLevel)) {
+        if (!(BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL) instanceof Level0BackroomsLevel level0BackroomsLevel)) {
             return;
         }
 
@@ -280,16 +281,16 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
             this.delay = 0;
 
-            BackroomsLevel currentDimension = BackroomsLevels.getLevel(world);
+            Optional<BackroomsLevel> currentDimension = BackroomsLevels.getLevel(world);
 
-            if (currentDimension == null) {
+            if (currentDimension.isEmpty()) {
                 return;
             }
 
-            this.activeEvent = currentDimension.getRandomEvent(world);
+            this.activeEvent = currentDimension.get().getRandomEvent(world);
             activeEvent.init(this.world);
             ticks = 0;
-            this.delay = currentDimension.nextEventDelay();
+            this.delay = currentDimension.get().nextEventDelay();
 
             return;
         }

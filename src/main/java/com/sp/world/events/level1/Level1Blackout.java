@@ -1,7 +1,5 @@
 package com.sp.world.events.level1;
 
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.WorldEvents;
 import com.sp.entity.custom.SmilerEntity;
 import com.sp.init.BackroomsLevels;
 import com.sp.init.ModEntities;
@@ -22,7 +20,7 @@ public class Level1Blackout extends AbstractEvent {
 
     @Override
     public void init(World world) {
-        if (!((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level)) {
+        if (!((BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level1BackroomsLevel level)) {
             return;
         }
 
@@ -75,7 +73,7 @@ public class Level1Blackout extends AbstractEvent {
     public void finish(World world) {
         super.finish(world);
 
-        if (!((BackroomsLevels.getLevel(world)) instanceof Level1BackroomsLevel level)) {
+        if (!((BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level1BackroomsLevel level)) {
             return;
         }
 

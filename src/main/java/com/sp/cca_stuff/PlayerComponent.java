@@ -36,6 +36,7 @@ import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import static com.sp.SPBRevamped.SLOW_SPEED_MODIFIER;
@@ -44,9 +45,9 @@ import static com.sp.SPBRevamped.SLOW_SPEED_MODIFIER;
 public class PlayerComponent implements AutoSyncedComponent, ClientTickingComponent, ServerTickingComponent {
     public final PlayerEntity player;
     private final SimpleInventory playerSavedMainInventory = new SimpleInventory(36);
-    private SimpleInventory playerSavedArmorInventory = new SimpleInventory(4);
-    private SimpleInventory playerSavedOffhandInventory = new SimpleInventory(1);
-    private Random random = new Random();
+    private final SimpleInventory playerSavedArmorInventory = new SimpleInventory(4);
+    private final SimpleInventory playerSavedOffhandInventory = new SimpleInventory(1);
+    private final Random random = new Random();
 
     private int smilerSpawnDelay = 80;
 
@@ -239,7 +240,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     }
 
     public boolean isTeleportingToPoolrooms() {
-        return BackroomsLevels.getLevel(this.player.getWorld()) instanceof Level2BackroomsLevel && this.teleportingTimer > 0;
+        return BackroomsLevels.getLevel(this.player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL) instanceof Level2BackroomsLevel && this.teleportingTimer > 0;
     }
 
     public boolean shouldNoClip() {
@@ -406,13 +407,15 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         //*Cast him to the Backrooms
         if (checkBackroomsTeleport()) return;
 
-        BackroomsLevel level = BackroomsLevels.getLevel(this.player.getWorld());
+        Optional<BackroomsLevel> backroomsLevel = BackroomsLevels.getLevel(this.player.getWorld());
 
-        if (level != null) {
+        if (backroomsLevel.isPresent()) {
+            BackroomsLevel level = backroomsLevel.get();
+
             List<BackroomsLevel.LevelTransition> teleports = level.checkForTransition(this, this.player.getWorld());
 
             if (!teleports.isEmpty()) {
-                for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).predicate(this.player.getWorld(), this, BackroomsLevels.getLevel(this.player.getWorld()))) {
+                for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).predicate(this.player.getWorld(), this, level)) {
                     if (crossDimensionTeleport.from().transitionOut(crossDimensionTeleport)) {
                         if (teleportingTimer == -1) {
                             this.setTeleportingTimer(level.getTransitionDuration());
@@ -438,7 +441,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             this.setTeleportingTimer(teleportingTimer - 1);
         }
 
-        if (BackroomsLevels.getLevel(player.getWorld()) == BackroomsLevels.LEVEL324_BACKROOMS_LEVEL && player.getPos().subtract(0, 64, 0).lengthSquared() > 10000 && player.getPos().y > 60) {
+        if (BackroomsLevels.isInBackroomsLevel(player.getWorld(), BackroomsLevels.LEVEL324_BACKROOMS_LEVEL) && player.getPos().subtract(0, 64, 0).lengthSquared() > 10000 && player.getPos().y > 60) {
             summonSmilers();
         }
 
@@ -596,11 +599,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     }
 
     private void shouldSync() {
-        boolean sync = false;
-
-        if (this.prevFlashLightOn != this.flashLightOn) {
-            sync = true;
-        }
+        boolean sync = this.prevFlashLightOn != this.flashLightOn;
 
         if (sync) {
             this.sync();

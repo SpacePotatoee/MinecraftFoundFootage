@@ -187,50 +187,50 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
         }
 
         this.setTarget(null);
-        WorldEvents events = InitializeComponents.EVENTS.get(this.getWorld());
         this.ticks++;
         this.getNavigation().stop();
 
-        if (!((BackroomsLevels.getLevel(this.getWorld())) instanceof Level0BackroomsLevel level)) {
-            return;
-        }
 
-        if (this.ticks == 9){
-            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK, SoundCategory.HOSTILE, 10.0f, 1.0f);
-        }
+        BackroomsLevels.getLevel(this.getWorld()).ifPresent((backroomsLevel -> {
+            if (backroomsLevel instanceof Level0BackroomsLevel level) {
+                if (this.ticks == 9){
+                    this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK, SoundCategory.HOSTILE, 10.0f, 1.0f);
+                }
 
-        if (this.ticks == 39){
-            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK_LONG, SoundCategory.HOSTILE, 10.0f, 1.0f);
-        }
+                if (this.ticks == 39){
+                    this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK_LONG, SoundCategory.HOSTILE, 10.0f, 1.0f);
+                }
 
-        if (this.ticks == 99){
-            this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_REVEAL, SoundCategory.HOSTILE, 100.0f, 1.0f);
-        }
+                if (this.ticks == 99){
+                    this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_REVEAL, SoundCategory.HOSTILE, 100.0f, 1.0f);
+                }
 
-        if (this.ticks ==  110){
-            level.setLightState(Level0BackroomsLevel.LightState.FLICKER);
-        }
+                if (this.ticks ==  110){
+                    level.setLightState(Level0BackroomsLevel.LightState.FLICKER);
+                }
 
-        if (this.ticks == 195){
-            level.setLightState(Level0BackroomsLevel.LightState.OFF);
+                if (this.ticks == 195){
+                    level.setLightState(Level0BackroomsLevel.LightState.OFF);
 
-            for(PlayerEntity player : this.getWorld().getPlayers()){
-                PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                playerComponent.setFlashLightOn(false);
-                playerComponent.sync();
+                    for(PlayerEntity player : this.getWorld().getPlayers()){
+                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+                        playerComponent.setFlashLightOn(false);
+                        playerComponent.sync();
+                    }
+                }
+
+                if (this.ticks >= 220){
+                    level.setLightState(Level0BackroomsLevel.LightState.ON);
+                    this.component.setBeginReveal(false);
+                    this.component.setTrueForm(true);
+
+                    if(this.prevTarget != null) {
+                        this.beginTargeting((PlayerEntity) this.prevTarget);
+                        this.prevTarget = null;
+                    }
+                }
             }
-        }
-
-        if (this.ticks >= 220){
-            level.setLightState(Level0BackroomsLevel.LightState.ON);
-            this.component.setBeginReveal(false);
-            this.component.setTrueForm(true);
-
-            if(this.prevTarget != null) {
-                this.beginTargeting((PlayerEntity) this.prevTarget);
-                this.prevTarget = null;
-            }
-        }
+        }));
     }
 
     private void updateLookAtSuspicion() {
