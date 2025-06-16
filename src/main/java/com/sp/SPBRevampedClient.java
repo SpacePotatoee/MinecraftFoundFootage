@@ -420,11 +420,10 @@ public class SPBRevampedClient implements ClientModInitializer {
             VeilDeferredRenderer renderer = VeilRenderSystem.renderer().getDeferredRenderer();
             renderer.reset();
 
-            //*Just in case it become unsynced
             if(client.world != null){
                 HelpfulHintManager.sendMessages(client.player);
 
-
+                //*Just in case it become unsynced
                 BackroomsLevels.getLevel(client.world).ifPresent((backroomsLevel -> {
                     if (backroomsLevel instanceof PoolroomsBackroomsLevel poolroomsBackroomsLevel) {
                         PoolroomsDayCycle.dayTime = poolroomsBackroomsLevel.getTimeOfDay();

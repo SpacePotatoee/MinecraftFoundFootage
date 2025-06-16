@@ -75,10 +75,7 @@ vec4 blur(float kernalSize, float offset, sampler2D textureSampler, vec2 texCoor
 
     for (float x = -halfSize; x <= halfSize; x++) {
         blur += (coeff) * texture(textureSampler, texCoord + x * dx);
-    }
-
-    for (float y = -halfSize; y <= halfSize; y++) {
-        blur += (coeff) * texture(textureSampler, texCoord+ y * dy);
+        blur += (coeff) * texture(textureSampler, texCoord + x * dy);
     }
     return blur * 2;
 }

@@ -188,9 +188,9 @@ void main() {
             color2 = texture(WaterTexture, worldPos.xz * 0.05 - vec2(0.0, GameTime * 50.0)).rg - 0.5;
             color = color + color2;
 
-            normal = texture(NormalTexture, worldPos.xz * 0.2 + vec2(GameTime * 50.0));
-            normal2 = texture(NormalTexture, worldPos.xz * 0.2 - vec2(0, GameTime * 50.0));
-            normal2 += texture(NormalTexture, worldPos.xz * 0.2 - vec2(- GameTime * 103.235456, GameTime * 50.0));
+            normal = texture(NormalTexture, worldPos.xz * 0.1 + vec2(GameTime * 50.0));
+            normal2 = texture(NormalTexture, worldPos.xz * 0.1 - vec2(0, GameTime * 50.0));
+            normal2 += texture(NormalTexture, worldPos.xz * 0.1 - vec2(- GameTime * 103.235456, GameTime * 50.0));
             normal = (normal + normal2) / 3.0;
             normal = vec4(normal.r, normal.b, normal.g, normal.a) * 2.0 - 1.0;
 
@@ -198,7 +198,7 @@ void main() {
             fragColor = texture(DiffuseSampler0, texCoord + color * REFRACTION_MULTIPLIER) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
 
             #ifdef WATER_REFLECTIONS
-                fragColor = getReflection(fragColor, mix(vec4(worldToViewSpaceDirection(normalize(vec3(0.0, 1.0,0.0))), 1.0), normal, 0.02), waterDepth, texCoord, viewPos, 0.0) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
+                fragColor = getReflection(fragColor, mix(vec4(worldToViewSpaceDirection(normalize(vec3(0.0, 1.0,0.0))), 1.0), normal, 0.2), waterDepth, texCoord, viewPos, 0.0) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
             #endif
 
             if (shadow >= 1.0){

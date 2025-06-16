@@ -52,16 +52,17 @@ public class Level324ChunkGenerator extends BackroomsChunkGenerator {
     public void buildSurface(ChunkRegion region, StructureAccessor structures, NoiseConfig noiseConfig, Chunk chunk) {
         int x = chunk.getPos().getStartX();
         int z = chunk.getPos().getStartZ();
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
         StructureTemplateManager structureTemplateManager = region.getServer().getStructureTemplateManager();
 
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
-                chunk.setBlockState(new BlockPos(i, 0, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
+                chunk.setBlockState(mutable.set(i, 0, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
 
-                chunk.setBlockState(new BlockPos(i, 63, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
+                chunk.setBlockState(mutable.set(i, 63, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
 
                 if (i == 8 && j == 7) {
-                    BlockPos placementPos = new BlockPos(x + i, 4, z + j);
+                    BlockPos placementPos = mutable.set(x + i, 4, z + j);
 
                     StructurePlacementData structurePlacementData = new StructurePlacementData();
                     structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
@@ -77,14 +78,14 @@ public class Level324ChunkGenerator extends BackroomsChunkGenerator {
 
                 if ((i + Math.abs(x * 16)) % 1000 < 8/* || (j + Math.abs(chunk.getPos().z * 16)) % 1000 < 8*/) {
 
-                    chunk.setBlockState(new BlockPos(i, 64, j), ModBlocks.ROAD.getDefaultState(), false);
+                    chunk.setBlockState(mutable.set(i, 64, j), ModBlocks.ROAD.getDefaultState(), false);
                 } else {
-                    chunk.setBlockState(new BlockPos(i, 64, j), ModBlocks.RED_DIRT.getDefaultState(), false);
+                    chunk.setBlockState(mutable.set(i, 64, j), ModBlocks.RED_DIRT.getDefaultState(), false);
                 }
 
                 if ((chunk.getPos().getStartX() + i) % 1000 == 9) {
                     if ((chunk.getPos().getStartZ() + j) % 21 == 0) {
-                        BlockPos placementPos = new BlockPos(x + i, 65, z + j);
+                        BlockPos placementPos = mutable.set(x + i, 65, z + j);
                         StructurePlacementData structurePlacementData = new StructurePlacementData();
                         structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
 
@@ -104,13 +105,13 @@ public class Level324ChunkGenerator extends BackroomsChunkGenerator {
         for (int i = 2; i < 6; i++) {
             for (int j = 2; j < 6; j++) {
                 for (int k = 1; k < 63; k++) {
-                    chunk.setBlockState(new BlockPos(i, k, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
+                    chunk.setBlockState(mutable.set(i, k, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
                 }
             }
 
             for (int j = 10; j < 14; j++) {
                 for (int k = 1; k < 63; k++) {
-                    chunk.setBlockState(new BlockPos(i, k, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
+                    chunk.setBlockState(mutable.set(i, k, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
                 }
             }
         }
@@ -118,13 +119,13 @@ public class Level324ChunkGenerator extends BackroomsChunkGenerator {
         for (int i = 10; i < 14; i++) {
             for (int j = 2; j < 6; j++) {
                 for (int k = 1; k < 63; k++) {
-                    chunk.setBlockState(new BlockPos(i, k, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
+                    chunk.setBlockState(mutable.set(i, k, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
                 }
             }
 
             for (int j = 10; j < 14; j++) {
                 for (int k = 1; k < 63; k++) {
-                    chunk.setBlockState(new BlockPos(i, k, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
+                    chunk.setBlockState(mutable.set(i, k, j), ModBlocks.CONCRETE_BLOCK_11.getDefaultState(), false);
                 }
             }
         }
