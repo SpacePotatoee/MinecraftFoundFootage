@@ -8,6 +8,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.world.StructureWorldAccess;
 
 public abstract class MazeGenerator {
+    // UNDER CONSTRUCTION -SP
+    public void generate(StructureWorldAccess world) {
+
+    }
+
     public abstract void setup(StructureWorldAccess world, boolean sky, boolean megaRooms, boolean spawnRandomRooms);
 
     public abstract void drawWalls(StructureWorldAccess world, String level);

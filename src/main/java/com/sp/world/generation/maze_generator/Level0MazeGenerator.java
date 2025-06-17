@@ -50,7 +50,7 @@ public class Level0MazeGenerator extends MazeGenerator {
             for (int x = 0; x < this.cols; x++) {
                 BlockState blockState = world.getBlockState(mutable.set(x + ((this.size - 1) * x) + this.originX, 19, y + ((this.size - 1) * y) + this.originY));
                 if(this.isAirOrNull(blockState)) {
-                    grid[x][y] = new LowVarCell(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, ModBlocks.WALL_BLOCK.getDefaultState().with(BOTTOM, false), y, x);
+                    grid[x][y] = new LowVarCell(y + ((this.size - 1) * y) + this.originY, x + ((this.size - 1) * x) + this.originX, this.size, y, x);
                 }
             }
         }

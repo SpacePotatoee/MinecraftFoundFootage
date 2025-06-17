@@ -29,9 +29,7 @@ public class LowVarCell {
     private boolean visited;
     String type;
 
-    BlockState blockState;
-
-    public LowVarCell(int y, int x, int cellSize, BlockState blockState, int gridPosY, int gridPosX){
+    public LowVarCell(int y, int x, int cellSize, int gridPosY, int gridPosX){
         this.x = x;
         this.y = y;
         this.gridPosX = gridPosX;
@@ -41,14 +39,13 @@ public class LowVarCell {
         this.west = true;
         this.south = true;
         this.east = true;
-        this.blockState = blockState;
         this.visited = false;
     }
 
 
 
 
-    public void drawWalls(StructureWorldAccess world, String level){
+    public void drawWalls(StructureWorldAccess world, String level) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         StructureTemplateManager structureTemplateManager = world.getServer().getStructureTemplateManager();
         Optional<StructureTemplate> optional;

@@ -92,7 +92,12 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
 
             BlockPos structurePos = mutable.set(randX + ((this.size - 1) * randX) + this.originX, 18, randY + ((this.size - 1) * randY) + this.originY);
 
-            if (optional.isPresent() && world.getBlockState(mutable.set(structurePos.getX(), 18, structurePos.getZ())) != Blocks.PURPLE_WOOL.getDefaultState()) {
+            if (optional.isPresent() &&
+                    world.getBlockState(mutable.set(structurePos.getX(), 18, structurePos.getZ())) != Blocks.PURPLE_WOOL.getDefaultState() &&
+                    world.getBlockState(mutable.set(structurePos.getX() + roomWidth-1, 18, structurePos.getZ())) != Blocks.PURPLE_WOOL.getDefaultState() &&
+                    world.getBlockState(mutable.set(structurePos.getX() + roomWidth-1, 18, structurePos.getZ() + roomHeight-1)) != Blocks.PURPLE_WOOL.getDefaultState() &&
+                    world.getBlockState(mutable.set(structurePos.getX(), 18, structurePos.getZ() + roomHeight-1)) != Blocks.PURPLE_WOOL.getDefaultState()
+            ) {
                 optional.get().place(world, structurePos, structurePos, structurePlacementData, random, 2);
             }
 

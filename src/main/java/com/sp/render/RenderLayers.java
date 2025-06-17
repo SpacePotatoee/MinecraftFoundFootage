@@ -35,7 +35,8 @@ public class RenderLayers extends RenderLayer {
                     .texture(RenderPhase.Textures.create()
                             .add(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, false, true)
                             .add(NORMAL_ATLAS_TEXTURE, false, true)
-                            .add(HEIGHT_ATLAS_TEXTURE, false, true)
+                            .add(HEIGHT_ATLAS_TEXTURE, false, false)  // Sampler2 gets replaced with the lightmap texture for some reason
+                            .add(HEIGHT_ATLAS_TEXTURE, false, true)  // Which is why I added it twice
                             .build()
                     )
                     .build(true)
