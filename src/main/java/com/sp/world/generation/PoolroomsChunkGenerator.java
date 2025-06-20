@@ -110,7 +110,8 @@ public final class PoolroomsChunkGenerator extends BackroomsChunkGenerator {
 
             if (server != null) {
                 double noise = noiseSampler.sample((x) * 0.002, 0, (z) * 0.002);
-                PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms");
+                boolean shouldSky = noise > 0;
+                PoolroomsMazeGenerator poolroomsMazeGenerator = new PoolroomsMazeGenerator(8, 10, 10, x, z, "poolrooms/" + (shouldSky ? "sky" : "dark"));
                 poolroomsMazeGenerator.setup(world, noise > 0, true, false);
             }
         }

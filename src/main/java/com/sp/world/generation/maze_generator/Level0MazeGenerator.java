@@ -1,6 +1,5 @@
 package com.sp.world.generation.maze_generator;
 
-import com.sp.init.ModBlocks;
 import com.sp.world.generation.maze_generator.cells.CellWDoor;
 import com.sp.world.generation.maze_generator.cells.HighVarCell;
 import com.sp.world.generation.maze_generator.cells.LowVarCell;

@@ -70,7 +70,7 @@ public class CellWDoor {
         StructurePlacementData structurePlacementData = new StructurePlacementData();
 
 
-        Identifier roomId = new Identifier(SPBRevamped.MOD_ID, level + "/aroom");;
+        Identifier roomId = new Identifier(SPBRevamped.MOD_ID, level + "/aroom");
 
         Random random = Random.create();
         boolean buffer;
@@ -81,7 +81,7 @@ public class CellWDoor {
         }
 
 
-        if(!this.north && !this.west && !this.south && !this.east){ // 4 way room
+        if(!this.north && !this.west && !this.south && !this.east) { // 4 way room
             this.type = "╬";
             structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
 
