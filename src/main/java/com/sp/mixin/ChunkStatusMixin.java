@@ -1,6 +1,6 @@
 package com.sp.mixin;
 
-import com.sp.world.generation.*;
+import com.sp.world.generation.chunk_generator.BackroomsChunkGenerator;
 import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplateManager;
@@ -20,7 +20,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 /**
- * This mixin calls the {@link  com.sp.world.generation.BackroomsChunkGenerator#generate(StructureWorldAccess, Chunk)} method.
+ * This mixin calls the {@link  BackroomsChunkGenerator#generate(StructureWorldAccess, Chunk)} method.
  * It's what allows minecraft to generate the backrooms mazes
  */
 @Mixin(ChunkStatus.class)

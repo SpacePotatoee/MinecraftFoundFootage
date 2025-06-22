@@ -3,7 +3,7 @@ package com.sp.world.levels.custom;
 import com.sp.SPBRevamped;
 import com.sp.init.BackroomsLevels;
 import com.sp.world.events.infinite_grass.InfiniteGrassAmbience;
-import com.sp.world.generation.InfGrassChunkGenerator;
+import com.sp.world.generation.chunk_generator.InfGrassChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;

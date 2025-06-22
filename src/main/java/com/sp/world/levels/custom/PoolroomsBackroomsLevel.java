@@ -1,13 +1,10 @@
 package com.sp.world.levels.custom;
 
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.BackroomsLevels;
 import com.sp.world.events.poolrooms.PoolroomsAmbience;
 import com.sp.world.events.poolrooms.PoolroomsSunset;
-import com.sp.world.generation.PoolroomsChunkGenerator;
+import com.sp.world.generation.chunk_generator.PoolroomsChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -21,7 +18,7 @@ public class PoolroomsBackroomsLevel extends BackroomsLevel {
     public boolean sunsetTransitioning = false;
 
     public PoolroomsBackroomsLevel() {
-        super("poolrooms", PoolroomsChunkGenerator.CODEC, new Vec3d(0, 32, 0), BackroomsLevels.POOLROOMS_WORLD_KEY);
+        super("poolrooms", PoolroomsChunkGenerator.CODEC, new RoomCount(1), new Vec3d(0, 32, 0), BackroomsLevels.POOLROOMS_WORLD_KEY);
     }
 
     @Override

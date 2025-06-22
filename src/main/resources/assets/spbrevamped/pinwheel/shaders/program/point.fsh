@@ -19,7 +19,6 @@ uniform sampler2D ShadowSampler;
 uniform mat4 viewMatrix;
 uniform mat4 orthographMatrix;
 uniform vec2 ScreenSize;
-uniform float GameTime;
 uniform int ShouldRender;
 uniform int InOverWorld;
 
@@ -34,7 +33,7 @@ float getSign(float num){
     }
 }
 
-vec4 setColor(vec4 albedoColor, vec3 normalVS, vec3 offset, float light) {
+vec4 setColor(vec4 albedoColor, vec3 normalVS, vec3 offset) {
     vec3 lightDirection = (VeilCamera.ViewMat * vec4(normalize(offset), 0.0)).xyz;
     float diffuse = specialClamp(0.0, 1.0, dot(normalVS, lightDirection));
     diffuse = (diffuse + MINECRAFT_AMBIENT_LIGHT) / (1.0 + MINECRAFT_AMBIENT_LIGHT);
@@ -42,7 +41,7 @@ vec4 setColor(vec4 albedoColor, vec3 normalVS, vec3 offset, float light) {
 
     float reflectivity = 0.1;
     vec3 diffuseColor = diffuse * lightColor;
-    return vec4((albedoColor.rgb * diffuseColor * (1.0 - reflectivity) + diffuseColor * reflectivity) * light, albedoColor.a);
+    return vec4((albedoColor.rgb * diffuseColor * (1.0 - reflectivity) + diffuseColor * reflectivity), albedoColor.a);
 }
 
 void main() {
@@ -60,7 +59,7 @@ void main() {
     vec3 worldNormal = viewToWorldSpaceDirection(normalVS);
     vec3 offset = lightPos - pos;
 
-    vec4 color = setColor(albedoColor, normalVS, offset, 1.0);
+    vec4 color = setColor(albedoColor, normalVS, offset);
     #ifdef SHADOWS
         if(ShouldRender == 1) {
             vec3 tangent = normalize(cross(worldNormal, normalize(vec3(1.0))));

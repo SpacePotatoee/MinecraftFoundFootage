@@ -1,4 +1,4 @@
-package com.sp.world.generation;
+package com.sp.world.generation.chunk_generator;
 
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.mixininterfaces.NewServerProperties;
@@ -21,7 +21,6 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 

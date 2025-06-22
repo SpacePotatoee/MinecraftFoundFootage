@@ -22,7 +22,7 @@ public class Level2Warp extends AbstractEvent {
         if (!((BackroomsLevels.getLevel(world).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level2BackroomsLevel level)) {
             return;
         }
-        System.out.println("SET WARP TO FALSE");
+
         level.setWarping(false);
     }
 

@@ -15,16 +15,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Supplier;
 
 public abstract class BackroomsLevel {
     private final String levelId;
     private final String modId;
+    private final RoomCount roomCount;
     private final Codec<? extends ChunkGenerator> chunkGeneratorCodec;
     private final RegistryKey<World> worldKey;
     private final Vec3d spawnPos;
@@ -34,19 +33,25 @@ public abstract class BackroomsLevel {
     private HashMap<String, LevelTransition> transitions = new HashMap<>();
 
     public BackroomsLevel(String levelId, Codec<? extends ChunkGenerator> chunkGenerator, Vec3d spawnPos, RegistryKey<World> worldKey) {
-        this.levelId = levelId;
-        this.chunkGeneratorCodec = chunkGenerator;
-        this.spawnPos = spawnPos;
-        this.worldKey = worldKey;
-        this.modId = SPBRevamped.MOD_ID;
+        this(levelId, chunkGenerator, null, spawnPos, worldKey, SPBRevamped.MOD_ID);
+    }
+
+    public BackroomsLevel(String levelId, Codec<? extends ChunkGenerator> chunkGenerator, RoomCount roomCount, Vec3d spawnPos, RegistryKey<World> worldKey) {
+        this(levelId, chunkGenerator, roomCount, spawnPos, worldKey, SPBRevamped.MOD_ID);
     }
 
     public BackroomsLevel(String levelId, Codec<? extends ChunkGenerator> chunkGenerator, Vec3d spawnPos, RegistryKey<World> worldKey, String modId) {
+        this(levelId, chunkGenerator, null, spawnPos, worldKey, modId);
+    }
+
+    public BackroomsLevel(String levelId, Codec<? extends ChunkGenerator> chunkGenerator, @Nullable RoomCount roomCount, Vec3d spawnPos, RegistryKey<World> worldKey, String modId) {
         this.levelId = levelId;
         this.chunkGeneratorCodec = chunkGenerator;
         this.spawnPos = spawnPos;
         this.worldKey = worldKey;
         this.modId = modId;
+
+        this.roomCount = roomCount;
     }
 
     public void register() {
@@ -68,6 +73,11 @@ public abstract class BackroomsLevel {
     public Vec3d getSpawnPos() {
         return spawnPos;
     }
+
+    public Optional<RoomCount> getRoomCount() {
+        return Optional.ofNullable(roomCount);
+    }
+
 
 
     /**
@@ -189,4 +199,10 @@ public abstract class BackroomsLevel {
     }
 
     public record CrossDimensionTeleport(World world, PlayerComponent playerComponent, Vec3d pos, BackroomsLevel from, BackroomsLevel to) {}
+
+    public record RoomCount(int aRoomCount, int bRoomCount, int cRoomCount, int dRoomCount, int eRoomCount) {
+        public RoomCount(int i) {
+            this(i, i, i, i, i);
+        }
+    }
 }

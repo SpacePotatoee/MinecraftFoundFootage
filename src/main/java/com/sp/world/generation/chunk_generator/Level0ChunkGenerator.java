@@ -1,4 +1,4 @@
-package com.sp.world.generation;
+package com.sp.world.generation.chunk_generator;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -58,7 +58,7 @@ public class Level0ChunkGenerator extends BackroomsChunkGenerator {
             StructurePlacementData structurePlacementData = new StructurePlacementData();
 
             //Spawn Point
-            if((float) chunk.getPos().x == 0 && (float) chunk.getPos().z  == 0){
+            if((float) chunk.getPos().x == 0 && (float) chunk.getPos().z  == 0) {
                 for(int i = 0; i < 16; i++) {
                     for(int j = 0; j < 16; j++){
                         if(i == 0 && j == 0){

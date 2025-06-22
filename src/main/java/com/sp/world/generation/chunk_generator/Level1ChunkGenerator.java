@@ -1,4 +1,4 @@
-package com.sp.world.generation;
+package com.sp.world.generation.chunk_generator;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -157,6 +157,13 @@ public final class Level1ChunkGenerator extends BackroomsChunkGenerator {
                 }
             }
         }
+
+        //Removes the ceiling for debugging
+//        for(int i = 0; i < 16; i++){
+//            for(int j = 0; j < 16; j++) {
+//                world.setBlockState(mutable.set(x + i, 25, z + j), Blocks.AIR.getDefaultState(), 2);
+//            }
+//        }
 
     }
 

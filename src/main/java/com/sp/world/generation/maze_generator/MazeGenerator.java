@@ -1,10 +1,7 @@
 package com.sp.world.generation.maze_generator;
 
-import com.sp.world.generation.maze_generator.cells.CellWDoor;
-import com.sp.world.generation.maze_generator.cells.HighVarCell;
-import com.sp.world.generation.maze_generator.cells.LowVarCell;
+import com.sp.world.generation.maze_generator.cells.MazeCell;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.world.StructureWorldAccess;
 
 public abstract class MazeGenerator {
@@ -15,16 +12,9 @@ public abstract class MazeGenerator {
 
     public abstract void setup(StructureWorldAccess world, boolean sky, boolean megaRooms, boolean spawnRandomRooms);
 
-    public abstract void drawWalls(StructureWorldAccess world, String level);
+    public abstract void removeWalls(MazeCell currentCell, MazeCell neighbor);
 
-    public abstract void removeWalls(HighVarCell currentCell, HighVarCell neighbor);
-
-    public abstract void removeWalls(LowVarCell currentCell, LowVarCell neighbor);
-
-    public abstract void removeWalls(CellWDoor currentCell, CellWDoor neighbor);
-
-
-    protected boolean isAirOrNull(BlockState blockState){
-        return blockState == Blocks.AIR.getDefaultState() || blockState == null;
+    protected boolean isAirOrNull(BlockState blockState) {
+        return blockState == null || blockState.isAir();  // Might fix some people randomly crashing bc of null cells
     }
 }

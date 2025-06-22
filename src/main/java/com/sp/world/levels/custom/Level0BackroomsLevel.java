@@ -9,7 +9,7 @@ import com.sp.world.events.level0.Level0Blackout;
 import com.sp.world.events.level0.Level0Flicker;
 import com.sp.world.events.level0.Level0IntercomBasic;
 import com.sp.world.events.level0.Level0Music;
-import com.sp.world.generation.Level0ChunkGenerator;
+import com.sp.world.generation.chunk_generator.Level0ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -29,7 +29,7 @@ public class Level0BackroomsLevel extends BackroomsLevel {
     private LightState lightState = LightState.ON;
 
     public Level0BackroomsLevel() {
-        super("level0", Level0ChunkGenerator.CODEC, new Vec3d(0, 21, 0), BackroomsLevels.LEVEL0_WORLD_KEY);
+        super("level0", Level0ChunkGenerator.CODEC, new RoomCount(8), new Vec3d(0, 21, 0), BackroomsLevels.LEVEL0_WORLD_KEY);
     }
 
     @Override

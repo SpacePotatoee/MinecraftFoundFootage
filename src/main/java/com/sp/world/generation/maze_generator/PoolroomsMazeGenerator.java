@@ -1,28 +1,15 @@
 package com.sp.world.generation.maze_generator;
 
-import com.sp.SPBRevamped;
-import com.sp.init.ModBlocks;
-import com.sp.world.generation.maze_generator.cells.CellWDoor;
-import com.sp.world.generation.maze_generator.cells.HighVarCell;
-import com.sp.world.generation.maze_generator.cells.LowVarCell;
+import com.sp.world.generation.maze_generator.cells.MazeCell;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.structure.StructurePlacementData;
-import net.minecraft.structure.StructureTemplate;
-import net.minecraft.structure.StructureTemplateManager;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.StructureWorldAccess;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
-
-import static com.sp.block.custom.WallBlock.BOTTOM;
 
 public class PoolroomsMazeGenerator extends MazeGenerator {
     int cols;
@@ -30,9 +17,9 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
     int size;
     int lastRoomDir;
 
-    CellWDoor[][] grid;
-    CellWDoor currentCell;
-    Stack<CellWDoor> cellStack = new Stack<>();
+    MazeCell[][] grid;
+    MazeCell currentCell;
+    Stack<MazeCell> cellStack = new Stack<>();
 
     int originX;
     int originY;
@@ -43,7 +30,7 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
         this.size = size;
         this.rows = rows;
         this.cols = cols;
-        this.grid = new CellWDoor[rows][cols];
+        this.grid = new MazeCell[rows][cols];
 
         this.originX = originX - 32;
         this.originY = originY - 32;
@@ -54,112 +41,6 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
     @Override
     public void setup(StructureWorldAccess world, boolean sky, boolean megaRooms, boolean spawnRandomRooms) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        Random random = Random.create();
-        StructureTemplateManager structureTemplateManager = world.getServer().getStructureTemplateManager();
-        Identifier roomIdentifier = null;
-
-        if (megaRooms) {
-            //Initial Random Mega Room
-            int w = random.nextBetween(1, 6);
-            int p = random.nextBetween(1, 3);
-            String shouldSky = "";
-            if (!sky) {
-                shouldSky = "_light";
-            }
-
-            if (w == 1)
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x16_" + p + shouldSky);
-            else if (w == 2)
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x24_" + p + shouldSky);
-            else if (w == 3)
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_16x32_" + p + shouldSky);
-            else if (w == 4)
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_24x24_" + p + shouldSky);
-            else if (w == 5)
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_24x32_" + p + shouldSky);
-            else if (w == 6)
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_32x32_" + p + shouldSky);
-
-            StructurePlacementData structurePlacementData = new StructurePlacementData();
-            structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
-            Optional<StructureTemplate> optional = structureTemplateManager.getTemplate(roomIdentifier);
-
-            int roomWidth = Integer.parseInt(roomIdentifier.getPath().substring(19, 21));
-            int roomHeight = Integer.parseInt(roomIdentifier.getPath().substring(22, 24));
-
-            int randX = random.nextBetween(1, this.cols - (1 + ((int) roomWidth / this.size)));
-            int randY = random.nextBetween(1, this.rows - (1 + ((int) roomHeight / this.size)));
-
-            BlockPos structurePos = mutable.set(randX + ((this.size - 1) * randX) + this.originX, 18, randY + ((this.size - 1) * randY) + this.originY);
-
-            if (optional.isPresent() &&
-                    world.getBlockState(mutable.set(structurePos.getX(), 18, structurePos.getZ())) != Blocks.PURPLE_WOOL.getDefaultState() &&
-                    world.getBlockState(mutable.set(structurePos.getX() + roomWidth-1, 18, structurePos.getZ())) != Blocks.PURPLE_WOOL.getDefaultState() &&
-                    world.getBlockState(mutable.set(structurePos.getX() + roomWidth-1, 18, structurePos.getZ() + roomHeight-1)) != Blocks.PURPLE_WOOL.getDefaultState() &&
-                    world.getBlockState(mutable.set(structurePos.getX(), 18, structurePos.getZ() + roomHeight-1)) != Blocks.PURPLE_WOOL.getDefaultState()
-            ) {
-                optional.get().place(world, structurePos, structurePos, structurePlacementData, random, 2);
-            }
-
-
-            //Fill area with more mega rooms randomly
-            List<String> megaRoomList = new ArrayList<>();
-            this.createMegaRoomList(megaRoomList);
-
-            while (!megaRoomList.isEmpty()) {
-                int ind = random.nextBetween(0, megaRoomList.size() - 1);
-                String currentMegaRoom = megaRoomList.get(ind);
-                int xx = Integer.parseInt(currentMegaRoom.substring(0, 2));
-                int yy = Integer.parseInt(currentMegaRoom.substring(3, 5));
-                p = random.nextBetween(1, 3);
-                if (yy < xx) {
-                    structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.COUNTERCLOCKWISE_90).setIgnoreEntities(true);
-                    roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + yy + "x" + xx + "_" + p + shouldSky);
-                } else {
-                    structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.NONE).setIgnoreEntities(true);
-                    roomIdentifier = new Identifier(SPBRevamped.MOD_ID, this.levelDirectory + "/megaroom_" + xx + "x" + yy + "_" + p + shouldSky);
-                }
-                roomWidth = xx;
-                roomHeight = yy;
-
-
-                boolean placed = false;
-                for (int ay = 1; ay < this.rows - (((int) roomHeight / this.size)); ay++) {
-                    for (int ax = 1; ax < this.cols - (((int) roomWidth / this.size)); ax++) {
-                        if (!placed) {
-                            BlockPos StructurePos = mutable.set(ax + ((this.size - 1) * ax) + this.originX, 18, ay + ((this.size - 1) * ay) + this.originY);
-
-                            boolean clear = true;
-                            for (int ry = -1; ry <= roomHeight; ry++) {
-                                for (int bx = -1; bx <= roomWidth; bx++) {
-                                    if (clear) {
-                                        if (world.getBlockState(new BlockPos(StructurePos.getX() + bx, 18, StructurePos.getZ() + ry)) == Blocks.PURPLE_WOOL.getDefaultState()) {
-                                            clear = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-
-                            if (clear) {
-                                optional = structureTemplateManager.getTemplate(roomIdentifier);
-                                if (optional.isPresent()) {
-                                    if (structurePlacementData.getRotation() == BlockRotation.COUNTERCLOCKWISE_90) {
-                                        optional.get().place(world, new BlockPos(StructurePos.getX(), 18, StructurePos.getZ() + (roomHeight - 1)), new BlockPos(StructurePos.getX(), 19, StructurePos.getZ() + (roomWidth - 1)), structurePlacementData, random, 2);
-                                    } else {
-                                        optional.get().place(world, StructurePos, StructurePos, structurePlacementData, random, 2);
-                                    }
-                                    placed = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                megaRoomList.remove(ind);
-            }
-        }
 
         //Generate Maze
         for (int y = 0; y < this.rows; y++) {
@@ -169,7 +50,7 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
 
                 BlockState blockState = world.getBlockState(mutable.set(xPos, 18, yPos));
                 if(this.isAirOrNull(blockState)) {
-                    grid[x][y] = new CellWDoor(yPos, xPos, this.size, ModBlocks.WALL_BLOCK.getDefaultState().with(BOTTOM, false), y, x);
+                    grid[x][y] = new MazeCell(yPos, xPos, this.size, y, x);
                 }
             }
         }
@@ -181,7 +62,7 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
 
 
         while(!cellStack.isEmpty()) {
-            CellWDoor randNeighbor = this.checkNeighbors(grid, currentCell.getGridPosY(), currentCell.getGridPosX(), world);
+            MazeCell randNeighbor = this.checkNeighbors(grid, currentCell.getGridPosY(), currentCell.getGridPosX(), world);
 
             while (randNeighbor != null) {
                 randNeighbor.setVisited(true);
@@ -195,37 +76,37 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
         }
 
         for(int i = 0; i < this.cols; i += 2) {
-            CellWDoor cell = this.grid[i][0];
+            MazeCell cell = this.grid[i][0];
             if(cell != null) {
-                cell.setSouth(false);
+                cell.removeSouthWall();
             }
         }
 
         for(int i = 1; i < this.cols; i += 2) {
-            CellWDoor cell = this.grid[this.cols - 1][i];
+            MazeCell cell = this.grid[this.cols - 1][i];
             if(cell != null) {
-                cell.setWest(false);
+                cell.removeWestWall();
             }
         }
 
         for(int i = this.cols - 2; i >= 0; i -= 2) {
-            CellWDoor cell = this.grid[i][this.cols - 1];
+            MazeCell cell = this.grid[i][this.cols - 1];
             if(cell != null) {
-                cell.setNorth(false);
+                cell.removeNorthWall();
             }
         }
 
         for(int i = this.cols - 1; i >= 0; i -= 2) {
-            CellWDoor cell = this.grid[0][i];
+            MazeCell cell = this.grid[0][i];
             if(cell != null) {
-                cell.setEast(false);
+                cell.removeEastWall();
             }
         }
 
-        for (CellWDoor[] cell : grid){
-            for(CellWDoor cells: cell){
+        for (MazeCell[] cell : grid){
+            for(MazeCell cells: cell){
                 if (cells != null) {
-                    cells.drawWalls(world, this.levelDirectory, sky);
+                    cells.drawWallsWithDoors(world, this.levelDirectory);
                 }
             }
         }
@@ -233,29 +114,14 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
 
     }
 
-    @Override
-    public void drawWalls(StructureWorldAccess world, String level) {
-
-    }
-
-    @Override
-    public void removeWalls(HighVarCell currentCell, HighVarCell neighbor) {
-
-    }
-
-    @Override
-    public void removeWalls(LowVarCell currentCell, LowVarCell neighbor) {
-
-    }
-
-    public CellWDoor checkNeighbors(CellWDoor[][] grid, int y, int x, StructureWorldAccess world){
+    public MazeCell checkNeighbors(MazeCell[][] grid, int y, int x, StructureWorldAccess world){
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        CellWDoor North = null;
-        CellWDoor West = null;
-        CellWDoor South = null;
-        CellWDoor East = null;
+        MazeCell North = null;
+        MazeCell West = null;
+        MazeCell South = null;
+        MazeCell East = null;
 
-        List<CellWDoor> neighbors = new ArrayList<>();
+        List<MazeCell> neighbors = new ArrayList<>();
         List<Integer> roomDir = new ArrayList<>();
 
 
@@ -303,21 +169,21 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
             }
         }
 
-        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() + this.size)) == Blocks.YELLOW_WOOL.getDefaultState() ||
-                world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() + this.size)) == Blocks.PINK_WOOL.getDefaultState()){
-            currentCell.setNorth(false);
+        if (world.getBlockState(mutable.set(currentCell.getWorldXPos(), 19, currentCell.getWorldYPos() + this.size)) == Blocks.YELLOW_WOOL.getDefaultState() ||
+                world.getBlockState(mutable.set(currentCell.getWorldXPos(), 19, currentCell.getWorldYPos() + this.size)) == Blocks.PINK_WOOL.getDefaultState()){
+            currentCell.removeNorthWall();
         }
-        if (world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() - this.size)) == Blocks.RED_WOOL.getDefaultState() ||
-                world.getBlockState(mutable.set(currentCell.getX(), 19, currentCell.getY() - this.size)) == Blocks.PINK_WOOL.getDefaultState()){
-            currentCell.setSouth(false);
+        if (world.getBlockState(mutable.set(currentCell.getWorldXPos(), 19, currentCell.getWorldYPos() - this.size)) == Blocks.RED_WOOL.getDefaultState() ||
+                world.getBlockState(mutable.set(currentCell.getWorldXPos(), 19, currentCell.getWorldYPos() - this.size)) == Blocks.PINK_WOOL.getDefaultState()){
+            currentCell.removeSouthWall();
         }
-        if (world.getBlockState(mutable.set(currentCell.getX() + this.size, 19, currentCell.getY())) == Blocks.ORANGE_WOOL.getDefaultState() ||
-                world.getBlockState(mutable.set(currentCell.getX() + this.size, 19, currentCell.getY())) == Blocks.PINK_WOOL.getDefaultState()){
-            currentCell.setWest(false);
+        if (world.getBlockState(mutable.set(currentCell.getWorldXPos() + this.size, 19, currentCell.getWorldYPos())) == Blocks.ORANGE_WOOL.getDefaultState() ||
+                world.getBlockState(mutable.set(currentCell.getWorldXPos() + this.size, 19, currentCell.getWorldYPos())) == Blocks.PINK_WOOL.getDefaultState()){
+            currentCell.removeWestWall();
         }
-        if (world.getBlockState(mutable.set(currentCell.getX() - this.size, 19, currentCell.getY())) == Blocks.LIME_WOOL.getDefaultState() ||
-                world.getBlockState(mutable.set(currentCell.getX() - this.size, 19, currentCell.getY())) == Blocks.PINK_WOOL.getDefaultState()){
-            currentCell.setEast(false);
+        if (world.getBlockState(mutable.set(currentCell.getWorldXPos() - this.size, 19, currentCell.getWorldYPos())) == Blocks.LIME_WOOL.getDefaultState() ||
+                world.getBlockState(mutable.set(currentCell.getWorldXPos() - this.size, 19, currentCell.getWorldYPos())) == Blocks.PINK_WOOL.getDefaultState()){
+            currentCell.removeEastWall();
         }
 
 
@@ -335,7 +201,8 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
 
     }
 
-    public void removeWalls(CellWDoor currentCell, CellWDoor neighbor){
+    @Override
+    public void removeWalls(MazeCell currentCell, MazeCell neighbor){
         Random random = Random.create();
 
 
@@ -345,26 +212,26 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
 
             if(x > 0){
                 if(door == 1){
-                    currentCell.setEast(false);
-                    currentCell.setEastDoor(true);
-                    neighbor.setWest(false);
-                    neighbor.setWestDoor(true);
+                    currentCell.removeEastWall();
+                    currentCell.addEastDoor();
+                    neighbor.removeWestWall();
+                    neighbor.addWestDoor();
                 }
                 else {
-                    currentCell.setEast(false);
-                    neighbor.setWest(false);
+                    currentCell.removeEastWall();
+                    neighbor.removeWestWall();
                 }
             }
             else{
                 if(door == 1){
-                    currentCell.setWest(false);
-                    currentCell.setWestDoor(true);
-                    neighbor.setEast(false);
-                    neighbor.setEastDoor(true);
+                    currentCell.removeWestWall();
+                    currentCell.addWestDoor();
+                    neighbor.removeEastWall();
+                    neighbor.addEastDoor();
                 }
                 else {
-                    currentCell.setWest(false);
-                    neighbor.setEast(false);
+                    currentCell.removeWestWall();
+                    neighbor.removeEastWall();
                 }
             }
         }
@@ -375,41 +242,29 @@ public class PoolroomsMazeGenerator extends MazeGenerator {
 
             if(y > 0){
                 if(door == 1) {
-                    currentCell.setSouth(false);
-                    currentCell.setSouthDoor(true);
-                    neighbor.setNorth(false);
-                    neighbor.setNorthDoor(true);
+                    currentCell.removeSouthWall();
+                    currentCell.addSouthDoor();
+                    neighbor.removeNorthWall();
+                    neighbor.addNorthDoor();
                 }
                 else{
-                    currentCell.setSouth(false);
-                    neighbor.setNorth(false);
+                    currentCell.removeSouthWall();
+                    neighbor.removeNorthWall();
                 }
             }
             else{
                 if(door == 1) {
-                    currentCell.setNorth(false);
-                    currentCell.setNorthDoor(true);
-                    neighbor.setSouth(false);
-                    neighbor.setSouthDoor(true);
+                    currentCell.removeNorthWall();
+                    currentCell.addNorthDoor();
+                    neighbor.removeSouthWall();
+                    neighbor.addSouthDoor();
                 }
                 else{
-                    currentCell.setNorth(false);
-                    neighbor.setSouth(false);
+                    currentCell.removeNorthWall();
+                    neighbor.removeSouthWall();
                 }
 
             }
         }
-    }
-
-    public void createMegaRoomList(List<String> megaRoomList){
-        megaRoomList.add("16x16");
-        megaRoomList.add("16x24");
-        megaRoomList.add("16x32");
-        megaRoomList.add("24x16");
-        megaRoomList.add("24x24");
-        megaRoomList.add("24x32");
-        megaRoomList.add("32x16");
-        megaRoomList.add("32x24");
-        megaRoomList.add("32x32");
     }
 }

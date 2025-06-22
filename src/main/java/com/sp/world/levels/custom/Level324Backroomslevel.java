@@ -1,7 +1,7 @@
 package com.sp.world.levels.custom;
 
 import com.sp.init.BackroomsLevels;
-import com.sp.world.generation.Level324ChunkGenerator;
+import com.sp.world.generation.chunk_generator.Level324ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Vec3d;

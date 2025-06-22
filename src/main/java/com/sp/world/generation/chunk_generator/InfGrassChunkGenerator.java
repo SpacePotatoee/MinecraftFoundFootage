@@ -1,4 +1,4 @@
-package com.sp.world.generation;
+package com.sp.world.generation.chunk_generator;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -73,7 +73,7 @@ public final class InfGrassChunkGenerator extends BackroomsChunkGenerator {
         float sampler = SimplexNoise.noise(x, 0);
         if (sampler >= 0.6) {
             if (server != null) {
-                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "infgrass/utility_pole");
+                roomIdentifier = new Identifier(SPBRevamped.MOD_ID, "inf_grass/utility_pole");
 
                 optional = structureTemplateManager.getTemplate(roomIdentifier);
 
@@ -111,10 +111,10 @@ public final class InfGrassChunkGenerator extends BackroomsChunkGenerator {
         int rand = random.nextBetween(1,3);
         if(exit){
             if(rand == 1){
-                return Identifier.of(SPBRevamped.MOD_ID, "infgrass/exit");
+                return Identifier.of(SPBRevamped.MOD_ID, "inf_grass/exit");
             }
         }
-        return Identifier.of(SPBRevamped.MOD_ID, "infgrass/feature" + rand);
+        return Identifier.of(SPBRevamped.MOD_ID, "inf_grass/feature" + rand);
     }
 
 

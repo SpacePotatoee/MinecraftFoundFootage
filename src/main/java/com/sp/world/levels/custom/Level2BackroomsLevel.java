@@ -1,16 +1,13 @@
 package com.sp.world.levels.custom;
 
 import com.sp.SPBRevamped;
-import com.sp.cca_stuff.InitializeComponents;
-import com.sp.cca_stuff.PlayerComponent;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.init.BackroomsLevels;
 import com.sp.mixininterfaces.NewServerProperties;
 import com.sp.world.events.level2.Level2Ambience;
 import com.sp.world.events.level2.Level2Warp;
-import com.sp.world.generation.Level2ChunkGenerator;
+import com.sp.world.generation.chunk_generator.Level2ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.network.ServerPlayerEntity;

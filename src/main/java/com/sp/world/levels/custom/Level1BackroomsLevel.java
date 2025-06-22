@@ -7,7 +7,7 @@ import com.sp.init.BackroomsLevels;
 import com.sp.world.events.level1.Level1Ambience;
 import com.sp.world.events.level1.Level1Blackout;
 import com.sp.world.events.level1.Level1Flicker;
-import com.sp.world.generation.Level1ChunkGenerator;
+import com.sp.world.generation.chunk_generator.Level1ChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -22,7 +22,7 @@ public class Level1BackroomsLevel extends BackroomsLevel {
     private Level0BackroomsLevel.LightState lightState = Level0BackroomsLevel.LightState.ON;
 
     public Level1BackroomsLevel() {
-        super("level1", Level1ChunkGenerator.CODEC, new Vec3d(6, 22, 3), BackroomsLevels.LEVEL1_WORLD_KEY);
+        super("level1", Level1ChunkGenerator.CODEC, new RoomCount(6, 24, 24, 12, 24), new Vec3d(6, 22, 3), BackroomsLevels.LEVEL1_WORLD_KEY);
     }
 
     @Override
