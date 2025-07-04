@@ -354,7 +354,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
 
 
-                        if(blackScreen || (player.isInsideWall() && !getCutsceneManager().isPlaying) || playerComponent.isBeingReleased()){
+                        if(blackScreen || (player.isInsideWall() && !getCutsceneManager().isPlaying) || playerComponent.isBeingReleased()) {
                             shaderProgram.setInt("blackScreen", 1);
                         } else {
                             shaderProgram.setInt("blackScreen", 0);
@@ -395,7 +395,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 }));
 
                 ConfigDefinitions.definitions.forEach((s, aBoolean) -> {
-                    if(aBoolean.get()){
+                    if(aBoolean.get()) {
                         definitions.define(s);
                     } else {
                         definitions.remove(s);
@@ -403,7 +403,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                 });
 
                 BackroomsLevels.definitions.forEach((s, registryKey) -> {
-                    if(client.world.getRegistryKey() == registryKey){
+                    if(client.world.getRegistryKey() == registryKey) {
                         definitions.define(s);
                     } else {
                         definitions.remove(s);

@@ -172,8 +172,8 @@ public final class PoolroomsChunkGenerator extends BackroomsChunkGenerator {
         int roomWidth = Integer.parseInt(roomIdentifier.getPath().substring(directoryLength + 10, directoryLength + 12));
         int roomHeight = Integer.parseInt(roomIdentifier.getPath().substring(directoryLength + 13, directoryLength + 15));
 
-        int randX = random.nextBetween(1, cols - (1 + ((int) roomWidth / size)));
-        int randY = random.nextBetween(1, rows - (1 + ((int) roomHeight / size)));
+        int randX = random.nextBetween(1, cols - (1 + (roomWidth / size)));
+        int randY = random.nextBetween(1, rows - (1 + (roomHeight / size)));
 
         BlockPos structurePos = mutable.set(randX + ((size - 1) * randX) + originX, 18, randY + ((size - 1) * randY) + originY);
 
@@ -204,8 +204,8 @@ public final class PoolroomsChunkGenerator extends BackroomsChunkGenerator {
 
 
             boolean placed = false;
-            for (int ay = 1; ay < rows - (((int) roomHeight / size)); ay++) {
-                for (int ax = 1; ax < cols - (((int) roomWidth / size)); ax++) {
+            for (int ay = 1; ay < rows - ((roomHeight / size)); ay++) {
+                for (int ax = 1; ax < cols - ((roomWidth / size)); ax++) {
                     if (!placed) {
                         BlockPos StructurePos = mutable.set(ax + ((size - 1) * ax) + originX, 18, ay + ((size - 1) * ay) + originY);
 

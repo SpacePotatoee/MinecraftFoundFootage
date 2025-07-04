@@ -31,24 +31,24 @@ out vec4 fragColor;
 
 //Parts of this code from: https://agatedragon.blog/2023/12/24/barrel-distortion-shader/
 //and https://www.shadertoy.com/view/XtlSD7
-vec2 BarrelDistortionCoordinates(vec2 uv){
-vec2 pos = 2.0f * uv - 1.0f;
+vec2 BarrelDistortionCoordinates(vec2 uv) {
+    vec2 pos = 2.0f * uv - 1.0f;
 
-float len = distance(pos, vec2(0.0f));
-len = pow(len/1.5f, 1.0f) * DistortionStrength;
+    float len = distance(pos, vec2(0.0f));
+    len = pow(len/1.5f, 1.0f) * DistortionStrength;
 
-pos = pos + pos * len * len;
+    pos = pos + pos * len * len;
 
-pos = 0.5f * (pos + 1.0f);
+    pos = 0.5f * (pos + 1.0f);
 
-return pos;
+    return pos;
 }
 
 vec4 Viginette(vec2 uv){
-uv = 2.0f * uv - 1.0f;
-float disty = abs(distance(1*uv, vec2(0,0))-2);
-uv = 0.5f * (uv + 1.0f);
-return vec4(disty);
+    uv = 2.0f * uv - 1.0f;
+    float disty = abs(distance(1*uv, vec2(0,0))-2);
+    uv = 0.5f * (uv + 1.0f);
+    return vec4(disty);
 }
 
 void main() {

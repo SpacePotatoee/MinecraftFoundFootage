@@ -24,7 +24,7 @@ public class StaminaBar implements HudRenderCallback {
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity player = client.player;
 
-        if(player != null){
+        if(player != null) {
             PlayerComponent component = InitializeComponents.PLAYER.get(player);
             int width = 44;
             int height = 64;

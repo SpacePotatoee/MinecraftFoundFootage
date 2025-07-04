@@ -6,6 +6,7 @@ import com.sp.entity.client.model.WalkerModel;
 import com.sp.entity.custom.WalkerEntity;
 import com.sp.entity.ik.model.GeckoLib.GeoModelAccessor;
 import com.sp.entity.ik.model.GeckoLib.MowzieGeoBone;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -21,7 +22,7 @@ import software.bernie.geckolib.renderer.DynamicGeoEntityRenderer;
 import software.bernie.geckolib.util.RenderUtils;
 
 public class WalkerRenderer extends DynamicGeoEntityRenderer<WalkerEntity> {
-    private final Identifier EYES_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/skinwalker/skinwalker_eyes.png");
+    private final Identifier EYES_TEXTURE = new Identifier(SPBRevamped.MOD_ID, "textures/entity/walker/walker.png");
 
     public WalkerRenderer(EntityRendererFactory.Context renderManager) {
         super(renderManager, new WalkerModel());
@@ -106,9 +107,8 @@ public class WalkerRenderer extends DynamicGeoEntityRenderer<WalkerEntity> {
         }
 
 
-
+        if(!this.boneRenderOverride(animatable, poseStack, bone, bufferSource))
             super.renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-
         if (!isReRender)
             applyRenderLayersForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
 
@@ -133,20 +133,11 @@ public class WalkerRenderer extends DynamicGeoEntityRenderer<WalkerEntity> {
             if (bone.isHidden())
                 return false;
 
-
-            for (GeoCube cube : bone.getCubes()) {
-                poseStack.push();
-                renderCube(poseStack, cube, vertexConsumer, 15728640, 655360, 1.0F, 1.0F, 1.0F, 1.0F);
-                poseStack.pop();
-            }
-            /*
             for (GeoCube cube : bone.getCubes()) {
                 poseStack.push();
                 renderCube(poseStack, cube, vertexConsumer, 15728640, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
                 poseStack.pop();
             }
-
-             */
 
             return true;
         }

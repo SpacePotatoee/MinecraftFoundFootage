@@ -233,9 +233,8 @@ public class MazeCell {
                 structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.CLOCKWISE_180);
             }
 
-            default -> { // Shouldn't be possible, but just in case
-                roomId = new Identifier(SPBRevamped.MOD_ID, levelId + "/aroom_" + aroomNumber);
-            }
+            default -> // Shouldn't be possible, but just in case
+                    roomId = new Identifier(SPBRevamped.MOD_ID, levelId + "/aroom_" + aroomNumber);
         }
 
         optional = structureTemplateManager.getTemplate(roomId);
@@ -373,9 +372,8 @@ public class MazeCell {
                 structurePlacementData.setMirror(BlockMirror.NONE).setRotation(BlockRotation.CLOCKWISE_180);
             }
 
-            default -> { // Shouldn't be possible, but just in case
-                roomId = new Identifier(SPBRevamped.MOD_ID, levelId + "/aroom_" + aroomNumber);
-            }
+            default -> // Shouldn't be possible, but just in case
+                    roomId = new Identifier(SPBRevamped.MOD_ID, levelId + "/aroom_" + aroomNumber);
         }
 
         optional = structureTemplateManager.getTemplate(roomId);
