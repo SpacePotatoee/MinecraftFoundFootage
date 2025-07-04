@@ -11,11 +11,6 @@ public class NetherRepresentingBackroomsLevel extends WorldRepresentingBackrooms
     }
 
     @Override
-    public void register() {
-
-    }
-
-    @Override
     public int nextEventDelay() {
         return 0;
     }

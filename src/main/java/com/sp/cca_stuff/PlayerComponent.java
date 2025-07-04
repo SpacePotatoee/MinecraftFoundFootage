@@ -156,6 +156,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     public void loadPlayerSavedInventory() {
         PlayerInventory inventory = this.player.getInventory();
+        inventory.clear();
         DefaultedList<ItemStack> mainInventory = inventory.main;
         DefaultedList<ItemStack> armorInventory = inventory.armor;
         DefaultedList<ItemStack> offHand = inventory.offHand;

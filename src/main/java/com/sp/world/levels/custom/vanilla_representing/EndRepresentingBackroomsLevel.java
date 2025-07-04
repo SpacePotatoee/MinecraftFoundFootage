@@ -11,11 +11,6 @@ public class EndRepresentingBackroomsLevel extends WorldRepresentingBackroomsLev
     }
 
     @Override
-    public void register() {
-
-    }
-
-    @Override
     public int nextEventDelay() {
         return 0;
     }

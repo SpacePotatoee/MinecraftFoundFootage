@@ -95,7 +95,6 @@ public class ModItemGroups {
                         entries.add(ModBlocks.POLE);
                         entries.add(ModBlocks.LAMP);
                         entries.add(ModBlocks.WINDOW);
-                        entries.add(ModBlocks.SCHLEUSE);
                         entries.add(ModBlocks.TINY_FLUORESCENT_LIGHT);
                         entries.add(ModBlocks.FLOOR_TILING);
                         entries.add(ModBlocks.DOUBLE_SIDED_SHELF);

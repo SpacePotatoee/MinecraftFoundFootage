@@ -244,9 +244,6 @@ public class ModBlocks {
     public static final Block WINDOW = registerBlock("window",
             new WindowBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles().sounds(SprintBlockSoundGroup.GLASS)));
 
-    public static final Block SCHLEUSE = registerBlock("schleuse",
-            new SchleuseBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles().sounds(SprintBlockSoundGroup.SILENT)));
-
     public static final Block TINY_FLUORESCENT_LIGHT = registerBlock("tiny_fluorescent_light",
             new TinyFluorescentLightBlock(FabricBlockSettings.copyOf(Blocks.GLASS).hardness(-1f).noBlockBreakParticles()));
 
