@@ -29,13 +29,12 @@ public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
     public void register() {
         super.register();
 
-        events.add(InfiniteGrassAmbience::new);
-
+        this.registerEvents("ambience", InfiniteGrassAmbience::new);
 
         /*
          * The transition is kinda ass and so it's not allow the transition out method to be called on the client.
          */
-        this.registerTransition((world, playerComponent, from) -> {
+        this.registerTransition(new LevelTransition(0, (world, playerComponent, from) -> {
             List<CrossDimensionTeleport> playerList = new ArrayList<>();
 
             if (playerComponent.player.getWorld().getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY && playerComponent.player.getPos().y > 57.5 && playerComponent.player.isOnGround()) {
@@ -58,7 +57,7 @@ public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
             }
 
             return playerList;
-        }, this.getLevelId() + "->" + BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL.getLevelId());
+        }), this.getLevelId() + "->" + BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL.getLevelId());
 
     }
 
@@ -86,11 +85,6 @@ public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
     @Override
     public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
         SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) crossDimensionTeleport.playerComponent().player, 60, true, false);
-    }
-
-    @Override
-    public int getTransitionDuration() {
-        return 0;
     }
 
     @Override

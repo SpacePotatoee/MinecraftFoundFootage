@@ -18,7 +18,7 @@ public class PoolroomsBackroomsLevel extends BackroomsLevel {
     public boolean sunsetTransitioning = false;
 
     public PoolroomsBackroomsLevel() {
-        super("poolrooms", PoolroomsChunkGenerator.CODEC, new RoomCount(1), new Vec3d(0, 32, 0), BackroomsLevels.POOLROOMS_WORLD_KEY);
+        super("poolrooms", PoolroomsChunkGenerator.CODEC, new RoomCount(1), new Vec3d(16, 106, 16), BackroomsLevels.POOLROOMS_WORLD_KEY);
     }
 
     @Override
@@ -35,21 +35,20 @@ public class PoolroomsBackroomsLevel extends BackroomsLevel {
     public void register() {
         super.register();
 
-        events.add(PoolroomsSunset::new);
-        events.add(PoolroomsAmbience::new);
+        this.registerEvents("sunset", PoolroomsSunset::new);
+        this.registerEvents("abience", PoolroomsAmbience::new);
 
-
-        this.registerTransition((world, playerComponent, from) -> {
+        this.registerTransition(new LevelTransition(0, (world, playerComponent, from) -> {
 
             List<CrossDimensionTeleport> playerList = new ArrayList<>();
             if (from instanceof PoolroomsBackroomsLevel && playerComponent.player.getWorld().getLightLevel(playerComponent.player.getBlockPos()) == 0 && playerComponent.player.getPos().y < 60 && playerComponent.player.getPos().y > 52) {
                     if (playerComponent.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                        playerList.add(new CrossDimensionTeleport(playerComponent.player.getWorld(), playerComponent, this.getSpawnPos(), BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL, BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL));
+                        playerList.add(new CrossDimensionTeleport(playerComponent.player.getWorld(), playerComponent, BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL.getSpawnPos(), BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL, BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL));
                     }
             }
 
             return playerList;
-        }, this.getLevelId() + "->" + BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL.getLevelId());
+        }), this.getLevelId() + "->" + BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL.getLevelId());
     }
 
     @Override

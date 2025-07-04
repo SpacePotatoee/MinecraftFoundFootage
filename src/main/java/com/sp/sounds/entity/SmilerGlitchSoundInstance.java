@@ -2,14 +2,11 @@ package com.sp.sounds.entity;
 
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
-import com.sp.init.BackroomsLevels;
 import com.sp.init.ModSounds;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.world.World;
 
 public class SmilerGlitchSoundInstance extends MovingSoundInstance {
     private final PlayerEntity player;
@@ -27,8 +24,7 @@ public class SmilerGlitchSoundInstance extends MovingSoundInstance {
 
     @Override
     public void tick() {
-        RegistryKey<World> level = this.player.getWorld().getRegistryKey();
-        if((level != BackroomsLevels.LEVEL1_WORLD_KEY && level != BackroomsLevels.LEVEL2_WORLD_KEY) || this.player.isRemoved()){
+        if(this.player.isRemoved()){
             this.setDone();
         }
 

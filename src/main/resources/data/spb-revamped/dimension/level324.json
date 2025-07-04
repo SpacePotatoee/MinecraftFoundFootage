@@ -1,0 +1,11 @@
+{
+  "type": "spb-revamped:level324",
+  "generator": {
+    "type": "spb-revamped:level324_chunk_generator",
+    "settings": "spb-revamped:level0",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "spb-revamped:infinite_field"
+    }
+  }
+}

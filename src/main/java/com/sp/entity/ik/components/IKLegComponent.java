@@ -13,7 +13,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -26,11 +25,11 @@ import java.util.List;
 
 public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extends IKChainComponent<C, E> {
     /// summon projectnublar:tyrannosaurus_rex ~ ~ ~ {NoAI:1b}
-    private List<ServerLimb> endPoints;
-    private List<Vec3d> bases;
+    protected List<ServerLimb> endPoints;
+    protected List<Vec3d> bases;
     private List<LegSetting> settings;
     public double scale = 1;
-    private int stillStandCounter = 0;
+    protected int stillStandCounter = 0;
 
     @SafeVarargs
     public IKLegComponent(List<LegSetting> settings, List<ServerLimb> endpoints, C... limbs) {
@@ -55,11 +54,9 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
         this.init(setting, endpoints, limbs);
     }
 
-    private static boolean hasMovedOverLastTick(PathAwareEntity entity) {
-        Vec3d difference = entity.getVelocity();
-        float yaw = entity.prevHeadYaw;
-        float rotation = entity.getHeadYaw() - yaw;
-        return difference.x != 0 || difference.z != 0 || Math.abs(rotation) >= 0.01;
+    public boolean hasMovedOverLastTick(Entity entity) {
+        Vec3d oldPos = new Vec3d(entity.prevX, entity.prevY, entity.prevZ);
+        return !oldPos.equals(entity.getPos());
     }
 
     public static BlockHitResult rayCastToGround(Vec3d rotatedLimbOffset, Entity entity, RaycastContext.FluidHandling fluid) {
@@ -138,28 +135,26 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
     public void tickServer(E animatable) {
         this.setScale(animatable.getSize());
 
-        if (!(animatable instanceof PathAwareEntity entity)) {
+        if (!(animatable instanceof Entity entity)) {
             return;
         }
-
-        Vec3d pos = entity.getPos();
 
         for (int i = 0; i < this.endPoints.size(); i++) {
             ServerLimb limb = this.endPoints.get(i);
 
-            limb.tick(this, i, this.settings.get(i).movementSpeed);
+            limb.tick(this, i);
 
             Vec3d limbOffset = limb.baseOffset.multiply(this.getScale());
 
             if (hasMovedOverLastTick(entity)) {
-                limbOffset = limbOffset.add(0, 0, this.settings.get(i).stepInFront() * this.getScale());
+                limbOffset = limbOffset.add(0, 0, this.getSettings().get(0).stepInFront() * this.getScale());
             }
 
             limbOffset = limbOffset.rotateY((float) Math.toRadians(-entity.getBodyYaw()));
 
-            Vec3d rotatedLimbOffset = limbOffset.add(pos);
+            Vec3d rotatedLimbOffset = limbOffset.add(entity.getPos());
 
-            BlockHitResult rayCastResult = rayCastToGround(rotatedLimbOffset, entity, this.settings.get(i).fluid());
+            BlockHitResult rayCastResult = IKLegComponent.rayCastToGround(rotatedLimbOffset, entity, RaycastContext.FluidHandling.NONE);
 
             Vec3d rayCastHitPos = rayCastResult.getPos();
 
@@ -179,7 +174,7 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
         new LegDebugRenderer<E, C>().renderDebug(this, animatable, poseStack, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
     }
 
-    private double getMaxLegFormTargetDistance(PathAwareEntity entity) {
+    double getMaxLegFormTargetDistance(Entity entity) {
         if (this.stillStandCounter >= this.settings.get(0).standStillCounter() && hasMovedOverLastTick(entity)) {
             this.stillStandCounter = 0;
         } else if (this.stillStandCounter < this.settings.get(0).standStillCounter()) {
@@ -191,10 +186,6 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
         } else {
             return this.settings.get(0).maxDistance() * this.getScale();
         }
-    }
-
-    public List<C> getLimbs() {
-        return this.limbs;
     }
 
     public List<ServerLimb> getEndPoints() {
@@ -239,8 +230,9 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
         private double stepInFront;
         private double movementSpeed;
         private int standStillCounter;
+        private double steppingParabolaStrength = 2;
 
-        private LegSetting(RaycastContext.FluidHandling fluid, double maxStandingStillDistance, double maxDistance, double stepInFront, double movementSpeed, int standStillCounter) {
+        private LegSetting(RaycastContext.FluidHandling fluid, double maxStandingStillDistance, double maxDistance, double stepInFront, double movementSpeed, int standStillCounter, double steppingParabolaStrength) {
             this.fluid = fluid;
             if (fluid == null) {
                 this.fluid = RaycastContext.FluidHandling.NONE;
@@ -265,6 +257,7 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
             if (standStillCounter == 0) {
                 this.standStillCounter = 20;
             }
+            this.steppingParabolaStrength = steppingParabolaStrength;
         }
 
         public RaycastContext.FluidHandling fluid() {
@@ -291,6 +284,10 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
             return this.standStillCounter;
         }
 
+        public double steppingParabolaStrength() {
+            return this.steppingParabolaStrength;
+        }
+
         public static class Builder {
             private RaycastContext.FluidHandling fluid;
             private double maxStandingStillDistance;
@@ -298,12 +295,18 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
             private double stepInFront;
             private double movementSpeed;
             private int standStillCounter;
+            private double steppingParabolaStrength = 2;
 
             public Builder() {
             }
 
             public LegSetting.Builder fluid(RaycastContext.FluidHandling fluid) {
                 this.fluid = fluid;
+                return this;
+            }
+
+            public LegSetting.Builder steppingParabolaStrength(double steppingParabolaStrength) {
+                this.steppingParabolaStrength = steppingParabolaStrength;
                 return this;
             }
 
@@ -333,7 +336,7 @@ public class IKLegComponent<C extends IKChain, E extends IKAnimatable<E>> extend
             }
 
             public LegSetting build() {
-                return new LegSetting(this.fluid, this.maxStandingStillDistance, this.maxDistance, this.stepInFront, this.movementSpeed, this.standStillCounter);
+                return new LegSetting(this.fluid, this.maxStandingStillDistance, this.maxDistance, this.stepInFront, this.movementSpeed, this.standStillCounter, this.steppingParabolaStrength);
             }
         }
     }

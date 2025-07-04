@@ -86,7 +86,6 @@ public class ModItemGroups {
                         entries.add(ModBlocks.POWER_POLE);
                         entries.add(ModBlocks.DIRT);
 
-                        entries.add(ModItems.GAS_PUMP);
                         entries.add(ModBlocks.ROAD);
                         entries.add(ModBlocks.RED_DIRT);
                         entries.add(ModBlocks.PLASTIC);
@@ -101,6 +100,7 @@ public class ModItemGroups {
                         entries.add(ModBlocks.FLOOR_TILING);
                         entries.add(ModBlocks.DOUBLE_SIDED_SHELF);
                         entries.add(ModBlocks.ONE_SIDED_SHELF);
+                        entries.add(ModBlocks.PAVEMENT);
 
 
                     }).build());

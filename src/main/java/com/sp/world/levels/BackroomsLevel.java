@@ -29,8 +29,8 @@ public abstract class BackroomsLevel {
     private final Vec3d spawnPos;
     public Random random = new Random();
     private boolean shouldSync = false;
-    protected List<Supplier<AbstractEvent>> events = new ArrayList<>();
-    private HashMap<String, LevelTransition> transitions = new HashMap<>();
+    private final HashMap<String, Supplier<AbstractEvent>> events = new HashMap<>();
+    private final HashMap<String, LevelTransition> transitions = new HashMap<>();
 
     public BackroomsLevel(String levelId, Codec<? extends ChunkGenerator> chunkGenerator, Vec3d spawnPos, RegistryKey<World> worldKey) {
         this(levelId, chunkGenerator, null, spawnPos, worldKey, SPBRevamped.MOD_ID);
@@ -121,13 +121,20 @@ public abstract class BackroomsLevel {
             return new EmptyEvent();
         }
 
-        return this.events.get(random.nextInt(this.events.size())).get();
+        List<AbstractEvent> eventList = new ArrayList<>();
+
+        this.events.forEach((key, value) -> {
+            AbstractEvent event = value.get();
+            eventList.add(event);
+        });
+
+        return eventList.get(random.nextInt(eventList.size()));
     }
 
     public List<LevelTransition> checkForTransition(PlayerComponent playerComponent, World world) {
         List<LevelTransition> possibleTransitions = new ArrayList<>();
         this.transitions.forEach((key, value) -> {
-            if (!value.predicate(world, playerComponent, this).isEmpty()) {
+            if (!value.callback.predicate(world, playerComponent, this).isEmpty()) {
                 possibleTransitions.add(value);
             }
         });
@@ -189,12 +196,25 @@ public abstract class BackroomsLevel {
         this.transitions.remove(name);
     }
 
-    /**
-     * the time it takes form the first trigger of the transition to the teleportation (if transitionOut returns true)
-     */
-    public abstract int getTransitionDuration();
 
-    public interface LevelTransition {
+    public void registerEvents(String name, Supplier<AbstractEvent> event) {
+        this.events.put(name, event);
+    }
+
+    public void unregisterEvents(String name) {
+        this.events.remove(name);
+    }
+
+
+    /**
+     * The Transition Duration is now registered alongside the transition.
+     */
+    @Deprecated
+    public int getTransitionDuration() {return 0;}
+
+    public record LevelTransition(int duration, LevelTransitionCallback callback) {}
+
+    public interface LevelTransitionCallback {
         List<CrossDimensionTeleport> predicate(World world, PlayerComponent playerComponent, BackroomsLevel from);
     }
 

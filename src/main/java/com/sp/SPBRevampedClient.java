@@ -1,7 +1,6 @@
 package com.sp;
 
 import com.sp.block.client.renderer.FluorescentLightBlockEntityRenderer;
-import com.sp.block.client.renderer.GasPumpBlockRenderer;
 import com.sp.block.client.renderer.ThinFluorescentLightBlockEntityRenderer;
 import com.sp.block.client.renderer.TinyFluorescentLightBlockEntityRenderer;
 import com.sp.cca_stuff.InitializeComponents;
@@ -12,6 +11,7 @@ import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.entity.client.model.SmilerModel;
 import com.sp.entity.client.renderer.SkinWalkerRenderer;
 import com.sp.entity.client.renderer.SmilerRenderer;
+import com.sp.entity.client.renderer.WalkerRenderer;
 import com.sp.init.*;
 import com.sp.networking.InitializePackets;
 import com.sp.networking.callbacks.ClientConnectionEvents;
@@ -71,7 +71,8 @@ import net.minecraft.world.World;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.Vector;
 
 
 public class SPBRevampedClient implements ClientModInitializer {
@@ -101,7 +102,7 @@ public class SPBRevampedClient implements ClientModInitializer {
     private static final Random random = Random.create();
     private static final Random random2 = Random.create(34563264);
 
-    public static boolean shoudlRenderWarp = false;
+    public static boolean shouldRenderWarp = false;
 
     @Override
     public void onInitializeClient() {
@@ -134,7 +135,6 @@ public class SPBRevampedClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WALL_DRAWING_WINDOW, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.RUG_1, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.RUG_2, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.GAS_PUMP, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.RED_METAL_CASING, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WINDOW, RenderLayer.getTranslucent());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.SCHLEUSE, RenderLayer.getTranslucent());
@@ -144,11 +144,10 @@ public class SPBRevampedClient implements ClientModInitializer {
         BlockEntityRendererFactories.register(ModBlockEntities.TINY_FLUORESCENT_LIGHT_BLOCK_ENTITY, TinyFluorescentLightBlockEntityRenderer::new);
 
         EntityRendererRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerRenderer::new);
+        EntityRendererRegistry.register(ModEntities.WALKER_ENTITY, WalkerRenderer::new);
         EntityRendererRegistry.register(ModEntities.SMILER_ENTITY, SmilerRenderer::new);
 
         EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SMILER, SmilerModel::getTexturedModelData);
-
-        BlockEntityRendererFactories.register(ModBlockEntities.GAS_PUMP_ENTITY, GasPumpBlockRenderer::new);
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
@@ -178,10 +177,11 @@ public class SPBRevampedClient implements ClientModInitializer {
                 PbrRegistry.registerPBR(ModBlocks.CONCRETE_BLOCK_11,  new PbrRegistry.PbrMaterial(true, 0.4f,8.0f,  1024));
                 PbrRegistry.registerPBR(ModBlocks.BRICKS,           new PbrRegistry.PbrMaterial(true, 0.45f,5.0f,   2048));
                 //PbrRegistry.registerPBR(ModBlocks.DIRT,             new PbrRegistry.PbrMaterial(true, 0.5f,3.0f,   128));
-                PbrRegistry.registerPBR(ModBlocks.CHAINFENCE,       new PbrRegistry.PbrMaterial(true, 0.21f,2.8f,   1024));
-                PbrRegistry.registerPBR(ModBlocks.WOODEN_CRATE,     new PbrRegistry.PbrMaterial(true, 1.2f,1.0f,   1024));
-                PbrRegistry.registerPBR(ModBlocks.ROAD,             new PbrRegistry.PbrMaterial(true, 0.37f,8.0f,   1024));
-                PbrRegistry.registerPBR(ModBlocks.FLOOR_TILING,     new PbrRegistry.PbrMaterial(true, 0.37f,8.0f,   1024));
+                PbrRegistry.registerPBR(ModBlocks.CHAINFENCE,        new PbrRegistry.PbrMaterial(true, 0.21f,2.8f,   1024));
+                PbrRegistry.registerPBR(ModBlocks.WOODEN_CRATE,      new PbrRegistry.PbrMaterial(true, 9.9f, 1.0f,   1024));
+                PbrRegistry.registerPBR(ModBlocks.ROAD,              new PbrRegistry.PbrMaterial(true, 0.37f,8.0f,   1024));
+                PbrRegistry.registerPBR(ModBlocks.FLOOR_TILING,      new PbrRegistry.PbrMaterial(true, 0.37f,8.0f,   1024));
+                PbrRegistry.registerPBR(ModBlocks.PAVEMENT,          new PbrRegistry.PbrMaterial(true, 0.37f,8.0f,   1024));
 
                 BlockIdMap.init = false;
 
@@ -571,7 +571,7 @@ public class SPBRevampedClient implements ClientModInitializer {
     }
 
     public static boolean shouldRenderCameraEffect() {
-        return isInBackrooms() || ConfigStuff.enableVhsEffect;
+        return (!isInBackrooms() && ConfigStuff.enableVhsEffect) || (isInBackrooms() && ConfigStuff.enableVhsEffectInTheBackrooms);
     }
 
     public static void setInBackrooms(boolean inBackrooms) {

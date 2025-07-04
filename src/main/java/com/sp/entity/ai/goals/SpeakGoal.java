@@ -12,7 +12,7 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.random.Random;
 
 public class SpeakGoal extends Goal {
-    private final Random random = Random.create(7585889L);
+    private final Random random = Random.create();
     private final SkinWalkerEntity entity;
     private final SkinWalkerComponent component;
     private int actCooldown;

@@ -65,12 +65,12 @@ public abstract class WorldRendererMixin {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 10, shift = At.Shift.AFTER))
     public void shouldRenderWarp(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci){
-        SPBRevampedClient.shoudlRenderWarp = true;
+        SPBRevampedClient.shouldRenderWarp = true;
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 11, shift = At.Shift.BEFORE))
     public void shouldStopRenderingWarp(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci){
-        SPBRevampedClient.shoudlRenderWarp = false;
+        SPBRevampedClient.shouldRenderWarp = false;
     }
 
 

@@ -13,6 +13,7 @@ import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -23,6 +24,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,6 +32,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.TeleportTarget;
@@ -92,6 +95,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public MovingSoundInstance GlitchAmbience;
     public MovingSoundInstance SmilerAmbience;
     public MovingSoundInstance WindAmbience;
+    public MovingSoundInstance WindTunnelAmbience;
 
     private boolean canSeeActiveSkinWalker;
     private boolean prevFlashLightOn;
@@ -350,6 +354,10 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.shouldGlitch = tag.getBoolean("shouldGlitch");
         this.shouldInflictGlitchDamage = tag.getBoolean("shouldInflictGlitchDamage");
         this.teleportingTimer = tag.getInt("teleportingTimer");
+
+        this.playerSavedMainInventory.readNbtList(tag.getList("inventory", NbtElement.COMPOUND_TYPE));
+        this.playerSavedOffhandInventory.readNbtList(tag.getList("inventoryOffHand", NbtElement.COMPOUND_TYPE));
+        this.playerSavedArmorInventory.readNbtList(tag.getList("inventoryArmor", NbtElement.COMPOUND_TYPE));
     }
 
     @Override
@@ -368,9 +376,15 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         tag.putBoolean("shouldGlitch", this.shouldGlitch);
         tag.putBoolean("shouldInflictGlitchDamage", this.shouldInflictGlitchDamage);
         tag.putInt("teleportingTimer", this.teleportingTimer);
+
+        if (BackroomsLevels.isInBackrooms(this.player.getWorld().getRegistryKey())) {
+            tag.put("inventory", this.playerSavedMainInventory.toNbtList());
+            tag.put("inventoryOffHand", this.playerSavedOffhandInventory.toNbtList());
+            tag.put("inventoryOffHand", this.playerSavedArmorInventory.toNbtList());
+        }
     }
 
-    public void sync(){
+    public void sync() {
         InitializeComponents.PLAYER.sync(this.player);
     }
 
@@ -415,27 +429,41 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             List<BackroomsLevel.LevelTransition> teleports = level.checkForTransition(this, this.player.getWorld());
 
             if (!teleports.isEmpty()) {
-                for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).predicate(this.player.getWorld(), this, level)) {
+                for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).callback().predicate(this.player.getWorld(), this, level)) {
                     if (crossDimensionTeleport.from().transitionOut(crossDimensionTeleport)) {
                         if (teleportingTimer == -1) {
-                            this.setTeleportingTimer(level.getTransitionDuration());
+                            this.setTeleportingTimer(teleports.get(0).duration());
                         }
 
                         if (teleportingTimer == 0) {
                             ServerWorld destination = crossDimensionTeleport.world().getServer().getWorld(crossDimensionTeleport.to().getWorldKey());
                             TeleportTarget target = new TeleportTarget(crossDimensionTeleport.pos(), crossDimensionTeleport.playerComponent().player.getVelocity(), crossDimensionTeleport.playerComponent().player.getYaw(), crossDimensionTeleport.playerComponent().player.getPitch());
 
-                            if (crossDimensionTeleport.to() == BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL && this.player.getWorld().getGameRules().getBoolean(ModGamerules.STUCK_IN_BACKROOMS)) {
-                                destination = crossDimensionTeleport.world().getServer().getWorld(BackroomsLevels.LEVEL0_BACKROOMS_LEVEL.getWorldKey());
-                                target = new TeleportTarget(BackroomsLevels.LEVEL0_BACKROOMS_LEVEL.getSpawnPos(), crossDimensionTeleport.playerComponent().player.getVelocity(), crossDimensionTeleport.playerComponent().player.getYaw(), crossDimensionTeleport.playerComponent().player.getPitch());
+                            if (crossDimensionTeleport.to() == BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL) {
+                                crossDimensionTeleport.playerComponent().sync();
+
+                                if (this.player.getWorld().getGameRules().getBoolean(ModGamerules.STUCK_IN_BACKROOMS)) {
+                                    destination = crossDimensionTeleport.world().getServer().getWorld(BackroomsLevels.LEVEL0_BACKROOMS_LEVEL.getWorldKey());
+                                    target = new TeleportTarget(BackroomsLevels.LEVEL0_BACKROOMS_LEVEL.getSpawnPos(), crossDimensionTeleport.playerComponent().player.getVelocity(), crossDimensionTeleport.playerComponent().player.getYaw(), crossDimensionTeleport.playerComponent().player.getPitch());
+                                }
                             }
+
                             FabricDimensions.teleport(crossDimensionTeleport.playerComponent().player, destination, target);
                             crossDimensionTeleport.to().transitionIn(crossDimensionTeleport);
                         }
                     }
                 }
             }
+
+            if (level == BackroomsLevels.LEVEL324_BACKROOMS_LEVEL && this.player.getWorld().getBlockState(this.player.getBlockPos().offset(Direction.DOWN, 3)).isOf(Blocks.RED_WOOL)) {
+                this.player.teleport(this.player.getX(), this.player.getY() - 64, this.player.getZ());
+            }
+
+            if (level == BackroomsLevels.LEVEL324_BACKROOMS_LEVEL && this.player.getWorld().getBlockState(this.player.getBlockPos().offset(Direction.DOWN, 3)).isOf(Blocks.YELLOW_WOOL)) {
+                this.player.teleport(this.player.getX(), this.player.getY() + 64, this.player.getZ());
+            }
         }
+
 
         if (teleportingTimer >= 0) {
             this.setTeleportingTimer(teleportingTimer - 1);
@@ -534,6 +562,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                     }
 
                     this.savePlayerInventory();
+                    this.sync();
                     this.player.getInventory().clear();
                     TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
                     FabricDimensions.teleport(this.player, backrooms, target);

@@ -29,11 +29,11 @@ public class Level1BackroomsLevel extends BackroomsLevel {
     public void register() {
         super.register();
 
-        events.add(Level1Blackout::new);
-        events.add(Level1Flicker::new);
-        events.add(Level1Ambience::new);
+        this.registerEvents("blackout", Level1Blackout::new);
+        this.registerEvents("flicker", Level1Flicker::new);
+        this.registerEvents("ambience", Level1Ambience::new);
 
-        this.registerTransition((world, playerComponent, from) -> {
+        this.registerTransition(new LevelTransition(30, (world, playerComponent, from) -> {
             List<CrossDimensionTeleport> playerList = new ArrayList<>();
 
             if (from instanceof Level1BackroomsLevel && playerComponent.player.getPos().getY() <= 12 && playerComponent.player.isOnGround()) {
@@ -46,7 +46,7 @@ public class Level1BackroomsLevel extends BackroomsLevel {
             }
 
             return playerList;
-        }, "level1 -> level2");
+        }), "level1 -> level2");
     }
 
     private Vec3d calculateLevel2TeleportCoords(PlayerEntity player, ChunkPos chunkPos) {
@@ -93,11 +93,6 @@ public class Level1BackroomsLevel extends BackroomsLevel {
     @Override
     public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
 
-    }
-
-    @Override
-    public int getTransitionDuration() {
-        return 30;
     }
 
     public void setLightState(Level0BackroomsLevel.LightState lightState) {

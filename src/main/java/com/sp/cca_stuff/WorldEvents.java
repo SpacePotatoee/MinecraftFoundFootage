@@ -109,24 +109,22 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
     }
 
     private void shouldReleasePlayer() {
-        if (this.getActiveSkinwalkerTarget() != null && this.activeSkinWalkerEntity == null) {
-            ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
-            PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
+        if (this.activeSkinWalkerEntity == null) {
+            if (this.getActiveSkinwalkerTarget() != null) {
+                ServerPlayerEntity target = (ServerPlayerEntity) this.getActiveSkinwalkerTarget();
+                PlayerComponent targetComponent = InitializeComponents.PLAYER.get(target);
 
-            if (targetComponent.hasBeenCaptured() || targetComponent.isBeingCaptured()) {
-                target.changeGameMode(GameMode.SURVIVAL);
-                targetComponent.setHasBeenCaptured(false);
-                targetComponent.setShouldBeMuted(false);
-                targetComponent.sync();
-                SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
+                if (targetComponent.hasBeenCaptured() || targetComponent.isBeingCaptured()) {
+                    target.changeGameMode(GameMode.SURVIVAL);
+                    targetComponent.setHasBeenCaptured(false);
+                    targetComponent.setShouldBeMuted(false);
+                    targetComponent.sync();
+                    SPBRevamped.sendPersonalPlaySoundPacket(target, ModSounds.SKINWALKER_RELEASE, 1.0f, 1.0f);
+                }
+
+                this.activeSkinwalkerTarget = nullUUID;
             }
 
-            this.activeSkinwalkerTarget = nullUUID;
-
-            return;
-        }
-
-        if (activeSkinWalkerEntity == null) {
             return;
         }
 
@@ -140,7 +138,6 @@ public class WorldEvents implements AutoSyncedComponent, ServerTickingComponent 
 
             return;
         }
-
 
         BackroomsLevels.getLevel(world).ifPresent((backroomsLevel -> {
             if (backroomsLevel instanceof Level0BackroomsLevel level0BackroomsLevel) {

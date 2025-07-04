@@ -31,7 +31,6 @@ public class EntityLegWithFoot extends EntityLeg {
             this.foot.setLevel(this.entity.getWorld());
         }
 
-
         Vec3d referencePoint = MathUtil.rotatePointOnAPlaneAround(this.endJoint.add(this.getDownNormalOnLegPlane()), this.endJoint, this.foot.angleOffset, this.getLegPlane());
         this.footAngel = Math.toDegrees(MathUtil.calculateAngle(this.endJoint, this.foot.getPosition(), referencePoint));
 

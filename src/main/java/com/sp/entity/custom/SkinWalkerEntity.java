@@ -25,6 +25,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.Box;
@@ -61,7 +62,6 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
     private int trueFormTime;
 
     public SkinWalkerChaseSoundInstance chaseSoundInstance;
-
 
     public SkinWalkerEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
@@ -123,6 +123,15 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
     }
 
     @Override
+    public boolean onKilledOther(ServerWorld world, LivingEntity other) {
+        this.setTarget(null);
+        this.getNavigation().stop();
+
+        this.component.setShouldBeginRelease(true);
+        return super.onKilledOther(world, other);
+    }
+
+    @Override
     public void tick() {
         if (this.component.getTargetPlayerUUID() == null) {
             this.component.setTargetPlayerUUID(this.getTargetPlayer(this.getWorld()));
@@ -130,10 +139,9 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
         this.setInvulnerable(this.component.isInTrueForm());
 
-        if (this.getWorld().isClient && this.component.isInTrueForm()){
+        if (this.getWorld().isClient && this.component.isInTrueForm()) {
             this.tickComponentsServer(this);
         }
-
 
         if (!this.getWorld().isClient) {
             if (this.getTarget() != null) {
@@ -168,6 +176,10 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
             if (this.component.shouldBeginReveal()) {
                 this.tickReveal();
+            } else {
+                if (this.ticks > 100) {
+                    this.ticks = 0;
+                }
             }
         }
 
@@ -228,6 +240,8 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
                         this.beginTargeting((PlayerEntity) this.prevTarget);
                         this.prevTarget = null;
                     }
+
+                    this.ticks = 0;
                 }
             }
         }));

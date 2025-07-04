@@ -45,7 +45,7 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
 
     public SkinWalkerRenderer(EntityRendererFactory.Context renderManager) {
         super(renderManager, new SkinWalkerModel());
-        this.addRenderLayer(new IKDebugRenderLayer(this));
+        this.addRenderLayer(new IKDebugRenderLayer<>(this));
 
         spiderLegBones.add("seg1_leg1");
         spiderLegBones.add("seg2_leg1");
@@ -219,10 +219,12 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
     protected Identifier getTextureOverrideForBone(GeoBone bone, SkinWalkerEntity animatable, float partialTick) {
         SkinWalkerComponent component = InitializeComponents.SKIN_WALKER.get(animatable);
         String name = bone.getName();
+
         if(component.isInTrueForm()) {
             if (spiderLegBones.contains(name)) {
                 return SPIDER_LEGS_TEXTURE;
             }
+
             else if (name.equals("head") || name.equals("headwear")) {
                 return HEAD_TEXTURE;
             }
@@ -392,7 +394,6 @@ public class SkinWalkerRenderer extends DynamicGeoEntityRenderer<SkinWalkerEntit
         if (Objects.equals(bone.getName(), "head") && InitializeComponents.SKIN_WALKER.get(animatable).isInTrueForm()) {
             return RenderLayers.getDistortedEntity(texturePath);
         }
-
 
         return super.getRenderTypeOverrideForBone(bone, animatable, texturePath, bufferSource, partialTick);
     }

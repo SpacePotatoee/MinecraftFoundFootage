@@ -80,7 +80,7 @@ void main() {
     float windStrength = 1;
 
     #ifdef LEVEL324
-        //windStrength = 1.5;
+        windStrength = 1.5;
     #endif
 
     vec3 worldPos = localPos + VeilCamera.CameraPosition;

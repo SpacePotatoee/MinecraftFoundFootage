@@ -4,7 +4,6 @@ import com.sp.SPBRevamped;
 import com.sp.block.SprintBlockSoundGroup;
 import com.sp.block.custom.*;
 import com.sp.block.custom.pipes.*;
-import com.sp.item.ModItemGroups;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -224,9 +223,6 @@ public class ModBlocks {
     public static final Block RED_DIRT = registerBlock("red_dirt",
             new Block(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).hardness(-1f).noBlockBreakParticles().sounds(SprintBlockSoundGroup.GRASS2)));
 
-    public static final Block GAS_PUMP = Registry.register(Registries.BLOCK, new Identifier(SPBRevamped.MOD_ID, "gas_pump"),
-            new GasPumpBlock(FabricBlockSettings.copyOf(ModBlocks.CONCRETE_BLOCK_9).hardness(-1f).noBlockBreakParticles().sounds(SprintBlockSoundGroup.CONCRETE)));
-
     public static final Block PLASTIC = registerBlock("plastic",
             new Block(FabricBlockSettings.copyOf(ModBlocks.CONCRETE_BLOCK_9).hardness(-1f).noBlockBreakParticles().sounds(SprintBlockSoundGroup.SHROOMLIGHT)));
 
@@ -262,6 +258,9 @@ public class ModBlocks {
 
     public static final Block ONE_SIDED_SHELF = registerBlock("one_sided_shelf",
             new DoubleSidedShelfBlock(FabricBlockSettings.copyOf(ModBlocks.CONCRETE_BLOCK_11).hardness(-1f).noBlockBreakParticles().sounds(SprintBlockSoundGroup.WOOD)));
+
+    public static final Block PAVEMENT = registerBlock("pavement",
+            new Block(FabricBlockSettings.copyOf(ModBlocks.CONCRETE_BLOCK_11).hardness(-1f).noBlockBreakParticles().sounds(SprintBlockSoundGroup.CONCRETE)));
 
 
     private static Block registerBlock(String name, Block block) {

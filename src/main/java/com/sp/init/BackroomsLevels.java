@@ -43,7 +43,7 @@ public class BackroomsLevels {
         BACKROOMS_LEVELS.add(POOLROOMS_BACKROOMS_LEVEL);
         BACKROOMS_LEVELS.add(INFINITE_FIELD_BACKROOMS_LEVEL);
         BACKROOMS_LEVELS.add(OVERWORLD_REPRESENTING_BACKROOMS_LEVEL);
-        //BACKROOMS_LEVELS.add(LEVEL324_BACKROOMS_LEVEL);
+        BACKROOMS_LEVELS.add(LEVEL324_BACKROOMS_LEVEL);
 
         for (BackroomsLevel backroomsLevel : BACKROOMS_LEVELS) {
             backroomsLevel.register();
@@ -82,6 +82,7 @@ public class BackroomsLevels {
             "LEVEL0",         LEVEL0_WORLD_KEY,
             "LEVEL1",         LEVEL1_WORLD_KEY,
             "LEVEL2",         LEVEL2_WORLD_KEY,
+            "LEVEL324",       LEVEL324_WORLD_KEY,
             "POOLROOMS",      POOLROOMS_WORLD_KEY,
             "INFINITE_FIELD", INFINITE_FIELD_WORLD_KEY
     );

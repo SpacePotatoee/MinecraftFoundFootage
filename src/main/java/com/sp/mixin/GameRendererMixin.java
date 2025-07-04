@@ -178,7 +178,7 @@ public abstract class GameRendererMixin {
     }, at = @At("TAIL"), cancellable = true)
     private static void setPlayerWarpShader(CallbackInfoReturnable<ShaderProgram> cir) {
         foundry.veil.api.client.render.shader.program.ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(warpEntity);
-        if (shader == null || !SPBRevampedClient.shoudlRenderWarp) {
+        if (shader == null || !SPBRevampedClient.shouldRenderWarp) {
             cir.setReturnValue(renderTypeEntityTranslucentProgram);
             return;
         }
@@ -201,6 +201,4 @@ public abstract class GameRendererMixin {
     private double increaseReach(double constant){
         return 36;
     }
-
-
 }

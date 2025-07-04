@@ -20,29 +20,6 @@ import net.minecraft.world.RaycastContext;
 import java.util.List;
 
 public class LegDebugRenderer<E extends IKAnimatable<E>, C extends IKChain> extends IKChainDebugRenderer<E, IKLegComponent<C, E>> {
-    private static <C extends IKChain> void drawAngleConstraintsForBase(Segment currentSegment, C chain, Entity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
-        Vec3d entityPos = entity.getPos();
-
-        Vec3d C = chain.getFirst().getPosition().subtract(0, 1, 0);
-
-        double angle = Math.toDegrees(MathUtil.calculateAngle(chain.getFirst().getPosition(), chain.segments.get(1).getPosition(), C));
-        double angleDelta = chain.getFirst().angleSize - angle;
-
-        Vec3d normal = MathUtil.getClosestNormalRelativeToEntity(chain.segments.get(1).getPosition(), chain.getFirst().getPosition(), chain.segments.get(2).getPosition(), entity);
-        Vec3d newPos = MathUtil.rotatePointOnAPlaneAround(chain.segments.get(1).getPosition(), chain.getFirst().getPosition(), angleDelta, normal);
-
-        /*
-        Vec3d otherNewPos = MathUtil.rotatePointOnAPlaneAround(chain.segments.get(1).getPosition(), chain.getFirst().getPosition(), (angleDelta - (chain.getFirst().angleSize * 2)), normal);
-        Vec3d middlePos = MathUtil.rotatePointOnAPlaneAround(chain.segments.get(1).getPosition(), chain.getFirst().getPosition(), (angleDelta - chain.getFirst().angleSize), normal);
-        */
-
-        /*
-        IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, currentSegment.getPosition(), newPos, 255, 0, 0, 127);
-        IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, currentSegment.getPosition(), middlePos, 180, 180, 180, 127);
-        IKDebugRenderer.drawLine(matrices, vertexConsumers, entityPos, currentSegment.getPosition(), otherNewPos, 0, 255, 0, 127);
-
-         */
-    }
 
     @Override
     public void renderDebug(IKLegComponent<C, E> component, E animatable, MatrixStack poseStack, RenderLayer renderType, VertexConsumerProvider bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
@@ -61,7 +38,7 @@ public class LegDebugRenderer<E extends IKAnimatable<E>, C extends IKChain> exte
 
                 Vec3d limbOffset = endPoint.baseOffset.multiply(component.getScale());
 
-                if (component.getStillStandCounter() != component.getSettings().get(0).standStillCounter()) {
+                if (component.hasMovedOverLastTick(entity)) {
                     limbOffset = limbOffset.add(0, 0, component.getSettings().get(0).stepInFront() * component.getScale());
                 }
 
@@ -91,7 +68,6 @@ public class LegDebugRenderer<E extends IKAnimatable<E>, C extends IKChain> exte
     private void renderLeg(MatrixStack poseStack, VertexConsumerProvider bufferSource, C chain, Entity entity) {
         Vec3d entityPos = entity.getPos();
 
-        drawAngleConstraintsForBase(chain.getFirst(), chain, entity, poseStack, bufferSource);
         for (int i = 0; i < chain.getJoints().size() - 1; i++) {
             if (i > 0) {
                 this.drawAngleConstraints(i, chain, entity, poseStack, bufferSource);

@@ -6,6 +6,7 @@ public class EmptyEvent extends AbstractEvent {
     @Override
     public void init(World world) {
 
+        done = true;
     }
 
     @Override

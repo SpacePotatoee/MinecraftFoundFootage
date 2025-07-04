@@ -1,5 +1,4 @@
 #version 410 core
-#define LEVEL324
 #extension GL_ARB_compute_shader : enable
 #extension GL_ARB_shader_storage_buffer_object : enable
 
@@ -66,12 +65,10 @@ void main() {
 
     vec3 offset = vec3(x/density, 31, z/density);
 
-    /*
 
     #ifdef LEVEL324
     offset = vec3(x/density, (31+34), z/density);
     #endif
-    */
 
     vec3 WorldPos = offset - cameraPos;
 
@@ -81,11 +78,9 @@ void main() {
     bool isInRoad = false;
 
 
-    /*
     #ifdef LEVEL324
     isInRoad = (mod(player.x + offset.x, 1000) < 8) || ((player.z + offset.z > 0 && player.z + offset.z < 27) && (player.x + offset.x > 8 && player.x + offset.x < 56));
     #endif
-    */
 
 
     if (!isInRoad) {

@@ -78,12 +78,10 @@ public class SmilerEntity extends MobEntity {
                 }
             }
 
-            if (!((BackroomsLevels.getLevel(this.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level1BackroomsLevel level)) {
-                return;
-            }
-
-            if(level.getLightState() != Level0BackroomsLevel.LightState.BLACKOUT) {
-                this.discard();
+            if (((BackroomsLevels.getLevel(this.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL)) instanceof Level1BackroomsLevel level)) {
+                if (level.getLightState() != Level0BackroomsLevel.LightState.BLACKOUT) {
+                    this.discard();
+                }
             }
         }
 

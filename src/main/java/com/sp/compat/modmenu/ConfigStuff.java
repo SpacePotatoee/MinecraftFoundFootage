@@ -2,7 +2,6 @@ package com.sp.compat.modmenu;
 
 import com.sp.render.grass.GrassQuality;
 import eu.midnightdust.lib.config.MidnightConfig;
-import net.minecraft.client.MinecraftClient;
 
 
 public class ConfigStuff extends MidnightConfig {
@@ -54,6 +53,9 @@ public class ConfigStuff extends MidnightConfig {
 
     @Entry(category = SHADERS)
     public static boolean enableVhsEffect = true;
+
+    @Entry(category = SHADERS)
+    public static boolean enableVhsEffectInTheBackrooms = true;
 
     @Entry(category = SHADERS, isSlider = true, min = 0, max = 1)
     public static float VHSDistortionMultiplier = 1.0f;

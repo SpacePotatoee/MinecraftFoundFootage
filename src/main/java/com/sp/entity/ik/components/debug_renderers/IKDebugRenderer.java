@@ -2,7 +2,6 @@ package com.sp.entity.ik.components.debug_renderers;
 
 import com.sp.entity.ik.components.IKAnimatable;
 import com.sp.entity.ik.components.IKModelComponent;
-import com.sp.entity.ik.util.MathUtil;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -16,29 +15,6 @@ public interface IKDebugRenderer<E extends IKAnimatable<E>, C extends IKModelCom
     static void drawLineToBox(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Vec3d camera, Vec3d startPos, Vec3d targetPos, Entity entity, int red, int green, int blue, int alpha) {
         drawBox(matrices, vertexConsumers, targetPos, entity, red, green, blue, alpha);
         drawLine(matrices, vertexConsumers, camera, startPos, targetPos, red, green, blue, alpha);
-    }
-
-    static void drawCone(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Vec3d camera, Vec3d baseCenter, Vec3d tip, int segments, int red, int green, int blue, int alpha) {
-        double angle = 360 / (double) segments;
-        Vec3d basePoint = MathUtil.rotatePointOnAPlaneAround(tip, baseCenter, angle, baseCenter.subtract(tip).normalize());
-
-        IKDebugRenderer.drawLine(matrices, vertexConsumers, camera, tip, basePoint, red, green, blue, alpha);
-        /*
-        // Calculate each point on the base
-        for (int i = 0; i < segments; i++) {
-            // Compute positions on the base
-            Vec3d basePoint1 = MathUtil.rotatePointOnAPlaneAround(tip, baseCenter, -angle, baseCenter.subtract(tip).normalize());
-            Vec3d basePoint2 = MathUtil.rotatePointOnAPlaneAround(tip, baseCenter, angle, baseCenter.subtract(tip).normalize());
-
-            // Draw line from each base point to the tip
-            vertexConsumer.vertex(matrices.last().pose(), (float) (basePoint1.x - camera.x), (float) (basePoint1.y - camera.y), (float) (basePoint1.z - camera.z)).color(getArgb(alpha, red, green, blue)).endVertex();
-            vertexConsumer.vertex(matrices.last().pose(), (float) (tip.x - camera.x), (float) (tip.y - camera.y), (float) (tip.z - camera.z)).color(getArgb(alpha, red, green, blue)).endVertex();
-
-            // Optionally, draw base outline by connecting each segment point
-            vertexConsumer.vertex(matrices.last().pose(), (float) (basePoint1.x - camera.x), (float) (basePoint1.y - camera.y), (float) (basePoint1.z - camera.z)).color(getArgb(alpha, red, green, blue)).endVertex();
-            vertexConsumer.vertex(matrices.last().pose(), (float) (basePoint2.x - camera.x), (float) (basePoint2.y - camera.y), (float) (basePoint2.z - camera.z)).color(getArgb(alpha, red, green, blue)).endVertex();
-        }
-         */
     }
 
     static void drawBox(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Vec3d targetPos, Entity entity, int red, int green, int blue, int alpha) {

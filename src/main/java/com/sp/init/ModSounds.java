@@ -70,6 +70,9 @@ public class ModSounds {
     public static final SoundEvent INFINITE_GRASS_SOUNDEVENT_FAR = registerSoundEvent("infinite_grass_soundevent_far");
 
 
+    public static final SoundEvent WINDTUNNEL_GRASS_AMBIENCE = registerSoundEvent("wind_tunnel_ambience");
+
+
     public static final SoundEvent SKINWALKER_AMBIENCE = registerSoundEvent("skinwalker_ambience");
     public static final SoundEvent SKINWALKER_CHASE = registerSoundEvent("skinwalker_chase");
     public static final SoundEvent SKINWALKER_NOTICE = registerSoundEvent("skinwalker_notice");

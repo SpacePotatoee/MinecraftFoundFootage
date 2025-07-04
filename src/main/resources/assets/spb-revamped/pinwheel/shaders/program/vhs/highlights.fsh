@@ -7,7 +7,7 @@ out vec4 fragColor;
 vec3 BloomLod(float scale, vec2 offset){
     vec3 color = vec3(0.0);
     vec2 uv = ((texCoord - offset) * scale);
-    if(uv.x > 1.0 || uv.y > 1.0 || uv.x < 0.0 || uv.y < 0.0){
+    if (uv.x > 1.0 || uv.y > 1.0 || uv.x < 0.0 || uv.y < 0.0) {
         color = vec3(0.0, 0.0, 0.0);
     } else {
         color += texture(DiffuseSampler0, uv).rgb;
@@ -25,7 +25,7 @@ void main(){
     color = vec4(0.0, 0.0, 0.0, 1.0);
     float scale = 2.0;
     float offset = 0;
-    for(int i = 0; i < 5; i++){
+    for (int i = 0; i < 5; i++) {
         color.rgb += BloomLod(scale, vec2(offset, 0.0));
         offset = (1.0 - (1.0/ scale));
         scale *= 2.0;
@@ -35,9 +35,9 @@ void main(){
     float handDepth = texture(HandDepth, texCoord).r;
 
 
-	if(Brightness >= 1.0) {
+	if (Brightness >= 1.0) {
         fragColor = vec4(color.rgb, 1.0);
-    } else{
+    } else {
         fragColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
 }

@@ -3,6 +3,7 @@ package com.sp.entity.ik.model.GeckoLib;
 import com.sp.entity.ik.model.BoneAccessor;
 import com.sp.entity.ik.util.MathUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -208,13 +209,22 @@ public class MowzieGeoBone extends GeoBone implements BoneAccessor /* only the i
 
         Matrix4f xformOverride = new Matrix4f();
 
-        Vec3d newModelPosWorldSpace = MathUtil.rotatePointOnAPlaneAround(to, entity.getPos(), -180 + entity.getBodyYaw(), new Vec3d(0, 1, 0));
+        Vec3d newModelPosWorldSpace;
+        if (entity instanceof LivingEntity) {
+            newModelPosWorldSpace = MathUtil.rotatePointOnAPlaneAround(to, entity.getPos(), -180 + entity.getBodyYaw(), new Vec3d(0, 1, 0));
+        } else {
+            newModelPosWorldSpace = MathUtil.rotatePointOnAPlaneAround(to, entity.getPos(), -180, new Vec3d(0, 1, 0));
+        }
         // Translation
         xformOverride = xformOverride.translate(newModelPosWorldSpace.toVector3f());
 
         if (facing != null) {
-            Vec3d newTargetVecWorldSpace = MathUtil.rotatePointOnAPlaneAround(facing, entity.getPos(), -180 + entity.getBodyYaw(), new Vec3d(0, 1, 0));
-
+            Vec3d newTargetVecWorldSpace;
+            if (entity instanceof LivingEntity) {
+                newTargetVecWorldSpace = MathUtil.rotatePointOnAPlaneAround(facing, entity.getPos(), -180 + entity.getBodyYaw(), new Vec3d(0, 1, 0));
+            } else {
+                newTargetVecWorldSpace = MathUtil.rotatePointOnAPlaneAround(facing, entity.getPos(), -180, new Vec3d(0, 1, 0));
+            }
 
             Quaternionf q;
             Vector3f desiredDir = newTargetVecWorldSpace.toVector3f().sub(newModelPosWorldSpace.toVector3f(),  new Vector3f()).normalize();

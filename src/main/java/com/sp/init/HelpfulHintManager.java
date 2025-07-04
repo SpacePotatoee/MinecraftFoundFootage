@@ -12,7 +12,7 @@ public class HelpfulHintManager {
     public static boolean turnedOnFlashlight;
     public static boolean wentToBackrooms;
 
-    //Not persistant after quitting the game but its good enough
+    //Not persistent after quitting the game but its good enough
     public static void sendMessages(ClientPlayerEntity player){
         if (ConfigStuff.enableHint) {
             if (!turnedOnFlashlight) {

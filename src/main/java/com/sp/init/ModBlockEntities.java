@@ -18,8 +18,6 @@ public class ModBlockEntities {
     public static BlockEntityType<CeilingLightBlockEntity> CEILING_LIGHT_BLOCK_ENTITY;
     public static BlockEntityType<EmergencyLightBlockEntity> EMERGENCY_LIGHT_BLOCK_ENTITY;
 
-    public static BlockEntityType<GasPumpBlockEntity> GAS_PUMP_ENTITY;
-
     public static void registerAllBlockEntities() {
 
         FLUORESCENT_LIGHT_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
@@ -52,11 +50,6 @@ public class ModBlockEntities {
                 new Identifier(SPBRevamped.MOD_ID,"emergency_light_block_entity"),
                 FabricBlockEntityTypeBuilder.create(EmergencyLightBlockEntity::new,
                         ModBlocks.EMERGENCY_LIGHT).build());
-
-        GAS_PUMP_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
-                new Identifier(SPBRevamped.MOD_ID,"gas_pump_block_entity"),
-                FabricBlockEntityTypeBuilder.create(GasPumpBlockEntity::new,
-                        ModBlocks.GAS_PUMP).build());
 
         TINY_FLUORESCENT_LIGHT_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
                 new Identifier(SPBRevamped.MOD_ID,"tiny_fluorescent_light_block_entity"),

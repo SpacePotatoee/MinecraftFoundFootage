@@ -7,12 +7,7 @@ import net.minecraft.world.World;
 
 public class OverworldRepresentingBackroomsLevel extends WorldRepresentingBackroomsLevel {
     public OverworldRepresentingBackroomsLevel() {
-        super("overworld", new Vec3d(0,0,0), World.OVERWORLD);
-    }
-
-    @Override
-    public void register() {
-
+        super("overworld", new Vec3d(0,200,0), World.OVERWORLD);
     }
 
     @Override

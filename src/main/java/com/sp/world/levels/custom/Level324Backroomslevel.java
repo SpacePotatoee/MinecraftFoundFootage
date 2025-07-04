@@ -45,9 +45,4 @@ public class Level324Backroomslevel extends BackroomsLevel {
     public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
 
     }
-
-    @Override
-    public int getTransitionDuration() {
-        return 0;
-    }
 }
