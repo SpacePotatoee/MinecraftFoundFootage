@@ -37,8 +37,8 @@ public class Level324Backroomslevel extends BackroomsLevel {
     }
 
     @Override
-    public boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
-        return true;
+    public void transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
+
     }
 
     @Override

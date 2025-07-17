@@ -56,6 +56,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.sp.block.custom.ThinFluorescentLightBlock.FACE;
 import static com.sp.block.custom.ThinFluorescentLightBlock.FACING;
@@ -194,56 +195,74 @@ public class ClientWrapper {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //Client side stuff for level 0 -> 1 and 1 -> 2 and so on.
-            BackroomsLevel backroomsLevel = BackroomsLevels.getLevel(playerComponent.player.getWorld()).orElse(BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL);
 
-            List<BackroomsLevel.LevelTransition> teleports = backroomsLevel.checkForTransition(playerComponent, playerComponent.player.getWorld());
+            Optional<BackroomsLevel> backroomsLevel = BackroomsLevels.getLevel(playerComponent.player.getWorld());
 
-            if (!teleports.isEmpty() && playerComponent.getTeleportingTimer() >= teleports.get(0).duration() - 1) {
-                for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).callback().predicate(playerComponent.player.getWorld(), playerComponent, backroomsLevel)) {
-                    crossDimensionTeleport.from().transitionOut(crossDimensionTeleport);
+            if (backroomsLevel.isPresent()) {
+                BackroomsLevel level = backroomsLevel.get();
+
+                List<BackroomsLevel.LevelTransition> teleports = level.checkForTransition(playerComponent, playerComponent.player.getWorld());
+
+                if (!teleports.isEmpty() && playerComponent.currentTransition == null) {
+                    playerComponent.currentTransition = teleports.get(0);
                 }
 
-                playerComponent.setTeleportingTimer(teleports.get(0).duration() - 2);
-            }
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+                //Flashlight
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                if (Keybinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen && !playerComponent.hasBeenCaptured && !playerComponent.isBeingCaptured()) {
+                    playerComponent.player.playSound(ModSounds.FLASHLIGHT_CLICK, 0.5f, 1);
+                    if (level.allowsTorch().value()) {
+                        playerComponent.setFlashLightOn(!playerComponent.isFlashLightOn());
+                        HelpfulHintManager.disableFlashlightHint();
 
-            //Flashlight
+                        if (!playerComponent.player.isSpectator()) {
+                            SPBRevampedClient.sendComponentSyncPacket(playerComponent.isFlashLightOn(), "flashlight");
+                        }
+                    } else {
+                        playerComponent.setFlashLightOn(false);
+                        playerComponent.player.sendMessage(level.allowsTorch().string(), true);
+                    }
+                } else if (playerComponent.hasBeenCaptured && playerComponent.isBeingCaptured()) {
+                    if (playerComponent.isFlashLightOn()) {
+                        playerComponent.setFlashLightOn(false);
 
-
-
-            if (Keybinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen && !playerComponent.hasBeenCaptured && !playerComponent.isBeingCaptured()) {
-                playerComponent.player.playSound(ModSounds.FLASHLIGHT_CLICK, 0.5f, 1);
-                if (backroomsLevel.allowsTorch().value()) {
-                    playerComponent.setFlashLightOn(!playerComponent.isFlashLightOn());
-                    HelpfulHintManager.disableFlashlightHint();
-
-                    if (!playerComponent.player.isSpectator()) {
                         SPBRevampedClient.sendComponentSyncPacket(playerComponent.isFlashLightOn(), "flashlight");
                     }
-                } else {
-                    playerComponent.setFlashLightOn(false);
-                    playerComponent.player.sendMessage(backroomsLevel.allowsTorch().string(), true);
                 }
-            } else if (playerComponent.hasBeenCaptured && playerComponent.isBeingCaptured()) {
-                if (playerComponent.isFlashLightOn()) {
-                    playerComponent.setFlashLightOn(false);
 
-                    SPBRevampedClient.sendComponentSyncPacket(playerComponent.isFlashLightOn(), "flashlight");
+                if (!level.allowsTorch().value()) {
+                    if (playerComponent.isFlashLightOn()) {
+                        SPBRevampedClient.sendComponentSyncPacket(false, "flashlight");
+                    }
+                    playerComponent.setFlashLightOn(false);
+                }
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            }
+
+
+            if (playerComponent.currentTransition != null) {
+                if (playerComponent.getTeleportingTimer() == -1) {
+                    playerComponent.setTeleportingTimer(playerComponent.currentTransition.duration());
+                }
+
+                if (playerComponent.getTeleportingTimer() == 0) {
+                    playerComponent.currentTransition.teleport().to().transitionOut(playerComponent.currentTransition.teleport());
+                    playerComponent.currentTransition.teleport().to().transitionIn(playerComponent.currentTransition.teleport());
+                    playerComponent.currentTransition = null;
                 }
             }
 
-            if (!backroomsLevel.allowsTorch().value()) {
-                if (playerComponent.isFlashLightOn()) {
-                    SPBRevampedClient.sendComponentSyncPacket(false, "flashlight");
+            if (playerComponent.getTeleportingTimer() >= 1) {
+                if (playerComponent.currentTransition != null) {
+                    playerComponent.currentTransition.callback().tick(playerComponent.currentTransition.teleport(), playerComponent.getTeleportingTimer());
                 }
-                playerComponent.setFlashLightOn(false);
+                playerComponent.setTeleportingTimer(playerComponent.getTeleportingTimer() - 1);
             }
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             ////AMBIENCE////
             RegistryKey<World> levelKey = playerComponent.player.getWorld().getRegistryKey();

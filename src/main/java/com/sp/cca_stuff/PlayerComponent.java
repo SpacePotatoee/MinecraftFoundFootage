@@ -105,6 +105,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public int glitchTick;
     public boolean shouldInflictGlitchDamage;
 
+    public BackroomsLevel.LevelTransition currentTransition = null;
+
     public PlayerComponent(PlayerEntity player){
         this.stamina = 300;
         this.tired = false;
@@ -429,31 +431,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
             List<BackroomsLevel.LevelTransition> teleports = level.checkForTransition(this, this.player.getWorld());
 
-            if (!teleports.isEmpty()) {
-                for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).callback().predicate(this.player.getWorld(), this, level)) {
-                    if (crossDimensionTeleport.from().transitionOut(crossDimensionTeleport)) {
-                        if (teleportingTimer == -1) {
-                            this.setTeleportingTimer(teleports.get(0).duration());
-                        }
-
-                        if (teleportingTimer == 0) {
-                            ServerWorld destination = crossDimensionTeleport.world().getServer().getWorld(crossDimensionTeleport.to().getWorldKey());
-                            TeleportTarget target = new TeleportTarget(crossDimensionTeleport.pos(), crossDimensionTeleport.playerComponent().player.getVelocity(), crossDimensionTeleport.playerComponent().player.getYaw(), crossDimensionTeleport.playerComponent().player.getPitch());
-
-                            if (crossDimensionTeleport.to() == BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL) {
-                                crossDimensionTeleport.playerComponent().sync();
-
-                                if (this.player.getWorld().getGameRules().getBoolean(ModGamerules.STUCK_IN_BACKROOMS)) {
-                                    destination = crossDimensionTeleport.world().getServer().getWorld(BackroomsLevels.LEVEL0_BACKROOMS_LEVEL.getWorldKey());
-                                    target = new TeleportTarget(BackroomsLevels.LEVEL0_BACKROOMS_LEVEL.getSpawnPos(), crossDimensionTeleport.playerComponent().player.getVelocity(), crossDimensionTeleport.playerComponent().player.getYaw(), crossDimensionTeleport.playerComponent().player.getPitch());
-                                }
-                            }
-
-                            FabricDimensions.teleport(crossDimensionTeleport.playerComponent().player, destination, target);
-                            crossDimensionTeleport.to().transitionIn(crossDimensionTeleport);
-                        }
-                    }
-                }
+            if (!teleports.isEmpty() && currentTransition == null) {
+                currentTransition = teleports.get(0);
             }
 
             if (level == BackroomsLevels.LEVEL324_BACKROOMS_LEVEL && this.player.getWorld().getBlockState(this.player.getBlockPos().offset(Direction.DOWN, 3)).isOf(Blocks.RED_WOOL)) {
@@ -465,8 +444,38 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
         }
 
+        // ������ Why is the � a question mark for me?
+
+        if (currentTransition != null) {
+            if (teleportingTimer == -1) {
+                this.setTeleportingTimer(currentTransition.duration());
+            }
+
+            if (teleportingTimer == 0) {
+                ServerWorld destination = this.player.getWorld().getServer().getWorld(currentTransition.teleport().to().getWorldKey());
+                TeleportTarget target = new TeleportTarget(currentTransition.teleport().pos(), currentTransition.teleport().playerComponent().player.getVelocity(), currentTransition.teleport().playerComponent().player.getYaw(), currentTransition.teleport().playerComponent().player.getPitch());
+
+                if (currentTransition.teleport().to() == BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL) {
+                    currentTransition.teleport().playerComponent().sync();
+
+                    if (this.player.getWorld().getGameRules().getBoolean(ModGamerules.STUCK_IN_BACKROOMS)) {
+                        destination = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL0_BACKROOMS_LEVEL.getWorldKey());
+                        target = new TeleportTarget(BackroomsLevels.LEVEL0_BACKROOMS_LEVEL.getSpawnPos(), currentTransition.teleport().playerComponent().player.getVelocity(), currentTransition.teleport().playerComponent().player.getYaw(), currentTransition.teleport().playerComponent().player.getPitch());
+                    }
+                }
+
+                currentTransition.teleport().to().transitionOut(currentTransition.teleport());
+                FabricDimensions.teleport(currentTransition.teleport().playerComponent().player, destination, target);
+                currentTransition.teleport().to().transitionIn(currentTransition.teleport());
+
+                currentTransition = null;
+            }
+        }
 
         if (teleportingTimer >= 0) {
+            if (currentTransition != null) {
+                currentTransition.callback().tick(currentTransition.teleport(), teleportingTimer);
+            }
             this.setTeleportingTimer(teleportingTimer - 1);
         }
 

@@ -33,20 +33,41 @@ public class Level1BackroomsLevel extends BackroomsLevel {
         this.registerEvents("flicker", Level1Flicker::new);
         this.registerEvents("ambience", Level1Ambience::new);
 
-        this.registerTransition(new LevelTransition(30, (world, playerComponent, from) -> {
-            List<CrossDimensionTeleport> playerList = new ArrayList<>();
+        this.registerTransition((world, playerComponent, from) -> {
+            List<LevelTransition> playerList = new ArrayList<>();
+
 
             if (from instanceof Level1BackroomsLevel && playerComponent.player.getPos().getY() <= 12 && playerComponent.player.isOnGround()) {
                 for (PlayerEntity player : playerComponent.player.getWorld().getPlayers()) {
                     PlayerComponent otherPlayerComponent = InitializeComponents.PLAYER.get(player);
-                    if (player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                        playerList.add(new CrossDimensionTeleport(player.getWorld(), otherPlayerComponent, calculateLevel2TeleportCoords(player, playerComponent.player.getChunkPos()), BackroomsLevels.LEVEL1_BACKROOMS_LEVEL, BackroomsLevels.LEVEL2_BACKROOMS_LEVEL));
-                    }
+                    playerList.add(getLevel2Transition(otherPlayerComponent));
                 }
             }
 
             return playerList;
-        }), "level1 -> level2");
+        }, this.getLevelId() + "-> level2");
+    }
+
+
+    private LevelTransition getLevel2Transition(PlayerComponent playerComponent) {
+        return new LevelTransition(
+                30,
+                (teleport, tick) -> {
+                    if (tick == 30) {
+                        if (!playerComponent.player.getWorld().isClient()) {
+                            if(!playerComponent.isTeleporting()) {
+                                SPBRevamped.sendLevelTransitionLightsOutPacket((ServerPlayerEntity) playerComponent.player, 80);
+                            }
+                        }
+                    }
+                }, // Tick
+                new CrossDimensionTeleport(
+                        playerComponent,
+                        calculateLevel2TeleportCoords(playerComponent.player,
+                        playerComponent.player.getChunkPos()),
+                        this,
+                        BackroomsLevels.LEVEL2_BACKROOMS_LEVEL),
+                (teleport, tick) -> {}); // Cancel
     }
 
     private Vec3d calculateLevel2TeleportCoords(PlayerEntity player, ChunkPos chunkPos) {
@@ -80,14 +101,8 @@ public class Level1BackroomsLevel extends BackroomsLevel {
     }
 
     @Override
-    public boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
-        if (!crossDimensionTeleport.world().isClient()) {
-            if(!crossDimensionTeleport.playerComponent().isTeleporting()) {
-                SPBRevamped.sendLevelTransitionLightsOutPacket((ServerPlayerEntity) crossDimensionTeleport.playerComponent().player, 80);
-            }
-        }
+    public void transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
 
-        return crossDimensionTeleport.playerComponent().player.isOnGround();
     }
 
     @Override

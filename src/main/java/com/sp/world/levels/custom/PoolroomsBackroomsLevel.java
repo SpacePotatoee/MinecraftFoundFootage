@@ -1,11 +1,14 @@
 package com.sp.world.levels.custom;
 
+import com.sp.SPBRevamped;
+import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.BackroomsLevels;
 import com.sp.world.events.poolrooms.PoolroomsAmbience;
 import com.sp.world.events.poolrooms.PoolroomsSunset;
 import com.sp.world.generation.chunk_generator.PoolroomsChunkGenerator;
 import com.sp.world.levels.BackroomsLevel;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
@@ -38,17 +41,33 @@ public class PoolroomsBackroomsLevel extends BackroomsLevel {
         this.registerEvents("sunset", PoolroomsSunset::new);
         this.registerEvents("abience", PoolroomsAmbience::new);
 
-        this.registerTransition(new LevelTransition(0, (world, playerComponent, from) -> {
+        this.registerTransition((world, playerComponent, from) -> {
+            List<LevelTransition> playerList = new ArrayList<>();
 
-            List<CrossDimensionTeleport> playerList = new ArrayList<>();
             if (from instanceof PoolroomsBackroomsLevel && playerComponent.player.getWorld().getLightLevel(playerComponent.player.getBlockPos()) == 0 && playerComponent.player.getPos().y < 60 && playerComponent.player.getPos().y > 52) {
-                    if (playerComponent.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY) {
-                        playerList.add(new CrossDimensionTeleport(playerComponent.player.getWorld(), playerComponent, BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL.getSpawnPos(), BackroomsLevels.POOLROOMS_BACKROOMS_LEVEL, BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL));
-                    }
+                playerList.add(getInfiniteFieldTransition(playerComponent));
             }
 
             return playerList;
-        }), this.getLevelId() + "->" + BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL.getLevelId());
+
+        }, this.getLevelId() + "->" + BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL.getLevelId());
+    }
+
+    private LevelTransition getInfiniteFieldTransition(PlayerComponent playerComponent) {
+        return new LevelTransition(
+                1,
+                (teleport, tick) -> {
+                    if (!teleport.playerComponent().player.getWorld().isClient()) {
+                        SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) teleport.playerComponent().player, 60, true, false);
+                    }
+                },
+                new CrossDimensionTeleport(
+                        playerComponent,
+                        BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL.getSpawnPos(),
+                        this,
+                        BackroomsLevels.INFINITE_FIELD_BACKROOMS_LEVEL
+                ),
+                (teleport, tick) -> {});
     }
 
     @Override
@@ -101,19 +120,12 @@ public class PoolroomsBackroomsLevel extends BackroomsLevel {
     }
 
     @Override
-    public boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
+    public void transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
         crossDimensionTeleport.playerComponent().player.fallDistance = 0;
-
-        return true;
     }
 
     @Override
     public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
 
-    }
-
-    @Override
-    public int getTransitionDuration() {
-        return 0;
     }
 }

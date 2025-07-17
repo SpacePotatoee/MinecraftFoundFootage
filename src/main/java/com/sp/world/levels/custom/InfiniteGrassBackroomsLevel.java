@@ -1,6 +1,6 @@
 package com.sp.world.levels.custom;
 
-import com.sp.SPBRevamped;
+import com.sp.cca_stuff.PlayerComponent;
 import com.sp.init.BackroomsLevels;
 import com.sp.world.events.infinite_grass.InfiniteGrassAmbience;
 import com.sp.world.generation.chunk_generator.InfGrassChunkGenerator;
@@ -31,34 +31,47 @@ public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
 
         this.registerEvents("ambience", InfiniteGrassAmbience::new);
 
-        /*
-         * The transition is kinda ass and so it's not allow the transition out method to be called on the client.
-         */
-        this.registerTransition(new LevelTransition(0, (world, playerComponent, from) -> {
-            List<CrossDimensionTeleport> playerList = new ArrayList<>();
+        this.registerTransition((world, playerComponent, from) -> {
+            List<LevelTransition> playerList = new ArrayList<>();
 
-            if (playerComponent.player.getWorld().getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY && playerComponent.player.getPos().y > 57.5 && playerComponent.player.isOnGround()) {
-                if (playerComponent.player instanceof ServerPlayerEntity) {
-                    BlockPos blockPos = ((ServerPlayerEntity)playerComponent.player).getSpawnPointPosition();
-                    float f = ((ServerPlayerEntity)playerComponent.player).getSpawnAngle();
-                    boolean bl = ((ServerPlayerEntity)playerComponent.player).isSpawnForced();
-                    ServerWorld serverWorld = playerComponent.player.getWorld().getServer().getWorld(World.OVERWORLD);
-                    Optional<Vec3d> optional = Optional.empty();
-
-                    if (serverWorld != null && blockPos != null) {
-                        optional = PlayerEntity.findRespawnPosition(serverWorld, blockPos, f, bl, true);
-                    }
-
-                    ServerWorld overworld = playerComponent.player.getWorld().getServer().getWorld(World.OVERWORLD);
-                    BlockPos blockPos1 = overworld.getSpawnPos();
-
-                    playerList.add(new CrossDimensionTeleport(world, playerComponent, optional.orElse(blockPos1.toCenterPos()), from, BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL));
-                }
+            if (from instanceof InfiniteGrassBackroomsLevel && playerComponent.player.getPos().y > 57.5 && playerComponent.player.isOnGround()) {
+                playerList.add(getOverworldTransition(playerComponent));
             }
 
             return playerList;
-        }), this.getLevelId() + "->" + BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL.getLevelId());
+        }, this.getLevelId() + "->" + BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL.getLevelId());
+    }
 
+    private LevelTransition getOverworldTransition(PlayerComponent playerComponent) {
+        Optional<Vec3d> optional = Optional.empty();
+        BlockPos blockPos1 = new BlockPos(0, 64, 0);
+        if (playerComponent.player instanceof ServerPlayerEntity) {
+            BlockPos blockPos = ((ServerPlayerEntity) playerComponent.player).getSpawnPointPosition();
+            float f = ((ServerPlayerEntity) playerComponent.player).getSpawnAngle();
+            boolean bl = ((ServerPlayerEntity) playerComponent.player).isSpawnForced();
+            ServerWorld serverWorld = playerComponent.player.getWorld().getServer().getWorld(World.OVERWORLD);
+
+            if (serverWorld != null && blockPos != null) {
+                optional = PlayerEntity.findRespawnPosition(serverWorld, blockPos, f, bl, true);
+            }
+
+            World overworld = playerComponent.player.getWorld().getServer().getWorld(World.OVERWORLD);
+            blockPos1 = overworld.getSpawnPos();
+        }
+
+        return new LevelTransition(
+                1,
+                (teleport, tick) -> {
+                    if (!teleport.playerComponent().player.getWorld().isClient()) {
+                        teleport.playerComponent().loadPlayerSavedInventory();
+                    }
+                },
+                new CrossDimensionTeleport(
+                        playerComponent,
+                        optional.orElse(blockPos1.toCenterPos()),
+                        this,
+                        BackroomsLevels.OVERWORLD_REPRESENTING_BACKROOMS_LEVEL),
+                (teleport, tick) -> {});
     }
 
     @Override
@@ -77,14 +90,12 @@ public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
     }
 
     @Override
-    public boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
-        crossDimensionTeleport.playerComponent().loadPlayerSavedInventory();
-        return true;
+    public void transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
     }
 
     @Override
     public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
-        SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) crossDimensionTeleport.playerComponent().player, 60, true, false);
+
     }
 
     @Override

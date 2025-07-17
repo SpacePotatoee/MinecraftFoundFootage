@@ -26,17 +26,12 @@ public class EndRepresentingBackroomsLevel extends WorldRepresentingBackroomsLev
     }
 
     @Override
-    public boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
-        return true;
+    public void transitionOut(CrossDimensionTeleport crossDimensionTeleport) {
+
     }
 
     @Override
     public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
         crossDimensionTeleport.playerComponent().loadPlayerSavedInventory();
-    }
-
-    @Override
-    public int getTransitionDuration() {
-        return 0;
     }
 }

@@ -30,7 +30,7 @@ public abstract class BackroomsLevel {
     public Random random = new Random();
     private boolean shouldSync = false;
     private final HashMap<String, Supplier<AbstractEvent>> events = new HashMap<>();
-    private final HashMap<String, LevelTransition> transitions = new HashMap<>();
+    private final HashMap<String, LevelTransitionCriteriaCallback> transitions = new HashMap<>();
 
     public BackroomsLevel(String levelId, Codec<? extends ChunkGenerator> chunkGenerator, Vec3d spawnPos, RegistryKey<World> worldKey) {
         this(levelId, chunkGenerator, null, spawnPos, worldKey, SPBRevamped.MOD_ID);
@@ -78,14 +78,12 @@ public abstract class BackroomsLevel {
         return Optional.ofNullable(roomCount);
     }
 
-
-
     /**
      * If the level allows the torch to be used.
      * @return a BoolTextPair containing the value and a message to display to the player.
      */
     public BoolTextPair allowsTorch() {
-        return new BoolTextPair(true, Text.translatable("Flashlight is allowed in this level."));
+        return new BoolTextPair(true, Text.literal("Flashlight is allowed in this level."));
     }
 
     /**
@@ -134,8 +132,8 @@ public abstract class BackroomsLevel {
     public List<LevelTransition> checkForTransition(PlayerComponent playerComponent, World world) {
         List<LevelTransition> possibleTransitions = new ArrayList<>();
         this.transitions.forEach((key, value) -> {
-            if (!value.callback.predicate(world, playerComponent, this).isEmpty()) {
-                possibleTransitions.add(value);
+            if (!value.predicate(world, playerComponent, this).isEmpty()) {
+                possibleTransitions.add(value.predicate(world, playerComponent, this).get(0));
             }
         });
 
@@ -173,12 +171,9 @@ public abstract class BackroomsLevel {
 
     /**
      * Called when transitioning out of this level.
-     * This method is called on the server first and then on the next frame on the client,
-     * which will then skip the transitionTime one tick ahead to avoid being called twice.
-     * <b>Note:</b> this will be called once on the client and every tick on the server. If you only want to have this run once then just check if <code>the teleportingTimer == -1</code> but remember to return true.
-     * @return If the teleportation can happen now. Just return false if you can't teleport the player. This should be used carefully, since it can lead a failed teleport.
+     * This method is called on the same tick the player gets teleported. (Save on the client and server)
      */
-    public abstract boolean transitionOut(CrossDimensionTeleport crossDimensionTeleport);
+    public abstract void transitionOut(CrossDimensionTeleport crossDimensionTeleport);
 
     /**
      * Called when transitioning in to this level.
@@ -188,7 +183,7 @@ public abstract class BackroomsLevel {
      */
     public abstract void transitionIn(CrossDimensionTeleport crossDimensionTeleport);
 
-    public void registerTransition(LevelTransition transition, String name) {
+    public void registerTransition(LevelTransitionCriteriaCallback transition, String name) {
         this.transitions.put(name, transition);
     }
 
@@ -212,13 +207,27 @@ public abstract class BackroomsLevel {
     @Deprecated
     public int getTransitionDuration() {return 0;}
 
-    public record LevelTransition(int duration, LevelTransitionCallback callback) {}
+    /**
+     * @param duration How many thicks the transition should take.
+     * @param callback The callback to call every tick during the transition. <b>Note:</b> The last tick which is called is 1. Not 0. The teleport happens on 0.
+     * @param teleport The teleport to perform when the transition is done.
+     * @param cancel The callback to call when the transition is cancelled. <b>Note:</b> This is currently not used as canceling transitions has proven very buggy.
+     */
+    public record LevelTransition(int duration, TransitionTickCallback callback, CrossDimensionTeleport teleport, TransitionCancelCallback cancel) {}
 
-    public interface LevelTransitionCallback {
-        List<CrossDimensionTeleport> predicate(World world, PlayerComponent playerComponent, BackroomsLevel from);
+    public interface TransitionTickCallback {
+        void tick(CrossDimensionTeleport teleport, int tick);
     }
 
-    public record CrossDimensionTeleport(World world, PlayerComponent playerComponent, Vec3d pos, BackroomsLevel from, BackroomsLevel to) {}
+    public interface TransitionCancelCallback {
+        void cancel(CrossDimensionTeleport teleport, int tick);
+    }
+
+    public record CrossDimensionTeleport(PlayerComponent playerComponent, Vec3d pos, BackroomsLevel from, BackroomsLevel to) {}
+
+    public interface LevelTransitionCriteriaCallback {
+        List<LevelTransition> predicate(World world, PlayerComponent playerComponent, BackroomsLevel from);
+    }
 
     public record RoomCount(int aRoomCount, int bRoomCount, int cRoomCount, int dRoomCount, int eRoomCount) {
         public RoomCount(int i) {
