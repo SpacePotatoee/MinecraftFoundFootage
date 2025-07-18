@@ -122,8 +122,7 @@ void main() {
 
 //    vec3 worldPos = localPos + cameraPos;
     float noise = perlinNoise(vec3(worldPos.x, 0.0, worldPos.z) * 0.05);
-    float noiseAtCamera = perlinNoise(vec3(VeilCamera.CameraPosition.x, 0.0, VeilCamera.CameraPosition.z) * 0.05);
 
-    gl_Position = VeilCamera.ProjMat * VeilCamera.ViewMat * vec4(localPos + vec3(0.0, noise*10 - noiseAtCamera*10, 0.0), 1.0);
+    gl_Position = VeilCamera.ProjMat * VeilCamera.ViewMat * vec4(localPos + vec3(0.0, noise*10, 0.0), 1.0);
 //    gl_Position = VeilCamera.ProjMat * VeilCamera.ViewMat * vec4(localPos, 1.0);
 }

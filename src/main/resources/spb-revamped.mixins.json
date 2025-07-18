@@ -13,6 +13,8 @@
     "PlaySprintSoundMixin",
     "ServerPropertiesHandlerMixin",
     "StructureBlockEntityMixin",
+    "collision.IsGroundedCheckMixin",
+    "collision.PlatformCollisionMixin",
     "cutscene.PathAccessor",
     "respawnsystem.PlayerManagerMixin",
     "skinstolen.ServerPlayerEntityMixin",
