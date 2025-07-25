@@ -77,22 +77,22 @@ void main(){
 
     color *= blur(7.0, 0.001, SSAOSampler, texCoord) * 2.0;
 
-    #ifdef POOLROOMS
-        if(Mat2 != 15){
-            #ifdef SHADOWS
-                color = getShadow(color, texCoord, viewPos, normal, ScreenSize, viewMatrix, IShadowViewMatrix, orthographMatrix, NoiseTex, ShadowSampler, ditherSample, sunsetTimer, shadowColor);
-            #endif
-        } else {
-            //Sun
-            vec3 rd = viewDirFromUv(texCoord);
-            vec3 lightAngled = getLightAngle(IShadowViewMatrix);
-            color.rgb += smoothstep(0.998, 1.0, dot(rd, lightAngled));
-            if(sunsetTimer < 0.35 || sunsetTimer > 0.65) {
-                color.rgb += smoothstep(0.7, 1.0, dot(rd, lightAngled)) * 0.6;
-            }
-            color.rgb += texture(Stars, rd.xz * 0.9).rgb * clamp(sin(sunsetTimer*3.5), 0.0, 1.0);
+//    #ifdef POOLROOMS
+    if (Mat2 != 15) {
+        #ifdef SHADOWS
+            color = getShadow(color, texCoord, viewPos, normal, ScreenSize, viewMatrix, IShadowViewMatrix, orthographMatrix, NoiseTex, ShadowSampler, ditherSample, sunsetTimer, shadowColor);
+        #endif
+    } else {
+        //Sun
+        vec3 rd = viewDirFromUv(texCoord);
+        vec3 lightAngled = getLightAngle(IShadowViewMatrix);
+        color.rgb += smoothstep(0.998, 1.0, dot(rd, lightAngled));
+        if(sunsetTimer < 0.35 || sunsetTimer > 0.65) {
+            color.rgb += smoothstep(0.7, 1.0, dot(rd, lightAngled)) * 0.6;
         }
-    #endif
+        color.rgb += texture(Stars, rd.xz * 0.9).rgb * clamp(sin(sunsetTimer*3.5), 0.0, 1.0);
+    }
+//    #endif
 
     if(compat.a > 0.0 || compat2.a > 0.0){
         color += compat + compat2;
