@@ -1,0 +1,163 @@
+{
+  "intro.backrooms": "Die Backrooms",
+  "intro.credit": "Eine Mod von ",
+
+  "itemgroup.spbrevamped": "Backrooms",
+
+  "flashlight.hint": "Drücke %s um die Taschenlampe zu nutzen",
+  "noclip.hint": "Ersticke in Sand oder Kies, um die Backrooms zu betreten",
+
+  "block.spb-revamped.void_block": "Leere-Block",
+  "block.spb-revamped.ceiling_light": "Deckenlicht",
+  "block.spb-revamped.emergency_light": "Notleuchte",
+
+  "block.spb-revamped.wall_block": "Tapetenblock",
+  "block.spb-revamped.wall_block_2": "Manila-Tapetenblock",
+  "block.spb-revamped.ceiling_tile": "Deckenplatte",
+  "block.spb-revamped.ghost_ceiling_tile": "Geister-Deckenplatte",
+  "block.spb-revamped.carpet_block": "Teppichblock",
+  "block.spb-revamped.rug1": "Teppich 1",
+  "block.spb-revamped.rug2": "Teppich 2",
+
+
+  "block.spb-revamped.wooden_crate": "Holzkiste",
+  "container.spb-revamped.wooden_crate": "Holzkiste",
+
+
+  "block.spb-revamped.fluorescent_light": "Fluoreszierendes Licht",
+  "block.spb-revamped.pool_sky": "Himmelblock",
+  "block.spb-revamped.thin_fluorescent_light": "Dünnes Fluoreszierendes Licht",
+  "block.spb-revamped.bottom_trim": "Bodenleiste",
+  "block.spb-revamped.chain_fence": "Drahtzaun",
+  "block.spb-revamped.new_stairs": "Treppenhaus Treppe",
+
+
+  "block.spb-revamped.concrete1": "Beton 1",
+  "block.spb-revamped.concrete2": "Beton 2",
+  "block.spb-revamped.concrete5": "Beton 5",
+  "block.spb-revamped.concrete6": "Beton 6",
+  "block.spb-revamped.concrete7": "Beton 7",
+  "block.spb-revamped.concrete9": "Beton 9",
+  "block.spb-revamped.concrete9slab": "Betonstufe 9",
+  "block.spb-revamped.concrete10": "Beton 10",
+  "block.spb-revamped.concrete11": "Beton 11",
+  "block.spb-revamped.concrete12": "Beton 12",
+  "block.spb-revamped.bricks": "Ziegelsteinwand",
+
+
+  "block.spb-revamped.thin_pipe": "Dünnes Rohr",
+  "block.spb-revamped.thin_pipe_corner": "Dünnes Eckrohr",
+  "block.spb-revamped.pipe": "Rohr",
+  "block.spb-revamped.pipe_middle": "Mittelrohr",
+  "block.spb-revamped.pipe_corner": "Eckrohr",
+  "block.spb-revamped.big_pipe": "Großes Rohr",
+  "block.spb-revamped.big_pipe_middle": "Großes Mittelrohr",
+  "block.spb-revamped.small_pipe_set": "Kleine Rohre",
+
+
+  "block.spb-revamped.wall_text_1": "Wand Nummer 1",
+  "block.spb-revamped.wall_text_2": "Wand Nummer 2",
+  "block.spb-revamped.wall_text_3": "Wand Nummer 3",
+  "block.spb-revamped.wall_text_4": "Wand Nummer 4",
+  "block.spb-revamped.wall_text_5": "Wand Nummer 5",
+  "block.spb-revamped.wall_text_6": "Wand Nummer 6",
+  "block.spb-revamped.wall_text_7": "Wand Nummer 7",
+  "block.spb-revamped.wall_text_8": "Wand Nummer 8",
+  "block.spb-revamped.wall_text_99": "Wand Nummer 99",
+
+
+  "block.spb-revamped.arrow1": "Pfeil 1",
+  "block.spb-revamped.arrow2": "Pfeil 2",
+  "block.spb-revamped.arrow3": "Pfeil 3",
+  "block.spb-revamped.arrow4": "Pfeil 4",
+
+  "block.spb-revamped.pool_tiles": "Poolfliesen",
+  "block.spb-revamped.pool_tile_wall": "Vertikale Poolfliesenstufe",
+  "block.spb-revamped.slope": "Poolfliesenrampe ",
+
+
+  "block.spb-revamped.wall_small_1": "Wandzeichnung Hand",
+  "block.spb-revamped.wall_small_2": "Wandzeichnung Gesicht",
+  "block.spb-revamped.wall_drawing_door": "Wandzeichnung Tür",
+  "block.spb-revamped.wall_drawing_window": "Wandzeichnung Fenster",
+
+
+  "item.spb-revamped.backshroom": "Backshroomlinge",
+  "item.spb-revamped.backshroom.tooltip": "Wenn du nichts anderes zu essen hast",
+
+  "item.spb-revamped.canned_food": "Dosenfutter",
+  "item.spb-revamped.canned_food.tooltip": "Könnte verottet sein",
+
+
+  "spb-revamped.options.fullscreen.resolution": "VHS Auflösung",
+
+
+  "spb-revamped.midnightconfig.category.video": "Grafikoptionen",
+  "spb-revamped.midnightconfig.category.shaders": "Shaderoptionen",
+  "spb-revamped.midnightconfig.category.server": "Serveroptionen",
+  "spb-revamped.midnightconfig.enableVanillaLighting": "Vanilla Beleuchtung aktivieren",
+  "spb-revamped.midnightconfig.enableRealCamera": "Realistische Kamera aktivieren",
+  "spb-revamped.midnightconfig.forceBackrooms": "In die Backrooms zwingen",
+  "spb-revamped.midnightconfig.enableCameraRoll": "Kamerarotation aktivieren",
+  "spb-revamped.midnightconfig.enableSmoothCamera": "Weiche Kamera aktivieren",
+  "spb-revamped.midnightconfig.cameraSmoothing": "Kamera Glättungsfaktor",
+  "spb-revamped.midnightconfig.showHands": "Haupthand anzeigen",
+  "spb-revamped.midnightconfig.useDefaultGUI": "Benutze Minecraft's Standard GUI",
+  "spb-revamped.midnightconfig.enableHint": "Hinweis beim Weltbeitritt zeigen",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "Wenn es dein Bildschirm unterstützt, aktiviere diese Option und dir werden verschiedene Vollbildauflösungen in Minecraft's Grafikeinstellungen angezeigt. Es gibt dir ein besseres \"VHS\" Gefühl",
+  "spb-revamped.midnightconfig.enableVHSAspectRatio": "Aktiviere nur VHS Seitenverhältnisse",
+
+  "spb-revamped.midnightconfig.enableVhsEffect": "Aktiviere VHS Shader in der Oberwelt",
+  "spb-revamped.midnightconfig.enableVhsEffectInTheBackrooms": "Aktiviere VHS Shader in den Backrooms",
+  "spb-revamped.midnightconfig.enableVhsEffectInTheBackrooms.tooltip": "Es wird nicht empfohlen dies zu deaktivieren, da es das Spielgefühl stark beinflusst. Außerdem ist es kaputt. \nBENUTZE DIES NUR, WENN DEIN PC GARNICHT MIT DER MOD ZURECHT KOMMT",
+  "spb-revamped.midnightconfig.VHSDistortionMultiplier": "VHS Störungsfaktor",
+  "spb-revamped.midnightconfig.lookRollMultiplier": "Look Roll Multiplier",
+  "spb-revamped.midnightconfig.strafeRollMultiplier": "Strafe Roll Multiplier",
+  "spb-revamped.midnightconfig.lightRenderDistance": "Licht Sichtweite (In Blöcken)",
+
+  "spb-revamped.midnightconfig.enableShadows": "Schatten aktivieren",
+  "spb-revamped.midnightconfig.enableVolumetricLight": "Volumetrisches Licht aktivieren",
+  "spb-revamped.midnightconfig.enablePuddles": "Pfützen aktivieren",
+  "spb-revamped.midnightconfig.enableLevel1Fog": "Nebel in Level 1 aktivieren",
+  "spb-revamped.midnightconfig.renderWaterReflections": "Wasserreflexionen aktivieren",
+  "spb-revamped.midnightconfig.renderBlockReflections": "Blockreflexionen aktivieren (Nur für Poolfliesen)",
+  "spb-revamped.midnightconfig.motionBlur": "Bewegungsunschärfe aktivieren",
+  "spb-revamped.midnightconfig.motionBlurStrength": "Bewegungsunschärfe Stärke",
+
+  "spb-revamped.midnightconfig.grassQuality": "Gras Qualität",
+  "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "NIEDRIG",
+  "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MEDIUM",
+  "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "HOCH",
+  "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
+
+  "spb-revamped.midnightconfig.exitSpawnRadius": "Spawnradius des Ausgangs (In Blöcken)",
+
+  "death.attack.acid": "%1$s verbrannte in Säure!",
+  "death.attack.smiler": "%1$s wurde von einem Smiler getötet!",
+  "death.attack.skin_walker": "%1$s wurde von einem Skin Walker getötet!",
+
+  "spb-revamped.keybinds": "SPB-Revamped",
+  "key.spb-revamped.toggle_flashlight": "Taschenlampe umschalten",
+  "key.spb-revamped.toggle_event": "Ereignis auslösen",
+
+
+  "skinwalker.flavor-text.move1": "Du kannst nichts bewegen. ",
+  "skinwalker.flavor-text.move2": "Das ist nicht mehr dein Körper",
+
+  "skinwalker.flavor-text.inventory": "Das Inventar gehört nicht mehr dir",
+
+  "skinwalker.flavor-text.leave": "Es gibt kein Entkommen",
+
+  "skinwalker.flavor-text.chat": "Keiner kann dich schreien hören",
+
+  "skinwalker.flavor-text.taunt1": "Na los, mach weiter",
+  "skinwalker.flavor-text.taunt2": "Versuche doch deine Freunde zu rufen (T)",
+  "skinwalker.flavor-text.taunt3": "Falls es dir noch nicht aufgefallen ist, dein Körper wurde gestohlen. ",
+  "skinwalker.flavor-text.taunt4": "Sei kein Spielverderber. Schreibe keinen anderen Spielern",
+
+
+
+
+  "spb-revamped.flashlight.wet1": "Deine Taschenlampe wurde nass. ",
+  "spb-revamped.flashlight.wet2": "Sie funktioniert nicht mehr"
+}
