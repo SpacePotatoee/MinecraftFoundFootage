@@ -96,11 +96,12 @@ public class ClientWrapper {
                         break;
                     }
                 }
+
+                if (!isSeen) {
+                    playerComponent.setShouldGlitch(false);
+                }
             }
 
-            if (!isSeen) {
-                playerComponent.setShouldGlitch(false);
-            }
             //Update smiler glitch effect
             if (playerComponent.shouldGlitch()) {
                 playerComponent.glitchTick = Math.min(playerComponent.glitchTick + 1, 80);
