@@ -44,48 +44,90 @@ import java.util.Random;
 
 import static com.sp.SPBRevamped.SLOW_SPEED_MODIFIER;
 
+/**
+ * PlayerComponent handles all player-specific data and behavior for the Backrooms mod.
+ * This component is attached to every player and manages various states including:
+ * - Stamina and movement mechanics
+ * - Flashlight functionality
+ * - Entity interactions (Smilers, SkinWalkers)
+ * - Teleportation and level transitions
+ * - Inventory management for Backrooms levels
+ * - Audio and visual effects
+ *
+ * For modders: This class is designed to be extensible. Many fields are protected
+ * to allow subclassing, and comprehensive getters/setters are provided for safe access.
+ *
+ * @author SpacePotato & Contributors
+ * @since 1.0.0
+ */
 @SuppressWarnings("DataFlowIssue")
 public class PlayerComponent implements AutoSyncedComponent, ClientTickingComponent, ServerTickingComponent {
+
+    // Constants
+    public static final int DEFAULT_MAX_STAMINA = 300;
+    public static final int DEFAULT_SMILER_SPAWN_DELAY = 80;
+    public static final int DEFAULT_SPEAKING_BUFFER = 80;
+    public static final int DEFAULT_SKINWALKER_LOOK_DELAY = 60;
+    public static final int DEFAULT_VISIBILITY_TIMER = 15;
+    public static final int DEFAULT_TALKING_TOO_LOUD_TIMER = 20;
+    public static final int DEFAULT_VISIBILITY_COOLDOWN = 20;
+
+    // Core fields
     public final PlayerEntity player;
-    private final SimpleInventory playerSavedMainInventory = new SimpleInventory(36);
-    private final SimpleInventory playerSavedArmorInventory = new SimpleInventory(4);
-    private final SimpleInventory playerSavedOffhandInventory = new SimpleInventory(1);
-    private final Random random = new Random();
+    protected final SimpleInventory playerSavedMainInventory = new SimpleInventory(36);
+    protected final SimpleInventory playerSavedArmorInventory = new SimpleInventory(4);
+    protected final SimpleInventory playerSavedOffhandInventory = new SimpleInventory(1);
+    protected final Random random = new Random();
 
-    private int smilerSpawnDelay = 80;
+    // Entity spawn management
+    protected int smilerSpawnDelay = DEFAULT_SMILER_SPAWN_DELAY;
 
-    private int stamina;
-    private boolean tired;
+    // Stamina system
+    protected int stamina;
+    protected boolean tired;
 
-    private int scrollingInInventoryTime;
+    // UI and interaction
+    protected int scrollingInInventoryTime;
 
-    private boolean flashLightOn;
-    private boolean shouldRender;
-    private boolean isDoingCutscene;
-    private boolean playingGlitchSound;
-    private boolean shouldNoClip;
-    private int teleportingTimer;
-    private boolean isTeleporting;
+    // Lighting and visibility
+    protected boolean flashLightOn;
+    protected boolean shouldRender;
 
+    // Cutscenes and special states
+    protected boolean isDoingCutscene;
+    protected boolean playingGlitchSound;
+    protected boolean shouldNoClip;
+    protected int teleportingTimer;
+    protected boolean isTeleporting;
+
+    // Environmental effects
     public int suffocationTimer;
-    private boolean shouldDoStatic;
+    protected boolean shouldDoStatic;
 
-    private boolean isBeingCaptured;
+    // Entity interactions
+    protected boolean isBeingCaptured;
     public boolean hasBeenCaptured;
-    private boolean isBeingReleased;
-    private Entity targetEntity;
-    private int skinWalkerLookDelay;
-    private boolean shouldBeMuted;
-    private boolean isSpeaking;
-    private int speakingBuffer;
-    private float prevSpeakingTime;
-    private boolean visibleToEntity;
-    private int visibilityTimer;
-    private int visibilityTimerCooldown;
-    private boolean talkingTooLoud;
-    private int talkingTooLoudTimer;
-    private GameMode prevGameMode;
+    protected boolean isBeingReleased;
+    protected Entity targetEntity;
+    protected int skinWalkerLookDelay;
 
+    // Voice chat integration
+    protected boolean shouldBeMuted;
+    protected boolean isSpeaking;
+    protected int speakingBuffer;
+    protected float prevSpeakingTime;
+
+    // Entity visibility system
+    protected boolean visibleToEntity;
+    protected int visibilityTimer;
+    protected int visibilityTimerCooldown;
+    protected boolean talkingTooLoud;
+    protected int talkingTooLoudTimer;
+
+    // Game state tracking
+    protected GameMode prevGameMode;
+
+    // Ambient sound instances
     public MovingSoundInstance DeepAmbience;
     public MovingSoundInstance GasPipeAmbience;
     public MovingSoundInstance WaterPipeAmbience;
@@ -97,54 +139,53 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public MovingSoundInstance WindAmbience;
     public MovingSoundInstance WindTunnelAmbience;
 
-    private boolean canSeeActiveSkinWalker;
-    private boolean prevFlashLightOn;
+    // Skin walker detection
+    protected boolean canSeeActiveSkinWalker;
+    protected boolean prevFlashLightOn;
 
+    // Glitch effects
     public float glitchTimer;
-    private boolean shouldGlitch;
+    protected boolean shouldGlitch;
     public int glitchTick;
     public boolean shouldInflictGlitchDamage;
 
+    // Level transitions
     public BackroomsLevel.LevelTransition currentTransition = null;
 
     public PlayerComponent(PlayerEntity player){
-        this.stamina = 300;
+        this.player = player;
+        this.stamina = DEFAULT_MAX_STAMINA;
         this.tired = false;
         this.scrollingInInventoryTime = 0;
-        this.player = player;
         this.flashLightOn = false;
         this.shouldRender = true;
         this.shouldNoClip = false;
         this.shouldDoStatic = false;
-
         this.isDoingCutscene = false;
-
         this.isBeingCaptured = false;
         this.hasBeenCaptured = false;
         this.isBeingReleased = false;
-        this.skinWalkerLookDelay = 60;
+        this.skinWalkerLookDelay = DEFAULT_SKINWALKER_LOOK_DELAY;
         this.shouldBeMuted = false;
         this.isSpeaking = false;
-        this.speakingBuffer = 80;
+        this.speakingBuffer = DEFAULT_SPEAKING_BUFFER;
         this.prevSpeakingTime = 0;
         this.visibleToEntity = false;
-        this.visibilityTimer = 15;
+        this.visibilityTimer = DEFAULT_VISIBILITY_TIMER;
         this.visibilityTimerCooldown = 0;
-
         this.talkingTooLoud = false;
-        this.talkingTooLoudTimer = 20;
-
+        this.talkingTooLoudTimer = DEFAULT_TALKING_TOO_LOUD_TIMER;
         this.suffocationTimer = 0;
-
         this.canSeeActiveSkinWalker = false;
-
         this.glitchTimer = 0.0f;
         this.shouldGlitch = false;
         this.glitchTick = 0;
-
         this.teleportingTimer = -1;
     }
 
+    // Inventory management
+
+    /** Saves player inventory for Backrooms level transitions */
     public void savePlayerInventory() {
         PlayerInventory inventory = this.player.getInventory();
         DefaultedList<ItemStack> mainInventory = inventory.main;
@@ -156,6 +197,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.saveInventory(offHand, this.playerSavedOffhandInventory);
     }
 
+    /** Restores previously saved inventory */
     public void loadPlayerSavedInventory() {
         PlayerInventory inventory = this.player.getInventory();
         inventory.clear();
@@ -170,23 +212,25 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.playerSavedMainInventory.clear();
     }
 
-    private void saveInventory(DefaultedList<ItemStack> inventory1, Inventory inventory2){
-        for (int i = 0; i < inventory1.size(); i++) {
-            ItemStack itemStack = inventory1.get(i);
+    protected void saveInventory(DefaultedList<ItemStack> source, Inventory destination){
+        for (int i = 0; i < source.size(); i++) {
+            ItemStack itemStack = source.get(i);
             if (!itemStack.isEmpty()) {
-                inventory2.setStack(i, itemStack);
+                destination.setStack(i, itemStack);
             }
         }
     }
 
-    private void loadInventory(DefaultedList<ItemStack> inventory1, Inventory inventory2){
-        for (int i = 0; i < inventory2.size(); i++) {
-            ItemStack itemStack = inventory2.getStack(i);
+    protected void loadInventory(DefaultedList<ItemStack> destination, Inventory source){
+        for (int i = 0; i < source.size(); i++) {
+            ItemStack itemStack = source.getStack(i);
             if (!itemStack.isEmpty()) {
-                inventory1.set(i, itemStack);
+                destination.set(i, itemStack);
             }
         }
     }
+
+    // Getters and setters
 
     public int getTeleportingTimer() {
         return teleportingTimer;
@@ -200,6 +244,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public boolean isTeleporting() {
         return isTeleporting;
     }
+
     public void setTeleporting(boolean teleporting) {
         isTeleporting = teleporting;
     }
@@ -207,52 +252,27 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public int getStamina() {
         return stamina;
     }
+
     public void setStamina(int stamina) {
-        this.stamina = Math.max(0, Math.min(300, stamina));
-    }
-
-    /**
-     * Gets stamina as a percentage (0.0 to 1.0)
-     * @return stamina percentage
-     */
-    public float getStaminaPercentage() {
-        return (float) this.stamina / 300.0f;
-    }
-
-    /**
-     * Adds stamina to the current amount
-     * @param amount amount to add (can be negative to subtract)
-     */
-    public void addStamina(int amount) {
-        this.setStamina(this.stamina + amount);
-    }
-
-    /**
-     * Checks if stamina is at maximum
-     * @return true if stamina is at max (300)
-     */
-    public boolean isStaminaFull() {
-        return this.stamina >= 300;
-    }
-
-    /**
-     * Checks if stamina is empty
-     * @return true if stamina is 0
-     */
-    public boolean isStaminaEmpty() {
-        return this.stamina <= 0;
+        this.stamina = Math.max(0, Math.min(DEFAULT_MAX_STAMINA, stamina));
     }
 
     public boolean isTired() {
         return tired;
     }
+
     public void setTired(boolean tired) {
         this.tired = tired;
+    }
+
+    public int getMaxStamina() {
+        return DEFAULT_MAX_STAMINA;
     }
 
     public int getScrollingInInventoryTime() {
         return scrollingInInventoryTime;
     }
+
     public void setScrollingInInventoryTime(int scrollingInInventoryTime) {
         this.scrollingInInventoryTime = scrollingInInventoryTime;
     }
@@ -260,6 +280,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public boolean isShouldRender() {
         return shouldRender;
     }
+
     public void setShouldRender(boolean shouldRender) {
         this.shouldRender = shouldRender;
     }
@@ -267,6 +288,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public void setFlashLightOn(boolean set){
         this.flashLightOn = set;
     }
+
     public boolean isFlashLightOn() {
         return flashLightOn;
     }
@@ -373,6 +395,85 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.shouldInflictGlitchDamage = shouldInflictGlitchDamage;
     }
 
+
+    public boolean shouldInflictGlitchDamage() {
+        return shouldInflictGlitchDamage;
+    }
+
+    public int getSmilerSpawnDelay() {
+        return smilerSpawnDelay;
+    }
+
+    public void setSmilerSpawnDelay(int smilerSpawnDelay) {
+        this.smilerSpawnDelay = smilerSpawnDelay;
+    }
+
+    public int getSpeakingBuffer() {
+        return speakingBuffer;
+    }
+
+    public void setSpeakingBuffer(int speakingBuffer) {
+        this.speakingBuffer = speakingBuffer;
+    }
+
+    public float getPrevSpeakingTime() {
+        return prevSpeakingTime;
+    }
+
+    public void setPrevSpeakingTime(float prevSpeakingTime) {
+        this.prevSpeakingTime = prevSpeakingTime;
+    }
+
+    public int getVisibilityTimer() {
+        return visibilityTimer;
+    }
+
+    public void setVisibilityTimer(int visibilityTimer) {
+        this.visibilityTimer = visibilityTimer;
+    }
+
+    public int getVisibilityTimerCooldown() {
+        return visibilityTimerCooldown;
+    }
+
+    public void setVisibilityTimerCooldown(int visibilityTimerCooldown) {
+        this.visibilityTimerCooldown = visibilityTimerCooldown;
+    }
+
+    public int getTalkingTooLoudTimer() {
+        return talkingTooLoudTimer;
+    }
+
+    public void setTalkingTooLoudTimer(int talkingTooLoudTimer) {
+        this.talkingTooLoudTimer = talkingTooLoudTimer;
+    }
+
+    // Utility methods
+
+    public void resetStamina() {
+        this.stamina = DEFAULT_MAX_STAMINA;
+    }
+
+    public void addStamina(int amount) {
+        this.stamina = Math.min(DEFAULT_MAX_STAMINA, this.stamina + amount);
+    }
+
+    public void removeStamina(int amount) {
+        this.stamina = Math.max(0, this.stamina - amount);
+    }
+
+    public boolean hasSavedInventory() {
+        return !playerSavedMainInventory.isEmpty() ||
+               !playerSavedArmorInventory.isEmpty() ||
+               !playerSavedOffhandInventory.isEmpty();
+    }
+
+    public void clearSavedInventories() {
+        playerSavedMainInventory.clear();
+        playerSavedArmorInventory.clear();
+        playerSavedOffhandInventory.clear();
+    }
+
     @Override
     public void readFromNbt(NbtCompound tag) {
         this.stamina = tag.getInt("stamina");
@@ -432,7 +533,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     public void serverTick() {
         getPrevSettings();
 
-        //*Update Stamina
         updateStamina();
 
         //*Damage if glitched enough from smilers
@@ -476,7 +576,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             }
         }
 
-        // ������ Why is the � a question mark for me?
 
         if (currentTransition != null) {
             if (teleportingTimer == -1) {
@@ -515,13 +614,12 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             summonSmilers();
         }
 
-        //*Update Entity Visibility
         updateEntityVisibility();
 
         if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid())) {
             this.prevSpeakingTime = BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid());
         }
-        
+
         shouldSync();
     }
 
@@ -578,9 +676,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
             } else if(attributeInstance.hasModifier(SLOW_SPEED_MODIFIER)) {
                 attributeInstance.removeModifier(SLOW_SPEED_MODIFIER);
             }
-            //*Mod by 20 to reduce packet count
             if(prevStamina != this.stamina && this.stamina % 20 == 0){
-                //*Only sync with the specific player since other players don't need to know your stamina
                 InitializeComponents.PLAYER.syncWith((ServerPlayerEntity) this.player, (ComponentProvider) this.player);
             }
 
@@ -644,7 +740,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
                 this.visibilityTimer--;
             }
 
-            //reset timer if the player is not moving
             if(speed == 0){
                 this.visibilityTimer = 15;
             }
@@ -669,6 +764,63 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         this.sync();
     }
 
+    // Additional utility methods for modders
+
+    public boolean isInBackrooms() {
+        return BackroomsLevels.isInBackrooms(this.player.getWorld().getRegistryKey());
+    }
+
+    public Optional<BackroomsLevel> getCurrentBackroomsLevel() {
+        return BackroomsLevels.getLevel(this.player.getWorld());
+    }
+
+    public void resetAllTimers() {
+        this.smilerSpawnDelay = DEFAULT_SMILER_SPAWN_DELAY;
+        this.skinWalkerLookDelay = DEFAULT_SKINWALKER_LOOK_DELAY;
+        this.speakingBuffer = DEFAULT_SPEAKING_BUFFER;
+        this.visibilityTimer = DEFAULT_VISIBILITY_TIMER;
+        this.visibilityTimerCooldown = 0;
+        this.talkingTooLoudTimer = DEFAULT_TALKING_TOO_LOUD_TIMER;
+        this.suffocationTimer = 0;
+        this.glitchTick = 0;
+        this.teleportingTimer = -1;
+    }
+
+    public void resetAllStates() {
+        this.tired = false;
+        this.flashLightOn = false;
+        this.shouldRender = true;
+        this.isDoingCutscene = false;
+        this.playingGlitchSound = false;
+        this.shouldNoClip = false;
+        this.isTeleporting = false;
+        this.shouldDoStatic = false;
+        this.isBeingCaptured = false;
+        this.isBeingReleased = false;
+        this.shouldBeMuted = false;
+        this.isSpeaking = false;
+        this.visibleToEntity = false;
+        this.talkingTooLoud = false;
+        this.canSeeActiveSkinWalker = false;
+        this.shouldGlitch = false;
+        this.shouldInflictGlitchDamage = false;
+    }
+
+    public void fullReset() {
+        this.stamina = DEFAULT_MAX_STAMINA;
+        this.glitchTimer = 0.0f;
+        this.prevSpeakingTime = 0;
+        this.targetEntity = null;
+        this.prevGameMode = null;
+        this.currentTransition = null;
+
+        resetAllTimers();
+        resetAllStates();
+        clearSavedInventories();
+
+        this.justChanged();
+    }
+
     private void shouldSync() {
         boolean sync = this.prevFlashLightOn != this.flashLightOn;
 
@@ -679,5 +831,55 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     private void getPrevSettings() {
         this.prevFlashLightOn = this.flashLightOn;
+    }
+
+    // ===== SIMPLE EFFECT METHODS FOR MODDERS =====
+
+    /**
+     * Enable or disable static effect
+     * @param enable true to enable, false to disable
+     */
+    public void setStaticEffect(boolean enable) {
+        this.setShouldDoStatic(enable);
+        this.sync();
+    }
+
+    /**
+     * Enable or disable glitch effect with full intensity
+     * @param enable true to enable, false to disable
+     */
+    public void glitch(boolean enable) {
+        this.setShouldGlitch(enable);
+        if (enable) {
+            this.glitchTimer = 1.0f;
+            this.glitchTick = 80;
+        } else {
+            this.glitchTimer = 0.0f;
+            this.glitchTick = 0;
+        }
+        this.sync();
+    }
+
+    /**
+     * Enable glitch effect with custom intensity
+     * @param intensity 0.0 to 1.0 (0 = off, 1 = full intensity)
+     */
+    public void glitch(float intensity) {
+        intensity = Math.max(0.0f, Math.min(1.0f, intensity));
+        this.setShouldGlitch(intensity > 0);
+        this.glitchTimer = intensity;
+        this.glitchTick = (int) (intensity * 80);
+        this.sync();
+    }
+
+    /**
+     * Clear all visual effects
+     */
+    public void clearEffects() {
+        this.setShouldDoStatic(false);
+        this.setShouldGlitch(false);
+        this.glitchTimer = 0.0f;
+        this.glitchTick = 0;
+        this.sync();
     }
 }

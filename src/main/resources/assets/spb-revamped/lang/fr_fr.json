@@ -1,16 +1,12 @@
 {
   "intro.backrooms": "Les Backrooms",
   "intro.credit": "Un Mod de ",
-
   "itemgroup.spbrevamped": "Backrooms",
-
   "flashlight.hint": "Appuyez sur %s pour allumer/éteindre votre lampe torche",
   "noclip.hint": "Suffoquez-vous dans du sable ou du gravier pour passer en noclip dans les backrooms",
-
   "block.spb-revamped.void_block": "Bloc du Vide",
   "block.spb-revamped.ceiling_light": "Lumière de Plafond",
   "block.spb-revamped.emergency_light": "Lumière d'Urgence",
-
   "block.spb-revamped.wall_block": "Bloc de Papier Peint",
   "block.spb-revamped.wall_block_2": "Bloc de Papier Peint Manille",
   "block.spb-revamped.ceiling_tile": "Dalle de Plafond",
@@ -18,17 +14,14 @@
   "block.spb-revamped.carpet_block": "Bloc de Moquette",
   "block.spb-revamped.rug1": "Tapis 1",
   "block.spb-revamped.rug2": "Tapis 2",
-
   "block.spb-revamped.wooden_crate": "Caisse en Bois",
   "container.spb-revamped.wooden_crate": "Caisse en Bois",
-
   "block.spb-revamped.fluorescent_light": "Lumière Fluorescente",
   "block.spb-revamped.pool_sky": "Bloc de Ciel",
   "block.spb-revamped.thin_fluorescent_light": "Lumière Fluorescente Fine",
   "block.spb-revamped.bottom_trim": "Finition Inférieure",
   "block.spb-revamped.chain_fence": "Grillage",
   "block.spb-revamped.new_stairs": "Escaliers de Cage d'Escalier",
-
   "block.spb-revamped.concrete1": "Béton 1",
   "block.spb-revamped.concrete2": "Béton 2",
   "block.spb-revamped.concrete5": "Béton 5",
@@ -40,7 +33,6 @@
   "block.spb-revamped.concrete11": "Béton 11",
   "block.spb-revamped.concrete12": "Béton 12",
   "block.spb-revamped.bricks": "Mur en Briques",
-
   "block.spb-revamped.thin_pipe": "Petit Tuyau",
   "block.spb-revamped.thin_pipe_corner": "Angle de Petit Tuyau",
   "block.spb-revamped.pipe": "Tuyau",
@@ -49,60 +41,52 @@
   "block.spb-revamped.big_pipe": "Gros Tuyau",
   "block.spb-revamped.big_pipe_middle": "Gros Tuyau Central",
   "block.spb-revamped.small_pipe_set": "Petits Tuyaux",
-
-  "block.spb-revamped.wall_text_1": "Mur Numéro 1",
-  "block.spb-revamped.wall_text_2": "Mur Numéro 2",
-  "block.spb-revamped.wall_text_3": "Mur Numéro 3",
-  "block.spb-revamped.wall_text_4": "Mur Numéro 4",
-  "block.spb-revamped.wall_text_5": "Mur Numéro 5",
-  "block.spb-revamped.wall_text_6": "Mur Numéro 6",
-  "block.spb-revamped.wall_text_7": "Mur Numéro 7",
-  "block.spb-revamped.wall_text_8": "Mur Numéro 8",
-  "block.spb-revamped.wall_text_99": "Mur Numéro 99",
-
+  "block.spb-revamped.wall_text_1": "1",
+  "block.spb-revamped.wall_text_2": "2",
+  "block.spb-revamped.wall_text_3": "3",
+  "block.spb-revamped.wall_text_4": "4",
+  "block.spb-revamped.wall_text_5": "5",
+  "block.spb-revamped.wall_text_6": "6",
+  "block.spb-revamped.wall_text_7": "7",
+  "block.spb-revamped.wall_text_8": "8",
+  "block.spb-revamped.wall_text_99": "99",
   "block.spb-revamped.arrow1": "Flèche 1",
   "block.spb-revamped.arrow2": "Flèche 2",
   "block.spb-revamped.arrow3": "Flèche 3",
   "block.spb-revamped.arrow4": "Flèche 4",
-
   "block.spb-revamped.pool_tiles": "Carrelage de Piscine",
   "block.spb-revamped.pool_tile_wall": "Dalle Verticale de Piscine",
   "block.spb-revamped.slope": "Pente de Carrelage de Piscine",
-
-  "block.spb-revamped.wall_small_1": "Mur Dessin Main",
-  "block.spb-revamped.wall_small_2": "Mur Dessin Visage",
-  "block.spb-revamped.wall_drawing_door": "Mur Dessin Porte",
-  "block.spb-revamped.wall_drawing_window": "Mur Dessin Fenêtre",
-
-  "item.spb-revamped.backshroom": "Champis-Rooms",
+  "block.spb-revamped.wall_small_1": "Dessin de mur Main",
+  "block.spb-revamped.wall_small_2": "Dessin de Visage",
+  "block.spb-revamped.wall_drawing_door": "Dessin de Porte",
+  "block.spb-revamped.wall_drawing_window": "Dessin de Fenêtre",
+  "item.spb-revamped.backshroom": "Backshrooms",
   "item.spb-revamped.backshroom.tooltip": "Si vous n'avez rien d'autre à manger",
-
-  "item.spb-revamped.canned_food": "Nourriture en Boîte",
-  "item.spb-revamped.canned_food.tooltip": "Peut être avariée",
-
+  "item.spb-revamped.canned_food": "Boîte de conserve",
+  "item.spb-revamped.canned_food.tooltip": "Peut être perimée",
   "spb-revamped.options.fullscreen.resolution": "Résolution VHS",
-
   "spb-revamped.midnightconfig.category.video": "Paramètres Vidéo",
   "spb-revamped.midnightconfig.category.shaders": "Paramètres des Shaders",
-  "spb-revamped.midnightconfig.category.server": "Server Settings",
-  "spb-revamped.midnightconfig.enableVanillaLighting": "Activer l'Éclairage Vanilla",
-  "spb-revamped.midnightconfig.enableRealCamera": "Activer la Caméra Réaliste",
-  "spb-revamped.midnightconfig.forceBackrooms": "Forcer l'Entrée dans les Backrooms",
-  "spb-revamped.midnightconfig.enableCameraRoll": "Activer le Basculement de Caméra",
-  "spb-revamped.midnightconfig.enableSmoothCamera": "Activer la Caméra Fluide",
-  "spb-revamped.midnightconfig.cameraSmoothing": "Multiplicateur de Fluidité de Caméra",
-  "spb-revamped.midnightconfig.showHands": "Afficher la Main Principale",
+  "spb-revamped.midnightconfig.category.server": "Paramètres de Serveur",
+  "spb-revamped.midnightconfig.enableVanillaLighting": "l'Éclairage Vanilla",
+  "spb-revamped.midnightconfig.enableRealCamera": "Caméra Réaliste",
+  "spb-revamped.midnightconfig.forceBackrooms": "Entrée dans les Backrooms",
+  "spb-revamped.midnightconfig.enableCameraRoll": "Basculement de Caméra",
+  "spb-revamped.midnightconfig.enableSmoothCamera": "la Caméra Fluide",
+  "spb-revamped.midnightconfig.cameraSmoothing": "Fluidité de Caméra",
+  "spb-revamped.midnightconfig.showHands": "Afficher la Main",
   "spb-revamped.midnightconfig.useDefaultGUI": "Utiliser l'Interface Par Défaut de Minecraft",
-  "spb-revamped.midnightconfig.enableHint": "Enable the hint on world join",
+  "spb-revamped.midnightconfig.enableHint": "activer l'astuce d'entrée dans le monde",
   "spb-revamped.midnightconfig.VhsAspectRatioComment": "Si votre écran le permet, activez ceci pour voir d'autres options dans les paramètres vidéo de Minecraft. Cela donne un effet plus \"VHS\"",
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Activer Uniquement les Formats VHS",
-
   "spb-revamped.midnightconfig.enableVhsEffect": "Activer l'Effet VHS",
+  "spb-revamped.midnightconfig.enableVhsEffectInTheBackrooms": "Activer l'Effet VHS dans les Backrooms",
+  "spb-revamped.midnightconfig.enableVhsEffectInTheBackrooms.tooltip": "Ceci n'est pas recommandé de le désactiver car il impactera fortement le sentiment du jeu et l'atmosphère. C'est également cassé. \nUTILISEZ CELA SEULEMENT SI VOTRE ORDINATEUR NE PEUT PAS GÉRER LE MOD DU TOUT",
   "spb-revamped.midnightconfig.VHSDistortionMultiplier": "Multiplicateur de Distorsion VHS",
   "spb-revamped.midnightconfig.lookRollMultiplier": "Multiplicateur d'Inclinaison du Regard",
   "spb-revamped.midnightconfig.strafeRollMultiplier": "Multiplicateur d'Inclinaison Latérale",
   "spb-revamped.midnightconfig.lightRenderDistance": "Distance de Rendu de la Lumière (en blocs)",
-
   "spb-revamped.midnightconfig.enableShadows": "Activer les Ombres",
   "spb-revamped.midnightconfig.enableVolumetricLight": "Activer la Lumière Volumétrique",
   "spb-revamped.midnightconfig.enablePuddles": "Activer les Flaques",
@@ -111,37 +95,27 @@
   "spb-revamped.midnightconfig.renderBlockReflections": "Activer les Réflexions des Blocs (Seulement pour les dalles de piscine)",
   "spb-revamped.midnightconfig.motionBlur": "Activer le Flou de Mouvement",
   "spb-revamped.midnightconfig.motionBlurStrength": "Intensité du Flou de Mouvement",
-
   "spb-revamped.midnightconfig.grassQuality": "Qualité de l'Herbe",
   "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "FAIBLE",
   "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MOYENNE",
   "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "ÉLEVÉE",
   "spb-revamped.midnightconfig.enum.GrassQuality.ULTRA": "ULTRA",
-
   "spb-revamped.midnightconfig.exitSpawnRadius": "Exit Spawn Radius (In Blocks)",
-
   "death.attack.acid": "%1$s a brûlé dans l'acide !",
   "death.attack.smiler": "%1$s a été tué par un Smiler !",
   "death.attack.skin_walker": "%1$s a été tué par un Skin Walker!",
-
-  "spb-revamped.keybinds": "SPB-Revamped",
+  "spb-revamped.keybinds": "Mod Found Footage",
   "key.spb-revamped.toggle_flashlight": "Allumer/Éteindre la Lampe Torche",
   "key.spb-revamped.toggle_event": "Basculer l'Événement",
-
-  "skinwalker.flavor-text.move1": "Vous ne pouvez rien bouger.",
-  "skinwalker.flavor-text.move2": "Ce n’est plus votre corps",
-
-  "skinwalker.flavor-text.inventory": "Ce n’est plus votre inventaire",
-
+  "skinwalker.flavor-text.move1": "Vous ne pouvez pas bouger.",
+  "skinwalker.flavor-text.move2": "Ce n’est plus votre corps desormées!",
+  "skinwalker.flavor-text.inventory": "plus d'inventaire pour vous!",
   "skinwalker.flavor-text.leave": "Il n'y a pas d'échappatoire",
-
   "skinwalker.flavor-text.chat": "Personne ne vous entend crier",
-
-  "skinwalker.flavor-text.taunt1": "Vas-y",
-  "skinwalker.flavor-text.taunt2": "Essaye d'appeler tes amis (T)",
+  "skinwalker.flavor-text.taunt1": "Essaye...",
+  "skinwalker.flavor-text.taunt2": "Essaye d'appeler tes amis...",
   "skinwalker.flavor-text.taunt3": "Si ce n’est pas déjà évident, ta peau a été volée.",
-  "skinwalker.flavor-text.taunt4": "Ne sois pas un idiot. Ne DM aucun autre joueur",
-
+  "skinwalker.flavor-text.taunt4": "Ne sois pas un idiot. N'essaye plus de contacter les autres joueurs.",
   "spb-revamped.flashlight.wet1": "Votre lampe torche est mouillée.",
-  "spb-revamped.flashlight.wet2": "Elle ne fonctionne plus"
+  "spb-revamped.flashlight.wet2": "Elle ne fonctionne plus..."
 }

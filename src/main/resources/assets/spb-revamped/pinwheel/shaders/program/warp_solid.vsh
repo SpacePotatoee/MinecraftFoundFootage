@@ -62,7 +62,7 @@ void main() {
     pos = playerSpaceToWorldSpace(pos);
 
     #ifdef WARP
-    dist *= 0.03 * sin(warpAngle * 200.0);
+    dist *= 0.08 * sin(warpAngle * 10);
     #else
     dist *= 0;
     #endif

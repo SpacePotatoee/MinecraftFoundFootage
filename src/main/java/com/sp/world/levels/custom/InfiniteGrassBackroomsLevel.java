@@ -97,11 +97,11 @@ public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
     public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
 
     }
-
-    @Override
-    public BoolTextPair allowsTorch() {
-        return new BoolTextPair(false, Text.translatable("spb-revamped.flashlight.wet1").append(Text.translatable("spb-revamped.flashlight.wet2").formatted(Formatting.RED)));
-    }
+    // removed it caus flashlight do be better in this level
+    //@Override
+    //public BoolTextPair allowsTorch() {
+    //    return new BoolTextPair(false, Text.translatable("spb-revamped.flashlight.wet1").append(Text.translatable("spb-revamped.flashlight.wet2").formatted(Formatting.RED)));
+    //}
 
     @Override
     public boolean hasVanillaLighting() {

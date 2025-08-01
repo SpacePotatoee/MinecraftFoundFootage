@@ -4,9 +4,9 @@
 #include veil:fog
 #include spb-revamped:shadows
 
-#define REFRACTION_MULTIPLIER 0.02
+#define REFRACTION_MULTIPLIER 0.05
 
-#define REFLECTIVITY 0.6
+#define REFLECTIVITY 0.4
 
 uniform sampler2D DiffuseSampler0;
 uniform sampler2D WaterFrameBuffer;
@@ -36,7 +36,7 @@ uniform vec3 cameraBobOffset;
 in vec2 texCoord;
 out vec4 fragColor;
 
-const float rayStep = 0.04;
+const float rayStep = 0.05;
 const int maxSteps = 175;
 
 
@@ -201,7 +201,7 @@ void main() {
                 fragColor = getReflection(fragColor, mix(vec4(worldToViewSpaceDirection(normalize(vec3(0.0, 1.0,0.0))), 1.0), normal, 0.2), waterDepth, texCoord, viewPos, 0.0) * vec4(vec3(0.0, 1.2, 1.2), 1.0);
             #endif
 
-            if (shadow >= 1.0){
+            if (shadow >= 0.8){
                 if(sunsetTimer <= 0.27 || (sunsetTimer >= 0.46 && sunsetTimer <= 0.67) || sunsetTimer >= 0.70){
                     vec3 lightangle = (viewMatrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz;
                     lightangle.y = - lightangle.y;

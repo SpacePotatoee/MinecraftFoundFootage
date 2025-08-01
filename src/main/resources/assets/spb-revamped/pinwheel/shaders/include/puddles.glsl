@@ -2,12 +2,12 @@
 #include veil:camera
 #include veil:color_utilities
 
-#define REFLECTIVITY 0.6
+#define REFLECTIVITY 0.5
 
-const float rayStep = 0.1;
-const int maxSteps = 100;
+const float rayStep = 0.01;
+const int maxSteps = 200;
 const int BinSearchSteps = 10;
-const float SCALE = 0.8;
+const float SCALE = 0.7;
 
 vec3 hash(vec3 p){
     p = vec3( dot(p,vec3(127.1,311.7, -74.7)),

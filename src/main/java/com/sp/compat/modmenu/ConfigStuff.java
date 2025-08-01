@@ -38,21 +38,6 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = VIDEO)
     public static boolean enableHint = true;
 
-    @Entry(category = VIDEO)
-    public static boolean showStaminaHUD = true;
-
-    @Entry(category = VIDEO, isSlider = true, min = 0.1, max = 2.0, precision = 10)
-    public static float staminaHUDScale = 0.2f;
-
-    @Entry(category = VIDEO, isSlider = true, min = 0.0, max = 1.0, precision = 10)
-    public static float staminaHUDOpacity = 0.25f;
-
-    @Entry(category = VIDEO, isSlider = true, min = -200, max = 200)
-    public static int staminaHUDOffsetX = 0;
-
-    @Entry(category = VIDEO, isSlider = true, min = -200, max = 200)
-    public static int staminaHUDOffsetY = 0;
-
 
     @Comment(category = VIDEO)
     public static Comment spacer2;
