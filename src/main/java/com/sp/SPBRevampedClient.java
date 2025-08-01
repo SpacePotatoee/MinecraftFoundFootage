@@ -438,7 +438,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             if (player != null) {
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                 playerComponent.setFlashLightOn(false);
-                flashlightRenderer.clearFlashlights();
+                flashlightRenderer.clearlights();
                 playerComponent.setDoingCutscene(false);
             }
 
