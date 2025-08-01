@@ -1,4 +1,4 @@
-package com.sp.render.gui;
+package com.sp.render.gui.stamina;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sp.SPBRevamped;
@@ -21,6 +21,11 @@ public class StaminaBar implements HudRenderCallback {
 
     @Override
     public void onHudRender(DrawContext drawContext, float tickDelta) {
+        // Check if stamina HUD is enabled in config
+        if (!StaminaAPI.isStaminaHUDEnabled()) {
+            return;
+        }
+
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity player = client.player;
 
@@ -28,17 +33,28 @@ public class StaminaBar implements HudRenderCallback {
             PlayerComponent component = InitializeComponents.PLAYER.get(player);
             int width = 44;
             int height = 64;
+
+            // Get configuration values
+            float scale = StaminaAPI.getStaminaHUDScale();
+            float opacity = StaminaAPI.getStaminaHUDOpacity();
+            int offsetX = StaminaAPI.getStaminaHUDOffsetX();
+            int offsetY = StaminaAPI.getStaminaHUDOffsetY();
+
             RenderSystem.enableBlend();
-            if(component.getStamina() < 300){
+            if(component.getStamina() < StaminaAPI.MAX_STAMINA){
                 this.fadeStart = null;
                 this.fadeTimer = 0.0f;
 
                 drawContext.getMatrices().push();
-                drawContext.getMatrices().translate((float)(drawContext.getScaledWindowWidth() / 2), (float)(drawContext.getScaledWindowHeight() / 2), 0.0F);
-                drawContext.getMatrices().scale(0.2f,0.2f,0.2f);
-                drawContext.setShaderColor(1.0f, 1.0f, 1.0f, 0.25f);
+                drawContext.getMatrices().translate(
+                    (float)(drawContext.getScaledWindowWidth() / 2) + offsetX,
+                    (float)(drawContext.getScaledWindowHeight() / 2) + offsetY,
+                    0.0F
+                );
+                drawContext.getMatrices().scale(scale, scale, scale);
+                drawContext.setShaderColor(1.0f, 1.0f, 1.0f, opacity);
 
-                float normalizedStamina = 1.0f - (float) component.getStamina() / 300;
+                float normalizedStamina = 1.0f - (float) component.getStamina() / StaminaAPI.MAX_STAMINA;
                 int offset = floor(normalizedStamina * 64);
 
                 drawContext.drawTexture(STAMINA_ICONS, width/2, -height/2, width, 0, 64, height);
@@ -54,10 +70,14 @@ public class StaminaBar implements HudRenderCallback {
                 this.fadeTimer = Math.min((float) (Util.getMeasuringTimeMs() - this.fadeStart) / 1000L, 1.0f);
 
                 drawContext.getMatrices().push();
-                drawContext.getMatrices().translate((float)(drawContext.getScaledWindowWidth() / 2), (float)(drawContext.getScaledWindowHeight() / 2), 0.0F);
-                drawContext.getMatrices().scale(0.2f,0.2f,0.2f);
+                drawContext.getMatrices().translate(
+                    (float)(drawContext.getScaledWindowWidth() / 2) + offsetX,
+                    (float)(drawContext.getScaledWindowHeight() / 2) + offsetY,
+                    0.0F
+                );
+                drawContext.getMatrices().scale(scale, scale, scale);
 
-                drawContext.setShaderColor(1.0f, 1.0f, 1.0f, 0.25f * (1.0f - this.fadeTimer));
+                drawContext.setShaderColor(1.0f, 1.0f, 1.0f, opacity * (1.0f - this.fadeTimer));
                 drawContext.drawTexture(STAMINA_ICONS, width/2, -height/2, width, 0, 64, height);
                 drawContext.drawTexture(STAMINA_ICONS, width/2 + 4, -height/2, 0, 0, width, height);
 

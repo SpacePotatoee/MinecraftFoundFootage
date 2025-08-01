@@ -16,14 +16,14 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * Enhanced FlashlightRenderer with modder-friendly features and debugging features caus it was missing XD.
+ * Enhanced FlashlightRenderer with modder-friendly features.
  * Provides hooks and configuration options for easy extension.
- * Refactor by DarkFox
  */
 public class FlashlightRenderer {
     private final MinecraftClient client;
     private final HashMap<AbstractClientPlayerEntity, ArrayList<AreaLight>> flashLightList2;
 
+    // can modify for levels with custom lights colors, a bit better XD
     private boolean enabled = true;
     private float brightness = 1.0f;
     private float distance = 25.0f;
@@ -74,7 +74,11 @@ public class FlashlightRenderer {
 
     /**
      * Set custom flashlight properties. Useful for battery systems or upgrades or idk systems XD.
-     * (everything here is self-explanatory)
+     *
+     * @param brightness light brightness (any value - modders have full control)
+     * @param distance light distance in blocks (any value - modders have full control)
+     * @param angle light angle for secondary light (any value - modders have full control)
+     * @param smoothness rotation smoothness (any value - modders have full control)
      */
     public void setFlashlightProperties(float brightness, float distance, float angle, float smoothness) {
         this.brightness = brightness;
@@ -85,7 +89,7 @@ public class FlashlightRenderer {
 
     /**
      * Set a custom predicate to determine if flashlight should render for a specific player.
-     * Useful for permissions, or special conditions or stuff like that.
+     * Useful for battery systems, permissions, or special conditions.
      *
      * @param predicate function that takes a player and returns whether to render flashlight
      */
@@ -95,7 +99,7 @@ public class FlashlightRenderer {
 
     /**
      * Set a custom light customizer that gets called for each flashlight.
-     * Allows modders to modify light properties per player or add special effects (useful for spv).
+     * Allows modders to modify light properties per player or add special effects.
      *
      * @param customizer function that receives light data and can modify it
      */
@@ -105,7 +109,7 @@ public class FlashlightRenderer {
 
     /**
      * Set hooks that run before and after flashlight rendering.
-     * Useful for performance monitoring and debugging i guess XD.
+     * Useful for performance monitoring or additional effects.
      *
      * @param preRender runs before flashlight rendering starts
      * @param postRender runs after flashlight rendering completes
@@ -116,10 +120,12 @@ public class FlashlightRenderer {
     }
 
     public void renderFlashlightForEveryPlayer(float partialTicks) {
+        // Early exit if disabled
         if (!enabled || client.world == null) {
             return;
         }
 
+        // Run pre-render hook
         if (preRenderHook != null) {
             preRenderHook.run();
         }
@@ -137,6 +143,7 @@ public class FlashlightRenderer {
                     PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                     boolean shouldRender = playerComponent.isFlashLightOn();
 
+                    // Apply custom player render predicate if set
                     if (shouldRenderForPlayer != null) {
                         shouldRender = shouldRender && shouldRenderForPlayer.test(player);
                     }
@@ -144,6 +151,7 @@ public class FlashlightRenderer {
                     if (shouldRender) {
                         Vec3d playerPos = player.getCameraPosVec(partialTicks);
                         if (!flashLightList2.containsKey(player)) {
+                            // Create new lights with configurable properties
                             AreaLight primaryLight = new AreaLight();
                             AreaLight secondaryLight = new AreaLight();
                             Quaternionf orientation = new Quaternionf().rotateXYZ(
@@ -152,6 +160,7 @@ public class FlashlightRenderer {
                                 0.0f
                             );
 
+                            // Configure primary light (focused beam)
                             primaryLight
                                 .setBrightness(brightness)
                                 .setDistance(distance)
@@ -159,6 +168,7 @@ public class FlashlightRenderer {
                                 .setPosition(playerPos.getX(), playerPos.getY(), playerPos.getZ())
                                 .setOrientation(orientation);
 
+                            // Configure secondary light (wider beam)
                             secondaryLight
                                 .setBrightness(brightness)
                                 .setAngle(angle)
@@ -175,6 +185,7 @@ public class FlashlightRenderer {
                                 lightCustomizer.accept(lightData);
                             }
 
+                            // Add lights to renderer
                             VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(primaryLight);
                             VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(secondaryLight);
 
@@ -192,6 +203,7 @@ public class FlashlightRenderer {
                                     0.0f
                                 );
 
+                                // Use configurable smoothness
                                 float alpha = client.player != null && client.player.isSpectator() ?
                                     1.0f : smoothness * client.getLastFrameDuration();
 
@@ -202,6 +214,7 @@ public class FlashlightRenderer {
                                     }
                                 }
 
+                                // Allow modders to customize light updates
                                 if (lightCustomizer != null && areaLightList.size() >= 2) {
                                     FlashlightLightData lightData = new FlashlightLightData(
                                         player, areaLightList.get(0), areaLightList.get(1),
@@ -240,7 +253,7 @@ public class FlashlightRenderer {
      * Clear all flashlight data but don't remove lights from renderer.
      * Use this when you want to reset the internal state without affecting rendering.
      */
-    public void clearlights(){
+    public void clearFlashlights(){
         this.flashLightList2.clear();
     }
 
@@ -267,13 +280,12 @@ public class FlashlightRenderer {
      *
      * @param player the player whose flashlight should be removed
      */
-    public void removelightForPlayer(AbstractClientPlayerEntity player) {
+    public void removeFlashlightForPlayer(AbstractClientPlayerEntity player) {
         tryToRemoveFlashlight(player);
     }
 
     /**
      * Check if a player currently has an active flashlight.
-     * tbh could be useful for future expansions
      *
      * @param player the player to check
      * @return true if the player has an active flashlight
@@ -283,7 +295,10 @@ public class FlashlightRenderer {
     }
 
     /**
-     * just some random debugging stuff XD
+     * Get the current number of active flashlights.
+     * Useful for performance monitoring.
+     *
+     * @return number of players with active flashlights
      */
     public int getActiveFlashlightCount() {
         return flashLightList2.size();
@@ -300,8 +315,6 @@ public class FlashlightRenderer {
 }
 
 /*
- * (i feel like this could be useful if anyone wanna mae an addon XD and it's also useful for me lol)
- * - Made by DarkFox
  * MODDER USAGE EXAMPLES:
  *
  * // Disable flashlight rendering (useful for battery systems)

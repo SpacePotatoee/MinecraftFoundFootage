@@ -208,7 +208,39 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         return stamina;
     }
     public void setStamina(int stamina) {
-        this.stamina = stamina;
+        this.stamina = Math.max(0, Math.min(300, stamina));
+    }
+
+    /**
+     * Gets stamina as a percentage (0.0 to 1.0)
+     * @return stamina percentage
+     */
+    public float getStaminaPercentage() {
+        return (float) this.stamina / 300.0f;
+    }
+
+    /**
+     * Adds stamina to the current amount
+     * @param amount amount to add (can be negative to subtract)
+     */
+    public void addStamina(int amount) {
+        this.setStamina(this.stamina + amount);
+    }
+
+    /**
+     * Checks if stamina is at maximum
+     * @return true if stamina is at max (300)
+     */
+    public boolean isStaminaFull() {
+        return this.stamina >= 300;
+    }
+
+    /**
+     * Checks if stamina is empty
+     * @return true if stamina is 0
+     */
+    public boolean isStaminaEmpty() {
+        return this.stamina <= 0;
     }
 
     public boolean isTired() {
