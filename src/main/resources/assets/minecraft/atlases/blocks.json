@@ -1,4 +1,5 @@
 {
+    "max_size": 32768,
     "sources": [
         {
             "type": "directory",
