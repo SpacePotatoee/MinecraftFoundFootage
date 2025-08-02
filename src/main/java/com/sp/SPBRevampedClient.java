@@ -16,6 +16,7 @@ import com.sp.init.*;
 import com.sp.networking.InitializePackets;
 import com.sp.networking.callbacks.ClientConnectionEvents;
 import com.sp.render.*;
+import com.sp.render.bird.BirdRenderer;
 import com.sp.render.camera.CameraShake;
 import com.sp.render.camera.CutsceneManager;
 import com.sp.render.grass.GrassRenderer;
@@ -77,6 +78,7 @@ import java.util.Vector;
 
 public class SPBRevampedClient implements ClientModInitializer {
     private GrassRenderer grassRenderer;
+    private BirdRenderer birdRenderer;
     private static final CutsceneManager cutsceneManager = new CutsceneManager();
     private static final CameraShake cameraShake = new CameraShake();
     private final FlashlightRenderer flashlightRenderer = new FlashlightRenderer();
@@ -226,11 +228,19 @@ public class SPBRevampedClient implements ClientModInitializer {
                             this.grassRenderer = new GrassRenderer();
                         }
 
-                        this.grassRenderer.render();
+                        if (this.birdRenderer == null) {
+                            this.birdRenderer = new BirdRenderer();
+                        }
+
+                        //this.grassRenderer.render();
+                        this.birdRenderer.render();
                     }
-                } else if(this.grassRenderer != null){
+                } else if(this.grassRenderer != null) {
                     this.grassRenderer.close();
                     this.grassRenderer = null;
+                } else if (this.birdRenderer != null) {
+                    this.birdRenderer.close();
+                    this.birdRenderer = null;
                 }
 
             }
@@ -448,6 +458,11 @@ public class SPBRevampedClient implements ClientModInitializer {
                 this.grassRenderer.close();
                 this.grassRenderer = null;
             }
+
+            if(this.birdRenderer != null) {
+                this.birdRenderer.close();
+                this.birdRenderer = null;
+            }
         });
 
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
@@ -455,6 +470,11 @@ public class SPBRevampedClient implements ClientModInitializer {
             if(this.grassRenderer != null) {
                 this.grassRenderer.close();
                 this.grassRenderer = null;
+            }
+
+            if(this.birdRenderer != null) {
+                this.birdRenderer.close();
+                this.birdRenderer = null;
             }
         });
 

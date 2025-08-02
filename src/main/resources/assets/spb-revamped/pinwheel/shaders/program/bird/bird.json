@@ -1,0 +1,7 @@
+{
+  "vertex": "spb-revamped:bird/bird",
+  "fragment": "spb-revamped:bird/bird",
+  "definitions": [
+    "INFINITE_FIELD"
+  ]
+}
