@@ -4,10 +4,11 @@
 
 #define REFLECTIVITY 0.5
 
-const float rayStep = 0.01;
-const int maxSteps = 200;
+//raystep at 0.01 makes it so reflections don't have seperations everywhere
+const float rayStep = 0.1;
+const int maxSteps = 100;
 const int BinSearchSteps = 10;
-const float SCALE = 0.7;
+const float SCALE = 0.8;
 
 vec3 hash(vec3 p){
     p = vec3( dot(p,vec3(127.1,311.7, -74.7)),
