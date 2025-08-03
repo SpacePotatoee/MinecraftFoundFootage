@@ -94,10 +94,11 @@ public class MyCustomLevel extends BackroomsLevel {
 ## API Documentation
 
 See the individual documentation files:
-- [PlayerComponent API](api/PlayerComponent.md)
-- [BackroomsLevel API](api/BackroomsLevel.md)
-- [Entity System](api/EntitySystem.md)
-- [Rendering API](api/RenderingAPI.md)
+- [PlayerComponent API](api/PlayerComponent.md) - Player state management
+- [BackroomsLevel API](api/BackroomsLevel.md) - Custom level creation
+- [Entity System](api/EntitySystem.md) - Custom entity development
+- [Rendering API](api/RenderingAPI.md) - Visual effects and shaders
+- [Tick Patterns](api/TickPatterns.md) - **ESSENTIAL: Proper timing patterns**
 
 ## Examples
 

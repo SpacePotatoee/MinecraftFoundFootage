@@ -79,11 +79,14 @@ Enhance the horror experience:
 public void scarePlayer(PlayerEntity player) {
     PlayerEffectsAPI.glitch(player, true);
     PlayerEffectsAPI.screenShake(player, 0.5f, 60);
-    
-    // Schedule cleanup
-    Scheduler.schedule(() -> {
-        PlayerEffectsAPI.clearAllEffects(player);
-    }, 3000); // 3 seconds
+
+    // Use tick counter for cleanup (3 seconds = 60 ticks)
+    PlayerData data = getPlayerData(player.getUuid());
+    data.glitchEndTick = player.age + 60;
+
+    // Log for debugging
+    SPBRevamped.LOGGER.debug("Applied scare effect to player {} at tick {}",
+                            player.getName().getString(), player.age);
 }
 ```
 
@@ -207,25 +210,73 @@ public class MyCustomRenderer {
 
 ## Best Practices
 
-### 1. Performance Optimization
-- **Use LOD systems** for complex rendering
+### 1. Tick-Based Timing (CRITICAL)
+- **ALWAYS use tick counters** instead of sleep() or schedulers
+- **Use player.age or entity.age** for consistent timing across saves/loads
+- **Store end ticks in persistent data** for effect management
+- **Use modulo operations** for interval-based events (e.g., `player.age % 200 == 0`)
+
+```java
+// ✅ CORRECT: Tick-based timing
+public void applyEffect(PlayerEntity player, int durationTicks) {
+    PlayerData data = getPlayerData(player.getUuid());
+    data.effectEndTick = player.age + durationTicks;
+
+    // Check in tick method
+    if (data.effectEndTick > 0 && player.age >= data.effectEndTick) {
+        removeEffect(player);
+        data.effectEndTick = 0;
+    }
+}
+
+// ❌ WRONG: Never use sleep or schedulers
+public void applyEffect(PlayerEntity player) {
+    // DON'T DO THIS
+    Thread.sleep(3000);
+    Scheduler.schedule(() -> removeEffect(player), 3000);
+}
+```
+
+### 2. Logging Breakpoints
+- **Use logging instead of print statements** for debugging
+- **Add breakpoints at key decision points** for easier debugging
+- **Include relevant context** (player name, tick, values)
+- **Use appropriate log levels** (DEBUG, INFO, WARN, ERROR)
+
+```java
+// ✅ CORRECT: Proper logging breakpoints
+public void checkPlayerState(PlayerEntity player) {
+    SPBRevamped.LOGGER.debug("Checking player state for {} at tick {}",
+                            player.getName().getString(), player.age);
+
+    if (condition) {
+        SPBRevamped.LOGGER.debug("Condition met, applying effect");
+        applyEffect(player);
+    } else {
+        SPBRevamped.LOGGER.debug("Condition not met, skipping");
+    }
+}
+```
+
+### 3. Performance Optimization
 - **Cache frequently accessed data** to avoid repeated calculations
+- **Use tick intervals** for expensive operations (e.g., every 20 ticks)
 - **Implement proper cleanup** for resources and timers
 - **Profile your code** to identify bottlenecks
 
-### 2. Code Organization
+### 4. Code Organization
 - **Separate client and server logic** clearly
 - **Use meaningful package structure** for organization
 - **Document your APIs** for other modders
 - **Follow consistent naming conventions**
 
-### 3. Player Experience
+### 5. Player Experience
 - **Respect user settings** and configuration
 - **Provide clear feedback** for player actions
 - **Handle edge cases gracefully** (disconnections, errors)
 - **Test in multiplayer environments**
 
-### 4. Compatibility
+### 6. Compatibility
 - **Check for mod conflicts** during development
 - **Use proper version constraints** in dependencies
 - **Handle missing dependencies** gracefully
@@ -233,56 +284,125 @@ public class MyCustomRenderer {
 
 ## Common Patterns
 
-### 1. Timed Effects
+### 1. Tick-Based Effects
 ```java
-public class TimedEffect {
-    public static void applyTemporaryEffect(PlayerEntity player, int duration) {
+public class TickBasedEffects {
+
+    public static void applyTemporaryGlitch(PlayerEntity player, int durationTicks) {
         PlayerEffectsAPI.glitch(player, true);
-        
-        // Schedule cleanup
-        player.getServer().execute(() -> {
-            try {
-                Thread.sleep(duration * 50); // Convert ticks to milliseconds
-                PlayerEffectsAPI.glitch(player, false);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
+
+        // Store end tick in player data
+        PlayerData data = getPlayerData(player.getUuid());
+        data.glitchEndTick = player.age + durationTicks;
+
+        // Log breakpoint for debugging
+        SPBRevamped.LOGGER.debug("Glitch effect started for {} until tick {}",
+                                player.getName().getString(), data.glitchEndTick);
+    }
+
+    // Call this from your main tick handler
+    public static void tickPlayerEffects(PlayerEntity player) {
+        PlayerData data = getPlayerData(player.getUuid());
+
+        // Check if glitch effect should end
+        if (data.glitchEndTick > 0 && player.age >= data.glitchEndTick) {
+            PlayerEffectsAPI.glitch(player, false);
+            data.glitchEndTick = 0;
+
+            // Log breakpoint
+            SPBRevamped.LOGGER.debug("Glitch effect ended for {} at tick {}",
+                                    player.getName().getString(), player.age);
+        }
+
+        // Check other timed effects
+        if (data.staticEndTick > 0 && player.age >= data.staticEndTick) {
+            PlayerEffectsAPI.staticEffect(player, false);
+            data.staticEndTick = 0;
+        }
     }
 }
 ```
 
-### 2. Conditional Logic
+### 2. Conditional Logic with Logging
 ```java
 public class ConditionalEffects {
     public static void applyContextualEffect(PlayerEntity player) {
+        // Log entry point
+        SPBRevamped.LOGGER.debug("Checking contextual effect for player {}",
+                                player.getName().getString());
+
         if (!BackroomsAPI.isPlayerInBackrooms(player)) {
-            return; // Only apply in Backrooms
+            SPBRevamped.LOGGER.debug("Player {} not in Backrooms, skipping effect",
+                                    player.getName().getString());
+            return;
         }
-        
+
         PlayerComponent component = InitializeComponents.PLAYER.get(player);
         if (component.isDoingCutscene()) {
-            return; // Don't interfere with cutscenes
+            SPBRevamped.LOGGER.debug("Player {} in cutscene, skipping effect",
+                                    player.getName().getString());
+            return;
         }
-        
-        // Apply effect
+
+        // Apply effect with tick counter
         PlayerEffectsAPI.staticEffect(player, true);
+        PlayerData data = getPlayerData(player.getUuid());
+        data.staticEndTick = player.age + 100; // 5 seconds
+
+        SPBRevamped.LOGGER.debug("Applied static effect to {} until tick {}",
+                                player.getName().getString(), data.staticEndTick);
     }
 }
 ```
 
-### 3. Data Persistence
+### 3. Data Persistence with Tick Counters
 ```java
 public class PersistentData {
     private static final Map<UUID, PlayerData> playerData = new HashMap<>();
-    
+
     public static PlayerData getPlayerData(PlayerEntity player) {
-        return playerData.computeIfAbsent(player.getUuid(), uuid -> new PlayerData());
+        return playerData.computeIfAbsent(player.getUuid(), uuid -> {
+            PlayerData data = new PlayerData();
+            SPBRevamped.LOGGER.debug("Created new PlayerData for {}",
+                                    player.getName().getString());
+            return data;
+        });
     }
-    
+
     public static void savePlayerData(PlayerEntity player, NbtCompound nbt) {
         PlayerData data = getPlayerData(player);
         data.writeToNbt(nbt);
+
+        SPBRevamped.LOGGER.debug("Saved PlayerData for {} with {} active effects",
+                                player.getName().getString(), data.getActiveEffectCount());
+    }
+
+    public static class PlayerData {
+        public int glitchEndTick = 0;
+        public int staticEndTick = 0;
+        public int fearLevel = 0;
+        public int lastEventTick = 0;
+
+        public int getActiveEffectCount() {
+            int count = 0;
+            if (glitchEndTick > 0) count++;
+            if (staticEndTick > 0) count++;
+            return count;
+        }
+
+        public void writeToNbt(NbtCompound nbt) {
+            nbt.putInt("glitchEndTick", glitchEndTick);
+            nbt.putInt("staticEndTick", staticEndTick);
+            nbt.putInt("fearLevel", fearLevel);
+            nbt.putInt("lastEventTick", lastEventTick);
+        }
+
+        public void readFromNbt(NbtCompound nbt) {
+            glitchEndTick = nbt.getInt("glitchEndTick");
+            staticEndTick = nbt.getInt("staticEndTick");
+            fearLevel = nbt.getInt("fearLevel");
+            lastEventTick = nbt.getInt("lastEventTick");
+        }
     }
 }
 ```
@@ -299,18 +419,38 @@ public class PersistentData {
 ### Debugging Tips
 
 ```java
-// Enable debug logging
-SPBRevamped.LOGGER.info("Custom effect applied to player: {}", player.getName());
+// Proper logging breakpoints with context
+SPBRevamped.LOGGER.debug("=== Effect Application Debug ===");
+SPBRevamped.LOGGER.debug("Player: {}, Tick: {}, Age: {}",
+                        player.getName().getString(),
+                        player.getWorld().getTime(),
+                        player.age);
 
-// Check component state
+// Check component state with tick information
 PlayerComponent component = InitializeComponents.PLAYER.get(player);
-SPBRevamped.LOGGER.debug("Player state - Glitch: {}, Static: {}", 
-                        component.shouldGlitch(), component.shouldDoStatic());
+SPBRevamped.LOGGER.debug("Player state - Glitch: {}, Static: {}, InBackrooms: {}",
+                        component.shouldGlitch(),
+                        component.shouldDoStatic(),
+                        component.isInBackrooms());
 
-// Validate configuration
+// Log tick-based timing
+PlayerData data = getPlayerData(player.getUuid());
+SPBRevamped.LOGGER.debug("Effect timers - Glitch ends: {}, Static ends: {}, Current tick: {}",
+                        data.glitchEndTick,
+                        data.staticEndTick,
+                        player.age);
+
+// Validate configuration with context
 if (!ConfigStuff.enableGlitchEffects) {
-    SPBRevamped.LOGGER.warn("Glitch effects disabled in configuration");
+    SPBRevamped.LOGGER.warn("Glitch effects disabled in configuration for player {}",
+                           player.getName().getString());
 }
+
+// Log performance metrics
+long startTime = System.nanoTime();
+performExpensiveOperation();
+long duration = System.nanoTime() - startTime;
+SPBRevamped.LOGGER.debug("Operation took {} ns ({} ms)", duration, duration / 1_000_000);
 ```
 
 ### Testing Checklist

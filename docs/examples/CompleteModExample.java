@@ -115,24 +115,12 @@ public class ExampleMod implements ModInitializer {
         // Apply a sequence of effects
         PlayerEffectsAPI.glitch(player, true, false);
         PlayerEffectsAPI.screenShake(player, 0.5f, 60);
-        
-        // Schedule additional effects
-        player.getServer().execute(() -> {
-            try {
-                Thread.sleep(2000);
-                PlayerEffectsAPI.staticEffect(player, true);
-                
-                Thread.sleep(1000);
-                PlayerEffectsAPI.blackScreen(player, 40, true, false);
-                
-                Thread.sleep(3000);
-                PlayerEffectsAPI.clearAllEffects(player);
-                
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
-        
+
+        // Track the effect sequence using player data
+        PlayerData data = getPlayerData(player.getUuid());
+        data.spookEffectStartTime = player.age;
+        data.spookEffectStage = 1;
+
         player.sendMessage(Text.literal("Spook effects applied!"), false);
         return 1;
     }
@@ -171,45 +159,81 @@ public class ExampleMod implements ModInitializer {
     private void updatePlayerEffects(ServerPlayerEntity player) {
         PlayerComponent component = InitializeComponents.PLAYER.get(player);
         PlayerData data = getPlayerData(player.getUuid());
-        
+
         // Only apply effects in Backrooms
         if (!BackroomsAPI.isPlayerInBackrooms(player)) {
             return;
         }
-        
+
+        // Handle spook effect sequence using tick counters
+        if (data.spookEffectStage > 0) {
+            int elapsed = player.age - data.spookEffectStartTime;
+
+            switch (data.spookEffectStage) {
+                case 1 -> {
+                    if (elapsed >= 40) { // 2 seconds
+                        PlayerEffectsAPI.staticEffect(player, true);
+                        data.spookEffectStage = 2;
+                        data.staticEffectEndTime = player.age + 20; // 1 second duration
+
+                        SPBRevamped.LOGGER.debug("Spook stage 2 for player {} at tick {}",
+                                               player.getName().getString(), player.age);
+                    }
+                }
+                case 2 -> {
+                    if (elapsed >= 60) { // 3 seconds total
+                        PlayerEffectsAPI.blackScreen(player, 40, true, false);
+                        data.spookEffectStage = 3;
+
+                        SPBRevamped.LOGGER.debug("Spook stage 3 for player {} at tick {}",
+                                               player.getName().getString(), player.age);
+                    }
+                }
+                case 3 -> {
+                    if (elapsed >= 120) { // 6 seconds total
+                        PlayerEffectsAPI.clearAllEffects(player);
+                        data.spookEffectStage = 0;
+
+                        SPBRevamped.LOGGER.debug("Spook effect completed for player {} at tick {}",
+                                               player.getName().getString(), player.age);
+                    }
+                }
+            }
+        }
+
         // Increase fear over time in Backrooms
         data.fearLevel += 0.001f;
         data.fearLevel = Math.min(1.0f, data.fearLevel);
-        
-        // Apply effects based on fear level
+
+        // Apply effects based on fear level using tick intervals
         if (data.fearLevel > 0.5f && player.age % 200 == 0) { // Every 10 seconds
             PlayerEffectsAPI.staticEffect(player, true);
-            
-            // Schedule static removal
-            player.getServer().execute(() -> {
-                try {
-                    Thread.sleep(500);
-                    PlayerEffectsAPI.staticEffect(player, false);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            });
+            data.staticEffectEndTime = player.age + 10; // Remove after 10 ticks
+
+            SPBRevamped.LOGGER.debug("Fear static effect applied to {} (fear: {:.2f})",
+                                   player.getName().getString(), data.fearLevel);
         }
-        
-        // High fear effects
+
+        // Remove static effect when tick counter expires
+        if (data.staticEffectEndTime > 0 && player.age >= data.staticEffectEndTime) {
+            PlayerEffectsAPI.staticEffect(player, false);
+            data.staticEffectEndTime = 0;
+        }
+
+        // High fear effects with tick-based timing
         if (data.fearLevel > 0.8f && player.age % 600 == 0) { // Every 30 seconds
             PlayerEffectsAPI.glitch(player, true, true);
             PlayerEffectsAPI.screenShake(player, 0.3f, 40);
-            
-            // Schedule cleanup
-            player.getServer().execute(() -> {
-                try {
-                    Thread.sleep(3000);
-                    PlayerEffectsAPI.glitch(player, false, false);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            });
+            data.glitchEffectEndTime = player.age + 60; // Remove after 3 seconds
+
+            SPBRevamped.LOGGER.warn("High fear glitch effect triggered for {} at tick {}",
+                                  player.getName().getString(), player.age);
+        }
+
+        // Remove glitch effect when tick counter expires
+        if (data.glitchEffectEndTime > 0 && player.age >= data.glitchEffectEndTime) {
+            PlayerEffectsAPI.glitch(player, false, false);
+            data.glitchEffectEndTime = 0;
         }
     }
     
@@ -406,7 +430,15 @@ public class ExampleMod implements ModInitializer {
         public int nightmareEntries = 0;
         public float fearLevel = 0.0f;
         public int timeInNightmare = 0;
-        
+
+        // Spook effect timing
+        public int spookEffectStartTime = 0;
+        public int spookEffectStage = 0;
+
+        // Effect end times
+        public int staticEffectEndTime = 0;
+        public int glitchEffectEndTime = 0;
+
         // Add more tracking data as needed
     }
 }

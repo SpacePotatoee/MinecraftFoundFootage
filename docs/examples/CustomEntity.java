@@ -62,6 +62,7 @@ public class ExampleStalkerEntity extends HostileEntity implements GeoEntity, Ge
     private boolean isHiding = false;
     private boolean hasBeenSeen = false;
     private float fearLevel = 0.0f;
+    private int staticRemovalTime = 0;
     
     // Behavior constants
     private static final int MAX_STALKING_TIME = 1200; // 60 seconds
@@ -155,6 +156,21 @@ public class ExampleStalkerEntity extends HostileEntity implements GeoEntity, Ge
                 this.setInvisible(false);
             }
         }
+
+        // Handle static effect removal using tick counter
+        if (staticRemovalTime > 0 && this.age >= staticRemovalTime) {
+            // Find the player and remove static effect
+            PlayerEntity nearestPlayer = this.getWorld().getClosestPlayer(this, 16.0);
+            if (nearestPlayer != null) {
+                PlayerComponent playerComp = InitializeComponents.PLAYER.get(nearestPlayer);
+                playerComp.setShouldDoStatic(false);
+
+                // Log breakpoint
+                SPBRevamped.LOGGER.debug("Entity {} removed static from player {} at tick {}",
+                                       this.getId(), nearestPlayer.getName().getString(), this.age);
+            }
+            staticRemovalTime = 0;
+        }
     }
     
     private void updateStalkingBehavior() {
@@ -203,20 +219,17 @@ public class ExampleStalkerEntity extends HostileEntity implements GeoEntity, Ge
         this.targetPlayer = player;
         this.stalkingTimer++;
         
-        // Gradually increase player's unease
+        // Gradually increase player's unease using tick intervals
         if (this.stalkingTimer % 100 == 0) { // Every 5 seconds
             if (this.random.nextFloat() < 0.3f) {
                 playerComp.setShouldDoStatic(true);
-                
-                // Schedule static removal
-                this.getWorld().getServer().execute(() -> {
-                    try {
-                        Thread.sleep(1000); // 1 second
-                        playerComp.setShouldDoStatic(false);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                });
+
+                // Set tick counter for static removal (1 second = 20 ticks)
+                this.staticRemovalTime = this.age + 20;
+
+                // Log breakpoint for debugging
+                SPBRevamped.LOGGER.debug("Entity {} applied static to player {} until tick {}",
+                                       this.getId(), player.getName().getString(), this.staticRemovalTime);
             }
         }
         
@@ -294,8 +307,9 @@ public class ExampleStalkerEntity extends HostileEntity implements GeoEntity, Ge
         nbt.putBoolean("isHiding", this.isHiding);
         nbt.putBoolean("hasBeenSeen", this.hasBeenSeen);
         nbt.putFloat("fearLevel", this.fearLevel);
+        nbt.putInt("staticRemovalTime", this.staticRemovalTime);
     }
-    
+
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
@@ -304,6 +318,7 @@ public class ExampleStalkerEntity extends HostileEntity implements GeoEntity, Ge
         this.isHiding = nbt.getBoolean("isHiding");
         this.hasBeenSeen = nbt.getBoolean("hasBeenSeen");
         this.fearLevel = nbt.getFloat("fearLevel");
+        this.staticRemovalTime = nbt.getInt("staticRemovalTime");
     }
     
     // GeckoLib animation system
