@@ -60,7 +60,8 @@ void main() {
 
 
 
-    vec3 rotation = birdBuffer.birds[compactIndex].rotation;
+    vec3 oldRotation = birdBuffer.birds[compactIndex].rotation;
+    vec3 newRotation = birdBuffer.birds[compactIndex].rotation;
     vec3 position = birdBuffer.birds[compactIndex].position;
 
     vec3 totalPosition = vec3(0.0);
@@ -75,7 +76,7 @@ void main() {
         if (!isCloseEnough) continue;
 
 
-        bool insideView = dot(normalize(birdBuffer.birds[i].position - position), rotation) > -.2;
+        bool insideView = dot(normalize(birdBuffer.birds[i].position - position), newRotation) > -.2;
         if (!insideView) continue;
 
         BirdData other = birdBuffer.birds[i];
@@ -85,25 +86,27 @@ void main() {
         if (!isnan(other.position.x) && !isnan(other.position.y) && !isnan(other.position.z) && distance > 0.1) {
             totalPositionDiffernece += normalize(other.position - position) * abs(distance - 2);
             totalPosition += other.position;
-            totalRotation += rotation;
+            totalRotation += newRotation;
 
             otherCount ++;
         }
     }
 
     if (otherCount > 0) {
-        rotation += normalize((totalPosition / float(otherCount)) - position) * 0.1;
+        newRotation += normalize((totalPosition / float(otherCount)) - position) * 0.1;
 
-        rotation -= normalize(totalPositionDiffernece / float(otherCount));
-        rotation += normalize(totalRotation / float(otherCount));
+        newRotation -= normalize(totalPositionDiffernece / float(otherCount));
+        newRotation += normalize(totalRotation / float(otherCount));
     }
 
-    rotation += normalize(vec3(0, 36, 0) - position) * .01;
+    newRotation += normalize(vec3(0, 36, 0) - position) * .01;
 
-    position += normalize(rotation) * .01;
+    newRotation = mix(normalize(newRotation), oldRotation, 0.6);
+
+    position += normalize(newRotation) * .01;
 
     birdBuffer.birds[compactIndex].position = position;
-    birdBuffer.birds[compactIndex].rotation = normalize(rotation);
+    birdBuffer.birds[compactIndex].rotation = normalize(newRotation);
 
 
     barrier();

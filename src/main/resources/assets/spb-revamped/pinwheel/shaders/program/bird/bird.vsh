@@ -47,6 +47,30 @@ mat3 rotZ(float rad) {
     0, 0, 1
     );
 }
+mat3 createLookRotation(vec3 direction) {
+    // Normalize the direction vector
+    vec3 forward = normalize(direction);
+
+    // Create a right vector perpendicular to both forward and world up
+    vec3 worldUp = vec3(0.0, 1.0, 0.0);
+    // Handle special case where forward is parallel to world up
+    if (abs(dot(forward, worldUp)) > 0.99) {
+        worldUp = vec3(0.0, 0.0, 1.0); // Use world Z instead
+    }
+
+    vec3 right = normalize(cross(worldUp, forward));
+
+    // Create an up vector perpendicular to forward and right
+    vec3 up = normalize(cross(forward, right));
+
+    // Construct rotation matrix
+    // The columns represent the transformed basis vectors
+    return mat3(
+    right,    // First column (right vector)
+    up,       // Second column (up vector)
+    forward   // Third column (forward vector)
+    );
+}
 
 void main() {
     vec3 pos = Position;
@@ -59,7 +83,7 @@ void main() {
     vec3 tempNormal = Normal;
 
 
-    mat3 rotationMatrix = rotZ(rotation.z) * rotY(rotation.y) * rotX(rotation.x);
+    mat3 rotationMatrix = createLookRotation(rotation);
 
     float scale = 0.1;
     pos = rotationMatrix * pos * scale;
