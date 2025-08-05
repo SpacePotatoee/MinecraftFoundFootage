@@ -232,7 +232,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                             this.birdRenderer = new BirdRenderer();
                         }
 
-                        //this.grassRenderer.render();
+                        this.grassRenderer.render();
                         this.birdRenderer.render();
                     }
                 } else if(this.grassRenderer != null) {
@@ -242,7 +242,6 @@ public class SPBRevampedClient implements ClientModInitializer {
                     this.birdRenderer.close();
                     this.birdRenderer = null;
                 }
-
             }
 
 

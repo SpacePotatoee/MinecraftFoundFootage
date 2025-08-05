@@ -16,6 +16,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormatElement;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.random.Random;
 import org.joml.Vector4fc;
 import org.lwjgl.opengl.GL43;
 
@@ -137,19 +138,42 @@ public class BirdRenderer {
     }
 
     private void updateBuffers(boolean init) {
-        int currentGrassCount = ConfigStuff.birdQuality.getCount();
-        boolean countChange = currentGrassCount != this.lastBirdCount;
+        int currentBirdCount = ConfigStuff.birdQuality.getCount();
+        boolean countChange = currentBirdCount != this.lastBirdCount;
 
         if (countChange) {
             //*Update positions buffer size
             glBindBuffer(GL_SHADER_STORAGE_BUFFER, this.positionsVbo);
-            glBufferData(GL_SHADER_STORAGE_BUFFER, (long) 4 * ((long) currentGrassCount) * Float.BYTES, GL_DYNAMIC_DRAW);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, (long) 6 * ((long) currentBirdCount) * Float.BYTES, GL_DYNAMIC_DRAW);
+
+            ByteBuffer initialData = glMapBufferRange(
+                    GL_SHADER_STORAGE_BUFFER, 0, (long) 6 * ((long) currentBirdCount) * Float.BYTES,
+                    GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
+            );
+
+            if (initialData != null) {
+                Random random = Random.create();
+
+                for (int i = 0; i < currentBirdCount; i++) {
+                    initialData.putFloat(0 + random.nextFloat());
+                    initialData.putFloat(50 + random.nextFloat());
+                    initialData.putFloat(0 + random.nextFloat());
+
+                    initialData.putFloat(0);
+                    initialData.putFloat(1);
+                    initialData.putFloat(0);
+                }
+
+                initialData.flip();
+                glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+            }
+
             glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
         }
 
         //*Update Indirect buffer instance count
         glBindBuffer(GL_DRAW_INDIRECT_BUFFER, this.indirectVbo);
-        glBufferData(GL_DRAW_INDIRECT_BUFFER, (long) 20, GL_STATIC_DRAW);
+        glBufferData(GL_DRAW_INDIRECT_BUFFER, 20, GL_STATIC_DRAW);
 
 
         this.cmd = glMapBufferRange(
@@ -180,7 +204,7 @@ public class BirdRenderer {
         glUnmapBuffer(GL_DRAW_INDIRECT_BUFFER);
         glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 
-        if (countChange) this.lastBirdCount = currentGrassCount;
+        if (countChange) this.lastBirdCount = currentBirdCount;
     }
 
     private void computeGrassPositions() {
@@ -225,14 +249,25 @@ public class BirdRenderer {
     }
 
     private void createGrassModel(BufferBuilder bufferBuilder) {
-        bufferBuilder.vertex(0.0f,   0.0f, 0.0f).normal(  1.0f, 0.0f, 0.0f).next();
-        bufferBuilder.vertex(0.15f,  0.0f, 0.0f).normal(  1.0f, 0.0f, 0.0f).next();
-        bufferBuilder.vertex(0.075f, 0.1f, 0.0f).normal(  1.0f, 0.0f, 0.0f).next();
+        // Front face
+        bufferBuilder.vertex(0.000000f, 0.000000f, -1.000000f).normal(0.8402f, 0.2425f, -0.4851f).next(); // v1
+        bufferBuilder.vertex(0.000000f, 2.000000f, 0.000000f).normal(0.8402f, 0.2425f, -0.4851f).next(); // v4
+        bufferBuilder.vertex(0.866025f, 0.000000f, 0.500000f).normal(0.8402f, 0.2425f, -0.4851f).next(); // v2
 
-        bufferBuilder.vertex(0.075f, 0.1f,  0.0f).normal(1.0f, 0.0f, 0.0f).next();
-        bufferBuilder.vertex(0.15f,  0.0f,  0.0f).normal(1.0f, 0.0f, 0.0f).next();
-        bufferBuilder.vertex(0.0f,   0.0f,  0.0f).normal(1.0f, 0.0f, 0.0f).next();
+        // Bottom face
+        bufferBuilder.vertex(0.000000f, 0.000000f, -1.000000f).normal(0.0000f, -1.0000f, 0.0000f).next(); // v1
+        bufferBuilder.vertex(0.866025f, 0.000000f, 0.500000f).normal(0.0000f, -1.0000f, 0.0000f).next(); // v2
+        bufferBuilder.vertex(-0.866025f, 0.000000f, 0.500000f).normal(0.0000f, -1.0000f, 0.0000f).next(); // v3
 
+        // Right face
+        bufferBuilder.vertex(0.866025f, 0.000000f, 0.500000f).normal(0.0000f, 0.2425f, 0.9701f).next(); // v2
+        bufferBuilder.vertex(0.000000f, 2.000000f, 0.000000f).normal(0.0000f, 0.2425f, 0.9701f).next(); // v4
+        bufferBuilder.vertex(-0.866025f, 0.000000f, 0.500000f).normal(0.0000f, 0.2425f, 0.9701f).next(); // v3
+
+        // Left face
+        bufferBuilder.vertex(-0.866025f, 0.000000f, 0.500000f).normal(-0.8402f, 0.2425f, -0.4851f).next(); // v3
+        bufferBuilder.vertex(0.000000f, 2.000000f, 0.000000f).normal(-0.8402f, 0.2425f, -0.4851f).next(); // v4
+        bufferBuilder.vertex(0.000000f, 0.000000f, -1.000000f).normal(-0.8402f, 0.2425f, -0.4851f).next(); // v1
     }
 
     public void close() {

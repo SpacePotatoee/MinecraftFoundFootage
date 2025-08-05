@@ -95,7 +95,7 @@ public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
 
     @Override
     public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
-
+        crossDimensionTeleport.playerComponent().player.fallDistance = 0;
     }
 
     @Override
