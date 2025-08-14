@@ -29,7 +29,7 @@
   "block.spb-revamped.thin_fluorescent_light": "Dünnes Fluoreszierendes Licht",
   "block.spb-revamped.bottom_trim": "Bodenleiste",
   "block.spb-revamped.chain_fence": "Drahtzaun",
-  "block.spb-revamped.new_stairs": "Treppenhaus Treppe",
+  "block.spb-revamped.new_stairs": "Treppenhaus-Treppe",
 
 
   "block.spb-revamped.concrete1": "Beton 1",
@@ -83,10 +83,10 @@
 
 
   "item.spb-revamped.backshroom": "Backshroomlinge",
-  "item.spb-revamped.backshroom.tooltip": "Wenn du nichts anderes zu essen hast",
+  "item.spb-revamped.backshroom.tooltip": "Wenn du sonst nichts zu essen hast",
 
   "item.spb-revamped.canned_food": "Dosenfutter",
-  "item.spb-revamped.canned_food.tooltip": "Könnte verottet sein",
+  "item.spb-revamped.canned_food.tooltip": "Könnte verrottet sein",
 
 
   "spb-revamped.options.fullscreen.resolution": "VHS Auflösung",
@@ -102,14 +102,14 @@
   "spb-revamped.midnightconfig.enableSmoothCamera": "Weiche Kamera aktivieren",
   "spb-revamped.midnightconfig.cameraSmoothing": "Kamera Glättungsfaktor",
   "spb-revamped.midnightconfig.showHands": "Haupthand anzeigen",
-  "spb-revamped.midnightconfig.useDefaultGUI": "Benutze Minecraft's Standard GUI",
+  "spb-revamped.midnightconfig.useDefaultGUI": "Benutze Minecrafts Standard GUI",
   "spb-revamped.midnightconfig.enableHint": "Hinweis beim Weltbeitritt zeigen",
-  "spb-revamped.midnightconfig.VhsAspectRatioComment": "Wenn es dein Bildschirm unterstützt, aktiviere diese Option und dir werden verschiedene Vollbildauflösungen in Minecraft's Grafikeinstellungen angezeigt. Es gibt dir ein besseres \"VHS\" Gefühl",
+  "spb-revamped.midnightconfig.VhsAspectRatioComment": "Wenn es dein Bildschirm unterstützt, aktiviere diese Option und dir werden verschiedene Vollbildauflösungen in den Minecraft Grafikeinstellungen angezeigt. Es gibt dir ein besseres \"VHS\" Gefühl",
   "spb-revamped.midnightconfig.enableVHSAspectRatio": "Aktiviere nur VHS Seitenverhältnisse",
 
   "spb-revamped.midnightconfig.enableVhsEffect": "Aktiviere VHS Shader in der Oberwelt",
   "spb-revamped.midnightconfig.enableVhsEffectInTheBackrooms": "Aktiviere VHS Shader in den Backrooms",
-  "spb-revamped.midnightconfig.enableVhsEffectInTheBackrooms.tooltip": "Es wird nicht empfohlen dies zu deaktivieren, da es das Spielgefühl stark beinflusst. Außerdem ist es kaputt. \nBENUTZE DIES NUR, WENN DEIN PC GARNICHT MIT DER MOD ZURECHT KOMMT",
+  "spb-revamped.midnightconfig.enableVhsEffectInTheBackrooms.tooltip": "Es wird nicht empfohlen, dies zu deaktivieren, da es das Spielgefühl stark beinflusst. Außerdem ist es kaputt. \nBENUTZE DIES NUR, WENN DEIN PC GARNICHT MIT DER MOD ZURECHT KOMMT",
   "spb-revamped.midnightconfig.VHSDistortionMultiplier": "VHS Störungsfaktor",
   "spb-revamped.midnightconfig.lookRollMultiplier": "Look Roll Multiplier",
   "spb-revamped.midnightconfig.strafeRollMultiplier": "Strafe Roll Multiplier",
@@ -124,7 +124,7 @@
   "spb-revamped.midnightconfig.motionBlur": "Bewegungsunschärfe aktivieren",
   "spb-revamped.midnightconfig.motionBlurStrength": "Bewegungsunschärfe Stärke",
 
-  "spb-revamped.midnightconfig.grassQuality": "Gras Qualität",
+  "spb-revamped.midnightconfig.grassQuality": "Grasqualität",
   "spb-revamped.midnightconfig.enum.GrassQuality.LOW": "NIEDRIG",
   "spb-revamped.midnightconfig.enum.GrassQuality.MEDIUM": "MEDIUM",
   "spb-revamped.midnightconfig.enum.GrassQuality.HIGH": "HOCH",
@@ -150,14 +150,15 @@
 
   "skinwalker.flavor-text.chat": "Keiner kann dich schreien hören",
 
-  "skinwalker.flavor-text.taunt1": "Na los, mach weiter",
+  "skinwalker.flavor-text.taunt1": "Nur zu, versuch's ruhig",
   "skinwalker.flavor-text.taunt2": "Versuche doch deine Freunde zu rufen (T)",
   "skinwalker.flavor-text.taunt3": "Falls es dir noch nicht aufgefallen ist, dein Körper wurde gestohlen. ",
-  "skinwalker.flavor-text.taunt4": "Sei kein Spielverderber. Schreibe keinen anderen Spielern",
+  "skinwalker.flavor-text.taunt4": "Sei kein Spielverderber. Schreibe keine Direktnachrichten an andere Spieler",
 
 
 
 
   "spb-revamped.flashlight.wet1": "Deine Taschenlampe wurde nass. ",
-  "spb-revamped.flashlight.wet2": "Sie funktioniert nicht mehr"
+  "spb-revamped.flashlight.wet2": "Sie funktioniert jetzt nicht mehr"
 }
+
