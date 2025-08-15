@@ -11,24 +11,23 @@ public abstract class PbrRegistry {
 
 
     /**
-     * Call this method in your client's {@code onInitializeClient()} method to render PBR textures on the specified block<br>
-     * Also you need to have a block state file and model file registered for the block. <i>I suggest just copying our files.</i> <br>
-     * Put all of your textures into {@code textures/pbr/block/<name of your block>} <br>
-     * <br>
-     * Then in that folder, you need the block's<br>
-     * {@code Color Texture} with the name {@code <name of your block>_color} <br>
-     * {@code Normal Texture} with the name {@code <name of your block>_normal}<br>
-     * {@code Height Texture} with the name {@code <name of your block>_height}<br>
-     * <br>
-     * If you have height disabled, just use a completely white texture of the same size. <br>
-     * Look at the ceiling tile or carpet blocks if you're confused.<br>
-     * <br>
-     * The rest <i> should </i> be handled automatically.
-     * I also highly recommend calling this in a {@code ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener()}s reload method <br>
-     * this will make it so that when you reload with F3+T, the PBR texture settings well be reloaded too <i>no need to constantly restart</i>.
+     * Register PBR materials for blocks to get that realistic look.
      *
-     * @param block The block to render the PBR textures on.
-     * @param material The new PBR material parameters.
+     * Call this in your client init method. You'll need to set up the textures properly:
+     * - Put textures in textures/pbr/block/your_block_name/
+     * - Need _color, _normal, and _height variants
+     * - If you don't want height mapping, just use a white texture
+     *
+     * The block state and model files are needed too - just copy ours if you're not sure.
+     *
+     * Pro tip: Use the resource reload listener so you don't have to restart every time:
+     * ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(...)
+     *
+     * This took forever to get working right with the shader pipeline, but now it's
+     * pretty much plug-and-play.
+     *
+     * @param block The block to apply PBR to
+     * @param material The PBR material settings
      */
     public static void registerPBR(Block block, PbrMaterial material) {
         PBR_MATERIALS.remove(block);

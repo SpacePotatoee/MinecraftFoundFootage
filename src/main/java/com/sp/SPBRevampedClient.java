@@ -20,8 +20,8 @@ import com.sp.render.bird.BirdRenderer;
 import com.sp.render.camera.CameraShake;
 import com.sp.render.camera.CutsceneManager;
 import com.sp.render.grass.GrassRenderer;
-import com.sp.render.gui.StaminaBar;
-import com.sp.render.gui.TitleText;
+import com.sp.render.gui.stamina.StaminaBar;
+import com.sp.render.gui.title.TitleText;
 import com.sp.render.pbr.BlockIdMap;
 import com.sp.render.pbr.PbrRegistry;
 import com.sp.util.MathStuff;
@@ -176,13 +176,14 @@ public class SPBRevampedClient implements ClientModInitializer {
                 PbrRegistry.registerPBR(ModBlocks.GHOST_CEILING_TILE,new PbrRegistry.PbrMaterial(false, 0.0f,1.0f,  512));
 
                 PbrRegistry.registerPBR(ModBlocks.CONCRETE_BLOCK_11, new PbrRegistry.PbrMaterial(true, 0.4f,8.0f,  1024));
-                PbrRegistry.registerPBR(ModBlocks.BRICKS,            new PbrRegistry.PbrMaterial(true, 0.45f,5.0f,   2048));
+                PbrRegistry.registerPBR(ModBlocks.BRICKS,            new PbrRegistry.PbrMaterial(true, 0.45f,5.0f,   1024));
                 //PbrRegistry.registerPBR(ModBlocks.DIRT,             new PbrRegistry.PbrMaterial(true, 0.5f,3.0f,   128));
                 PbrRegistry.registerPBR(ModBlocks.CHAINFENCE,        new PbrRegistry.PbrMaterial(true, 0.21f,2.8f,   1024));
                 PbrRegistry.registerPBR(ModBlocks.WOODEN_CRATE,      new PbrRegistry.PbrMaterial(true, 0.9f, 1.0f,   1024));
                 PbrRegistry.registerPBR(ModBlocks.ROAD,              new PbrRegistry.PbrMaterial(true, 0.37f,8.0f,   1024));
                 PbrRegistry.registerPBR(ModBlocks.FLOOR_TILING,      new PbrRegistry.PbrMaterial(true, 0.37f,8.0f,   1024));
                 PbrRegistry.registerPBR(ModBlocks.PAVEMENT,          new PbrRegistry.PbrMaterial(true, 0.37f,8.0f,   1024));
+
 
                 BlockIdMap.init = false;
 
@@ -447,7 +448,7 @@ public class SPBRevampedClient implements ClientModInitializer {
             if (player != null) {
                 PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
                 playerComponent.setFlashLightOn(false);
-                flashlightRenderer.clearFlashlights();
+                flashlightRenderer.clearlights();
                 playerComponent.setDoingCutscene(false);
             }
 
