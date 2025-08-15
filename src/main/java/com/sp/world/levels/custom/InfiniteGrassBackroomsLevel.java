@@ -95,7 +95,7 @@ public class InfiniteGrassBackroomsLevel extends BackroomsLevel {
 
     @Override
     public void transitionIn(CrossDimensionTeleport crossDimensionTeleport) {
-
+        crossDimensionTeleport.playerComponent().player.fallDistance = 0;
     }
     // removed it caus flashlight do be better in this level
     //@Override

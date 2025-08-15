@@ -1,0 +1,114 @@
+#version 410 core
+#extension GL_ARB_compute_shader : enable
+#extension GL_ARB_shader_storage_buffer_object : enable
+
+#line 0 1
+layout(std140) uniform CameraMatrices {
+    mat4 ProjMat;
+    mat4 IProjMat;
+    mat4 ViewMat;
+    mat4 IViewMat;
+    mat3 IViewRotMat;
+    vec3 CameraPosition;
+    float NearPlane;
+    float FarPlane;
+} VeilCamera;
+
+#line 4 0
+
+struct BirdData {
+    vec3 position;
+    vec3 rotation; // or whatever your second vec3 represents
+};
+
+
+layout (std430, binding = 0) buffer BirdBuffer {
+    BirdData birds[];
+} birdBuffer;
+
+layout (std430, binding = 1) buffer IndirectBuffer {
+    uint count;
+    uint primCount;
+    uint firstIndex;
+    uint baseVertex;
+    uint baseInstance;
+} indirectBuffer;
+
+uniform int NumOfInstances;
+uniform float FrustumPlanes[24];
+
+layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+    uint idy = gl_GlobalInvocationID.y;
+    int increment = 0;
+
+
+    vec3 cameraPos = VeilCamera.CameraPosition;
+    vec3 player = vec3(cameraPos.x,0 ,cameraPos.z);
+
+
+
+
+    memoryBarrierShared();
+    barrier();
+
+    /// RUNS ONCE ///
+    uint compactIndex = atomicAdd(indirectBuffer.primCount, 1);
+
+
+
+
+
+    vec3 oldRotation = birdBuffer.birds[compactIndex].rotation;
+    vec3 newRotation = birdBuffer.birds[compactIndex].rotation;
+    vec3 position = birdBuffer.birds[compactIndex].position;
+
+    vec3 totalPosition = vec3(0.0);
+    vec3 totalPositionDiffernece = vec3(0.0);
+    vec3 totalRotation = vec3(0.0);
+
+    int otherCount = 0;
+    for (int i = 0; i < NumOfInstances; i++) {
+        if (i == int(compactIndex)) continue;
+
+        bool isCloseEnough = abs(length(birdBuffer.birds[i].position - position)) < 2.0;
+        if (!isCloseEnough) continue;
+
+
+        bool insideView = dot(normalize(birdBuffer.birds[i].position - position), newRotation) > -.2;
+        if (!insideView) continue;
+
+        BirdData other = birdBuffer.birds[i];
+
+        float distance = length(other.position - position);
+
+        if (!isnan(other.position.x) && !isnan(other.position.y) && !isnan(other.position.z) && distance > 0.1) {
+            totalPositionDiffernece += normalize(other.position - position) * abs(distance - 2);
+            totalPosition += other.position;
+            totalRotation += newRotation;
+
+            otherCount ++;
+        }
+    }
+
+    if (otherCount > 0) {
+        newRotation += normalize((totalPosition / float(otherCount)) - position) * 0.1;
+
+        newRotation -= normalize(totalPositionDiffernece / float(otherCount));
+        newRotation += normalize(totalRotation / float(otherCount));
+    }
+
+    newRotation += normalize(vec3(0, 36, 0) - position) * .01;
+
+    newRotation = mix(normalize(newRotation), oldRotation, 0.6);
+
+    position += normalize(newRotation) * .01;
+
+    birdBuffer.birds[compactIndex].position = position;
+    birdBuffer.birds[compactIndex].rotation = normalize(newRotation);
+
+
+    barrier();
+    memoryBarrierShared();
+}

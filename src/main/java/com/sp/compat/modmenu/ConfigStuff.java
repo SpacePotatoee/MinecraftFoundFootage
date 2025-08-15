@@ -1,5 +1,6 @@
 package com.sp.compat.modmenu;
 
+import com.sp.render.bird.BirdQuality;
 import com.sp.render.grass.GrassQuality;
 import eu.midnightdust.lib.config.MidnightConfig;
 
@@ -107,6 +108,9 @@ public class ConfigStuff extends MidnightConfig {
 
     @Entry(category = SHADERS)
     public static GrassQuality grassQuality = GrassQuality.MEDIUM;
+
+    @Entry(category = SHADERS)
+    public static BirdQuality birdQuality = BirdQuality.MEDIUM;
 
 
 
