@@ -1,18 +1,24 @@
 package com.sp.render.bird;
 
 public enum BirdQuality {
-    LOW(200),
-    MEDIUM(500),
-    HIGH(1000),
-    ULTRA(2500);
+    LOW(1000, 1),
+    MEDIUM(2500, 2),
+    HIGH(5000, 4),
+    ULTRA(8000, 6);
 
     private final int count;
+    private final int flocks;
 
-    BirdQuality(int count){
-        this.count = count;
+    BirdQuality(int birdCount, int flockCount){
+        this.count = birdCount;
+        this.flocks = flockCount;
     }
 
-    public int getCount() {
+    public int getBirdCount() {
         return count;
+    }
+
+    public int getFlockCount() {
+        return flocks;
     }
 }

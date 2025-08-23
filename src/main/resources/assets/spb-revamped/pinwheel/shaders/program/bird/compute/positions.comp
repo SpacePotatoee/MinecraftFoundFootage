@@ -18,7 +18,7 @@ layout(std140) uniform CameraMatrices {
 
 struct BirdData {
     vec3 position;
-    vec3 rotation; // or whatever your second vec3 represents
+    vec3 rotation;
 };
 
 
@@ -34,10 +34,28 @@ layout (std430, binding = 1) buffer IndirectBuffer {
     uint baseInstance;
 } indirectBuffer;
 
+uniform vec3[6] FlockCenters;
+uniform int FlockAmount;
 uniform int NumOfInstances;
 uniform float FrustumPlanes[24];
 
+const double MAX_DISTANCE = 2.0;
+
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+float rand(vec2 co){
+    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+vec3 getFixedDirection(vec3 direction, vec3 currentRotation) {
+    if (abs(dot(normalize(currentRotation), normalize(direction))) < 0.2) {
+        return direction + normalize(vec3(rand(vec2(direction.x, direction.y)), rand(vec2(direction.y, direction.z)), rand(vec2(direction.z, direction.x)))) * .1;
+    }
+
+    return direction;
+}
+
+
 void main() {
     uint idx = gl_GlobalInvocationID.x;
     uint idy = gl_GlobalInvocationID.y;
@@ -56,10 +74,6 @@ void main() {
     /// RUNS ONCE ///
     uint compactIndex = atomicAdd(indirectBuffer.primCount, 1);
 
-
-
-
-
     vec3 oldRotation = birdBuffer.birds[compactIndex].rotation;
     vec3 newRotation = birdBuffer.birds[compactIndex].rotation;
     vec3 position = birdBuffer.birds[compactIndex].position;
@@ -69,37 +83,43 @@ void main() {
     vec3 totalRotation = vec3(0.0);
 
     int otherCount = 0;
+
+    double smallestDistance = 2.0;
     for (int i = 0; i < NumOfInstances; i++) {
         if (i == int(compactIndex)) continue;
 
-        bool isCloseEnough = abs(length(birdBuffer.birds[i].position - position)) < 2.0;
+        bool isCloseEnough = abs(dot(birdBuffer.birds[i].position - position, birdBuffer.birds[i].position - position)) < 4.0;
         if (!isCloseEnough) continue;
 
 
-        bool insideView = dot(normalize(birdBuffer.birds[i].position - position), newRotation) > -.2;
-        if (!insideView) continue;
+        bool insideView = dot(normalize(birdBuffer.birds[i].position - position), newRotation) > -.6;
+        //if (!insideView) continue;
 
         BirdData other = birdBuffer.birds[i];
 
         float distance = length(other.position - position);
 
         if (!isnan(other.position.x) && !isnan(other.position.y) && !isnan(other.position.z) && distance > 0.1) {
-            totalPositionDiffernece += normalize(other.position - position) * abs(distance - 2);
+            if (distance < smallestDistance) {
+                smallestDistance = distance;
+            }
+
+            totalPositionDiffernece += getFixedDirection(vec3(normalize(other.position - position) * abs(smallestDistance - 2)), newRotation);
             totalPosition += other.position;
-            totalRotation += newRotation;
+            totalRotation += getFixedDirection(vec3(newRotation * abs(smallestDistance - 2)), newRotation);
 
             otherCount ++;
         }
     }
 
     if (otherCount > 0) {
-        newRotation += normalize((totalPosition / float(otherCount)) - position) * 0.1;
+        newRotation += normalize((totalPosition / float(otherCount)) - position);
 
-        newRotation -= normalize(totalPositionDiffernece / float(otherCount));
-        newRotation += normalize(totalRotation / float(otherCount));
+        newRotation -= getFixedDirection(vec3(normalize(totalPositionDiffernece / float(otherCount)) * abs(smallestDistance - 2) * 0.7), newRotation);
+        newRotation += getFixedDirection(vec3(normalize(totalRotation / float(otherCount)) * abs(smallestDistance - 2)), newRotation);
     }
 
-    newRotation += normalize(vec3(0, 36, 0) - position) * .01;
+    newRotation += normalize(FlockCenters[compactIndex % FlockAmount] - position) * .1;
 
     newRotation = mix(normalize(newRotation), oldRotation, 0.6);
 

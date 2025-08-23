@@ -25,7 +25,6 @@ import java.nio.ByteBuffer;
 import static net.minecraft.client.render.VertexFormats.NORMAL_ELEMENT;
 import static net.minecraft.client.render.VertexFormats.POSITION_ELEMENT;
 import static net.minecraft.util.math.MathHelper.floor;
-import static net.minecraft.util.math.MathHelper.sqrt;
 import static org.lwjgl.opengl.GL15C.glBindBuffer;
 import static org.lwjgl.opengl.GL15C.glGenBuffers;
 import static org.lwjgl.opengl.GL42C.*;
@@ -33,15 +32,16 @@ import static org.lwjgl.opengl.GL43C.GL_SHADER_STORAGE_BUFFER;
 import static org.lwjgl.opengl.GL43C.glDispatchCompute;
 
 public class BirdRenderer {
-    VertexBuffer vertexBuffer;
     private static final Identifier shaderPath = new Identifier(SPBRevamped.MOD_ID, "bird/bird");
+    public static final Identifier computeShaderPath = new Identifier(SPBRevamped.MOD_ID, "bird/compute/positions");
 
-    private static final Identifier computeShaderPath = new Identifier(SPBRevamped.MOD_ID, "bird/compute/positions");
     private final int positionsVbo;
     private final int indirectVbo;
 
     private int lastBirdCount;
     private ByteBuffer cmd;
+
+    VertexBuffer vertexBuffer;
 
     public static final VertexFormat POSITION_NORMAL = new VertexFormat(
             ImmutableMap.<String, VertexFormatElement>builder()
@@ -49,8 +49,12 @@ public class BirdRenderer {
                     .put("Color", NORMAL_ELEMENT)
                     .build()
     );
+    private int lastFlockCount;
 
     public BirdRenderer() {
+        this.lastBirdCount = ConfigStuff.birdQuality.getBirdCount();
+        this.lastFlockCount = ConfigStuff.birdQuality.getFlockCount();
+
         this.vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
@@ -80,7 +84,7 @@ public class BirdRenderer {
         fbo.bind(false);
 
         //*If there is a change in the grass count or resolution, update the buffers
-        if (ConfigStuff.birdQuality.getCount() != this.lastBirdCount) {
+        if (ConfigStuff.birdQuality.getBirdCount() != this.lastBirdCount) {
             if (this.vertexBuffer != null) {
                 this.vertexBuffer.close();
             }
@@ -104,14 +108,14 @@ public class BirdRenderer {
         this.updateBuffers(false);
 
         //*Use a compute shader to get all visible grass positions (Frustum Culling)
-        this.computeGrassPositions();
+        this.computeBirdPositions();
 
 
         ShaderProgram shader = VeilRenderSystem.setShader(shaderPath);
         if (shader == null) return;
 
         shader.setFloat("GameTime", RenderSystem.getShaderGameTime());
-        shader.setInt("NumOfInstances", floor(sqrt(ConfigStuff.birdQuality.getCount())));
+        shader.setInt("NumOfInstances", ConfigStuff.birdQuality.getBirdCount());
 
 //        int prevTexture = RenderSystem.getShaderTexture(0);
         shader.applyShaderSamplers(0);
@@ -138,10 +142,11 @@ public class BirdRenderer {
     }
 
     private void updateBuffers(boolean init) {
-        int currentBirdCount = ConfigStuff.birdQuality.getCount();
-        boolean countChange = currentBirdCount != this.lastBirdCount;
+        int currentBirdCount = ConfigStuff.birdQuality.getBirdCount();
+        int currentFlockCount = ConfigStuff.birdQuality.getFlockCount();
+        boolean configChange = currentBirdCount != this.lastBirdCount || currentFlockCount != this.lastFlockCount;
 
-        if (countChange) {
+        if (configChange || init) {
             //*Update positions buffer size
             glBindBuffer(GL_SHADER_STORAGE_BUFFER, this.positionsVbo);
             glBufferData(GL_SHADER_STORAGE_BUFFER, (long) 6 * ((long) currentBirdCount) * Float.BYTES, GL_DYNAMIC_DRAW);
@@ -155,9 +160,9 @@ public class BirdRenderer {
                 Random random = Random.create();
 
                 for (int i = 0; i < currentBirdCount; i++) {
-                    initialData.putFloat(0 + random.nextFloat());
-                    initialData.putFloat(50 + random.nextFloat());
-                    initialData.putFloat(0 + random.nextFloat());
+                    initialData.putFloat((float) (FlockManager.getFlockCenter((i) % ConfigStuff.birdQuality.getFlockCount()).x + (random.nextFloat() * 10)));
+                    initialData.putFloat((float) (FlockManager.getFlockCenter((i) % ConfigStuff.birdQuality.getFlockCount()).y + (random.nextFloat() * 10)));
+                    initialData.putFloat((float) (FlockManager.getFlockCenter((i) % ConfigStuff.birdQuality.getFlockCount()).z + (random.nextFloat() * 10)));
 
                     initialData.putFloat(0);
                     initialData.putFloat(1);
@@ -204,18 +209,23 @@ public class BirdRenderer {
         glUnmapBuffer(GL_DRAW_INDIRECT_BUFFER);
         glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 
-        if (countChange) this.lastBirdCount = currentBirdCount;
+        if (configChange) {
+            this.lastBirdCount = currentBirdCount;
+            this.lastFlockCount = currentFlockCount;
+        }
     }
 
-    private void computeGrassPositions() {
+    private void computeBirdPositions() {
         ShaderProgram shader = VeilRenderSystem.setShader(computeShaderPath);
+        ShaderProgram fragShader = VeilRenderSystem.setShader(shaderPath);
         if (shader == null) return;
+        if (fragShader == null) return;
+        int numOfInst = ConfigStuff.birdQuality.getBirdCount();
 
         if (shader.isCompute()) {
             glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this.positionsVbo);
             glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, this.indirectVbo);
 
-            int numOfInst = floor(sqrt(ConfigStuff.birdQuality.getCount()));
             shader.setInt("NumOfInstances", numOfInst);
 
             Vector4fc[] planes = VeilRenderer.getCullingFrustum().getPlanes();
@@ -232,7 +242,7 @@ public class BirdRenderer {
             shader.bind();
 
             //*Eight local groups
-            int grass = floor(sqrt((float) ConfigStuff.birdQuality.getCount()) / 8);
+            int grass = floor(Math.sqrt((float) ConfigStuff.birdQuality.getBirdCount()) / 8);
             int x = Math.min(grass, VeilRenderSystem.maxComputeWorkGroupCountX());
             int y = Math.min(grass, VeilRenderSystem.maxComputeWorkGroupCountY());
 
@@ -244,6 +254,8 @@ public class BirdRenderer {
             glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
             glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
         }
+
+        fragShader.setInt("NumOfInstances", numOfInst);
 
         ShaderProgram.unbind();
     }

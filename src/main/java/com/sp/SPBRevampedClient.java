@@ -17,6 +17,7 @@ import com.sp.networking.InitializePackets;
 import com.sp.networking.callbacks.ClientConnectionEvents;
 import com.sp.render.*;
 import com.sp.render.bird.BirdRenderer;
+import com.sp.render.bird.FlockManager;
 import com.sp.render.camera.CameraShake;
 import com.sp.render.camera.CutsceneManager;
 import com.sp.render.grass.GrassRenderer;
@@ -27,6 +28,7 @@ import com.sp.render.pbr.PbrRegistry;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
 import com.sp.world.levels.BackroomsLevel;
+import com.sp.world.levels.custom.InfiniteGrassBackroomsLevel;
 import com.sp.world.levels.custom.Level2BackroomsLevel;
 import com.sp.world.levels.custom.PoolroomsBackroomsLevel;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
@@ -71,7 +73,9 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Vector;
 
@@ -113,7 +117,9 @@ public class SPBRevampedClient implements ClientModInitializer {
 
         InitializePackets.registerS2CPackets();
 
-        com.sp.Keybinds.initializeKeyBinds();
+        ModKeyBinds.initializeKeyBinds();
+
+        FlockManager.init();
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POOLROOMS_SKY_BLOCK, RenderLayers.getPoolroomsSky());
 
@@ -233,7 +239,17 @@ public class SPBRevampedClient implements ClientModInitializer {
                         }
 
                         this.grassRenderer.render();
-                        this.birdRenderer.render();
+
+
+                        if (ConfigStuff.areBirdsEnabled) {
+                            ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(BirdRenderer.computeShaderPath);
+                            if (shader != null) {
+                                List<Vector3f> vector3fcs = FlockManager.getFlockCenters().stream().map((vec3d -> new Vector3f((float) vec3d.x, (float) vec3d.y, (float) vec3d.z))).toList();
+                                shader.setVectors("FlockCenters", vector3fcs.toArray(new Vector3fc[0]));
+                                shader.setInt("FlockAmount", ConfigStuff.birdQuality.getFlockCount());
+                                this.birdRenderer.render();
+                            }
+                        }
                     }
                 } else if(this.grassRenderer != null) {
                     this.grassRenderer.close();
@@ -304,7 +320,6 @@ public class SPBRevampedClient implements ClientModInitializer {
             }
 
         });
-
 
         VeilEventPlatform.INSTANCE.preVeilPostProcessing(((name, pipeline, context) -> {
             MinecraftClient client = MinecraftClient.getInstance();
@@ -534,6 +549,12 @@ public class SPBRevampedClient implements ClientModInitializer {
                         lightRenderer.enableVanillaLight();
                         lightRenderer.enableAmbientOcclusion();
                     }
+
+                    getCurrentBackroomsLevel().ifPresent((backroomsLevel -> {
+                        if (backroomsLevel instanceof InfiniteGrassBackroomsLevel) {
+                            FlockManager.tick();
+                        }
+                    }));
                 }
             }
         });

@@ -110,6 +110,9 @@ public class ConfigStuff extends MidnightConfig {
     public static GrassQuality grassQuality = GrassQuality.MEDIUM;
 
     @Entry(category = SHADERS)
+    public static boolean areBirdsEnabled = true;
+
+    @Entry(category = SHADERS)
     public static BirdQuality birdQuality = BirdQuality.MEDIUM;
 
 

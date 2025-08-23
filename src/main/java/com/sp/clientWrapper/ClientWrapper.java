@@ -1,6 +1,6 @@
 package com.sp.clientWrapper;
 
-import com.sp.Keybinds;
+import com.sp.ModKeyBinds;
 import com.sp.SPBRevampedClient;
 import com.sp.block.custom.EmergencyLightBlock;
 import com.sp.block.custom.FluorescentLightBlock;
@@ -213,7 +213,7 @@ public class ClientWrapper {
 
                 //Flashlight
 
-                if (Keybinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen && !playerComponent.hasBeenCaptured && !playerComponent.isBeingCaptured()) {
+                if (ModKeyBinds.toggleFlashlight.wasPressed() && !SPBRevampedClient.getCutsceneManager().isPlaying && !SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen && !playerComponent.hasBeenCaptured && !playerComponent.isBeingCaptured()) {
                     playerComponent.player.playSound(ModSounds.FLASHLIGHT_CLICK, 0.5f, 1);
                     if (level.allowsTorch().value()) {
                         playerComponent.setFlashLightOn(!playerComponent.isFlashLightOn());

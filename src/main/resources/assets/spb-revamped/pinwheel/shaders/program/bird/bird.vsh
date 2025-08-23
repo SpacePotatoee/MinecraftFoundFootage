@@ -17,6 +17,7 @@ uniform float GameTime;
 
 out vec3 localPos;
 out vec3 normal;
+flat out int InstanceNum;
 
 mat3 rotX(float rad) {
     float s = sin(rad);
@@ -94,4 +95,6 @@ void main() {
     localPos = (pos - cameraPos) + position;
 
     gl_Position = VeilCamera.ProjMat * VeilCamera.ViewMat * vec4(localPos , 1.0);
+
+    InstanceNum = gl_InstanceID;
 }
