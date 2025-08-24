@@ -2,8 +2,9 @@
 #include veil:camera
 #include veil:color_utilities
 
-#define REFLECTIVITY 0.6
+#define REFLECTIVITY 0.5
 
+//raystep at 0.01 makes it so reflections don't have seperations everywhere
 const float rayStep = 0.1;
 const int maxSteps = 100;
 const int BinSearchSteps = 10;
