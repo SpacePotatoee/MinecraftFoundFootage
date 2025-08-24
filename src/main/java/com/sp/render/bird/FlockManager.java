@@ -72,15 +72,20 @@ public class FlockManager {
                 newPos = new Vec3d(newPos.x, newPos.y, newPos.z);
             }
 
-
             if (Math.abs(localPos.x) > MAX_HORIZONTAL_DISTANCE) {
-                velocity = new Vec3d(velocity.x, velocity.y, velocity.z);
-                newPos = new Vec3d(flockingTarget.x + (flockingTarget.x - newPos.x < 0 ? -MAX_HORIZONTAL_DISTANCE : MAX_HORIZONTAL_DISTANCE), newPos.y, newPos.z);
+                // Calculate how far past the boundary we are
+                double overflow = Math.abs(localPos.x) - MAX_HORIZONTAL_DISTANCE;
+                // Wrap to opposite side with correct distance from boundary
+                double wrappedX = flockingTarget.x + (localPos.x > 0 ? (MAX_HORIZONTAL_DISTANCE - overflow) : -(MAX_HORIZONTAL_DISTANCE - overflow));
+                newPos = new Vec3d(wrappedX, newPos.y, newPos.z);
             }
 
             if (Math.abs(localPos.z) > MAX_HORIZONTAL_DISTANCE) {
-                velocity = new Vec3d(velocity.x, velocity.y, -velocity.z);
-                newPos = new Vec3d(newPos.x, newPos.y, flockingTarget.z + (flockingTarget.z - newPos.z < 0 ? -MAX_HORIZONTAL_DISTANCE : MAX_HORIZONTAL_DISTANCE));
+                // Calculate how far past the boundary we are
+                double overflow = Math.abs(localPos.z) - MAX_HORIZONTAL_DISTANCE;
+                // Wrap to opposite side with correct distance from boundary
+                double wrappedZ = flockingTarget.z + (localPos.z > 0 ? (MAX_HORIZONTAL_DISTANCE - overflow) : -(MAX_HORIZONTAL_DISTANCE - overflow));
+                newPos = new Vec3d(newPos.x, newPos.y, wrappedZ);
             }
 
             if (FabricLoader.getInstance().isDevelopmentEnvironment() && MinecraftClient.getInstance().world != null) {

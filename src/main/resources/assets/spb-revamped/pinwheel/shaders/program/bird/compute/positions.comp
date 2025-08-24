@@ -119,7 +119,7 @@ void main() {
         newRotation += getFixedDirection(vec3(normalize(totalRotation / float(otherCount)) * abs(smallestDistance - 2)), newRotation);
     }
 
-    newRotation += normalize(FlockCenters[compactIndex % FlockAmount] - position) * .1;
+    newRotation += normalize(FlockCenters[compactIndex % FlockAmount] - position) * (distance(FlockCenters[compactIndex % FlockAmount], position) * .01);
 
     newRotation = mix(normalize(newRotation), oldRotation, 0.6);
 
