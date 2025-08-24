@@ -1,12 +1,13 @@
 package com.sp.init;
 
+import com.sp.ModKeyBinds;
 import com.sp.compat.modmenu.ConfigStuff;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class HelpfulHintManager {
-    private static final Text flashlightHint = Text.translatable("flashlight.hint", com.sp.Keybinds.toggleFlashlight.getBoundKeyLocalizedText().copyContentOnly().formatted(Formatting.BOLD, Formatting.UNDERLINE));
+    private static final Text flashlightHint = Text.translatable("flashlight.hint", ModKeyBinds.toggleFlashlight.getBoundKeyLocalizedText().copyContentOnly().formatted(Formatting.BOLD, Formatting.UNDERLINE));
     private static final Text suffocateHint = Text.translatable("noclip.hint");
 
     public static boolean turnedOnFlashlight;
