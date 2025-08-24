@@ -17,9 +17,7 @@ public class FlockManager {
 
     private static int lastFlockCount = 0;
 
-    private int justTeleportedCenter = -1;
-
-    private static final double MAX_HORIZONTAL_DISTANCE = 80;
+    private static final double MAX_HORIZONTAL_DISTANCE = 100;
 
     public static void init() {
         Random random = new Random();
@@ -34,11 +32,17 @@ public class FlockManager {
         }
     }
 
-    public static void moveFlockCenterTowards(Vec3d target, int flockIndex) {
+    public static void moveFlockCenterTowards(Vec3d target, int flockIndex, boolean shouldLerp) {
         if (FLOCK_CENTERS.size() <= flockIndex) {
             FLOCK_CENTERS.set(flockIndex, new Vec3d(getCheckCoord().x, 60, getCheckCoord().z));
         }
-        FLOCK_CENTERS.set(flockIndex, MathUtil.lerpVec3(10, FLOCK_CENTERS.get(flockIndex), target));
+
+        if (shouldLerp) {
+            FLOCK_CENTERS.set(flockIndex, MathUtil.lerpVec3(10, FLOCK_CENTERS.get(flockIndex), target));
+        } else {
+            FLOCK_CENTERS.set(flockIndex, target);
+        }
+
     }
 
     public static Vec3d getFlockCenter(int flockIndex) {
@@ -57,6 +61,7 @@ public class FlockManager {
             init();
         }
 
+        boolean shouldLerp = true;
         Random random = new Random();
         for (int i = 0; i < FLOCK_CENTERS.size(); i++) {
             Vec3d flockCenter = getFlockCenter(i);
@@ -67,25 +72,19 @@ public class FlockManager {
 
             Vec3d localPos = flockingTarget.subtract(newPos);
 
-            if (newPos.y > 70 || newPos.y < 50) {
+            if (newPos.y > 60 || newPos.y < 50) {
                 velocity = new Vec3d(velocity.x, -velocity.y, velocity.z);
                 newPos = new Vec3d(newPos.x, newPos.y, newPos.z);
             }
 
             if (Math.abs(localPos.x) > MAX_HORIZONTAL_DISTANCE) {
-                // Calculate how far past the boundary we are
-                double overflow = Math.abs(localPos.x) - MAX_HORIZONTAL_DISTANCE;
-                // Wrap to opposite side with correct distance from boundary
-                double wrappedX = flockingTarget.x + (localPos.x > 0 ? (MAX_HORIZONTAL_DISTANCE - overflow) : -(MAX_HORIZONTAL_DISTANCE - overflow));
-                newPos = new Vec3d(wrappedX, newPos.y, newPos.z);
+                newPos = new Vec3d(flockingTarget.x - (localPos.x > 0 ? -MAX_HORIZONTAL_DISTANCE : MAX_HORIZONTAL_DISTANCE), newPos.y, newPos.z);
+                shouldLerp = false;
             }
 
             if (Math.abs(localPos.z) > MAX_HORIZONTAL_DISTANCE) {
-                // Calculate how far past the boundary we are
-                double overflow = Math.abs(localPos.z) - MAX_HORIZONTAL_DISTANCE;
-                // Wrap to opposite side with correct distance from boundary
-                double wrappedZ = flockingTarget.z + (localPos.z > 0 ? (MAX_HORIZONTAL_DISTANCE - overflow) : -(MAX_HORIZONTAL_DISTANCE - overflow));
-                newPos = new Vec3d(newPos.x, newPos.y, wrappedZ);
+                newPos = new Vec3d(newPos.x, newPos.y, flockingTarget.z - (localPos.z > 0 ? -MAX_HORIZONTAL_DISTANCE : MAX_HORIZONTAL_DISTANCE));
+                shouldLerp = false;
             }
 
             if (FabricLoader.getInstance().isDevelopmentEnvironment() && MinecraftClient.getInstance().world != null) {
@@ -94,7 +93,7 @@ public class FlockManager {
 
             FLOCK_VELOCITIES.set(i, velocity.normalize());
 
-            moveFlockCenterTowards(newPos, i);
+            moveFlockCenterTowards(newPos, i, shouldLerp);
         }
     }
 

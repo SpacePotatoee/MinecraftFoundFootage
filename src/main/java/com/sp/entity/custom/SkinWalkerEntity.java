@@ -204,45 +204,49 @@ public class SkinWalkerEntity extends HostileEntity implements GeoEntity, GeoAni
 
 
         BackroomsLevels.getLevel(this.getWorld()).ifPresent((backroomsLevel -> {
-            if (backroomsLevel instanceof Level0BackroomsLevel level) {
-                if (this.ticks == 9){
-                    this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK, SoundCategory.HOSTILE, 10.0f, 1.0f);
-                }
+            if (this.ticks == 9) {
+                this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK, SoundCategory.HOSTILE, 10.0f, 1.0f);
+            }
 
-                if (this.ticks == 39){
-                    this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK_LONG, SoundCategory.HOSTILE, 10.0f, 1.0f);
-                }
+            if (this.ticks == 39) {
+                this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_BONE_CRACK_LONG, SoundCategory.HOSTILE, 10.0f, 1.0f);
+            }
 
-                if (this.ticks == 99){
-                    this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_REVEAL, SoundCategory.HOSTILE, 100.0f, 1.0f);
-                }
+            if (this.ticks == 99) {
+                this.getWorld().playSoundFromEntity(null, this, ModSounds.SKINWALKER_REVEAL, SoundCategory.HOSTILE, 100.0f, 1.0f);
+            }
 
-                if (this.ticks ==  110){
+            if (this.ticks == 110) {
+                if (backroomsLevel instanceof Level0BackroomsLevel level) {
                     level.setLightState(Level0BackroomsLevel.LightState.FLICKER);
                 }
+            }
 
-                if (this.ticks == 195){
+            if (this.ticks == 195) {
+                if (backroomsLevel instanceof Level0BackroomsLevel level) {
                     level.setLightState(Level0BackroomsLevel.LightState.OFF);
-
-                    for(PlayerEntity player : this.getWorld().getPlayers()){
-                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
-                        playerComponent.setFlashLightOn(false);
-                        playerComponent.sync();
-                    }
                 }
 
-                if (this.ticks >= 220){
+                for (PlayerEntity player : this.getWorld().getPlayers()) {
+                    PlayerComponent playerComponent = InitializeComponents.PLAYER.get(player);
+                    playerComponent.setFlashLightOn(false);
+                    playerComponent.sync();
+                }
+            }
+
+            if (this.ticks >= 220) {
+                if (backroomsLevel instanceof Level0BackroomsLevel level) {
                     level.setLightState(Level0BackroomsLevel.LightState.ON);
-                    this.component.setBeginReveal(false);
-                    this.component.setTrueForm(true);
-
-                    if(this.prevTarget != null) {
-                        this.beginTargeting((PlayerEntity) this.prevTarget);
-                        this.prevTarget = null;
-                    }
-
-                    this.ticks = 0;
                 }
+                this.component.setBeginReveal(false);
+                this.component.setTrueForm(true);
+
+                if (this.prevTarget != null) {
+                    this.beginTargeting((PlayerEntity) this.prevTarget);
+                    this.prevTarget = null;
+                }
+
+                this.ticks = 0;
             }
         }));
     }

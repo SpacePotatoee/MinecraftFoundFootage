@@ -16,6 +16,7 @@ import com.sp.init.*;
 import com.sp.networking.InitializePackets;
 import com.sp.networking.callbacks.ClientConnectionEvents;
 import com.sp.render.*;
+import com.sp.render.bird.BirdQuality;
 import com.sp.render.bird.BirdRenderer;
 import com.sp.render.bird.FlockManager;
 import com.sp.render.camera.CameraShake;
@@ -241,7 +242,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                         this.grassRenderer.render();
 
 
-                        if (ConfigStuff.areBirdsEnabled) {
+                        if (ConfigStuff.birdQuality != BirdQuality.DISABLED) {
                             ShaderProgram shader = VeilRenderSystem.renderer().getShaderManager().getShader(BirdRenderer.computeShaderPath);
                             if (shader != null) {
                                 List<Vector3f> vector3fcs = FlockManager.getFlockCenters().stream().map((vec3d -> new Vector3f((float) vec3d.x, (float) vec3d.y, (float) vec3d.z))).toList();
@@ -551,7 +552,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     }
 
                     getCurrentBackroomsLevel().ifPresent((backroomsLevel -> {
-                        if (backroomsLevel instanceof InfiniteGrassBackroomsLevel) {
+                        if (backroomsLevel instanceof InfiniteGrassBackroomsLevel && ConfigStuff.birdQuality != BirdQuality.DISABLED) {
                             FlockManager.tick();
                         }
                     }));
